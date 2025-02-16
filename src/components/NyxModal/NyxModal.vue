@@ -3,7 +3,8 @@ import './NyxModal.scss'
 import { useTemplateRef } from 'vue'
 import type { NyxModalEmits, NyxModalProps } from './NyxModal.types'
 import NyxButton from '../NyxButton/NyxButton.vue'
-import { NyxSize, NyxStyleVariant, NyxTheme } from '@/types'
+import { KeyboardKey, NyxSize, NyxStyleVariant, NyxTheme } from '@/types'
+import { useKeyPress } from '@/compositions'
 
 const props = withDefaults(defineProps<NyxModalProps>(), {
   cancelText: 'Close',
@@ -11,13 +12,15 @@ const props = withDefaults(defineProps<NyxModalProps>(), {
 })
 
 const emit = defineEmits<NyxModalEmits>()
-const model = defineModel<boolean>()
-const elDialog = useTemplateRef<HTMLDialogElement>('elDialog')
+const model = defineModel<boolean>({ default: false })
+// const elDialog = useTemplateRef<HTMLDialogElement>('elDialog')
 
 const close = () => {
   model.value = false
   emit('close')
 }
+
+useKeyPress(KeyboardKey.Esc, close)
 
 const cancel = () => {
   emit('cancel')
@@ -32,13 +35,13 @@ const confirm = () => {
 
 <template>
   <Teleport to="body">
-    <dialog
-      ref="elDialog"
+    <!-- <dialog :open="model" ref="elDialog"></dialog> -->
+    <div
       class="nyx-modal"
-      :class="[`size-${props.size}`]"
-      :open="model"
+      :class="[`size-${props.size}`, { 'nyx-modal--open': model }]"
+      @click.self="close"
     >
-      <article class="nyx-modal__content" v-if="model">
+      <article class="nyx-modal__content">
         <header class="nyx-modal__header">
           <slot name="header">
             <h1>{{ title }}</h1>
@@ -51,7 +54,7 @@ const confirm = () => {
         <footer class="nyx-modal__footer">
           <slot name="footer">
             <NyxButton
-              :theme="NyxTheme.Danger"
+              :theme="NyxTheme.Default"
               :variant="NyxStyleVariant.Outline"
               @click="cancel"
             >{{ props.cancelText }}</NyxButton>
@@ -63,6 +66,6 @@ const confirm = () => {
           </slot>
         </footer>
       </article>
-    </dialog>
+    </div>
   </Teleport>
 </template>
