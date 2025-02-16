@@ -1,2 +1,5 @@
 export * from './common'
 export * from './input'
+export * from './number'
+export * from './select'
+export * from './style'

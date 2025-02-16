@@ -6,7 +6,7 @@ import { NyxInputType, NyxTheme, NyxStyleVariant, NyxSize } from '@/types'
 const props = withDefaults(defineProps<NyxInputProps>(), {
   type: NyxInputType.Text,
   theme: NyxTheme.Default,
-  variant: NyxStyleVariant.Solid,
+  variant: NyxStyleVariant.Outline,
   size: NyxSize.Medium,
 })
 
@@ -17,21 +17,26 @@ const model = defineModel<string>()
 </script>
 
 <template>
-  <input
+  <div
     class="nyx-input"
     :class="[`theme-${props.theme}`, `variant-${props.variant}`, `size-${props.size}`]"
-    :type="props.type"
-    :placeholder="props.placeholder"
-    :disabled="props.disabled"
-    :readonly="props.readonly"
-    :maxlength="props.maxlength"
-    :minlength="props.minlength"
-    :pattern="props.pattern"
-    :required="props.required"
-    :autocomplete="props.autocomplete"
-    :autofocus="props.autofocus"
-    v-model="model"
-    @focus="emit('focus')"
-    @blur="emit('blur')"
-  />
+  >
+    <input
+      :type="props.type"
+      :placeholder="props.placeholder"
+      :disabled="props.disabled"
+      :readonly="props.readonly"
+      :maxlength="props.maxlength"
+      :minlength="props.minlength"
+      :pattern="props.pattern"
+      :required="props.required"
+      :autocomplete="props.autocomplete"
+      :autofocus="props.autofocus"
+      v-model="model"
+      @click="emit('click')"
+      @focus="emit('focus')"
+      @blur="emit('blur')"
+    />
+  </div>
+
 </template>

@@ -1,0 +1,180 @@
+.nyx-select,
+.nyx-select__dropdown {
+  --nyc-c-select-text: var(--nyx-c-white-soft);
+  --nyx-c-select-background: var(--nyx-c-default);
+  --nyx-c-select-background-hover: var(--nyx-c-default-highlight);
+  --nyx-gap-select: var(--nyx-gap-md);
+  --nyx-pad-select: var(--nyx-pad-md);
+  --nyx-font-size-select: var(--nyx-font-size-md);
+  --nyx-border-size-select: 1px;
+  --nyx-radius-select: var(--nyx-radius-md);
+
+  &.theme-primary {
+    --nyx-c-select-background: var(--nyx-c-primary);
+    --nyx-c-select-background-hover: var(--nyx-c-primary-highlight);
+  }
+
+  &.theme-secondary {
+    --nyx-c-select-background: var(--nyx-c-secondary);
+    --nyx-c-select-background-hover: var(--nyx-c-secondary-highlight);
+  }
+
+  &.theme-info {
+    --nyx-c-select-background: var(--nyx-c-info);
+    --nyx-c-select-background-hover: var(--nyx-c-info-highlight);
+  }
+
+  &.theme-success {
+    --nyx-c-select-background: var(--nyx-c-success);
+    --nyx-c-select-background-hover: var(--nyx-c-success-highlight);
+  }
+
+  &.theme-warning {
+    --nyx-c-select-background: var(--nyx-c-warning);
+    --nyx-c-select-background-hover: var(--nyx-c-warning-highlight);
+  }
+
+  &.theme-danger {
+    --nyx-c-select-background: var(--nyx-c-danger);
+    --nyx-c-select-background-hover: var(--nyx-c-danger-highlight);
+  }
+
+  &.size-xs {
+    --nyx-gap-select: var(--nyx-gap-xs);
+    --nyx-pad-select: var(--nyx-pad-xs);
+    --nyx-font-size-select: var(--nyx-font-size-xs);
+    --nyx-border-size-select: 1px;
+  }
+
+  &.size-sm {
+    --nyx-gap-select: var(--nyx-gap-sm);
+    --nyx-pad-select: var(--nyx-pad-sm);
+    --nyx-font-size-select: var(--nyx-font-size-sm);
+    --nyx-border-size-select: 1px;
+  }
+
+  &.size-lg {
+    --nyx-gap-select: var(--nyx-gap-lg);
+    --nyx-pad-select: var(--nyx-pad-lg);
+    --nyx-font-size-select: var(--nyx-font-size-lg);
+    --nyx-border-size-select: 2px;
+  }
+
+  &.size-xl {
+    --nyx-gap-select: var(--nyx-gap-xl);
+    --nyx-pad-select: var(--nyx-pad-xl);
+    --nyx-font-size-select: var(--nyx-font-size-xl);
+    --nyx-border-size-select: 3px;
+  }
+}
+
+.nyx-select {
+  &__control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    line-height: 1;
+    font-size: var(--nyx-font-size-select);
+    gap: var(--nyx-gap-select);
+    background-color: var(--nyx-c-select-background);
+    border: var(--nyx-border-size-select) solid var(--nyx-c-select-background);
+    color: var(--nyc-c-select-text);
+    border-radius: var(--nyx-radius-select);
+    padding: calc(var(--nyx-pad-select) * 0.75) var(--nyx-pad-select);
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s, transform 0.2s, border-radius 0.2s;
+    cursor: pointer;
+
+    &--open {
+      border-bottom-right-radius: 0;
+      border-bottom-left-radius: 0;
+      border-bottom-color: var(--nyx-c-select-background-hover);
+    }
+  }
+  
+  &__selected {
+    flex-grow: 1;
+  }
+  
+  &__arrow {
+    font-size: 12px;
+    margin-left: auto;
+  }
+  
+  &__dropdown {
+    position: fixed;
+    top: var(--top, 0);
+    left: var(--left, 0);
+    width: var(--width, auto);
+    background-color: var(--nyx-c-select-background);
+    border-color: var(--nyx-c-select-background);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+    font-size: var(--nyx-font-size-select);
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 10;
+    opacity: 0;
+    transform: translate(0, -2rem);
+    transition: opacity 0.2s, transform 0.2s;
+    pointer-events: none;
+    border-bottom-right-radius: var(--nyx-radius-select);
+    border-bottom-left-radius: var(--nyx-radius-select);
+
+    &--open {
+      opacity: 1;
+      transform: translate(0, 0);
+      pointer-events: all;
+    }
+  }
+  
+  &__option {
+    padding: var(--nyx-pad-select);
+    cursor: pointer;
+  }
+  
+  &__option:hover,
+  &__option--selected {
+    background-color: var(--nyx-c-select-background-hover);
+  }
+  
+  &__hidden {
+    display: none;
+  }
+
+  &.variant-outline &__control {
+    background-color: transparent;
+    color: var(--nyx-c-select-background);
+
+    &:hover,
+    &--open {
+      border-color: var(--nyx-c-select-background-hover);
+    }
+  }
+
+  &.variant-ghost &__control {
+    background-color: transparent;
+    border-color: transparent;
+    color: var(--nyx-c-select-background);
+
+    &:hover,
+    &:focus,
+    &--open {
+      border-color: var(--nyx-c-select-background);
+    }
+  }
+
+  &.variant-text &__control {
+    background-color: transparent;
+    border-color: transparent;
+    color: var(--nyx-c-select-background);
+    position: relative;
+  }
+
+  &__dropdown.variant-text {
+    border-top-right-radius: var(--nyx-radius-select);
+    border-top-left-radius: var(--nyx-radius-select);
+  }
+}

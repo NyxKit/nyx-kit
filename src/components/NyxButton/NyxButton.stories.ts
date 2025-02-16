@@ -1,7 +1,8 @@
 import { defineComponent } from 'vue'
 import NyxButton from './NyxButton.vue'
-import { NyxTheme, NyxStyleVariant, NyxSize } from '@/types'
+import { NyxTheme, NyxStyleVariant, NyxSize, type KeyDict } from '@/types'
 import type { NyxButtonProps } from './NyxButton.types'
+import { getKeyDictKeyByValue } from '@/utils'
 
 export default {
   title: 'Components/NyxButton',
@@ -27,7 +28,7 @@ export default {
   },
 }
 
-const Template = (args: NyxButtonProps) => defineComponent({
+const Template = (args: NyxButtonProps) => () => defineComponent({
   components: { NyxButton },
   setup () {
     return { args }
@@ -37,24 +38,11 @@ const Template = (args: NyxButtonProps) => defineComponent({
   `,
 })
 
-const sizeLabels: Record<NyxSize, string> = {
-  [NyxSize.XSmall]: 'XSmall',
-  [NyxSize.Small]: 'Small',
-  [NyxSize.Medium]: 'Medium',
-  [NyxSize.Large]: 'Large',
-  [NyxSize.XLarge]: 'XLarge',
-}
-
-const TemplateAll = (prop: string, values: string[]) => () => defineComponent({
+const TemplateAll = (prop: string, dict: KeyDict<string>) => () => defineComponent({
   components: { NyxButton },
   setup () {
-    const getLabel = (value: string) => {
-      if (prop === 'size') {
-        return sizeLabels[value as NyxSize]
-      } else {
-        return value.charAt(0).toUpperCase() + value.slice(1)
-      }
-    }
+    const values = Object.values(dict)
+    const getLabel = (value: string) => getKeyDictKeyByValue(dict, value)
     return { prop, values, getLabel }
   },
   template: `
@@ -69,6 +57,6 @@ const TemplateAll = (prop: string, values: string[]) => () => defineComponent({
 })
 
 export const Default = Template({})
-export const Themes = TemplateAll('theme', Object.values(NyxTheme))
-export const Styles = TemplateAll('variant', Object.values(NyxStyleVariant))
-export const Sizes = TemplateAll('size', Object.values(NyxSize))
+export const Themes = TemplateAll('theme',  NyxTheme)
+export const Styles = TemplateAll('variant', NyxStyleVariant)
+export const Sizes = TemplateAll('size', NyxSize)
