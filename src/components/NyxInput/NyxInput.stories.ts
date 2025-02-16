@@ -27,7 +27,7 @@ export default {
   },
 }
 
-const Template = (args: NyxInputProps) => () => defineComponent({
+const Template = (args: NyxInputProps) => defineComponent({
   components: { NyxInput },
   setup () {
     return { args }

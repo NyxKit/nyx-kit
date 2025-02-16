@@ -1,7 +1,8 @@
 .nyx-input {
-  --nyc-c-input-text: var(--nyx-c-white-soft);
-  --nyx-c-input-background: var(--nyx-c-default);
-  --nyx-c-input-background-hover: var(--nyx-c-default-highlight);
+  --nyx-c-input: var(--nyx-c-default);
+  --nyx-c-input-highlight: var(--nyx-c-default-highlight);
+  --nyx-c-input-alt: var(--nyx-c-default-alt);
+  --nyx-c-input-text: var(--nyx-c-white-soft);
   --nyx-gap-input: var(--nyx-gap-md);
   --nyx-pad-input: var(--nyx-pad-md);
   --nyx-font-size-input: var(--nyx-font-size-md);
@@ -15,9 +16,9 @@
     line-height: 1;
     font-size: var(--nyx-font-size-input);
     gap: var(--nyx-gap-input);
-    background-color: var(--nyx-c-input-background);
-    border: var(--nyx-border-size-input) solid var(--nyx-c-input-background);
-    color: var(--nyc-c-input-text);
+    background-color: var(--nyx-c-input);
+    border: var(--nyx-border-size-input) solid var(--nyx-c-input);
+    color: var(--nyx-c-input-text);
     border-radius: var(--nyx-radius-md);
     padding: calc(var(--nyx-pad-input) * 0.75) var(--nyx-pad-input);
     transition: background-color 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
@@ -29,8 +30,8 @@
     
     &:hover,
     &:active {
-      background-color: var(--nyx-c-input-background-hover);
-      border-color: var(--nyx-c-input-background-hover);
+      background-color: var(--nyx-c-input-highlight);
+      border-color: var(--nyx-c-input-highlight);
     }
 
     &:disabled {
@@ -41,60 +42,90 @@
   }
 
   &.theme-primary {
-    --nyx-c-input-background: var(--nyx-c-primary);
-    --nyx-c-input-background-hover: var(--nyx-c-primary-highlight);
+    --nyx-c-input: var(--nyx-c-primary);
+    --nyx-c-input-highlight: var(--nyx-c-primary-highlight);
+    --nyx-c-input-alt: var(--nyx-c-primary-alt);
   }
 
   &.theme-secondary {
-    --nyx-c-input-background: var(--nyx-c-secondary);
-    --nyx-c-input-background-hover: var(--nyx-c-secondary-highlight);
+    --nyx-c-input: var(--nyx-c-secondary);
+    --nyx-c-input-highlight: var(--nyx-c-secondary-highlight);
+    --nyx-c-input-alt: var(--nyx-c-secondary-alt);
   }
 
   &.theme-info {
-    --nyx-c-input-background: var(--nyx-c-info);
-    --nyx-c-input-background-hover: var(--nyx-c-info-highlight);
+    --nyx-c-input: var(--nyx-c-info);
+    --nyx-c-input-highlight: var(--nyx-c-info-highlight);
+    --nyx-c-input-alt: var(--nyx-c-info-alt);
   }
 
   &.theme-success {
-    --nyx-c-input-background: var(--nyx-c-success);
-    --nyx-c-input-background-hover: var(--nyx-c-success-highlight);
+    --nyx-c-input: var(--nyx-c-success);
+    --nyx-c-input-highlight: var(--nyx-c-success-highlight);
+    --nyx-c-input-alt: var(--nyx-c-success-alt);
   }
 
   &.theme-warning {
-    --nyx-c-input-background: var(--nyx-c-warning);
-    --nyx-c-input-background-hover: var(--nyx-c-warning-highlight);
+    --nyx-c-input: var(--nyx-c-warning);
+    --nyx-c-input-highlight: var(--nyx-c-warning-highlight);
+    --nyx-c-input-alt: var(--nyx-c-warning-alt);
   }
 
   &.theme-danger {
-    --nyx-c-input-background: var(--nyx-c-danger);
-    --nyx-c-input-background-hover: var(--nyx-c-danger-highlight);
+    --nyx-c-input: var(--nyx-c-danger);
+    --nyx-c-input-highlight: var(--nyx-c-danger-highlight);
+    --nyx-c-input-alt: var(--nyx-c-danger-alt);
   }
 
   &.variant-outline input {
     background-color: transparent;
-    color: var(--nyx-c-input-background);
+    color: var(--nyx-c-input-alt);
+    border-color: var(--nyx-c-input-alt);
 
     &:hover {
-      border-color: var(--nyx-c-input-background-hover);
+      border-color: var(--nyx-c-input-alt);
     }
   }
 
   &.variant-ghost input {
     background-color: transparent;
     border-color: transparent;
-    color: var(--nyx-c-input-background);
+    color: var(--nyx-c-input-alt);
 
     &:hover,
     &:focus {
-      border-color: var(--nyx-c-input-background);
+      border-color: var(--nyx-c-input-alt);
     }
   }
 
-  &.variant-text input {
-    background-color: transparent;
-    border-color: transparent;
-    color: var(--nyx-c-input-background);
+  &.variant-text {
     position: relative;
+
+    &:after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      display: block;
+      width: calc(100% - 2 * var(--nyx-pad-input));
+      height: var(--nyx-border-size-input);
+      background-color: var(--nyx-c-input-highlight);
+      border-radius: var(--nyx-radius-xl);
+      opacity: 0;
+      transform: scaleX(0) translate(var(--nyx-pad-input), 0);
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    &:has(input:hover):after,
+    &:has(input:focus):after {
+      opacity: 1;
+      transform: scaleX(1) translate(var(--nyx-pad-input), 0);
+    }
+
+    input {
+      background-color: transparent;
+      border-color: transparent;
+      color: var(--nyx-c-input-alt);
+    }
   }
 
   &.size-xs {

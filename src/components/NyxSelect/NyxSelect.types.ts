@@ -11,5 +11,5 @@ export interface NyxSelectProps {
 }
 
 export interface NyxSelectEmits {
-  (event: 'click'): void
+  (event: 'change', value: string): void
 }

@@ -28,7 +28,7 @@ export default {
   },
 }
 
-const Template = (args: NyxButtonProps) => () => defineComponent({
+const Template = (args: NyxButtonProps) => defineComponent({
   components: { NyxButton },
   setup () {
     return { args }
@@ -38,7 +38,7 @@ const Template = (args: NyxButtonProps) => () => defineComponent({
   `,
 })
 
-const TemplateAll = (prop: string, dict: KeyDict<string>) => () => defineComponent({
+const TemplateAllProp = (prop: string, dict: KeyDict<string>) => () => defineComponent({
   components: { NyxButton },
   setup () {
     const values = Object.values(dict)
@@ -56,7 +56,29 @@ const TemplateAll = (prop: string, dict: KeyDict<string>) => () => defineCompone
   `,
 })
 
+const TemplateAll = () => () => defineComponent({
+  components: { NyxButton },
+  setup () {
+    const themes = Object.values(NyxTheme)
+    const variants = Object.values(NyxStyleVariant)
+    return { themes, variants }
+  },
+  template: `
+    <div class="flex-col">
+      <div class="flex" v-for="variant of variants">
+        <nyx-button
+          v-for="theme of themes"
+          :key="value"
+          :variant="variant"
+          :theme="theme"
+        >Click me</nyx-button>
+      </div>
+    </div>
+  `,
+})
+
 export const Default = Template({})
-export const Themes = TemplateAll('theme',  NyxTheme)
-export const Styles = TemplateAll('variant', NyxStyleVariant)
-export const Sizes = TemplateAll('size', NyxSize)
+export const Themes = TemplateAllProp('theme',  NyxTheme)
+export const Styles = TemplateAllProp('variant', NyxStyleVariant)
+export const Sizes = TemplateAllProp('size', NyxSize)
+export const All = TemplateAll()

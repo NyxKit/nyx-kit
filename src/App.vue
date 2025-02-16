@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
+import { NyxSelect } from '@/components'
 </script>
 
 <template>
@@ -11,6 +12,7 @@ import { RouterLink, RouterView } from 'vue-router'
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
       </nav>
+      <NyxSelect :options="[{ label: 'test', value: 'test' }, {label: 'qsdf', value: 'qsdf'}]" />
     </div>
   </header>
 

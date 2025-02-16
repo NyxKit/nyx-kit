@@ -28,13 +28,17 @@ export default {
     },
     options: {
       control: {
-        disable: true
+        default: options,
+        // disable: true
       }
     }
   },
+  args: {
+    options
+  }
 }
 
-const Template = (args: NyxSelectProps) => () => defineComponent({
+const Template = (args: NyxSelectProps) => defineComponent({
   components: { NyxSelect },
   setup () {
     return { args }

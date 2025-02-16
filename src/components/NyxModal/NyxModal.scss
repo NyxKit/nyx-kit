@@ -1,3 +1,113 @@
 .nyx-modal {
+  --nyx-pad-modal: var(--nyx-pad-md);
+  --nyx-pad-modal-y: var(--nyx-pad-modal);
+  --nyx-pad-modal-x: calc(1.5 * var(--nyx-pad-modal));
+  --nyx-font-size-modal: var(--nyx-font-size-md);
+  --nyx-c-text: var(--nyx-c-text-1);
+  --nyx-border-size-modal: 1px;
+
+  border: none;
   background-color: transparent;
+
+  &.size-xs {
+    --nyx-gap-modal: var(--nyx-gap-xs);
+    --nyx-pad-modal: var(--nyx-pad-xs);
+    --nyx-font-size-modal: var(--nyx-font-size-sm);
+    --nyx-border-size-modal: 1px;
+  }
+
+  &.size-sm {
+    --nyx-gap-modal: var(--nyx-gap-sm);
+    --nyx-pad-modal: var(--nyx-pad-sm);
+    --nyx-font-size-modal: var(--nyx-font-size-md);
+    --nyx-border-size-modal: 1px;
+  }
+
+  &.size-lg {
+    --nyx-gap-modal: var(--nyx-gap-lg);
+    --nyx-pad-modal: var(--nyx-pad-lg);
+    --nyx-font-size-modal: var(--nyx-font-size-md);
+    --nyx-border-size-modal: 2px;
+  }
+
+  &.size-xl {
+    --nyx-gap-modal: var(--nyx-gap-xl);
+    --nyx-pad-modal: var(--nyx-pad-xl);
+    --nyx-font-size-modal: var(--nyx-font-size-lg);
+    --nyx-border-size-modal: 3px;
+  }
+
+  &::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1;
+    transition: opacity 0.3s, transform 0.3s;
+  }
+
+  &__content {
+    position: relative;
+    z-index: 2;
+    border-radius: var(--nyx-radius-md);
+    background: var(--nyx-c-bg-mute);
+    color: var(--nyx-c-text);
+    padding: 0;
+    max-width: 500px;
+    width: calc(100dvw - 2rem);
+    position: relative;
+    transition: opacity 0.3s, transform 0.3s;
+  }
+
+  &__header,
+  &__footer,
+  &__body {
+    padding: var(--nyx-pad-modal-y) var(--nyx-pad-modal-x);
+  }
+
+  &__header,
+  &__footer {
+    display: flex;
+    gap: var(--nyx-gap-md);
+  }
+
+  &__header {
+    font-size: calc(1.75 * var(--nyx-font-size-modal));
+    font-weight: 600;
+    border-bottom: var(--nyx-border-size-modal) solid var(--nyx-c-divider);
+  }
+
+  &__footer {
+    justify-content: flex-end;
+  }
+
+  &__close {
+    margin-left: auto;
+  }
+
+  &__body {
+    font-size: var(--nyx-font-size-modal);
+    line-height: 1.5;
+  }
+
+  &[open] &__content {
+    opacity: 1;
+    transform: translate(0, 0);
+
+    @starting-style {
+      opacity: 0;
+      transform: translate(0, -2rem);
+    }
+  }
+
+  &[open]::after {
+    opacity: 1;
+
+    @starting-style {
+      opacity: 0;
+    }
+  }
 }

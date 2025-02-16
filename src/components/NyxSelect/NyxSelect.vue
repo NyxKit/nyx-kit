@@ -35,9 +35,14 @@ const toggleDropdown = () => {
   isOpen.value = !isOpen.value
 }
 
+const closeDropdown = () => {
+  isOpen.value = false
+}
+
 const selectOption = (value: string) => {
   model.value = value
   isOpen.value = false
+  emit('change', model.value)
 }
 </script>
 
@@ -45,6 +50,7 @@ const selectOption = (value: string) => {
   <div
     class="nyx-select"
     :class="[`theme-${props.theme}`, `variant-${props.variant}`, `size-${props.size}`]"
+    v-click-outside="closeDropdown"
   >
     <div
       class="nyx-select__control"
