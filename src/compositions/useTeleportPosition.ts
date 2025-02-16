@@ -3,7 +3,7 @@ import { computed, onBeforeUnmount, onMounted, type Ref, ref, watch } from 'vue'
 
 interface TeleportPositionOptions {
   position?: Ref<NyxPosition>
-  isEqualWidth?: boolean,
+  isEqualWidth?: boolean
   isUpdateAllowed?: Ref<boolean>
 }
 
@@ -12,7 +12,7 @@ const useTeleportPosition = (
   elAbsolute: Ref<HTMLElement | null>,
   options?: TeleportPositionOptions
 ) => {
-  const position = options?.position ?? ref(NyxPosition.BottomRight)
+  const position = options?.position ?? ref(NyxPosition.BottomCenter)
   const isEqualWidth = !!options?.isEqualWidth
   const isUpdateAllowed = computed(() => options?.isUpdateAllowed?.value !== false)
 
@@ -22,9 +22,11 @@ const useTeleportPosition = (
     '--width': 'auto'
   })
 
+  // Reactive computed position to expose externally
+  const computedPosition = ref<NyxPosition>(position.value)
+
   const updateCssVariables = () => {
-    if (!elRelative.value || !elAbsolute.value) return
-    if (!isUpdateAllowed.value) return
+    if (!elRelative.value || !elAbsolute.value || !isUpdateAllowed.value) return
 
     const { top, bottom, left, right, width: relWidth, height: relHeight } = elRelative.value.getBoundingClientRect()
     const { width: absWidth, height: absHeight } = elAbsolute.value.getBoundingClientRect()
@@ -34,7 +36,40 @@ const useTeleportPosition = (
     let computedTop = bottom
     let computedLeft = left
 
-    switch (position.value) {
+    // Determine if there's enough space for the absolute element
+    const hasSpaceBelow = bottom + absHeight <= window.innerHeight
+    const hasSpaceAbove = top - absHeight >= 0
+    const hasSpaceLeft = left - absWidth >= 0
+    const hasSpaceRight = right + absWidth <= window.innerWidth
+
+    // Mirror position if there's not enough space
+    const getMirroredPosition = (pos: NyxPosition) => {
+      switch (pos) {
+        case NyxPosition.BottomLeft:
+          return hasSpaceBelow ? pos : NyxPosition.TopLeft
+        case NyxPosition.BottomRight:
+          return hasSpaceBelow ? pos : NyxPosition.TopRight
+        case NyxPosition.BottomCenter:
+          return hasSpaceBelow ? pos : NyxPosition.TopCenter
+        case NyxPosition.TopLeft:
+          return hasSpaceAbove ? pos : NyxPosition.BottomLeft
+        case NyxPosition.TopRight:
+          return hasSpaceAbove ? pos : NyxPosition.BottomRight
+        case NyxPosition.TopCenter:
+          return hasSpaceAbove ? pos : NyxPosition.BottomCenter
+        case NyxPosition.LeftCenter:
+          return hasSpaceLeft ? pos : NyxPosition.RightCenter
+        case NyxPosition.RightCenter:
+          return hasSpaceRight ? pos : NyxPosition.LeftCenter
+        default:
+          return pos
+      }
+    }
+
+    computedPosition.value = getMirroredPosition(position.value)
+
+    // Apply final positioning
+    switch (computedPosition.value) {
       case NyxPosition.BottomLeft:
         computedTop = bottom
         computedLeft = left
@@ -69,18 +104,16 @@ const useTeleportPosition = (
         break
     }
 
-    const viewportWidth = window.innerWidth
-    const viewportHeight = window.innerHeight
-
-    computedTop = clamp(computedTop, 0, viewportHeight - absHeight)
-    computedLeft = clamp(computedLeft, 0, viewportWidth - computedWidth)
+    // Ensure element stays within viewport bounds
+    computedTop = clamp(computedTop, 0, window.innerHeight - absHeight)
+    computedLeft = clamp(computedLeft, 0, window.innerWidth - computedWidth)
 
     cssVariables.value['--top'] = `${computedTop}px`
     cssVariables.value['--left'] = `${computedLeft}px`
     cssVariables.value['--width'] = isEqualWidth ? `${relWidth}px` : 'auto'
   }
 
-  watch([isUpdateAllowed, elRelative, elAbsolute, position], () => updateCssVariables(), { immediate: true })
+  watch([isUpdateAllowed, elRelative, elAbsolute, position], updateCssVariables, { immediate: true })
 
   onMounted(() => {
     window.addEventListener('resize', updateCssVariables)
@@ -94,7 +127,8 @@ const useTeleportPosition = (
 
   return {
     cssVariables,
-    updateCssVariables
+    updateCssVariables,
+    computedPosition
   }
 }
 

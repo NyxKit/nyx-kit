@@ -20,7 +20,10 @@ const elControl = useTemplateRef<HTMLDivElement>('elControl')
 const elDropdown = useTemplateRef<HTMLDivElement>('elDropdown')
 const isOpen = ref(false)
 
-const { cssVariables } = useTeleportPosition(elControl, elDropdown, { isEqualWidth: true, isUpdateAllowed: isOpen })
+const { cssVariables, computedPosition } = useTeleportPosition(elControl, elDropdown, {
+  isEqualWidth: true,
+  isUpdateAllowed: isOpen
+})
 
 const selectedLabel = computed(() => {
   return props.options
@@ -45,7 +48,10 @@ const selectOption = (value: string) => {
   >
     <div
       class="nyx-select__control"
-      :class="{ 'nyx-select__control--open': isOpen }"
+      :class="[
+        `nyx-select__control--${ computedPosition }`,
+        { 'nyx-select__control--open': isOpen }
+      ]"
       @click="toggleDropdown"
       ref="elControl"
     >
@@ -58,6 +64,7 @@ const selectOption = (value: string) => {
         class="nyx-select__dropdown"
         :class="[
           `theme-${props.theme}`, `variant-${props.variant}`, `size-${props.size}`,
+          `nyx-select__dropdown--${ computedPosition }`,
           { 'nyx-select__dropdown--open': isOpen }
         ]"
         ref="elDropdown"
