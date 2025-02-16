@@ -70,6 +70,7 @@
 
 .nyx-select {
   &__control {
+    user-select: none;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -114,6 +115,7 @@
   }
   
   &__dropdown {
+    user-select: none;
     position: fixed;
     top: var(--top, 0);
     left: var(--left, 0);
