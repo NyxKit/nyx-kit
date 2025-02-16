@@ -1,6 +1,6 @@
 import { defineComponent } from 'vue'
 import NyxButton from './NyxButton.vue'
-import { NyxTheme, NyxButtonVariant, NyxSize } from '@/types'
+import { NyxTheme, NyxStyleVariant, NyxSize } from '@/types'
 import type { NyxButtonProps } from './NyxButton.types'
 
 export default {
@@ -17,7 +17,7 @@ export default {
     },
     variant: {
       control: { type: 'select' },
-      options: Object.values(NyxButtonVariant),
+      options: Object.values(NyxStyleVariant),
     },
     size: {
       control: { type: 'select' },
@@ -70,5 +70,5 @@ const TemplateAll = (prop: string, values: string[]) => () => defineComponent({
 
 export const Default = Template({})
 export const Themes = TemplateAll('theme', Object.values(NyxTheme))
-export const Styles = TemplateAll('variant', Object.values(NyxButtonVariant))
+export const Styles = TemplateAll('variant', Object.values(NyxStyleVariant))
 export const Sizes = TemplateAll('size', Object.values(NyxSize))

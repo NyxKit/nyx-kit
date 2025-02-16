@@ -1,0 +1,15 @@
+export enum NyxInputType {
+  Text = 'text',
+  Password = 'password',
+  Email = 'email',
+  Number = 'number',
+  Tel = 'tel',
+  Url = 'url',
+  Search = 'search',
+  Date = 'date',
+  Time = 'time',
+  DateTimeLocal = 'datetime-local',
+  Month = 'month',
+  Week = 'week',
+  Color = 'color',
+}

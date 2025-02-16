@@ -18,7 +18,7 @@ export enum NyxTheme {
   Info = 'info'
 }
 
-export enum NyxButtonVariant {
+export enum NyxStyleVariant {
   Solid = 'solid',
   Outline = 'outline',
   Ghost = 'ghost',
