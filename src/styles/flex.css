@@ -1,5 +1,12 @@
-.flex {
+[class^='flex'] {
   display: flex;
   gap: 0.5rem;
+}
+
+.flex {
   align-items: center;
+}
+
+.flex-col {
+  flex-direction: column;
 }

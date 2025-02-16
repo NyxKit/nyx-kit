@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import './NyxInput.scss'
 import type { NyxInputProps, NyxInputEmits } from './NyxInput.types'
-import { NyxInputType } from '@/types'
+import { NyxInputType, NyxTheme, NyxStyleVariant, NyxSize } from '@/types'
 
 const props = withDefaults(defineProps<NyxInputProps>(), {
-  type: NyxInputType.Text
+  type: NyxInputType.Text,
+  theme: NyxTheme.Default,
+  variant: NyxStyleVariant.Solid,
+  size: NyxSize.Medium,
 })
 
 const emit = defineEmits<NyxInputEmits>()
