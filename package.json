@@ -13,7 +13,9 @@
     "type-check": "vue-tsc --build",
     "lint:oxlint": "oxlint . --fix -D correctness --ignore-path .gitignore",
     "lint:eslint": "eslint . --fix",
-    "lint": "run-s lint:*"
+    "lint": "run-s lint:*",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "pinia": "^2.3.1",
@@ -21,7 +23,17 @@
     "vue-router": "^4.5.0"
   },
   "devDependencies": {
+    "@chromatic-com/storybook": "3.2.4",
     "@playwright/test": "^1.50.1",
+    "@storybook/addon-docs": "^8.5.6",
+    "@storybook/addon-essentials": "8.5.6",
+    "@storybook/addon-interactions": "8.5.6",
+    "@storybook/addon-onboarding": "8.5.6",
+    "@storybook/blocks": "8.5.6",
+    "@storybook/cli": "^8.5.6",
+    "@storybook/test": "8.5.6",
+    "@storybook/vue3": "8.5.6",
+    "@storybook/vue3-vite": "8.5.6",
     "@tsconfig/node22": "^22.0.0",
     "@types/jsdom": "^21.1.7",
     "@types/node": "^22.13.1",
@@ -33,15 +45,26 @@
     "eslint": "^9.18.0",
     "eslint-plugin-oxlint": "^0.15.6",
     "eslint-plugin-playwright": "^2.2.0",
+    "eslint-plugin-storybook": "^0.11.3",
     "eslint-plugin-vue": "^9.32.0",
     "jiti": "^2.4.2",
     "jsdom": "^26.0.0",
     "npm-run-all2": "^7.0.2",
     "oxlint": "^0.15.6",
+    "sass": "^1.85.0",
+    "storybook": "8.5.6",
     "typescript": "~5.7.3",
     "vite": "^6.0.11",
     "vite-plugin-vue-devtools": "^7.7.1",
     "vitest": "^3.0.5",
     "vue-tsc": "^2.2.0"
+  },
+  "eslintConfig": {
+    "extends": [
+      "plugin:storybook/recommended",
+      "plugin:storybook/recommended",
+      "plugin:storybook/recommended",
+      "plugin:storybook/recommended"
+    ]
   }
 }

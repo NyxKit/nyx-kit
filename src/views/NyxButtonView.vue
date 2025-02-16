@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { NyxButton } from '@/components'
 
 </script>
 
 <template>
   <main>
-    <NyxButton>Click me</NyxButton>
+    <h1>NyxButton</h1>
+    <section>
+
+    </section>
   </main>
 </template>

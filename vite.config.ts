@@ -6,6 +6,9 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig({
+  server: {
+    port: 9000
+  },
   plugins: [
     vue(),
     vueDevTools(),
@@ -13,6 +16,14 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
+    },
+  },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: 'modern'
+        // additionalData: `@use "@/styles/index.scss";`
+      },
     },
   },
 })

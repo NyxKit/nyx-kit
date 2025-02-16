@@ -1,0 +1,261 @@
+/**
+ * Colors Base
+ *
+ * These are the pure base color presets. Most of the time, you should not be
+ * using these colors directly in the theme but rather use "Colors Theme"
+ * instead because those are "Theme (light or dark)" dependant.
+ * -------------------------------------------------------------------------- */
+
+ :root {
+  --nyx-c-white: #ffffff;
+  --nyx-c-white-soft: #f9f9f9;
+  --nyx-c-white-mute: #f1f1f1;
+
+  --nyx-c-black: #1a1a1a;
+  --nyx-c-black-pure: #000000;
+  --nyx-c-black-soft: #242424;
+  --nyx-c-black-mute: #2f2f2f;
+
+  --nyx-c-indigo: #213547;
+  --nyx-c-indigo-soft: #476582;
+  --nyx-c-indigo-light: #aac8e4;
+
+  --nyx-c-gray: #8e8e8e;
+  --nyx-c-gray-light-1: #aeaeae;
+  --nyx-c-gray-light-2: #c7c7c7;
+  --nyx-c-gray-light-3: #d1d1d1;
+  --nyx-c-gray-light-4: #e5e5e5;
+  --nyx-c-gray-light-5: #f2f2f2;
+  --nyx-c-gray-dark-1: #636363;
+  --nyx-c-gray-dark-2: #484848;
+  --nyx-c-gray-dark-3: #3a3a3a;
+  --nyx-c-gray-dark-4: #282828;
+  --nyx-c-gray-dark-5: #202020;
+
+  --nyx-c-divider-light-1: rgba(60, 60, 60, 0.29);
+  --nyx-c-divider-light-2: rgba(60, 60, 60, 0.12);
+  --nyx-c-divider-dark-1: rgba(84, 84, 84, 0.65);
+  --nyx-c-divider-dark-2: rgba(84, 84, 84, 0.48);
+
+  --nyx-c-text-light-1: var(--nyx-c-indigo);
+  --nyx-c-text-light-2: rgba(60, 60, 60, 0.70);
+  --nyx-c-text-light-3: rgba(60, 60, 60, 0.33);
+  --nyx-c-text-light-4: rgba(60, 60, 60, 0.18);
+  --nyx-c-text-light-code: var(--nyx-c-indigo-soft);
+
+  --nyx-c-text-dark-1: rgba(255, 255, 255, 0.87);
+  --nyx-c-text-dark-2: rgba(235, 235, 235, 0.60);
+  --nyx-c-text-dark-3: rgba(235, 235, 235, 0.38);
+  --nyx-c-text-dark-4: rgba(235, 235, 235, 0.18);
+  --nyx-c-text-dark-code: var(--nyx-c-indigo-light);
+
+  --nyx-c-green: #42b883;
+  --nyx-c-green-light: #42d392;
+  --nyx-c-green-lighter: #35eb9a;
+  --nyx-c-green-dark: #33a06f;
+  --nyx-c-green-darker: #155f3e;
+
+  --nyx-c-blue: #3b8eed;
+  --nyx-c-blue-light: #549ced;
+  --nyx-c-blue-lighter: #50a2ff;
+  --nyx-c-blue-dark: #3468a3;
+  --nyx-c-blue-darker: #255489;
+
+  --nyx-c-yellow: #ffc517;
+  --nyx-c-yellow-light: #ffe417;
+  --nyx-c-yellow-lighter: #ffff17;
+  --nyx-c-yellow-dark: #e0ad15;
+  --nyx-c-yellow-darker: #bc9112;
+
+  --nyx-c-red: #ed3c50;
+  --nyx-c-red-light: #f43771;
+  --nyx-c-red-lighter: #fd1d7c;
+  --nyx-c-red-dark: #cd2d3f;
+  --nyx-c-red-darker: #ab2131;
+
+  --nyx-c-purple: #de41e0;
+  --nyx-c-purple-light: #e936eb;
+  --nyx-c-purple-lighter: #f616f8;
+  --nyx-c-purple-dark: #823c83;
+  --nyx-c-purple-darker: #602960;
+}
+
+/**
+ * Colors Theme
+ * -------------------------------------------------------------------------- */
+
+:root {
+  --nyx-c-bg: var(--nyx-c-white);
+  --nyx-c-bg-soft: var(--nyx-c-white-soft);
+  --nyx-c-bg-mute: var(--nyx-c-white-mute);
+
+  --nyx-c-divider: var(--nyx-c-divider-light-1);
+  --nyx-c-divider-light: var(--nyx-c-divider-light-2);
+
+  --nyx-c-divider-inverse: var(--nyx-c-divider-dark-1);
+  --nyx-c-divider-inverse-light: var(--nyx-c-divider-dark-2);
+
+  --nyx-c-text-1: var(--nyx-c-text-light-1);
+  --nyx-c-text-2: var(--nyx-c-text-light-2);
+  --nyx-c-text-3: var(--nyx-c-text-light-3);
+  --nyx-c-text-4: var(--nyx-c-text-light-4);
+  --nyx-c-text-code: var(--nyx-c-text-light-code);
+
+  --nyx-c-text-inverse-1: var(--nyx-c-text-dark-1);
+  --nyx-c-text-inverse-2: var(--nyx-c-text-dark-2);
+  --nyx-c-text-inverse-3: var(--nyx-c-text-dark-3);
+  --nyx-c-text-inverse-4: var(--nyx-c-text-dark-4);
+
+  --nyx-c-primary: var(--nyx-c-purple-dark);
+  --nyx-c-primary-light: var(--nyx-c-purple);
+  --nyx-c-primary-dark: var(--nyx-c-purple-darker);
+  --nyx-c-primary-highlight: var(--nyx-c-primary-dark);
+
+  --nyx-c-secondary: var(--nyx-c-purple-light);
+  --nyx-c-secondary-light: var(--nyx-c-purple-lighter);
+  --nyx-c-secondary-dark: var(--nyx-c-purple);
+  --nyx-c-secondary-highlight: var(--nyx-c-secondary-dark);
+
+  --nyx-c-default: var(--nyx-c-primary);
+  --nyx-c-default-light: var(--nyx-c-primary-light);
+  --nyx-c-default-dark: var(--nyx-c-primary-dark);
+  --nyx-c-default-highlight: var(--nyx-c-default-dark);
+
+  --nyx-c-info: var(--nyx-c-gray);
+  --nyx-c-info-light: var(--nyx-c-gray-light-1);
+  --nyx-c-info-dark: var(--nyx-c-gray-dark-1);
+  --nyx-c-info-highlight: var(--nyx-c-info-dark);
+
+  --nyx-c-success: var(--nyx-c-green);
+  --nyx-c-success-light: var(--nyx-c-green-light);
+  --nyx-c-success-dark: var(--nyx-c-green-dark);
+  --nyx-c-success-highlight: var(--nyx-c-success-dark);
+
+  --nyx-c-warning: var(--nyx-c-yellow);
+  --nyx-c-warning-light: var(--nyx-c-yellow-light);
+  --nyx-c-warning-dark: var(--nyx-c-yellow-dark);
+  --nyx-c-warning-highlight: var(--nyx-c-warning-dark);
+
+  --nyx-c-danger: var(--nyx-c-red);
+  --nyx-c-danger-light: var(--nyx-c-red-light);
+  --nyx-c-danger-dark: var(--nyx-c-red-dark);
+  --nyx-c-danger-highlight: var(--nyx-c-danger-dark);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --nyx-c-bg: var(--nyx-c-black);
+    --nyx-c-bg-soft: var(--nyx-c-black-soft);
+    --nyx-c-bg-mute: var(--nyx-c-black-mute);
+
+    --nyx-c-divider: var(--nyx-c-divider-dark-1);
+    --nyx-c-divider-light: var(--nyx-c-divider-dark-2);
+
+    --nyx-c-divider-inverse: var(--nyx-c-divider-light-1);
+    --nyx-c-divider-inverse-light: var(--nyx-c-divider-light-2);
+
+    --nyx-c-text-1: var(--nyx-c-text-dark-1);
+    --nyx-c-text-2: var(--nyx-c-text-dark-2);
+    --nyx-c-text-3: var(--nyx-c-text-dark-3);
+    --nyx-c-text-4: var(--nyx-c-text-dark-4);
+    --nyx-c-text-code: var(--nyx-c-text-dark-code);
+
+    --nyx-c-text-inverse-1: var(--nyx-c-text-light-1);
+    --nyx-c-text-inverse-2: var(--nyx-c-text-light-2);
+    --nyx-c-text-inverse-3: var(--nyx-c-text-light-3);
+    --nyx-c-text-inverse-4: var(--nyx-c-text-light-4);
+
+    --nyx-c-primary-highlight: var(--nyx-c-primary-light);
+    --nyx-c-secondary-highlight: var(--nyx-c-secondary-light);
+    --nyx-c-default-highlight: var(--nyx-c-default-light);
+    --nyx-c-info-highlight: var(--nyx-c-info-light);
+    --nyx-c-success-highlight: var(--nyx-c-success-light);
+    --nyx-c-warning-highlight: var(--nyx-c-warning-light);
+    --nyx-c-danger-highlight: var(--nyx-c-danger-light);
+  }
+}
+
+/**
+ * Typography
+ * -------------------------------------------------------------------------- */
+
+:root {
+  --nyx-font-family-base: 'Inter var experimental', 'Inter var', Inter,
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+    Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  /**
+    * See <https://haoqun.blog/posts/2024/blogged-pull-requests-monospace/>
+    * for more details on the font selection
+    */
+  --nyx-font-family-mono: ui-monospace, 'SF Mono', 'SFMono-Regular', Menlo,
+    Monaco, 'Cascadia Mono', Consolas, 'Liberation Mono', 'Noto Sans Mono',
+    'DejaVu Sans Mono', 'Roboto Mono', 'Courier New', monospace;
+}
+
+/**
+ * Shadows
+ * -------------------------------------------------------------------------- */
+
+:root {
+  --nyx-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --nyx-shadow-sm: 0 3px 12px rgba(0, 0, 0, 0.07), 0 1px 4px rgba(0, 0, 0, 0.07);
+  --nyx-shadow-md: 0 12px 32px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.08);
+  --nyx-shadow-lg: 0 14px 44px rgba(0, 0, 0, 0.12), 0 3px 9px rgba(0, 0, 0, 0.12);
+  --nyx-shadow-xl: 0 18px 56px rgba(0, 0, 0, 0.16), 0 4px 12px rgba(0, 0, 0, 0.16);
+}
+
+/**
+ * Gaps
+ * -------------------------------------------------------------------------- */
+
+ :root {
+  --nyx-gap-xs: 0.1rem;
+  --nyx-gap-sm: 0.25rem;
+  --nyx-gap-md: 0.5rem;
+  --nyx-gap-lg: 0.75rem;
+  --nyx-gap-xl: 1rem;
+}
+
+/**
+ * Radius
+ * -------------------------------------------------------------------------- */
+
+ :root {
+  --nyx-radius-xs: 0.1rem;
+  --nyx-radius-sm: 0.25rem;
+  --nyx-radius-md: 0.5rem;
+  --nyx-radius-lg: 0.75rem;
+  --nyx-radius-xl: 1rem;
+}
+
+/**
+ * Padding
+ * -------------------------------------------------------------------------- */
+
+ :root {
+  --nyx-pad-xs: 0.7rem;
+  --nyx-pad-sm: 0.8rem;
+  --nyx-pad-md: 0.9rem;
+  --nyx-pad-lg: 1rem;
+  --nyx-pad-xl: 1.1rem;
+}
+
+/**
+ * Font Sizes
+ * -------------------------------------------------------------------------- */
+
+ :root {
+  --nyx-font-size-xs: 0.7rem;
+  --nyx-font-size-sm: 0.8rem;
+  --nyx-font-size-md: 0.9rem;
+  --nyx-font-size-lg: 1rem;
+  --nyx-font-size-xl: 1.1rem;
+}
+
+/**
+ * Magic Numbers
+ * -------------------------------------------------------------------------- */
+
+:root {
+  --nyx-nav-height: 55px;
+}

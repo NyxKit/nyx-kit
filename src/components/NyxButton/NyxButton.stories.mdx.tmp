@@ -1,0 +1,28 @@
+import { Meta, Story, Canvas } from '@storybook/addon-docs'
+import { NyxButton } from './NyxButton.vue'
+
+<Meta title="Components/NyxButton" component={NyxButton} />
+
+# NyxButton
+
+A button component with customizable themes, sizes, and styles.
+
+## Usage
+
+```vue
+<NyxButton theme="primary" size="lg">Click me</NyxButton>
+```
+
+## Props
+
+- `type`: The type of the button. Can be `button`, `submit`, or `reset`. Default is `button`.
+- `theme`: The theme of the button. Can be `primary`, `secondary`, `success`, `danger`, `warning` or `info`. Default is `default`.
+- `size`: The size of the button. Can be `xs`, `sm`, `md`, `lg`, or `xl`. Default is `md`.
+
+## stories
+
+<Canvas>
+  <Story name="Default">
+    <NyxButton>Click me</NyxButton>
+  </Story>
+</Canvas>
