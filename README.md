@@ -19,9 +19,7 @@ Nyx Kit is currently in early development, with foundational components and util
 ## Todo
 - `NyxCard`: A container component for displaying grouped content with optional headers, footers, or images.
 - `NyxCheckbox`: A styled checkbox for user input, which can be enhanced with features like toggles or custom labels.
-- `NyxSwitch`: A toggle switch that can represent binary options (like on/off).
 - `NyxTooltip`: A small popup that provides additional information when the user hovers over an element.
-- `NyxAvatar`: A simple component for displaying user images or initials.
 - `NyxBreadcrumbs`: For showing navigation paths or hierarchies, useful for multi-level interfaces.
 - `NyxSpinner`: A loading indicator to display while content is being loaded or processed.
 - `NyxBadge`: A small component for displaying status labels or notifications.
