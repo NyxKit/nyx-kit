@@ -1,0 +1,29 @@
+.nyx-avatar {
+  --nyx-c-avatar: var(--nyx-c-primary);
+  --nyx-font-size-avatar-base: var(--nyx-font-size-md);
+  --nyx-font-size-avatar: calc(5 * var(--nyx-font-size-avatar-base));
+  --nyx-w-avatar: calc(2 * var(--nyx-font-size-avatar));
+  --nyx-h-avatar: var(--nyx-w-avatar);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  &__image {
+    width: var(--nyx-w-avatar);
+    height: var(--nyx-h-avatar);
+    border-radius: var(--nyx-radius-max);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    object-fit: cover;
+    background-color: var(--nyx-c-avatar);
+    font-size: var(--nyx-font-size-avatar);
+    line-height: 1;
+    letter-spacing: 1.2;
+  }
+}

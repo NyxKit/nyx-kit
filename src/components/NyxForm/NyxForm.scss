@@ -1,18 +1,42 @@
 .nyx-form {
+  --nyx-pad-base: var(--nyx-pad-md);
+  --nyx-pad-label: calc(0.5 * var(--nyx-pad-base));
+  --nyx-h-form-field-base: var(--nyx-pad-base);
+  --nyx-h-form-field: calc(2.5 * var(--nyx-h-form-field-base));
+
   display: flex;
   flex-direction: column;
   gap: var(--nyx-gap-md);
+
+  &.size-xs .nyx-form-field {
+    --nyx-pad-base: var(--nyx-pad-xs);
+  }
+
+  &.size-sm .nyx-form-field {
+    --nyx-pad-base: var(--nyx-pad-sm);
+  }
+
+  &.size-lg .nyx-form-field {
+    --nyx-pad-base: var(--nyx-pad-lg);
+  }
+
+  &.size-xl .nyx-form-field {
+    --nyx-pad-base: var(--nyx-pad-xl);
+  }
 }
 
 .nyx-form-field {
   display: flex;
+  align-items: center;
   gap: var(--nyx-gap-md);
 
   &__label {
-    flex: 1;
+    flex: 0 0 8rem;
+    user-select: none;
+    padding: var(--nyx-pad-label);
   }
 
   &__label + * {
-    flex: 3;
+    flex: 1 1 auto;
   }
 }

@@ -7,7 +7,8 @@ export interface NyxSelectProps {
   size?: NyxSize,
   disabled?: boolean,
   placeholder?: string,
-  options: NyxSelectOption[]
+  options: NyxSelectOption[],
+  id?: string
 }
 
 export interface NyxSelectEmits {

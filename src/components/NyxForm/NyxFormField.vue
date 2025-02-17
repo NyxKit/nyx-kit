@@ -8,7 +8,11 @@ const id = `nyx-form-field-${ generateRandomString(16) }`
 
 <template>
   <div class="nyx-form-field">
-    <label v-if="props.label" :for="id" class="nyx-form-field__label">{{ label }}</label>
-    <slot :id="id"></slot>
+    <label
+      v-if="props.label"
+      :for="id"
+      class="nyx-form-field__label"
+    >{{ label }}</label>
+    <slot :id="id">NyxFormField</slot>
   </div>
 </template>

@@ -79,6 +79,6 @@ const TemplateAll = () => () => defineComponent({
 
 export const Default = Template({})
 export const Themes = TemplateAllProp('theme',  NyxTheme)
-export const Styles = TemplateAllProp('variant', NyxStyleVariant)
+export const Variants = TemplateAllProp('variant', NyxStyleVariant)
 export const Sizes = TemplateAllProp('size', NyxSize)
 export const All = TemplateAll()

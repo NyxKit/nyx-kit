@@ -14,6 +14,7 @@ export interface NyxInputProps {
   minlength?: number,
   maxlength?: number,
   pattern?: string,
+  id?: string
 }
 
 export interface NyxInputEmits {

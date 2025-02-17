@@ -1,0 +1,87 @@
+.nyx-switch {
+  --nyx-c-switch-on: var(--nyx-c-default);
+  --nyx-c-switch-off: var(--nyx-c-text-2);
+  --nyx-c-switch-knob-on: var(--nyx-c-default-alt);
+  --nyx-c-switch-knob-off: var(--nyx-c-text-2);
+  --nyx-pad-switch: var(--nyx-c-pad-md);
+  --nyx-w-switch-knob: 1.5rem;
+  --nyx-w-switch: calc(var(--nyx-w-switch-knob) * 2);
+
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  max-width: var(--nyx-w-switch);
+  min-width: var(--nyx-w-switch);
+  width: var(--nyx-w-switch);
+  background-color: var(--nyx-c-switch-off);
+  border-radius: var(--nyx-radius-xl);
+  margin: var(--nyx-pad-switch) calc(var(--nyx-pad-switch) * 2);
+  transition: background-color 0.3s;
+
+  &--on {
+    background-color: var(--nyx-c-switch-on);
+  }
+
+  &__hidden {
+    display: none;
+  }
+
+  &__knob {
+    width: var(--nyx-w-switch-knob);
+    height: var(--nyx-w-switch-knob);
+    background-color: var(--nyx-c-switch-knob-off);
+    border-radius: 50%;
+    transition: transform 0.3s, background-color 0.3s;
+  }
+
+  &--on &__knob {
+    background-color: var(--nyx-c-switch-knob-on);
+    transform: translateX(var(--nyx-w-switch-knob));
+  }
+
+  &.theme-primary {
+    --nyx-c-switch-on: var(--nyx-c-primary);
+    --nyx-c-switch-knob-on: var(--nyx-c-primary-alt);
+  }
+
+  &.theme-secondary {
+    --nyx-c-switch-on: var(--nyx-c-secondary);
+    --nyx-c-switch-knob-on: var(--nyx-c-secondary-alt);
+  }
+
+  &.theme-info {
+    --nyx-c-switch-on: var(--nyx-c-info);
+    --nyx-c-switch-knob-on: var(--nyx-c-info-alt);
+  }
+
+  &.theme-success {
+    --nyx-c-switch-on: var(--nyx-c-success);
+    --nyx-c-switch-knob-on: var(--nyx-c-success-alt);
+  }
+
+  &.theme-warning {
+    --nyx-c-switch-on: var(--nyx-c-warning);
+    --nyx-c-switch-knob-on: var(--nyx-c-warning-alt);
+  }
+
+  &.theme-danger {
+    --nyx-c-switch-on: var(--nyx-c-danger);
+    --nyx-c-switch-knob-on: var(--nyx-c-danger-alt);
+  }
+
+  &.size-xs {
+    --nyx-w-switch-knob: 1rem;
+  }
+
+  &.size-sm {
+    --nyx-w-switch-knob: 1.25rem;
+  }
+
+  &.size-lg {
+    --nyx-w-switch-knob: 1.75rem;
+  }
+
+  &.size-xl {
+    --nyx-w-switch-knob: 2rem;
+  }
+}

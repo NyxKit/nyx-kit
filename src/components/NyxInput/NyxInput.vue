@@ -7,7 +7,7 @@ const props = withDefaults(defineProps<NyxInputProps>(), {
   type: NyxInputType.Text,
   theme: NyxTheme.Default,
   variant: NyxStyleVariant.Outline,
-  size: NyxSize.Medium,
+  size: NyxSize.Medium
 })
 
 const emit = defineEmits<NyxInputEmits>()
@@ -32,6 +32,7 @@ const model = defineModel<string>()
       :required="props.required"
       :autocomplete="props.autocomplete"
       :autofocus="props.autofocus"
+      :id="id"
       v-model="model"
       @click="emit('click')"
       @focus="emit('focus')"

@@ -24,3 +24,9 @@ export enum NyxStyleVariant {
   Ghost = 'ghost',
   Text = 'text'
 }
+
+export enum NyxMediaType {
+  Image = 'image',
+  Video = 'video',
+  Audio = 'audio'
+}

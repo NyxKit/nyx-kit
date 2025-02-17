@@ -1,0 +1,17 @@
+.nyx-media {
+  display: flex;
+  margin: 0;
+  position: relative;
+
+  figcaption {
+    margin-top: 8px;
+    font-size: 14px;
+    color: var(--nyx-c-text-1);
+  }
+
+  img, video, audio {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+  }
+}

@@ -1,19 +1,15 @@
 import { defineComponent } from 'vue'
-import NyxInput from './NyxInput.vue'
-import { NyxTheme, NyxStyleVariant, NyxSize, NyxInputType, type KeyDict } from '@/types'
-import type { NyxInputProps } from './NyxInput.types'
+import NyxSwitch from './NyxSwitch.vue'
+import { NyxTheme, NyxStyleVariant, NyxSize, type KeyDict } from '@/types'
+import type { NyxSwitchProps } from './NyxSwitch.types'
 import { getKeyDictKeyByValue } from '@/utils'
 import NyxForm from '../NyxForm/NyxForm.vue'
 import NyxFormField from '../NyxForm/NyxFormField.vue'
 
 export default {
-  title: 'Components/NyxInput',
-  component: NyxInput,
+  title: 'Components/NyxSwitch',
+  component: NyxSwitch,
   argTypes: {
-    type: {
-      control: { type: 'select' },
-      options: Object.values(NyxInputType),
-    },
     theme: {
       control: { type: 'select' },
       options: Object.values(NyxTheme),
@@ -29,18 +25,18 @@ export default {
   },
 }
 
-const Template = (args: NyxInputProps) => defineComponent({
-  components: { NyxInput },
+const Template = (args: NyxSwitchProps) => defineComponent({
+  components: { NyxSwitch },
   setup () {
     return { args }
   },
   template: `
-    <nyx-input v-bind="args" :placeholder="'NyxInput'" />
+    <nyx-switch v-bind="args" />
   `,
 })
 
 const TemplateAll = (prop: string, dict: KeyDict<string>) => () => defineComponent({
-  components: { NyxInput, NyxForm, NyxFormField },
+  components: { NyxForm, NyxFormField, NyxSwitch },
   setup () {
     const values = Object.values(dict)
     const getLabel = (value: string) => getKeyDictKeyByValue(dict, value)
@@ -50,11 +46,7 @@ const TemplateAll = (prop: string, dict: KeyDict<string>) => () => defineCompone
     <nyx-form>
       <nyx-form-field v-for="value of values" :key="value" :label="getLabel(value)">
         <template #default="{ id }">
-          <nyx-input
-            v-bind="{ [prop]: value }"
-            :placeholder="getLabel(value)"
-            :id="id"
-          />
+          <nyx-switch v-bind="{ [prop]: value }" :id="id" />
         </template>
       </nyx-form-field>
     </nyx-form>
@@ -62,7 +54,5 @@ const TemplateAll = (prop: string, dict: KeyDict<string>) => () => defineCompone
 })
 
 export const Default = Template({})
-export const Types = TemplateAll('type', NyxInputType)
 export const Themes = TemplateAll('theme', NyxTheme)
-export const Variants = TemplateAll('variant', NyxStyleVariant)
 export const Sizes = TemplateAll('size', NyxSize)

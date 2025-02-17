@@ -87,7 +87,7 @@ const selectOption = (value: string) => {
       </ul>
     </Teleport>
 
-    <select v-model="model" class="nyx-select__hidden">
+    <select v-model="model" class="nyx-select__hidden" :id="props.id">
       <option
         v-for="option in props.options"
         :value="option.value"
