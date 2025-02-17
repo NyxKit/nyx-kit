@@ -61,17 +61,21 @@ const TemplateAll = () => () => defineComponent({
   setup () {
     const themes = Object.values(NyxTheme)
     const variants = Object.values(NyxStyleVariant)
-    return { themes, variants }
+    const sizes = Object.values(NyxSize)
+    return { themes, variants, sizes }
   },
   template: `
     <div class="flex-col">
-      <div class="flex" v-for="variant of variants">
-        <nyx-button
-          v-for="theme of themes"
-          :key="value"
-          :variant="variant"
-          :theme="theme"
-        >Click me</nyx-button>
+      <div class="flex-col" v-for="size of sizes" style="margin-bottom: 2rem">
+        <div class="flex" v-for="variant of variants">
+          <nyx-button
+            v-for="theme of themes"
+            :key="value"
+            :variant="variant"
+            :theme="theme"
+            :size="size"
+          >Click me</nyx-button>
+        </div>
       </div>
     </div>
   `,
