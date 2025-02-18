@@ -73,7 +73,7 @@ const TemplateAll = (prop: string, dict: KeyDict<string>) => () => defineCompone
         <template #actions="{ item }">
           <nyx-button
             :variant="prop === 'variant' ? value : NyxStyleVariant.Solid"
-            :size="prop === 'size' ? value : NyxSize.Xsmall"
+            :size="prop === 'size' ? value : NyxSize.XSmall"
             :theme="prop === 'theme' ? value : NyxTheme.Danger"
           >{{ getLabel(value) }}</nyx-button>
         </template>
