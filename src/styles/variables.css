@@ -1,3 +1,14 @@
+/* @font-face {
+  font-family: 'Dosis';
+  src: url(dosis.woff2) format('woff2');
+  font-stretch: PERCENTAGE_RANGE_LOW_TO_HIGH;
+  font-style: NORMAL_OR_ITALIC; See note below
+  font-weight: NUMERIC_RANGE_LOW_TO_HIGH;
+} */
+
+/* @import url('https://fonts.googleapis.com/css2?family=Dosis:wght@200..800&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+
 /**
  * Colors Base
  *
@@ -5,6 +16,8 @@
  * using these colors directly in the theme but rather use "Colors Theme"
  * instead because those are "Theme (light or dark)" dependant.
  * -------------------------------------------------------------------------- */
+
+ /* https://colormagic.app/palette/67a9eedf079f8ec4becb2836 */
 
  :root {
   --nyx-c-white: #ffffff;
@@ -172,7 +185,7 @@
  * -------------------------------------------------------------------------- */
 
 :root {
-  --nyx-font-family-base: 'Inter var experimental', 'Inter var', Inter,
+  --nyx-font-family-base: 'Nunito', 'Inter var experimental', 'Inter var', Inter,
     -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
     Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   /**

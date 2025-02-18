@@ -24,6 +24,10 @@ export default {
       control: { type: 'select' },
       options: Object.values(NyxSize),
     },
+    shape: {
+      control: { type: 'select' },
+      options: Object.values(NyxShape),
+    },
     onClick: { action: 'click' },
   },
 }

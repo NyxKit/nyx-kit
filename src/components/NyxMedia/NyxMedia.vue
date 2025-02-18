@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import { defineProps, computed } from 'vue'
 import type { NyxMediaProps } from './NyxMedia.types'
-import { NyxMediaType } from '@/types'
+import { NyxMediaType, NyxShape } from '@/types'
 
 const props = withDefaults(defineProps<NyxMediaProps>(), {
   type: NyxMediaType.Image,
+  shape: NyxShape.Rectangle,
   loading: 'lazy'
 })
 
 </script>
 
 <template>
-  <figure class="nyx-media">
+  <figure class="nyx-media" :class="`shape-${props.shape}`">
     <img
       v-if="props.type === NyxMediaType.Image"
       :src="props.src"

@@ -1,11 +1,15 @@
 .nyx-media {
+  --nyx-w-media: auto;
+  --nyx-font-size-media: var(--nyx-font-size-md);
+
   display: flex;
   margin: 0;
   position: relative;
+  width: 100%;
 
   figcaption {
-    margin-top: 8px;
-    font-size: 14px;
+    margin-top: calc(var(--nyx-font-size-media) * 0.5);
+    font-size: var(--nyx-font-size-media);
     color: var(--nyx-c-text-1);
   }
 
@@ -13,5 +17,34 @@
     width: 100%;
     max-width: 100%;
     height: auto;
+  }
+
+  &.size-xs {
+    --nyx-font-size-media: var(--nyx-font-size-xs);
+  }
+
+  &.size-sm {
+    --nyx-font-size-media: var(--nyx-font-size-sm);
+  }
+
+  &.size-lg {
+    --nyx-font-size-media: var(--nyx-font-size-lg);
+  }
+
+  &.size-xl {
+    --nyx-font-size-media: var(--nyx-font-size-xl);
+  }
+
+  &.shape-circle,
+  &.shape-square {
+    width: var(--nyx-w-media);
+    height: var(--nyx-w-media);
+    overflow: hidden;
+    padding: 0;
+    object-fit: cover;
+  }
+
+  &.shape-circle {
+    border-radius: var(--nyx-radius-max);
   }
 }

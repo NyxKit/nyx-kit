@@ -1,0 +1,89 @@
+.nyx-breadcrumbs {
+  --nyx-c-breadcrumbs-text: var(--nyx-c-default-alt);
+  --nyx-c-breadcrumbs-separator: var(--nyx-c-default);
+  --nyx-font-size-breadcrumbs: var(--nyx-font-size-md);
+  --nyx-pad-breadcrumbs: var(--nyx-pad-md);
+
+  color: var(--nyx-c-breadcrumbs-text);
+  font-size: var(--nyx-font-size-breadcrumbs);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-radius: var(--nyx-radius-md);
+
+  &__separator {
+    color: var(--nyx-c-breadcrumbs-separator);
+    fill: var(--nyx-c-breadcrumbs-separator);
+    user-select: none;
+    opacity: 0.5;
+  }
+
+  a {
+    padding: calc(var(--nyx-pad-breadcrumbs) * 0.5) var(--nyx-pad-breadcrumbs);
+    transition: opacity 0.2s;
+
+    &:not([href]) {
+      pointer-events: none;
+    }
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  &.variant-solid {
+    background-color: var(--nyx-c-breadcrumbs-separator);
+    color: var(--nyx-c-text-1);
+  }
+
+  &.variant-solid &__separator {
+    color: var(--nyx-c-text-1);
+    fill: var(--nyx-c-text-1);
+  }
+
+  &.theme-primary {
+    --nyx-c-breadcrumbs-text: var(--nyx-c-primary-alt);
+    --nyx-c-breadcrumbs-separator: var(--nyx-c-primary);
+  }
+
+  &.theme-secondary {
+    --nyx-c-breadcrumbs-text: var(--nyx-c-secondary-alt);
+    --nyx-c-breadcrumbs-separator: var(--nyx-c-secondary);
+  }
+
+  &.theme-success {
+    --nyx-c-breadcrumbs-text: var(--nyx-c-success-alt);
+    --nyx-c-breadcrumbs-separator: var(--nyx-c-success);
+  }
+
+  &.theme-warning {
+    --nyx-c-breadcrumbs-text: var(--nyx-c-warning-alt);
+    --nyx-c-breadcrumbs-separator: var(--nyx-c-warning);
+  }
+
+  &.theme-danger {
+    --nyx-c-breadcrumbs-text: var(--nyx-c-danger-alt);
+    --nyx-c-breadcrumbs-separator: var(--nyx-c-danger);
+  }
+
+  &.theme-info {
+    --nyx-c-breadcrumbs-text: var(--nyx-c-info-alt);
+    --nyx-c-breadcrumbs-separator: var(--nyx-c-info);
+  }
+
+  &.size-xs {
+    --nyx-font-size-breadcrumbs: var(--nyx-font-size-xs);
+  }
+
+  &.size-sm {
+    --nyx-font-size-breadcrumbs: var(--nyx-font-size-sm);
+  }
+
+  &.size-lg {
+    --nyx-font-size-breadcrumbs: var(--nyx-font-size-lg);
+  }
+
+  &.size-xl {
+    --nyx-font-size-breadcrumbs: var(--nyx-font-size-xl);
+  }
+}

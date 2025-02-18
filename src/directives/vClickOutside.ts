@@ -5,26 +5,25 @@ interface ClickOutsideElement extends HTMLElement {
 }
 
 const vClickOutside: ObjectDirective = {
-  beforeMount(el: ClickOutsideElement, binding: DirectiveBinding<(event: Event) => void>) {
+  beforeMount (el: ClickOutsideElement, binding: DirectiveBinding<(event: Event) => void>) {
     const handler = (event: Event) => {
       if (!el.contains(event.target as Node) && typeof binding.value === 'function') {
         binding.value(event)
       }
     }
 
-    // Use el.ownerDocument instead of global document
+    // Use el.ownerDocument instead of global document for Storybook
     const doc = el.ownerDocument || document
     el.__clickOutsideHandler__ = handler
     doc.addEventListener('click', handler, binding.modifiers.capture)
   },
 
-  beforeUnmount(el: ClickOutsideElement, binding: DirectiveBinding) {
-    if (el.__clickOutsideHandler__) {
-      const doc = el.ownerDocument || document
-      doc.removeEventListener('click', el.__clickOutsideHandler__, binding.modifiers.capture)
-      delete el.__clickOutsideHandler__
-    }
-  },
+  beforeUnmount (el: ClickOutsideElement, binding: DirectiveBinding) {
+    if (!el.__clickOutsideHandler__) return
+    const doc = el.ownerDocument || document
+    doc.removeEventListener('click', el.__clickOutsideHandler__, binding.modifiers.capture)
+    delete el.__clickOutsideHandler__
+  }
 }
 
 export default vClickOutside

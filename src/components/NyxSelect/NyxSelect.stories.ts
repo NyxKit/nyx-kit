@@ -67,7 +67,7 @@ const TemplateAll = (prop: string, dict: KeyDict<string>) => () => defineCompone
   `,
 })
 
-export const Default = Template({})
+export const Default = Template({ options })
 export const Types = TemplateAll('type', NyxSelectType)
 export const Themes = TemplateAll('theme', NyxTheme)
 export const Variants = TemplateAll('variant', NyxVariant)

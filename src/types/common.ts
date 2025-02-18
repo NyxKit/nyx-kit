@@ -36,3 +36,8 @@ export enum NyxMediaType {
   Video = 'video',
   Audio = 'audio'
 }
+
+export interface NyxBreadcrumb {
+  label: string,
+  href?: string
+}

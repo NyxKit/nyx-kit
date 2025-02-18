@@ -20,6 +20,5 @@ Nyx Kit is currently in early development, with foundational components and util
 - `NyxCard`: A container component for displaying grouped content with optional headers, footers, or images.
 - `NyxCheckbox`: A styled checkbox for user input, which can be enhanced with features like toggles or custom labels.
 - `NyxBreadcrumbs`: For showing navigation paths or hierarchies, useful for multi-level interfaces.
-- `NyxBadge`: A small component for displaying status labels or notifications.
 - `NyxDropdown`: A menu for selecting one option from a list.
 - `NyxAccordion`: A collapsible container for displaying content in an expandable/collapsible format.
