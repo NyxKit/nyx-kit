@@ -10,3 +10,7 @@
 .flex-col {
   flex-direction: column;
 }
+
+.gap-xl {
+  gap: 2rem;
+}

@@ -27,12 +27,6 @@ export default {
     size: {
       control: { type: 'select' },
       options: Object.values(NyxSize),
-    },
-    options: {
-      control: {
-        default: options,
-        // disable: true
-      }
     }
   },
   args: {
@@ -73,7 +67,7 @@ const TemplateAll = (prop: string, dict: KeyDict<string>) => () => defineCompone
   `,
 })
 
-export const Default = Template({ options })
+export const Default = Template({})
 export const Types = TemplateAll('type', NyxSelectType)
 export const Themes = TemplateAll('theme', NyxTheme)
 export const Variants = TemplateAll('variant', NyxStyleVariant)
