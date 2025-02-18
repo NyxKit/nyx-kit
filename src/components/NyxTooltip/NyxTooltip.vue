@@ -20,7 +20,7 @@ const slots = defineSlots()
 const elRelative = useTemplateRef<HTMLDivElement>('elTooltip')
 const elAbsolute = useTemplateRef<HTMLDivElement>('elTooltipContent')
 
-const { cssVariables } = useTeleportPosition(elRelative, elAbsolute, {
+const { cssVariables, computedPosition } = useTeleportPosition(elRelative, elAbsolute, {
   position: ref(props.position),
   gap: ref(NyxSize.Medium) // ref(props.size)
 })
@@ -48,12 +48,14 @@ const toggle = () => model.value = !model.value
           `theme-${props.theme}`, `variant-${props.variant}`, `size-${props.size}`,
           { 'nyx-tooltip__content--open': model }
         ]"
-        :data-position="props.position"
+        :data-position="computedPosition"
         :style="cssVariables"
         ref="elTooltipContent"
       >
-        <span v-if="props.text">{{ props.text }}</span>
-        <slot name="tooltip-content" v-else>NyxTooltip</slot>
+        <div class="nyx-tooltip__content-wrapper">
+          <span v-if="props.text">{{ props.text }}</span>
+          <slot name="tooltip-content" v-else>NyxTooltip</slot>
+        </div>
       </div>
     </Teleport>
   </div>

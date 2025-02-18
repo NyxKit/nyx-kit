@@ -11,9 +11,9 @@ export enum NyxPosition {
   BottomCenter = 'bottom-center',
   BottomRight = 'bottom-right',
   // LeftTop = 'left-top',
-  LeftCenter = 'left-center',
+  LeftMiddle = 'left-middle',
   // LeftBottom = 'left-bottom',
   // RightTop = 'right-top',
-  RightCenter = 'right-center',
+  RightMiddle = 'right-middle',
   // RightBottom = 'right-bottom'
 }

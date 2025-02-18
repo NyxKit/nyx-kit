@@ -71,10 +71,10 @@ const useTeleportPosition = (
           return hasSpaceAbove ? pos : NyxPosition.BottomRight
         case NyxPosition.TopCenter:
           return hasSpaceAbove ? pos : NyxPosition.BottomCenter
-        case NyxPosition.LeftCenter:
-          return hasSpaceLeft ? pos : NyxPosition.RightCenter
-        case NyxPosition.RightCenter:
-          return hasSpaceRight ? pos : NyxPosition.LeftCenter
+        case NyxPosition.LeftMiddle:
+          return hasSpaceLeft ? pos : NyxPosition.RightMiddle
+        case NyxPosition.RightMiddle:
+          return hasSpaceRight ? pos : NyxPosition.LeftMiddle
         default:
           return pos
       }
@@ -108,11 +108,11 @@ const useTeleportPosition = (
         computedTop = top - absHeight - gap.value
         computedLeft = left + (relWidth - computedWidth) / 2
         break
-      case NyxPosition.LeftCenter:
+      case NyxPosition.LeftMiddle:
         computedTop = top + (relHeight - absHeight) / 2
         computedLeft = left - absWidth - gap.value
         break
-      case NyxPosition.RightCenter:
+      case NyxPosition.RightMiddle:
         computedTop = top + (relHeight - absHeight) / 2
         computedLeft = right + gap.value
         break
