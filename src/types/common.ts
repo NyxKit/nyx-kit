@@ -25,6 +25,12 @@ export enum NyxVariant {
   Text = 'text'
 }
 
+export enum NyxShape {
+  Rectangle = 'rectangle',
+  Square = 'square',
+  Circle = 'circle',
+}
+
 export enum NyxMediaType {
   Image = 'image',
   Video = 'video',

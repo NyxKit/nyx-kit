@@ -1,6 +1,6 @@
 import { defineComponent } from 'vue'
 import NyxButton from './NyxButton.vue'
-import { NyxTheme, NyxVariant, NyxSize, type KeyDict } from '@/types'
+import { NyxTheme, NyxVariant, NyxSize, type KeyDict, NyxShape } from '@/types'
 import type { NyxButtonProps } from './NyxButton.types'
 import { getKeyDictKeyByValue } from '@/utils'
 
@@ -62,19 +62,23 @@ const TemplateAll = () => () => defineComponent({
     const themes = Object.values(NyxTheme)
     const variants = Object.values(NyxVariant)
     const sizes = Object.values(NyxSize)
-    return { themes, variants, sizes }
+    const shapes = Object.values(NyxShape)
+    return { themes, variants, sizes, shapes }
   },
   template: `
     <div class="flex-col">
-      <div class="flex-col" v-for="size of sizes" style="margin-bottom: 2rem">
-        <div class="flex" v-for="variant of variants">
-          <nyx-button
-            v-for="theme of themes"
-            :key="value"
-            :variant="variant"
-            :theme="theme"
-            :size="size"
-          >Click me</nyx-button>
+      <div class="flex-col" v-for="shape of shapes" style="margin-bottom: 4rem">
+        <div class="flex-col" v-for="size of sizes" style="margin-bottom: 2rem">
+          <div class="flex" v-for="variant of variants">
+            <nyx-button
+              v-for="theme of themes"
+              :key="value"
+              :variant="variant"
+              :theme="theme"
+              :shape="shape"
+              :size="size"
+            >Click me</nyx-button>
+          </div>
         </div>
       </div>
     </div>
@@ -84,5 +88,6 @@ const TemplateAll = () => () => defineComponent({
 export const Default = Template({})
 export const Themes = TemplateAllProp('theme',  NyxTheme)
 export const Variants = TemplateAllProp('variant', NyxVariant)
+export const Shapes = TemplateAllProp('shape', NyxShape)
 export const Sizes = TemplateAllProp('size', NyxSize)
 export const All = TemplateAll()
