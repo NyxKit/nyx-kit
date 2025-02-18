@@ -1,6 +1,6 @@
 import { defineComponent } from 'vue'
 import NyxSwitch from './NyxSwitch.vue'
-import { NyxTheme, NyxStyleVariant, NyxSize, type KeyDict } from '@/types'
+import { NyxTheme, NyxVariant, NyxSize, type KeyDict } from '@/types'
 import type { NyxSwitchProps } from './NyxSwitch.types'
 import { getKeyDictKeyByValue } from '@/utils'
 import NyxForm from '../NyxForm/NyxForm.vue'
@@ -16,7 +16,7 @@ export default {
     },
     variant: {
       control: { type: 'select' },
-      options: Object.values(NyxStyleVariant),
+      options: Object.values(NyxVariant),
     },
     size: {
       control: { type: 'select' },

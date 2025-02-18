@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, useTemplateRef } from 'vue'
-import { NyxSelectType, NyxSize, NyxStyleVariant, NyxTheme } from '@/types'
+import { NyxSelectType, NyxSize, NyxVariant, NyxTheme } from '@/types'
 import './NyxSelect.scss'
 import type { NyxSelectEmits, NyxSelectProps } from './NyxSelect.types'
 import { useTeleportPosition } from '@/compositions';
@@ -8,7 +8,7 @@ import { useTeleportPosition } from '@/compositions';
 const props = withDefaults(defineProps<NyxSelectProps>(), {
   type: NyxSelectType.Single,
   theme: NyxTheme.Default,
-  variant: NyxStyleVariant.Outline,
+  variant: NyxVariant.Outline,
   size: NyxSize.Medium,
 })
 

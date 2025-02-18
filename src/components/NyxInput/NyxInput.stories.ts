@@ -1,6 +1,6 @@
 import { defineComponent } from 'vue'
 import NyxInput from './NyxInput.vue'
-import { NyxTheme, NyxStyleVariant, NyxSize, NyxInputType, type KeyDict } from '@/types'
+import { NyxTheme, NyxVariant, NyxSize, NyxInputType, type KeyDict } from '@/types'
 import type { NyxInputProps } from './NyxInput.types'
 import { getKeyDictKeyByValue } from '@/utils'
 import NyxForm from '../NyxForm/NyxForm.vue'
@@ -20,7 +20,7 @@ export default {
     },
     variant: {
       control: { type: 'select' },
-      options: Object.values(NyxStyleVariant),
+      options: Object.values(NyxVariant),
     },
     size: {
       control: { type: 'select' },
@@ -64,5 +64,5 @@ const TemplateAll = (prop: string, dict: KeyDict<string>) => () => defineCompone
 export const Default = Template({})
 export const Types = TemplateAll('type', NyxInputType)
 export const Themes = TemplateAll('theme', NyxTheme)
-export const Variants = TemplateAll('variant', NyxStyleVariant)
+export const Variants = TemplateAll('variant', NyxVariant)
 export const Sizes = TemplateAll('size', NyxSize)

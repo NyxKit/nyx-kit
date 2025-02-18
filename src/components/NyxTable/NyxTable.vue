@@ -34,7 +34,7 @@
 
 <script setup lang="ts" generic="T extends Object">
 import './NyxTable.scss'
-import { type CssVariablesDict, NyxSize, NyxTheme, NyxStyleVariant } from '@/types'
+import { type CssVariablesDict, NyxSize, NyxTheme, NyxVariant } from '@/types'
 import { computed, useSlots } from 'vue'
 import { isObject } from '@/utils'
 import type { NyxTableProps } from './NyxTable.types'
@@ -46,7 +46,7 @@ const props = withDefaults(defineProps<NyxTableProps<T>>(), {
   disabled: false,
   theme: NyxTheme.Default,
   size: NyxSize.Medium,
-  variant: NyxStyleVariant.Outline,
+  variant: NyxVariant.Outline,
   hasHeader: true
 })
 

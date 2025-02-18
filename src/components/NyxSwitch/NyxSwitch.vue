@@ -3,12 +3,12 @@
 <script setup lang="ts">
 import './NyxSwitch.scss'
 import { type NyxSwitchProps } from './NyxSwitch.types'
-import { NyxSize, NyxStyleVariant, NyxTheme } from '@/types'
+import { NyxSize, NyxVariant, NyxTheme } from '@/types'
 
 const props = withDefaults(defineProps<NyxSwitchProps>(), {
   theme: NyxTheme.Success,
   size: NyxSize.Medium,
-  variant: NyxStyleVariant.Solid
+  variant: NyxVariant.Solid
 })
 
 const model = defineModel<boolean>({ default: false })

@@ -1,9 +1,9 @@
-import type { NyxSize, NyxStyleVariant, NyxTheme } from '@/types'
+import type { NyxSize, NyxVariant, NyxTheme } from '@/types'
 
 export interface NyxTableProps<T> {
   theme?: NyxTheme,
   size?: NyxSize,
-  variant?: NyxStyleVariant,
+  variant?: NyxVariant,
   itemKey?: keyof T,
   disabled?: boolean,
   columns?: number,

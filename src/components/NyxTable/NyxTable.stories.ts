@@ -1,6 +1,6 @@
 import { defineComponent } from 'vue'
 import NyxTable from './NyxTable.vue'
-import { NyxTheme, NyxStyleVariant, NyxSize, type KeyDict } from '@/types'
+import { NyxTheme, NyxVariant, NyxSize, type KeyDict } from '@/types'
 import type { NyxTableProps } from './NyxTable.types'
 import { getKeyDictKeyByValue } from '@/utils'
 import NyxButton from '../NyxButton/NyxButton.vue'
@@ -24,7 +24,7 @@ export default {
     },
     variant: {
       control: { type: 'select' },
-      options: Object.values(NyxStyleVariant),
+      options: Object.values(NyxVariant),
     },
     size: {
       control: { type: 'select' },
@@ -65,14 +65,14 @@ const TemplateAll = (prop: string, dict: KeyDict<string>) => () => defineCompone
   setup () {
     const values = Object.values(dict)
     const getLabel = (value: string) => getKeyDictKeyByValue(dict, value)
-    return { prop, values, getLabel, data, NyxSize, NyxTheme, NyxStyleVariant }
+    return { prop, values, getLabel, data, NyxSize, NyxTheme, NyxVariant }
   },
   template: `
     <div class="flex-col gap-xl">
       <nyx-table v-model="data" v-bind="{ [prop]: value }" v-for="value of values">
         <template #actions="{ item }">
           <nyx-button
-            :variant="prop === 'variant' ? value : NyxStyleVariant.Solid"
+            :variant="prop === 'variant' ? value : NyxVariant.Solid"
             :size="prop === 'size' ? value : NyxSize.XSmall"
             :theme="prop === 'theme' ? value : NyxTheme.Danger"
           >{{ getLabel(value) }}</nyx-button>
@@ -85,5 +85,5 @@ const TemplateAll = (prop: string, dict: KeyDict<string>) => () => defineCompone
 export const Default = Template({})
 export const WithActions = TemplateActions()
 export const Themes = TemplateAll('theme', NyxTheme)
-export const Variants = TemplateAll('variant', NyxStyleVariant)
+export const Variants = TemplateAll('variant', NyxVariant)
 export const Sizes = TemplateAll('size', NyxSize)

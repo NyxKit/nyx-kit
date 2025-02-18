@@ -1,9 +1,9 @@
-import type { NyxInputType, NyxSize, NyxStyleVariant, NyxTheme } from '@/types'
+import type { NyxInputType, NyxSize, NyxVariant, NyxTheme } from '@/types'
 
 export interface NyxInputProps {
   type?: NyxInputType
   theme?: NyxTheme,
-  variant?: NyxStyleVariant
+  variant?: NyxVariant
   size?: NyxSize,
   disabled?: boolean,
   readonly?: boolean,

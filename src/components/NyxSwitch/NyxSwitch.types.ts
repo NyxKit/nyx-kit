@@ -1,8 +1,8 @@
-import type { NyxSize, NyxStyleVariant, NyxTheme } from '@/types'
+import type { NyxSize, NyxVariant, NyxTheme } from '@/types'
 
 export interface NyxSwitchProps {
   theme?: NyxTheme,
   size?: NyxSize,
-  variant?: NyxStyleVariant,
+  variant?: NyxVariant,
   id?: string
 }

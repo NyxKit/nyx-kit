@@ -1,9 +1,9 @@
-import type { NyxSize, NyxStyleVariant, NyxTheme } from '@/types'
+import type { NyxSize, NyxVariant, NyxTheme } from '@/types'
 
 export interface NyxButtonProps {
   type?: 'button'|'submit'|'reset',
   theme?: NyxTheme,
-  variant?: NyxStyleVariant
+  variant?: NyxVariant
   size?: NyxSize,
   disabled?: boolean,
   href?: string

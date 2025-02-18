@@ -3,7 +3,7 @@ import './NyxModal.scss'
 import { useTemplateRef } from 'vue'
 import type { NyxModalEmits, NyxModalProps } from './NyxModal.types'
 import NyxButton from '../NyxButton/NyxButton.vue'
-import { KeyboardKey, NyxSize, NyxStyleVariant, NyxTheme } from '@/types'
+import { KeyboardKey, NyxSize, NyxVariant, NyxTheme } from '@/types'
 import { useKeyPress } from '@/compositions'
 
 const props = withDefaults(defineProps<NyxModalProps>(), {
@@ -55,7 +55,7 @@ const confirm = () => {
           <slot name="footer">
             <NyxButton
               :theme="NyxTheme.Default"
-              :variant="NyxStyleVariant.Outline"
+              :variant="NyxVariant.Outline"
               @click="cancel"
             >{{ props.cancelText }}</NyxButton>
             <NyxButton
