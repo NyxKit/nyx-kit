@@ -20,7 +20,11 @@ const alt = computed(() => props.name ?? props.initials)
 </script>
 
 <template>
-  <div class="nyx-avatar" :style="{ '--nyx-c-avatar': props.color }">
+  <div
+    class="nyx-avatar"
+    :class="[`size-${props.size}`]"
+    :style="{ '--nyx-c-avatar': props.color }"
+  >
     <NyxMedia
       v-if="props.src"
       class="nyx-avatar__image"
@@ -30,6 +34,6 @@ const alt = computed(() => props.name ?? props.initials)
       :title="alt"
     />
     <span v-else class="nyx-avatar__image">{{ fallback }}</span>
-    <div v-if="props.name" class="nyx-avatar__name">{{ props.name }}</div>
+    <span v-if="props.name" class="nyx-avatar__name">{{ props.name }}</span>
   </div>
 </template>
