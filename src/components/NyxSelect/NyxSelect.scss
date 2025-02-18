@@ -111,16 +111,16 @@
       border-bottom-color: var(--nyx-c-select);
     }
   }
-  
+
   &__selected {
     flex-grow: 1;
   }
-  
+
   &__arrow {
     font-size: 12px;
     margin-left: auto;
   }
-  
+
   &__dropdown {
     user-select: none;
     position: fixed;

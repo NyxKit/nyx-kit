@@ -245,6 +245,19 @@
   --nyx-font-size-xl: 1.1rem;
 }
 
+
+/**
+ * Duration
+ * -------------------------------------------------------------------------- */
+
+ :root {
+  --nyx-speed-fastest: 0.1s;
+  --nyx-speed-fast: 0.2s;
+  --nyx-speed-regular: 0.3s;
+  --nyx-speed-slow: 0.4s;
+  --nyx-speed-slowest: 0.5s;
+}
+
 /**
  * Magic Numbers
  * -------------------------------------------------------------------------- */

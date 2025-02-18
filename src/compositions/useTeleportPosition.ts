@@ -1,10 +1,11 @@
-import { clamp, type CssVariablesDict, NyxPosition } from '@/types'
+import { clamp, type CssVariablesDict, NyxPosition, NyxSize } from '@/types'
 import { computed, onBeforeUnmount, onMounted, type Ref, ref, watch } from 'vue'
 
 interface TeleportPositionOptions {
   position?: Ref<NyxPosition>
   isEqualWidth?: boolean
   isUpdateAllowed?: Ref<boolean>
+  gap?: Ref<NyxSize>
 }
 
 const useTeleportPosition = (
@@ -15,6 +16,19 @@ const useTeleportPosition = (
   const position = options?.position ?? ref(NyxPosition.BottomCenter)
   const isEqualWidth = !!options?.isEqualWidth
   const isUpdateAllowed = computed(() => options?.isUpdateAllowed?.value !== false)
+
+  // Compute gap as a pixel value
+  const gap = computed(() => {
+    if (!options?.gap?.value) return 0
+    const gapValue = window
+      .getComputedStyle(document.body)
+      .getPropertyValue(`--nyx-gap-${ options.gap.value }`) ?? '0'
+    console.log('gapValue', gapValue)
+    if (gapValue.endsWith('rem')) {
+      return parseFloat(gapValue) * 16 // Convert rem to pixels
+    }
+    return parseFloat(gapValue) // If it's 0 or other units, keep it as is
+  })
 
   const cssVariables = ref<CssVariablesDict>({
     '--top': '0px',
@@ -68,39 +82,39 @@ const useTeleportPosition = (
 
     computedPosition.value = getMirroredPosition(position.value)
 
-    // Apply final positioning
+    // Apply final positioning and factor in gap
     switch (computedPosition.value) {
       case NyxPosition.BottomLeft:
-        computedTop = bottom
+        computedTop = bottom + gap.value
         computedLeft = left
         break
       case NyxPosition.BottomRight:
-        computedTop = bottom
+        computedTop = bottom + gap.value
         computedLeft = right - computedWidth
         break
       case NyxPosition.BottomCenter:
-        computedTop = bottom
+        computedTop = bottom + gap.value
         computedLeft = left + (relWidth - computedWidth) / 2
         break
       case NyxPosition.TopLeft:
-        computedTop = top - absHeight
+        computedTop = top - absHeight - gap.value
         computedLeft = left
         break
       case NyxPosition.TopRight:
-        computedTop = top - absHeight
+        computedTop = top - absHeight - gap.value
         computedLeft = right - computedWidth
         break
       case NyxPosition.TopCenter:
-        computedTop = top - absHeight
+        computedTop = top - absHeight - gap.value
         computedLeft = left + (relWidth - computedWidth) / 2
         break
       case NyxPosition.LeftCenter:
         computedTop = top + (relHeight - absHeight) / 2
-        computedLeft = left - absWidth
+        computedLeft = left - absWidth - gap.value
         break
       case NyxPosition.RightCenter:
         computedTop = top + (relHeight - absHeight) / 2
-        computedLeft = right
+        computedLeft = right + gap.value
         break
     }
 

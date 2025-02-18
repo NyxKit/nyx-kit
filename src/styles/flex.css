@@ -14,3 +14,7 @@
 .gap-xl {
   gap: 2rem;
 }
+
+.wrap {
+  flex-wrap: wrap;
+}
