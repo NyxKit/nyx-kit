@@ -291,6 +291,6 @@
  * -------------------------------------------------------------------------- */
 
 :root {
-  --nyx-backlight-intensity: 0.85;
-  --nyx-backlight-size: 1.25rem;
+  --nyx-backlight-intensity: 0.75;
+  --nyx-backlight-size: 1rem;
 }

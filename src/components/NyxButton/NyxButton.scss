@@ -120,6 +120,7 @@
   &[class*="gradient-"] {
     position: relative;
     overflow: hidden;
+
     &,
     &:hover,
     &:active {
@@ -138,40 +139,27 @@
       background: var(--nyx-c-button);
       background: linear-gradient(135deg, var(--nyx-c-button) 0%, var(--nyx-c-button-alt) 100%);
       transform: translateX(0);
-      transition: transform var(--nyx-speed-slowest);
+      opacity: 1;
+      transition: transform var(--nyx-speed-slowest), opacity var(--nyx-speed-slowest);
     }
 
     &:hover::after {
       transform: translateX(-50%);
+      opacity: 1;
     }
-  }
 
-  &.gradient-primary {
-    --nyx-c-button-alt: var(--nyx-c-primary-alt);
-  }
+    &.variant-outline {
+      background-color: transparent;
 
-  &.gradient-secondary {
-    --nyx-c-button-alt: var(--nyx-c-secondary-alt);
-  }
+      &::after {
+        opacity: 0;
+      }
+    }
 
-  &.gradient-success {
-    --nyx-c-button-alt: var(--nyx-c-success-alt);
-  }
-
-  &.gradient-warning {
-    --nyx-c-button-alt: var(--nyx-c-warning-alt);
-  }
-
-  &.gradient-danger {
-    --nyx-c-button-alt: var(--nyx-c-danger-alt);
-  }
-
-  &.gradient-default {
-    --nyx-c-button-alt: var(--nyx-c-default-alt);
-  }
-
-  &.gradient-info {
-    --nyx-c-button-alt: var(--nyx-c-info-alt);
+    &.variant-ghost::after {
+      mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+    }
   }
 
   &.variant-outline {
@@ -225,6 +213,34 @@
       opacity: 1;
       transform: scaleX(1);
     }
+  }
+
+  &.gradient-primary {
+    --nyx-c-button-alt: var(--nyx-c-primary-alt);
+  }
+
+  &.gradient-secondary {
+    --nyx-c-button-alt: var(--nyx-c-secondary-alt);
+  }
+
+  &.gradient-success {
+    --nyx-c-button-alt: var(--nyx-c-success-alt);
+  }
+
+  &.gradient-warning {
+    --nyx-c-button-alt: var(--nyx-c-warning-alt);
+  }
+
+  &.gradient-danger {
+    --nyx-c-button-alt: var(--nyx-c-danger-alt);
+  }
+
+  &.gradient-default {
+    --nyx-c-button-alt: var(--nyx-c-default-alt);
+  }
+
+  &.gradient-info {
+    --nyx-c-button-alt: var(--nyx-c-info-alt);
   }
 
   &.size-xs {
