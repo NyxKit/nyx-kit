@@ -2,11 +2,14 @@
 .nyx-checkbox {
   --nyx-c-checkbox: var(--nyx-c-default);
   --nyx-w-checkbox-base: var(--nyx-font-size-md);
-  --nyx-w-checkbox: calc(var(--nyx-w-checkbox-base) * 1.25);
+  --nyx-w-checkbox: calc(var(--nyx-w-checkbox-base) * 1.4);
 
   display: inline-flex;
   align-items: center;
   cursor: pointer;
+  font-size: var(--nyx-w-checkbox-base);
+  color: var(--nyx-c-text);
+  gap: calc(var(--nyx-w-checkbox-base) * 0.75);
 
   input {
     display: none;
@@ -21,7 +24,6 @@
     position: relative;
     transition: all 0.2s;
     display: inline-flex;
-    margin-right: 8px;
 
     &::before {
       content: '✔';
@@ -47,11 +49,6 @@
       opacity: 1;
       transform: scale(1) rotate(-15deg);
     }
-  }
-
-  &__label {
-    font-size: var(--nyx-font-size-sm);
-    color: var(--nyx-c-text);
   }
 
   input:disabled + .nyx-checkbox__checkbox {
