@@ -1,10 +1,16 @@
-class NyxLog {
-  private static getFormattedMessage(args: string[]): string {
-    return `%cNYX%c ${ args.join(' ') }`;
+export default class NyxLog {
+  private static getFormattedMessage(prefix: any, args: string[]): string {
+    let p = prefix
+    let a = args
+    if (typeof prefix !== 'string' || !prefix.toLowerCase().startsWith('nyx')) {
+      p = 'NYX'
+      a = [prefix, ...args]
+    }
+    return `%c${ p }%c ${ a.join(' ') }`
   }
 
   private static getPrefixStyle(): string {
-    return 'background: #9F50F0; color: white; padding: 4px 8px; border-radius: 2px; font-weight: bold; line-height: 1.5; margin-bottom: 4px; display: inline-flex;'
+    return 'background: #9F50F0; color: white; padding: 4px 8px; border-radius: 2px; font-weight: bold; line-height: 1.5; margin-bottom: 4px; display: inline-flex;';
   }
 
   private static getMessageStyle(type: string): string {
@@ -16,44 +22,52 @@ class NyxLog {
       case 'error':
         return 'color: #F44336; font-weight: normal; line-height: 1.5; padding: 4px; display: inline-flex;'
       default:
-        return '';
+        return ''
     }
   }
 
-  private static getArgsStrings (args: any[]): string[] {
+  private static getArgsStrings(args: any[]): string[] {
     return args.filter((arg) => typeof arg === 'string')
   }
 
-  private static getArgsOther (args: any[]): any[] {
+  private static getArgsOther(args: any[]): any[] {
     return args.filter((arg) => typeof arg !== 'string')
   }
 
-  public static info(...args: any[]): void {
-    console.log(
-      this.getFormattedMessage(this.getArgsStrings(args)),
+  private static getCaller(): string {
+    const stack = new Error().stack
+    if (stack) {
+      const stackLines = stack.split('\n')
+      const caller = stackLines[3] ?? 'unknown'
+      return caller
+    }
+    return 'unknown'
+  }
+
+  public static info(prefix: any, ...args: any[]): void {
+    console.log.apply(console, [
+      this.getFormattedMessage(prefix, this.getArgsStrings(args)),
       this.getPrefixStyle(),
       this.getMessageStyle('info'),
       ...this.getArgsOther(args)
-    );
+    ])
   }
 
-  public static warn(...args: any[]): void {
-    console.warn(
-      this.getFormattedMessage(this.getArgsStrings(args)),
+  public static warn(prefix: any, ...args: any[]): void {
+    console.warn.apply(console, [
+      this.getFormattedMessage(prefix, this.getArgsStrings(args)),
       this.getPrefixStyle(),
       this.getMessageStyle('warn'),
       ...this.getArgsOther(args)
-    );
+    ])
   }
 
-  public static error(...args: any[]): void {
-    console.error(
-      this.getFormattedMessage(this.getArgsStrings(args)),
+  public static error(prefix: any, ...args: any[]): void {
+    console.error.apply(console, [
+      this.getFormattedMessage(prefix, this.getArgsStrings(args)),
       this.getPrefixStyle(),
       this.getMessageStyle('error'),
       ...this.getArgsOther(args)
-    );
+    ])
   }
 }
-
-export default NyxLog;

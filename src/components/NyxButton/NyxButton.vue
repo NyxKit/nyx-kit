@@ -23,7 +23,7 @@ const anchorTarget = computed(() => props.href && isCurrentDomain(props.href) ? 
 
 const gradientNormalized = computed(() => {
   if (props.gradient !== false && props.variant !== NyxVariant.Solid) {
-    NyxLog.error('Only solid buttons support gradients.')
+    NyxLog.error('NyxButton', 'Only solid buttons support gradients.')
     return props.theme
   }
   return props.gradient === true ? props.theme : props.gradient
