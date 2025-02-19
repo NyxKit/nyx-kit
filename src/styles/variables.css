@@ -65,6 +65,7 @@
   --nyx-c-purple-dark: #8A2BE2;
   --nyx-c-purple-darker: #6F1AB6;
   --nyx-c-purple-darkest: #4B0082;
+  --nyx-rgb-purple: 159, 80, 240;
 
   --nyx-c-purplegray: #71657A;
   --nyx-c-purplegray-light: #8A7E96;
@@ -73,36 +74,42 @@
   --nyx-c-purplegray-dark: #5D5466;
   --nyx-c-purplegray-darker: #4B4453;
   --nyx-c-purplegray-darkest: #3A353F;
+  --nyx-rgb-purplegray: 113, 101, 122;
 
   --nyx-c-teal: #0F4C75;
   --nyx-c-teal-light: #3282B8;
   --nyx-c-teal-lighter: #84D7F1;
   --nyx-c-teal-dark: #0A3046;
   --nyx-c-teal-darker: #051E2D;
+  --nyx-rgb-teal: 15, 76, 117;
 
   --nyx-c-green: #1FAA59;
   --nyx-c-green-light: #23CE6B;
   --nyx-c-green-lighter: #5EE787;
   --nyx-c-green-dark: #137D4D;
   --nyx-c-green-darker: #0B4F32;
+  --nyx-rgb-green: 31, 170, 89;
 
   --nyx-c-amber: #E58E26;
   --nyx-c-amber-light: #F3A847;
   --nyx-c-amber-lighter: #FFC067;
   --nyx-c-amber-dark: #B86519;
   --nyx-c-amber-darker: #8C4C15;
+  --nyx-rgb-amber: 229, 142, 38;
 
   --nyx-c-red: #D72638;
   --nyx-c-red-light: #E63946;
   --nyx-c-red-lighter: #F86C6B;
   --nyx-c-red-dark: #9B1C26;
   --nyx-c-red-darker: #73101A;
+  --nyx-rgb-red: 215, 38, 56;
 
   --nyx-c-blue: #3B82F6;
   --nyx-c-blue-light: #60A5FA;
   --nyx-c-blue-lighter: #93C5FD;
   --nyx-c-blue-dark: #2563EB;
   --nyx-c-blue-darker: #1E40AF;
+  --nyx-rgb-blue: 59, 130, 246;
 }
 
 /**
@@ -136,48 +143,56 @@
   --nyx-c-default-dark: var(--nyx-c-purplegray-dark);
   --nyx-c-default-highlight: var(--nyx-c-purplegray-light);
   --nyx-c-default-alt: var(--nyx-c-purplegray-lighter);
+  --nyx-rgb-default: var(--nyx-rgb-purplegray);
 
   --nyx-c-primary: var(--nyx-c-purple);
   --nyx-c-primary-light: var(--nyx-c-purple-light);
   --nyx-c-primary-dark: var(--nyx-c-purple-dark);
   --nyx-c-primary-highlight: var(--nyx-c-purple-light);
   --nyx-c-primary-alt: var(--nyx-c-purple-lighter);
+  --nyx-rgb-primary: var(--nyx-rgb-purple);
 
   --nyx-c-secondary: var(--nyx-c-teal);
   --nyx-c-secondary-light: var(--nyx-c-teal-light);
   --nyx-c-secondary-dark: var(--nyx-c-teal-dark);
   --nyx-c-secondary-highlight: var(--nyx-c-teal-light);
   --nyx-c-secondary-alt: var(--nyx-c-teal-lighter);
+  --nyx-rgb-secondary: var(--nyx-rgb-teal);
 
   --nyx-c-info: var(--nyx-c-blue);
   --nyx-c-info-light: var(--nyx-c-blue-light);
   --nyx-c-info-dark: var(--nyx-c-blue-dark);
   --nyx-c-info-highlight: var(--nyx-c-blue-light);
   --nyx-c-info-alt: var(--nyx-c-blue-lighter);
+  --nyx-rgb-info: var(--nyx-rgb-blue);
 
   --nyx-c-success: var(--nyx-c-green);
   --nyx-c-success-light: var(--nyx-c-green-light);
   --nyx-c-success-dark: var(--nyx-c-green-dark);
   --nyx-c-success-highlight: var(--nyx-c-green-light);
   --nyx-c-success-alt: var(--nyx-c-green-lighter);
+  --nyx-rgb-success: var(--nyx-rgb-green);
 
   --nyx-c-warning: var(--nyx-c-amber);
   --nyx-c-warning-light: var(--nyx-c-amber-light);
   --nyx-c-warning-dark: var(--nyx-c-amber-dark);
   --nyx-c-warning-highlight: var(--nyx-c-amber-light);
   --nyx-c-warning-alt: var(--nyx-c-amber-lighter);
+  --nyx-rgb-warning: var(--nyx-rgb-amber);
 
   --nyx-c-danger: var(--nyx-c-red);
   --nyx-c-danger-light: var(--nyx-c-red-light);
   --nyx-c-danger-dark: var(--nyx-c-red-dark);
   --nyx-c-danger-highlight: var(--nyx-c-red-light);
   --nyx-c-danger-alt: var(--nyx-c-red-lighter);
+  --nyx-rgb-danger: var(--nyx-rgb-red);
 
   --nyx-c-info: var(--nyx-c-default);
   --nyx-c-info-light: var(--nyx-c-default-light);
   --nyx-c-info-dark: var(--nyx-c-default-dark);
   --nyx-c-info-highlight: var(--nyx-c-default-highlight);
   --nyx-c-info-alt: var(--nyx-c-default-alt);
+  --nyx-rgb-info: var(--nyx-rgb-default);
 }
 
 /**
@@ -276,5 +291,6 @@
  * -------------------------------------------------------------------------- */
 
 :root {
-  --nyx-nav-height: 55px;
+  --nyx-backlight-intensity: 0.85;
+  --nyx-backlight-size: 1.25rem;
 }

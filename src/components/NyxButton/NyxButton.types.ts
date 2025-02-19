@@ -7,7 +7,9 @@ export interface NyxButtonProps {
   size?: NyxSize,
   shape?: NyxShape,
   disabled?: boolean,
-  href?: string
+  href?: string,
+  gradient?: boolean|NyxTheme,
+  backlight?: boolean|NyxTheme
 }
 
 export interface NyxButtonEmits {

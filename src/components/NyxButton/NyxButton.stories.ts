@@ -16,6 +16,14 @@ export default {
       control: { type: 'select' },
       options: Object.values(NyxTheme),
     },
+    gradient: {
+      control: { type: 'select' },
+      options: [true, false, ...Object.values(NyxTheme)]
+    },
+    backlight: {
+      control: { type: 'select' },
+      options: [true, false, ...Object.values(NyxTheme)]
+    },
     variant: {
       control: { type: 'select' },
       options: Object.values(NyxVariant),

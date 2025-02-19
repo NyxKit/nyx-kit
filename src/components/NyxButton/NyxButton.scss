@@ -3,6 +3,7 @@
   --nyx-c-button: var(--nyx-c-default);
   --nyx-c-button-highlight: var(--nyx-c-default-highlight);
   --nyx-c-button-alt: var(--nyx-c-default-alt);
+  --nyx-rgb-button: var(--nyx-rgb-default);
   --nyx-gap-button: var(--nyx-gap-md);
   --nyx-pad-button: var(--nyx-pad-md);
   --nyx-font-size-button: var(--nyx-font-size-md);
@@ -19,7 +20,12 @@
   color: var(--nyx-c-button-text);
   border-radius: var(--nyx-radius-md);
   padding: calc(var(--nyx-pad-button) * 0.75) var(--nyx-pad-button);
-  transition: background-color 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
+  transition:
+    background-color var(--nyx-speed-fast),
+    border-color var(--nyx-speed-fast),
+    color var(--nyx-speed-fast),
+    transform var(--nyx-speed-fast),
+    filter var(--nyx-speed-slowest);
 
   &:hover,
   &:active {
@@ -37,40 +43,135 @@
     opacity: 0.75;
   }
 
+  &[class*="backlight-"]:hover {
+    filter: drop-shadow(0 0 var(--nyx-backlight-size) rgba(var(--nyx-rgb-button), var(--nyx-backlight-intensity)));
+  }
+
   &.theme-primary {
     --nyx-c-button: var(--nyx-c-primary);
     --nyx-c-button-highlight: var(--nyx-c-primary-highlight);
     --nyx-c-button-alt: var(--nyx-c-primary-alt);
+    --nyx-rgb-button: var(--nyx-rgb-primary);
   }
 
   &.theme-secondary {
     --nyx-c-button: var(--nyx-c-secondary);
     --nyx-c-button-highlight: var(--nyx-c-secondary-highlight);
     --nyx-c-button-alt: var(--nyx-c-secondary-alt);
+    --nyx-rgb-button: var(--nyx-rgb-secondary);
   }
 
   &.theme-info {
     --nyx-c-button: var(--nyx-c-info);
     --nyx-c-button-highlight: var(--nyx-c-info-highlight);
     --nyx-c-button-alt: var(--nyx-c-info-alt);
+    --nyx-rgb-button: var(--nyx-rgb-info);
   }
 
   &.theme-success {
     --nyx-c-button: var(--nyx-c-success);
     --nyx-c-button-highlight: var(--nyx-c-success-highlight);
     --nyx-c-button-alt: var(--nyx-c-success-alt);
+    --nyx-rgb-button: var(--nyx-rgb-success);
   }
 
   &.theme-warning {
     --nyx-c-button: var(--nyx-c-warning);
     --nyx-c-button-highlight: var(--nyx-c-warning-highlight);
     --nyx-c-button-alt: var(--nyx-c-warning-alt);
+    --nyx-rgb-button: var(--nyx-rgb-warning);
   }
 
   &.theme-danger {
     --nyx-c-button: var(--nyx-c-danger);
     --nyx-c-button-highlight: var(--nyx-c-danger-highlight);
     --nyx-c-button-alt: var(--nyx-c-danger-alt);
+    --nyx-rgb-button: var(--nyx-rgb-danger);
+  }
+
+  &.backlight-default {
+    --nyx-rgb-button: var(--nyx-rgb-default);
+  }
+
+  &.backlight-primary {
+    --nyx-rgb-button: var(--nyx-rgb-primary);
+  }
+
+  &.backlight-secondary {
+    --nyx-rgb-button: var(--nyx-rgb-secondary);
+  }
+
+  &.backlight-info {
+    --nyx-rgb-button: var(--nyx-rgb-info);
+  }
+
+  &.backlight-success {
+    --nyx-rgb-button: var(--nyx-rgb-success);
+  }
+
+  &.backlight-warning {
+    --nyx-rgb-button: var(--nyx-rgb-warning);
+  }
+
+  &.backlight-danger {
+    --nyx-rgb-button: var(--nyx-rgb-danger);
+  }
+
+  &[class*="gradient-"] {
+    position: relative;
+    overflow: hidden;
+    &,
+    &:hover,
+    &:active {
+      border-color: transparent;
+      background-color: transparent;
+    }
+
+    &::after {
+      content: '';
+      width: 200%;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: -1;
+      background: var(--nyx-c-button);
+      background: linear-gradient(135deg, var(--nyx-c-button) 0%, var(--nyx-c-button-alt) 100%);
+      transform: translateX(0);
+      transition: transform var(--nyx-speed-slowest);
+    }
+
+    &:hover::after {
+      transform: translateX(-50%);
+    }
+  }
+
+  &.gradient-primary {
+    --nyx-c-button-alt: var(--nyx-c-primary-alt);
+  }
+
+  &.gradient-secondary {
+    --nyx-c-button-alt: var(--nyx-c-secondary-alt);
+  }
+
+  &.gradient-success {
+    --nyx-c-button-alt: var(--nyx-c-success-alt);
+  }
+
+  &.gradient-warning {
+    --nyx-c-button-alt: var(--nyx-c-warning-alt);
+  }
+
+  &.gradient-danger {
+    --nyx-c-button-alt: var(--nyx-c-danger-alt);
+  }
+
+  &.gradient-default {
+    --nyx-c-button-alt: var(--nyx-c-default-alt);
+  }
+
+  &.gradient-info {
+    --nyx-c-button-alt: var(--nyx-c-info-alt);
   }
 
   &.variant-outline {

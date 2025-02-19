@@ -17,13 +17,22 @@ const props = withDefaults(defineProps<NyxButtonProps>(), {
 const emit = defineEmits<NyxButtonEmits>()
 
 const anchorTarget = computed(() => props.href && isCurrentDomain(props.href) ? '_self' : '_blank')
+const backlightNormalized = computed(() => props.backlight === true ? props.theme : props.backlight)
+const gradientNormalized = computed(() => props.gradient === true ? props.theme : props.gradient)
 </script>
 
 <template>
   <button
     v-if="!props.href"
     class="nyx-button"
-    :class="[`theme-${props.theme}`, `variant-${props.variant}`, `size-${props.size}`, `shape-${props.shape}`]"
+    :class="[
+      `theme-${props.theme}`,
+      `variant-${props.variant}`,
+      `size-${props.size}`,
+      `shape-${props.shape}`,
+      gradientNormalized && `gradient-${gradientNormalized}`,
+      backlightNormalized && `backlight-${backlightNormalized}`
+    ]"
     :type="props.type"
     :disabled="props.disabled"
     @click="emit('click')"
