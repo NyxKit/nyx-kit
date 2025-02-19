@@ -1,4 +1,4 @@
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
 import NyxButton from './NyxButton.vue'
 import { NyxTheme, NyxVariant, NyxSize, type KeyDict, NyxShape } from '@/types'
 import type { NyxButtonProps } from './NyxButton.types'
@@ -55,13 +55,15 @@ const TemplateAllProp = (prop: string, dict: KeyDict<string>) => () => defineCom
   setup () {
     const values = Object.values(dict)
     const getLabel = (value: string) => getKeyDictKeyByValue(dict, value)
-    return { prop, values, getLabel }
+    const isTheme = computed(() => dict === NyxTheme)
+    return { prop, values, getLabel, isTheme }
   },
   template: `
     <div class="flex">
       <nyx-button
         v-for="value of values"
         :key="value"
+        :theme="isTheme ? value : undefined"
         v-bind="{ [prop]: value }"
       >{{ getLabel(value) }}</nyx-button>
     </div>
@@ -102,4 +104,6 @@ export const Themes = TemplateAllProp('theme',  NyxTheme)
 export const Variants = TemplateAllProp('variant', NyxVariant)
 export const Shapes = TemplateAllProp('shape', NyxShape)
 export const Sizes = TemplateAllProp('size', NyxSize)
+export const Backlights = TemplateAllProp('backlight', NyxTheme)
+export const Gradients = TemplateAllProp('gradient', NyxTheme)
 export const All = TemplateAll()
