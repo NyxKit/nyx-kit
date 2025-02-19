@@ -1,6 +1,7 @@
 {
-  "name": "nyx",
-  "version": "0.0.0",
+  "name": "nyx-kit",
+  "homepage": "http://nyxkit.github.io/nyx-kit",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -15,7 +16,8 @@
     "lint:eslint": "eslint . --fix",
     "lint": "run-s lint:*",
     "storybook": "storybook dev -p 6006",
-    "build:storybook": "storybook build"
+    "storybook:build": "storybook build",
+    "storybook:deploy": "gh-pages -d storybook-static"
   },
   "dependencies": {
     "pinia": "^2.3.1",
@@ -47,6 +49,7 @@
     "eslint-plugin-playwright": "^2.2.0",
     "eslint-plugin-storybook": "^0.11.3",
     "eslint-plugin-vue": "^9.32.0",
+    "gh-pages": "^6.3.0",
     "jiti": "^2.4.2",
     "jsdom": "^26.0.0",
     "npm-run-all2": "^7.0.2",

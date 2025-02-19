@@ -50,7 +50,7 @@ const Template = (args: NyxButtonProps) => defineComponent({
   `,
 })
 
-const TemplateAllProp = (prop: string, dict: KeyDict<string>) => () => defineComponent({
+const TemplateAllProp = (prop: string, dict: KeyDict<string>) => (args: NyxButtonProps) => defineComponent({
   components: { NyxButton },
   setup () {
     const values = Object.values(dict)
