@@ -1,37 +1,3 @@
-<template>
-  <table
-    class="nyx-table"
-    :class="[`size-${props.size}`, `theme-${props.theme}`, `variant-${props.variant}`]"
-    :style="style"
-  >
-    <thead v-if="props.hasHeader">
-      <tr>
-        <template v-for="header in columnTitles" :key="header">
-          <th>{{ header }}</th>
-        </template>
-        <th v-if="!!slots.actions">&nbsp;</th>
-      </tr>
-    </thead>
-    <tbody>
-      <template
-        v-for="(item) of model"
-        :key="typeof item === 'object' && !!props.itemKey ? item[props.itemKey] : item"
-      >
-        <tr>
-          <slot :item>
-            <template v-for="cell of Object.values(item ?? {})" :key="cell">
-              <NyxTableCell>{{ cell }}</NyxTableCell>
-            </template>
-          </slot>
-          <NyxTableCell v-if="!!slots.actions" class="nyx-table__actions">
-            <slot name="actions" :item />
-          </NyxTableCell>
-        </tr>
-      </template>
-    </tbody>
-  </table>
-</template>
-
 <script setup lang="ts" generic="T extends Object">
 import './NyxTable.scss'
 import { type CssVariablesDict, NyxSize, NyxTheme, NyxVariant } from '@/types'
@@ -47,7 +13,8 @@ const props = withDefaults(defineProps<NyxTableProps<T>>(), {
   theme: NyxTheme.Default,
   size: NyxSize.Medium,
   variant: NyxVariant.Outline,
-  hasHeader: true
+  hasHeader: true,
+  striped: false
 })
 
 const model = defineModel<T[]>({ default: [] })
@@ -77,3 +44,42 @@ const style = computed<CssVariablesDict>(() => {
   }
 })
 </script>
+
+<template>
+  <table
+    class="nyx-table"
+    :class="[
+      `size-${props.size}`,
+      `theme-${props.theme}`,
+      `variant-${props.variant}`,
+      { 'striped': striped }
+    ]"
+    :style="style"
+  >
+    <thead v-if="props.hasHeader">
+      <tr>
+        <template v-for="header in columnTitles" :key="header">
+          <th>{{ header }}</th>
+        </template>
+        <th v-if="!!slots.actions">&nbsp;</th>
+      </tr>
+    </thead>
+    <tbody>
+      <template
+        v-for="(item) of model"
+        :key="typeof item === 'object' && !!props.itemKey ? item[props.itemKey] : item"
+      >
+        <tr>
+          <slot :item>
+            <template v-for="cell of Object.values(item ?? {})" :key="cell">
+              <NyxTableCell>{{ cell }}</NyxTableCell>
+            </template>
+          </slot>
+          <NyxTableCell v-if="!!slots.actions" class="nyx-table__actions">
+            <slot name="actions" :item />
+          </NyxTableCell>
+        </tr>
+      </template>
+    </tbody>
+  </table>
+</template>

@@ -9,5 +9,6 @@ export interface NyxTableProps<T> {
   columns?: number,
   columnTitles?: string[],
   gridTemplateColumns?: string,
-  hasHeader?: boolean
+  hasHeader?: boolean,
+  striped?: boolean
 }
