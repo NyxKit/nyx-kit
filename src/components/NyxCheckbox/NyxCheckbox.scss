@@ -1,0 +1,106 @@
+
+.nyx-checkbox {
+  --nyx-c-checkbox: var(--nyx-c-default);
+  --nyx-w-checkbox-base: var(--nyx-font-size-md);
+  --nyx-w-checkbox: calc(var(--nyx-w-checkbox-base) * 1.25);
+
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+
+  input {
+    display: none;
+  }
+
+  &__checkbox {
+    width: var(--nyx-w-checkbox);
+    height: var(--nyx-w-checkbox);;
+    border: 2px solid var(--nyx-c-text);
+    border-radius: var(--nyx-radius-sm);
+    background-color: var(--nyx-c-white-soft);
+    position: relative;
+    transition: all 0.2s;
+    display: inline-flex;
+    margin-right: 8px;
+
+    &::before {
+      content: '✔';
+      font-size: calc(var(--nyx-w-checkbox-base) * 0.9);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: scale(0.25) rotate(15deg);
+      transition: opacity 0.2s, transform 0.2s;
+    }
+  }
+
+  input:checked + .nyx-checkbox__checkbox {
+    background-color: var(--nyx-c-checkbox);
+    border-color: var(--nyx-c-checkbox);
+
+    &::before {
+      opacity: 1;
+      transform: scale(1) rotate(-15deg);
+    }
+  }
+
+  &__label {
+    font-size: var(--nyx-font-size-sm);
+    color: var(--nyx-c-text);
+  }
+
+  input:disabled + .nyx-checkbox__checkbox {
+    background-color: var(--nyx-c-gray-light);
+    border-color: var(--nyx-c-gray);
+    cursor: not-allowed;
+  }
+
+  input:disabled + .nyx-checkbox__checkbox::before {
+    border-color: var(--nyx-c-gray);
+  }
+
+  &.theme-primary {
+    --nyx-c-checkbox: var(--nyx-c-primary);
+  }
+
+  &.theme-secondary {
+    --nyx-c-checkbox: var(--nyx-c-secondary);
+  }
+
+  &.theme-success {
+    --nyx-c-checkbox: var(--nyx-c-success);
+  }
+
+  &.theme-warning {
+    --nyx-c-checkbox: var(--nyx-c-warning);
+  }
+
+  &.theme-danger {
+    --nyx-c-checkbox: var(--nyx-c-danger);
+  }
+
+  &.theme-info {
+    --nyx-c-checkbox: var(--nyx-c-info);
+  }
+
+  &.size-xs {
+    --nyx-w-checkbox-base: var(--nyx-font-size-xs);
+  }
+
+  &.size-sm {
+    --nyx-w-checkbox-base: var(--nyx-font-size-sm);
+  }
+
+  &.size-lg {
+    --nyx-w-checkbox-base: var(--nyx-font-size-lg);
+  }
+
+  &.size-xl {
+    --nyx-w-checkbox-base: var(--nyx-font-size-xl);
+  }
+}
