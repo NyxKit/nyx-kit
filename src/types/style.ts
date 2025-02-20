@@ -1,6 +1,6 @@
 export type CssVariableKey = `--${string}`
 export type CssVariablesDict = {
-  [key: CssVariableKey]: string
+  [key: CssVariableKey]: string|number
 }
 
 export enum NyxPosition {

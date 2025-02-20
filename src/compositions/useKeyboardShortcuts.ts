@@ -1,11 +1,30 @@
+import type { KeyDict } from '@/types'
 import { onMounted, onUnmounted } from 'vue'
 
+const getNormalizedKeyName = (key: string) => {
+  if (key === ' ') return 'SPACE'
+  return key.toUpperCase()
+}
+
+const keyModifiers = ['ALT', 'SHIFT', 'CTRL', 'META']
+
+const keySort = (a: string, b: string) => {
+  const aIsModifier = keyModifiers.includes(a)
+  const bIsModifier = keyModifiers.includes(b)
+
+  if (aIsModifier && !bIsModifier) return -1
+  if (!aIsModifier && bIsModifier) return 1
+  return 0
+}
+
 const useKeyboardShortcuts = (shortcuts: Record<string, (event: KeyboardEvent) => void>) => {
-  const pressedKeys: Set<string> = new Set()
+  const keyHistory: Set<string> = new Set()
 
   const keydownHandler = (event: KeyboardEvent) => {
-    pressedKeys.add(event.key.toLowerCase())
-    const combination = Array.from(pressedKeys).sort().join('+')
+    const key = getNormalizedKeyName(event.key)
+    keyHistory.add(key)
+    const combination = Array.from(keyHistory).sort(keySort).join('+')
+    console.log('event', { key: event.key, keyHistory, combination })
 
     if (shortcuts[combination]) {
       event.preventDefault()
@@ -14,7 +33,7 @@ const useKeyboardShortcuts = (shortcuts: Record<string, (event: KeyboardEvent) =
   }
 
   const keyupHandler = (event: KeyboardEvent) => {
-    pressedKeys.delete(event.key.toLowerCase())
+    keyHistory.delete(getNormalizedKeyName(event.key))
   }
 
   onMounted(() => {
