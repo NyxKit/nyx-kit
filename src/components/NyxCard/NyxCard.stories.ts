@@ -43,8 +43,13 @@ export default {
   },
   args: {
     title: 'Lorem Ipsum',
-    src: 'https://placehold.co/400x300',
-    default: lipsum
+    src: 'https://plus.unsplash.com/premium_photo-1739009671609-f28ec1b83346?q=80&w=3750&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    default: lipsum,
+    theme: NyxTheme.Primary,
+    gradient: NyxTheme.Success,
+    textAlign: 'center',
+    layout: 'header-first',
+    blendMedia: true
   }
 }
 
