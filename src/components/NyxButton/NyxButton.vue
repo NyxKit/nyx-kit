@@ -4,7 +4,7 @@ import { NyxSize, NyxVariant, NyxTheme, NyxShape } from '@/types'
 import type { NyxButtonProps, NyxButtonEmits } from './NyxButton.types'
 import { computed } from 'vue';
 import { isCurrentDomain } from '@/utils'
-import { NyxLog } from '@/classes'
+import useNyxProps from '@/compositions/useNyxProps';
 
 const props = withDefaults(defineProps<NyxButtonProps>(), {
   type: 'button',
@@ -18,24 +18,9 @@ const props = withDefaults(defineProps<NyxButtonProps>(), {
 })
 
 const emit = defineEmits<NyxButtonEmits>()
-
+const { classList } = useNyxProps(props)
 const anchorTarget = computed(() => props.href && isCurrentDomain(props.href) ? '_self' : '_blank')
 
-const gradientNormalized = computed(() => {
-  if (props.gradient !== false && props.variant !== NyxVariant.Solid) {
-    NyxLog.error('NyxButton', 'Only solid buttons support gradients.')
-    return props.theme
-  }
-  return props.gradient === true ? props.theme : props.gradient
-})
-
-const classList = computed<string[]>(() => {
-  const backlight = props.backlight === true ? props.theme : props.backlight
-  const list = [`theme-${props.theme}`, `variant-${props.variant}`, `size-${props.size}`, `shape-${props.shape}`]
-  if (!!gradientNormalized.value) list.push(`gradient-${gradientNormalized.value}`)
-  if (!!backlight) list.push(`backlight-${backlight}`)
-  return list
-})
 </script>
 
 <template>

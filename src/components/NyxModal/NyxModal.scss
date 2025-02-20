@@ -72,6 +72,7 @@
     padding: 0;
     max-width: calc(100dvw - 2rem);
     width: var(--nyx-width-modal);
+    box-shadow: var(--nyx-shadow-md);
     opacity: 0;
     transform: translate(0, -2rem);
     transition: opacity 0.3s, transform 0.3s;
