@@ -4,7 +4,7 @@ import { NyxSize, NyxTheme, NyxVariant, type CssVariablesDict } from '@/types'
 import NyxMedia from '../NyxMedia/NyxMedia.vue'
 import type { NyxCardEmits, NyxCardProps } from './NyxCard.types'
 import useNyxProps from '@/compositions/useNyxProps'
-import { computed, useSlots } from 'vue'
+import { computed, useSlots, type Slots } from 'vue'
 
 const props = withDefaults(defineProps<NyxCardProps>(), {
   theme: NyxTheme.Default,
@@ -17,7 +17,7 @@ const props = withDefaults(defineProps<NyxCardProps>(), {
 
 const emit = defineEmits<NyxCardEmits>()
 
-const slots = useSlots()
+const slots: Slots = useSlots()
 
 const { classList } = useNyxProps(props)
 const cssVars = computed<CssVariablesDict>(() => ({

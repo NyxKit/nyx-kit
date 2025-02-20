@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import './NyxTooltip.scss'
-import { defineProps, defineSlots, ref, useTemplateRef } from 'vue'
+import { defineProps, defineSlots, ref, useTemplateRef, type Slots } from 'vue'
 import { NyxPosition, NyxTheme, NyxSize, NyxVariant } from '@/types'
 import type { NyxTooltipProps } from './NyxTooltip.types'
 import { useTeleportPosition } from '@/compositions'
@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<NyxTooltipProps>(), {
 
 const model = defineModel<boolean>({ default: false })
 
-const slots = defineSlots()
+const slots: Slots = defineSlots()
 
 const elRelative = useTemplateRef<HTMLDivElement>('elTooltip')
 const elAbsolute = useTemplateRef<HTMLDivElement>('elTooltipContent')

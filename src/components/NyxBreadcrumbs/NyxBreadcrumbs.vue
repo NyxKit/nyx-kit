@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import './NyxBreadcrumbs.scss'
-import { defineProps, defineEmits, useSlots, computed } from 'vue'
+import { defineProps, defineEmits, useSlots, computed, type Slots } from 'vue'
 import { NyxSize, NyxTheme, NyxVariant, type NyxBreadcrumb } from '@/types'
 import type { NyxBreadcrumbsEmits, NyxBreadcrumbsProps } from './NyxBreadcrumbs.types'
 
@@ -19,7 +19,7 @@ const normalizedItems = computed<NyxBreadcrumb[]>(() => {
 })
 
 // Access slots
-const slots = useSlots()
+const slots: Slots = useSlots()
 
 </script>
 
