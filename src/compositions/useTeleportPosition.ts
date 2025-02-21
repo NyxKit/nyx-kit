@@ -45,6 +45,8 @@ const useTeleportPosition = (
     const { top, bottom, left, right, width: relWidth, height: relHeight } = elRelative.value.getBoundingClientRect()
     const { width: absWidth, height: absHeight } = elAbsolute.value.getBoundingClientRect()
 
+    console.log('>>', { top, bottom, left, right, relWidth, relHeight })
+
     const computedWidth = isEqualWidth ? relWidth : absWidth
 
     let computedTop = bottom

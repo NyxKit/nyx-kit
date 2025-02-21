@@ -32,7 +32,10 @@ const TemplateRange = (args: NyxSliderProps) => () => defineComponent({
     return { args, range }
   },
   template: `
-    <nyx-slider v-model="range"></nyx-slider>
+    <div class="flex-col gap-xl">
+      <nyx-slider v-model="range"></nyx-slider>
+      <pre>{{ range }}</pre>
+    </div>
   `,
 })
 

@@ -1,5 +1,5 @@
 export type CssVariableKey = `--${string}`
-export type CssVariablesDict = {
+export type CssVariablesDict = {}|{
   [key: CssVariableKey]: string|number
 }
 

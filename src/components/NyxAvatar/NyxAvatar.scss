@@ -15,7 +15,7 @@
   gap: var(--nyx-gap-avatar);
   font-size: var(--nyx-font-size-avatar);
 
-  &__image {
+  .nyx-media {
     display: flex;
     align-items: center;
     justify-content: center;

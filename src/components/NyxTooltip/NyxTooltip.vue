@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import './NyxTooltip.scss'
-import { defineProps, defineSlots, ref, useTemplateRef, type Slots } from 'vue'
+import { computed, defineProps, defineSlots, ref, useTemplateRef, type Slots, watch } from 'vue'
 import { NyxPosition, NyxTheme, NyxSize, NyxVariant } from '@/types'
 import type { NyxTooltipProps } from './NyxTooltip.types'
 import { useTeleportPosition } from '@/compositions'
@@ -10,7 +10,9 @@ const props = withDefaults(defineProps<NyxTooltipProps>(), {
   size: NyxSize.Medium,
   variant: NyxVariant.Solid,
   position: NyxPosition.TopCenter,
-  disabled: false
+  disabled: false,
+  trigger: 'hover',
+  forceUpdate: false
 })
 
 const model = defineModel<boolean>({ default: false })
@@ -20,14 +22,25 @@ const slots: Slots = defineSlots()
 const elRelative = useTemplateRef<HTMLDivElement>('elTooltip')
 const elAbsolute = useTemplateRef<HTMLDivElement>('elTooltipContent')
 
-const { cssVariables, computedPosition } = useTeleportPosition(elRelative, elAbsolute, {
+const { cssVariables, computedPosition, updateCssVariables } = useTeleportPosition(elRelative, elAbsolute, {
   position: ref(props.position),
-  gap: ref(NyxSize.Medium) // ref(props.size)
+  gap: ref(NyxSize.Medium), // ref(props.size)
 })
 
 const open = () => model.value = true
 const close = () => model.value = false
 const toggle = () => model.value = !model.value
+
+const onMouseOver = () => props.trigger === 'hover' && open()
+const onMouseLeave = () => props.trigger !== 'manual' && close()
+const onClick = () => props.trigger === 'click' && open()
+const onClickOutside = () => props.trigger !== 'manual' && close()
+
+const forceUpdate = computed(() => props.forceUpdate)
+watch(forceUpdate, () => {
+  console.log('force')
+  updateCssVariables()
+})
 
 </script>
 
@@ -35,10 +48,10 @@ const toggle = () => model.value = !model.value
   <div
     class="nyx-tooltip"
     ref="elTooltip"
-    @mouseover="open"
-    @mouseleave="close"
-    @click="open"
-    v-click-outside="close"
+    @mouseover="onMouseOver"
+    @mouseleave="onMouseLeave"
+    @click="onClick"
+    v-click-outside="onClickOutside"
   >
     <slot></slot>
     <Teleport to="body">

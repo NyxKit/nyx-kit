@@ -6,5 +6,7 @@ export interface NyxTooltipProps {
   variant?: NyxVariant
   size?: NyxSize
   position?: NyxPosition
-  disabled?: boolean
+  disabled?: boolean,
+  trigger?: 'click'|'hover'|'manual',
+  forceUpdate?: boolean|number
 }
