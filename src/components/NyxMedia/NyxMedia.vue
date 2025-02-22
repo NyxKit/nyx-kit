@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import './NyxMedia.scss'
-import { defineProps } from 'vue'
 import type { NyxMediaProps } from './NyxMedia.types'
 import { NyxMediaType, NyxShape } from '@/types'
 

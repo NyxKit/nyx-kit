@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import './NyxBreadcrumbs.scss'
-import { defineProps, defineEmits, useSlots, computed, type Slots } from 'vue'
+import { useSlots, computed, type Slots } from 'vue'
 import { NyxSize, NyxTheme, NyxVariant, type NyxBreadcrumb } from '@/types'
 import type { NyxBreadcrumbsEmits, NyxBreadcrumbsProps } from './NyxBreadcrumbs.types'
 

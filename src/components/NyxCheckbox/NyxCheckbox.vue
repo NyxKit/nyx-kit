@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import './NyxCheckbox.scss'
-import { defineProps, defineEmits, computed } from 'vue'
+import { computed } from 'vue'
 import { NyxSize, NyxTheme, NyxVariant } from '@/types'
 import type { NyxCheckboxProps } from './NyxCheckbox.types'
 import { generateRandomString } from '@/utils/string';

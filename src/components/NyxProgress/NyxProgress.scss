@@ -1,0 +1,79 @@
+.nyx-progress {
+  --nyx-c-progress: var(--nyx-c-default);
+  --nyx-c-progress-highlight: var(--nyx-c-default-highlight);
+  --nyx-c-progress-alt: var(--nyx-c-default-alt);
+  --nyx-rgb-progress: var(--nyx-rgb-default);
+  --nyx-h-progress: 0.5rem;
+  --progress: 100%;
+
+  width: 100%;
+  height: var(--nyx-h-progress);
+  background-color: rgba(var(--nyx-rgb-progress), 0.3);
+  position: relative;
+  border-radius: 4px;
+  overflow: hidden;
+
+  &__bar {
+    width: 100%;
+    height: 100%;
+    transform-origin: left;
+    transform: scaleX(var(--progress));
+    transition: transform var(--nyx-speed-slow);
+    background-color: var(--nyx-c-progress-highlight);
+
+    &.indeterminate {
+      position: absolute;
+      inset: 0;
+      animation: pulse 1.2s infinite linear;
+    }
+  }
+
+
+
+  &.theme-primary {
+    --nyx-c-progress: var(--nyx-c-primary);
+    --nyx-c-progress-highlight: var(--nyx-c-primary-highlight);
+    --nyx-c-progress-alt: var(--nyx-c-primary-alt);
+    --nyx-rgb-progress: var(--nyx-rgb-primary);
+  }
+
+  &.theme-secondary {
+    --nyx-c-progress: var(--nyx-c-secondary);
+    --nyx-c-progress-highlight: var(--nyx-c-secondary-highlight);
+    --nyx-c-progress-alt: var(--nyx-c-secondary-alt);
+    --nyx-rgb-progress: var(--nyx-rgb-secondary);
+  }
+
+  &.theme-info {
+    --nyx-c-progress: var(--nyx-c-info);
+    --nyx-c-progress-highlight: var(--nyx-c-info-highlight);
+    --nyx-c-progress-alt: var(--nyx-c-info-alt);
+    --nyx-rgb-progress: var(--nyx-rgb-info);
+  }
+
+  &.theme-success {
+    --nyx-c-progress: var(--nyx-c-success);
+    --nyx-c-progress-highlight: var(--nyx-c-success-highlight);
+    --nyx-c-progress-alt: var(--nyx-c-success-alt);
+    --nyx-rgb-progress: var(--nyx-rgb-success);
+  }
+
+  &.theme-warning {
+    --nyx-c-progress: var(--nyx-c-warning);
+    --nyx-c-progress-highlight: var(--nyx-c-warning-highlight);
+    --nyx-c-progress-alt: var(--nyx-c-warning-alt);
+    --nyx-rgb-progress: var(--nyx-rgb-warning);
+  }
+
+  &.theme-danger {
+    --nyx-c-progress: var(--nyx-c-danger);
+    --nyx-c-progress-highlight: var(--nyx-c-danger-highlight);
+    --nyx-c-progress-alt: var(--nyx-c-danger-alt);
+    --nyx-rgb-progress: var(--nyx-rgb-danger);
+  }
+}
+
+@keyframes pulse {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}

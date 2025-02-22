@@ -13,7 +13,7 @@
 
 <script setup lang="ts">
 import './NyxSpinner.scss'
-import { defineProps, computed } from 'vue'
+import { computed } from 'vue'
 import { type NyxSpinnerProps } from './NyxSpinner.types'
 import { type CssVariablesDict, NyxTheme } from '@/types'
 

@@ -14,7 +14,9 @@ const props = withDefaults(defineProps<NyxSliderProps>(), {
   tooltip: 'interact'
 })
 
-const model = defineModel<T>({ required: true })
+const model = defineModel<T>({
+  required: true
+})
 
 const valMin = ref<string>(Array.isArray(model.value) ? `${model.value[0]}` : `${model.value}`)
 const valMax = ref<string>(Array.isArray(model.value) ? `${model.value[1]}` : `${model.value}`)

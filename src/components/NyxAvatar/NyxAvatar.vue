@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import './NyxAvatar.scss'
-import { defineProps, computed } from 'vue'
+import { computed } from 'vue'
 import NyxMedia from '../NyxMedia/NyxMedia.vue'
 import type { NyxAvatarProps } from './NyxAvatar.types'
 import { NyxMediaType, NyxSize } from '@/types'
