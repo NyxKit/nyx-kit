@@ -1,0 +1,19 @@
+import{x as C,G as S,d as N,m as g,e as w,p as h,f as l,l as f,A as L,n as O,T as q,o as T,t as y,q as x,H as B,b as D,z as k,u as v,r as d}from"./vue.esm-bundler-CJj2rol9.js";import{_}from"./NyxButton-BFCmXIwl.js";import{N as M,a as E,b as z}from"./common-BBDHxksy.js";import{g as P}from"./keydict-BK3rIzaC.js";import"./useNyxProps-BkF168YJ.js";var V=(e=>(e.Esc="Escape",e))(V||{});const $=(e,t)=>{const o=s=>{s.key===e&&t(s)};C(()=>{window.addEventListener("keydown",o)}),S(()=>{window.removeEventListener("keydown",o)})},j={class:"nyx-modal__content"},A={class:"nyx-modal__header"},K={class:"nyx-modal__body"},U={class:"nyx-modal__footer"},p=N({__name:"NyxModal",props:g({title:{},confirmText:{},cancelText:{default:"Close"},size:{default:M.Medium}},{modelValue:{type:Boolean,default:!1},modelModifiers:{}}),emits:g(["close","cancel","confirm","open"],["update:modelValue"]),setup(e,{emit:t}){const o=e,s=t,r=w(e,"modelValue"),n=()=>{r.value=!1,s("close")};$(V.Esc,n);const i=()=>{s("cancel"),n()},b=()=>{s("confirm"),n()};return(a,c)=>(T(),h(q,{to:"body"},[l("div",{class:O(["nyx-modal",[`size-${o.size}`,{"nyx-modal--open":r.value}]]),onClick:L(n,["self"])},[l("article",j,[l("header",A,[f(a.$slots,"header",{},()=>[l("h1",null,y(a.title),1)]),l("button",{class:"nyx-modal__close",onClick:n},"×")]),l("section",K,[f(a.$slots,"default",{},()=>[c[0]||(c[0]=x("NyxModal body"))])]),l("footer",U,[f(a.$slots,"footer",{},()=>[B(_,{theme:v(z).Default,variant:v(E).Outline,onClick:i},{default:k(()=>[x(y(o.cancelText),1)]),_:1},8,["theme","variant"]),o.confirmText?(T(),h(_,{key:0,theme:v(z).Primary,onClick:b},{default:k(()=>[x(y(a.confirmText),1)]),_:1},8,["theme"])):D("",!0)])])])],2)]))}});p.__docgenInfo={exportName:"default",displayName:"NyxModal",description:"",tags:{},props:[{name:"title",required:!1,type:{name:"string"}},{name:"confirmText",required:!1,type:{name:"string"}},{name:"cancelText",required:!1,type:{name:"string"},defaultValue:{func:!1,value:"'Close'"}},{name:"size",required:!1,type:{name:"NyxSize"},defaultValue:{func:!1,value:"NyxSize.Medium"}}],events:[{name:"close"},{name:"cancel"},{name:"confirm"},{name:"open"}],slots:[{name:"header"},{name:"default"},{name:"footer"}],sourceFiles:["/Users/arnedecant/Documents/projects/nyx-kit/src/components/NyxModal/NyxModal.vue"]};const F="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque justo enim, ultrices ac enim ut, placerat facilisis mauris. Cras luctus ante ante, viverra interdum mauris bibendum et. ",X={title:"Components/NyxModal",component:p,argTypes:{size:{control:{type:"select"},options:Object.values(M)},modelValue:{control:{type:"boolean"}}},args:{title:"My Model"}},G=e=>N({components:{NyxModal:p},setup(){const t=d(!0);return{args:e,isOpen:t,onClick:()=>t.value=!0}},template:`
+    <div>
+      <nyx-modal v-bind="args">My model</nyx-button>
+    </div>
+  `}),H=(e,t)=>()=>N({components:{NyxModal:p,NyxButton:_},setup(){const o=Object.values(t),s=a=>P(t,a),r=d(!1),n=d(o[0]),i=d(1);return{prop:e,values:o,getLabel:s,isOpen:r,openModal:(a,c)=>{n.value=a,i.value=c+1,r.value=!0},currentValue:n,lipsum:F,numLoops:i}},template:`
+    <div class="flex">
+      <nyx-button
+        v-for="(value, i) of values"
+        :key="value"
+        v-bind="{ [prop]: value }"
+        @click="openModal(value, i)"
+      >{{ getLabel(value) }}</nyx-button>
+      <nyx-modal
+        v-bind="{ [prop]: currentValue }"
+        :title="getLabel(currentValue)"
+        v-model="isOpen"
+      ><template v-for="i in numLoops">{{ lipsum }}</template></nyx-modal>
+    </div>
+  `}),m=G({}),u=H("size",M);m.parameters={...m.parameters,docs:{...m.parameters?.docs,source:{originalSource:"Template({})",...m.parameters?.docs?.source}}};u.parameters={...u.parameters,docs:{...u.parameters?.docs,source:{originalSource:"TemplateAllProp('size', NyxSize)",...u.parameters?.docs?.source}}};const Y=["Default","Sizes"];export{m as Default,u as Sizes,Y as __namedExportsOrder,X as default};
