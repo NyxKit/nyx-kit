@@ -1,7 +1,7 @@
 import { defineComponent, ref } from 'vue'
 import NyxSlider from './NyxSlider.vue'
 import type { NyxSliderProps } from './NyxSlider.types'
-import { NyxTheme } from '@/types'
+import { NyxShape, NyxTheme } from '@/types'
 
 export default {
   title: 'Components/NyxSlider',
@@ -11,6 +11,10 @@ export default {
       control: { type: 'select' },
       options: Object.values(NyxTheme),
     },
+    shape: {
+      control: { type: 'select' },
+      options: Object.values(NyxShape)
+    }
   },
   args: {}
 }

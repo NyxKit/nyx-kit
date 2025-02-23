@@ -1,9 +1,9 @@
 <script setup lang="ts" generic="T extends number | [number, number]">
-import { computed, watch, nextTick, ref, useTemplateRef } from "vue"
+import { computed, watch, ref, useTemplateRef } from "vue"
 import './NyxSlider.scss'
 import type { NyxSliderProps } from './NyxSlider.types'
 import { NyxShape, NyxTheme, type CssVariablesDict } from '@/types'
-import NyxTooltip from "../NyxTooltip/NyxTooltip.vue";
+import NyxTooltip from '../NyxTooltip/NyxTooltip.vue'
 
 type CurrentThumb = 'min'|'max'|'curr'|null
 
@@ -12,6 +12,9 @@ const props = withDefaults(defineProps<NyxSliderProps>(), {
   shape: NyxShape.Circle,
   min: 0,
   max: 100,
+  step: 1,
+  marks: 4,
+  snap: false,
   tooltip: 'interact',
   direction: 'row'
 })

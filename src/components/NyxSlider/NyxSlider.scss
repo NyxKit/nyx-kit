@@ -45,6 +45,17 @@
     }
   }
 
+  &.shape-square input[type="range"] ::-webkit-slider-thumb,
+  &.shape-square input[type="range"] ::-moz-range-track, {
+    border-radius: var(--nyx-radius-sm);
+  }
+
+  &.shape-rectangle input[type="range"]::-webkit-slider-thumb,
+  &.shape-rectangle input[type="range"]::-moz-range-track, {
+    border-radius: var(--nyx-radius-md);
+    height: calc(var(--nyx-slider-h-thumb) * 1.75);
+  }
+
   &__track {
     position: absolute;
     height: 50%;

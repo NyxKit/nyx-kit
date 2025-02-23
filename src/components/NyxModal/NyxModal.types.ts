@@ -5,6 +5,8 @@ export interface NyxModalProps {
   confirmText?: string
   cancelText?: string
   size?: NyxSize
+  static?: boolean
+  backdrop?: boolean
 }
 
 export interface NyxModalEmits {

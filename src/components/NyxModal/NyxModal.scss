@@ -63,6 +63,10 @@
     opacity: 1;
   }
 
+  &--no-backdrop::after {
+    display: none;
+  }
+
   &__content {
     z-index: 2;
     border-radius: var(--nyx-radius-md);
