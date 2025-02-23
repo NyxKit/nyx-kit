@@ -13,7 +13,7 @@ const props = withDefaults(defineProps<NyxTableProps<T>>(), {
   theme: NyxTheme.Default,
   size: NyxSize.Medium,
   variant: NyxVariant.Outline,
-  hasHeader: true,
+  header: true,
   striped: false
 })
 
@@ -52,11 +52,12 @@ const style = computed<CssVariablesDict>(() => {
       `size-${props.size}`,
       `theme-${props.theme}`,
       `variant-${props.variant}`,
-      { 'striped': striped }
+      { 'striped': striped },
+      { 'sticky': props.header === 'sticky' }
     ]"
     :style="style"
   >
-    <thead v-if="props.hasHeader">
+    <thead v-if="!!props.header">
       <tr>
         <template v-for="header in columnTitles" :key="header">
           <th>{{ header }}</th>

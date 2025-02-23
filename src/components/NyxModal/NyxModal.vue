@@ -46,7 +46,8 @@ const confirm = () => {
       class="nyx-modal"
       :class="[
         `size-${props.size}`,
-        { 'nyx-modal--open': model },
+        !!customClass && `${customClass}`,
+        { 'nyx-modal--open': model || props.static },
         { 'nyx-modal--no-backdrop': !props.backdrop }
       ]"
       @click.self="close"
