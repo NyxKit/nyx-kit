@@ -2,7 +2,7 @@
   "name": "nyx-kit",
   "homepage": "http://nyxkit.github.io/nyx-kit",
   "author": "Arne Decant <hello@arnedecant.be>",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": false,
   "license": "MIT",
   "type": "module",
@@ -20,7 +20,7 @@
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build",
     "storybook:deploy": "gh-pages -d storybook-static",
-    "prepublishOnly": "yarn build"
+    "prepublishOnly": "yarn build && yarn storybook:build && yarn storybook:deploy"
   },
   "types": "./dist/types/index.d.ts",
   "main": "./dist/index.mjs",

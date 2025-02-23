@@ -71,8 +71,8 @@
     border-color: rgba(var(--nyx-rgb-steps-complete), 1);
   }
 
-  &--readonly &__step.nyx-steps,
-  &--readonly &__step--status-current.nyx-steps {
+  &--readonly &__step.nyx-button,
+  &--readonly &__step--status-current.nyx-button {
     pointer-events: none;
   }
 
