@@ -1,98 +1,83 @@
 <script setup lang="ts">
+import './NyxSteps.scss'
 import { computed } from 'vue'
 import type { NyxStepsProps } from './NyxSteps.types'
 import NyxButton from '../NyxButton/NyxButton.vue'
-import { NyxShape } from '@/types'
+import { type CssVariablesDict, NyxShape, NyxSize, NyxTheme } from '@/types'
+import { NyxLog } from '@/classes'
 
 const props = withDefaults(defineProps<NyxStepsProps>(), {
-  completedColor: '#3498db',
-  activeColor: '#e67e22',
-  defaultColor: '#e0e0e0',
+  theme: NyxTheme.Default,
+  shape: NyxShape.Circle,
+  size: NyxSize.Medium,
   readonly: true,
   direction: 'row'
 })
 
-const model = defineModel<number>({ default: 0 })
+const model = defineModel<number|string>({ default: 0 })
 
-const stepStatus = (index: number) => {
-  if (index < model.value) return props.completedColor
-  if (index === model.value) return props.activeColor
-  return props.defaultColor
-}
+const currentStep = computed(() => {
+  if (typeof model.value === 'number') return model.value
+  if (Array.isArray(props.steps)) return props.steps.indexOf(model.value)
+  NyxLog.error('NyxSteps', 'Incorrect type combination of modelValue and steps')
+  return 0
+})
 
 const numSteps = computed(() => Array.isArray(props.steps) ? props.steps.length - 1 : props.steps - 1)
 
+const cssVars = computed<CssVariablesDict>(() => ({
+  '--current-step': currentStep.value,
+  '--total-steps': numSteps.value
+}))
+
+const getStepStatus = (index: number): string => {
+  if (index < currentStep.value) return 'complete'
+  if (index > currentStep.value) return 'incomplete'
+  return 'current'
+}
+
+const getButtonTheme = (index: number): NyxTheme => {
+  if (index < currentStep.value) return props.themeComplete ?? props.theme
+  if (index > currentStep.value) return props.themeIncomplete ?? props.theme
+  return props.theme
+}
+
 const onClick = (index: number) => {
   if (props.readonly) return
-  model.value = index
+  if (typeof model.value === 'number') {
+    model.value = index
+  } else if (Array.isArray(props.steps)) {
+    model.value = props.steps[index]
+  } else {
+    NyxLog.error('NyxSteps', 'Incorrect type combination of modelValue and steps')
+    model.value = index
+  }
 }
 
 </script>
 
 <template>
-  <div class="nyx-steps-container">
-    <div class="nyx-steps">
-      <div
-        v-for="(step, index) in steps"
-        :key="index"
-        class="nyx-step"
-      >
-        <NyxButton
-          class="nyx-step-circle"
-          :shape="NyxShape.Circle"
-          :style="{ backgroundColor: stepStatus(index) }"
-          @click="onClick(index)"
-        >{{ index + 1 }}</NyxButton>
-        <div v-if="index < numSteps" class="nyx-step-line" :style="{ backgroundColor: stepStatus(index) }"></div>
-      </div>
-    </div>
+  <div
+    class="nyx-steps"
+    :class="[
+      `theme-${props.theme}`,
+      `size-${props.size}`,
+      props.themeComplete && `theme-complete-${props.themeComplete}`,
+      props.themeIncomplete && `theme-incomplete-${props.themeIncomplete}`,
+      { 'nyx-steps--readonly': props.readonly },
+      { 'nyx-steps--column': props.direction === 'column' }
+    ]"
+    :style="cssVars"
+  >
+    <NyxButton
+      v-for="(step, index) in steps"
+      :key="index"
+      class="nyx-steps__step"
+      :class="`nyx-steps__step--status-${ getStepStatus(index) }`"
+      :theme="getButtonTheme(index)"
+      :shape="props.shape"
+      :size="props.size"
+      @click="onClick(index)"
+    ><slot :name="`step-${step}`" :step>{{ index + 1 }}</slot></NyxButton>
   </div>
 </template>
-
-<style scoped>
-.nyx-steps-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-}
-
-.nyx-steps {
-  display: flex;
-  align-items: center;
-  position: relative;
-}
-
-.nyx-step {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-}
-
-.nyx-step-circle {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #fff;
-  font-weight: bold;
-}
-
-.nyx-step-label {
-  margin-top: 8px;
-  font-size: 14px;
-  text-align: center;
-}
-
-.nyx-step-line {
-  position: absolute;
-  height: 4px;
-  width: 50px;
-  top: 50%;
-  left: calc(100% + 5px);
-  transform: translateY(-50%);
-}
-</style>

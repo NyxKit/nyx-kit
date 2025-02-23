@@ -9,30 +9,30 @@ export default {
   title: 'Components/NyxSteps',
   component: NyxSteps,
   argTypes: {
-    // theme: {
-    //   control: { type: 'select' },
-    //   options: Object.values(NyxTheme),
-    // },
-    // gradient: {
-    //   control: { type: 'select' },
-    //   options: [true, false, ...Object.values(NyxTheme)]
-    // },
-    // backlight: {
-    //   control: { type: 'select' },
-    //   options: [true, false, ...Object.values(NyxTheme)]
-    // },
-    // variant: {
-    //   control: { type: 'select' },
-    //   options: Object.values(NyxVariant),
-    // },
-    // size: {
-    //   control: { type: 'select' },
-    //   options: Object.values(NyxSize),
-    // },
-    // shape: {
-    //   control: { type: 'select' },
-    //   options: Object.values(NyxShape),
-    // },
+    theme: {
+      control: { type: 'select' },
+      options: Object.values(NyxTheme),
+    },
+    themeComplete: {
+      control: { type: 'select' },
+      options: Object.values(NyxTheme),
+    },
+    themeIncomplete: {
+      control: { type: 'select' },
+      options: Object.values(NyxTheme),
+    },
+    size: {
+      control: { type: 'select' },
+      options: Object.values(NyxSize),
+    },
+    shape: {
+      control: { type: 'select' },
+      options: Object.values(NyxShape),
+    },
+    direction: {
+      control: { type: 'select' },
+      options: ['row', 'column']
+    },
     modelValue: {
       control: { type: 'number' }
     }
@@ -53,4 +53,22 @@ const Template = (args: NyxStepsProps) => defineComponent({
   `,
 })
 
+const TemplateWithSlots = () => () => defineComponent({
+  components: { NyxSteps },
+  setup () {
+    const steps = ['one', 'two', 'three', 'four', 'five']
+    return { steps }
+  },
+  template: `
+    <nyx-steps :steps="steps" :readonly="false">
+      <template v-slot:step-one #step="step"><span style="color: #EA6C92">L</span></template>
+      <template v-slot:step-two #step="step"><span style="color: #F0A573">O</span></template>
+      <template v-slot:step-three #step="step"><span style="color: #FFF6A3">R</span></template>
+      <template v-slot:step-four #step="step"><span style="color: #ABEDA1">E</span></template>
+      <template v-slot:step-five #step="step"><span style="color: #9EB8FF">M</span></template>
+    </nyx-steps>
+  `,
+})
+
 export const Default = Template({ steps })
+export const WithSlots = TemplateWithSlots()
