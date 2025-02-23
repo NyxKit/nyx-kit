@@ -17,11 +17,9 @@ export type NyxKitOptions = {}
  * => KisweComponent as unknown as DefineComponent
  */
 
-const NyxKit = {
+export const NyxKit = {
   install: (app: App, options?: NyxKitOptions) => {
     app.directive('click-outside', vClickOutside)
     app.provide('nyxkit', options)
   }
 }
-
-export default NyxKit
