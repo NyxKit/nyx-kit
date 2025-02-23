@@ -5,7 +5,7 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 import { PreRenderedAsset, PreRenderedChunk } from 'rollup'
 import dts from 'vite-plugin-dts'
 
-const assetFileNamesFn = (_chunkInfo: PreRenderedAsset, ext: string) => `assets/[name].${ ext }`
+const assetFileNamesFn = (_chunkInfo: PreRenderedAsset) => `assets/[name].[ext]`
 const chunkFileNamesFn = (chunkInfo: PreRenderedChunk, ext: string) => {
   const fileName = `[name].[hash].${ ext }`
   if (chunkInfo.facadeModuleId?.endsWith('.svg')) {
@@ -21,7 +21,7 @@ export default defineConfig({
     target: 'ESNext',
     lib: {
       entry: {
-        index: fileURLToPath(new URL('./src/library.ts', import.meta.url)),
+        index: fileURLToPath(new URL('./src/main.ts', import.meta.url)),
         classes: fileURLToPath(new URL('./src/classes/index.ts', import.meta.url)),
         components: fileURLToPath(new URL('./src/components/index.ts', import.meta.url)),
         compositions: fileURLToPath(new URL('./src/compositions/index.ts', import.meta.url)),
@@ -39,7 +39,7 @@ export default defineConfig({
           dir: fileURLToPath(new URL('./dist', import.meta.url)),
           entryFileNames: '[name].mjs',
           chunkFileNames: (chunkInfo: PreRenderedChunk) => chunkFileNamesFn(chunkInfo, 'mjs'),
-          assetFileNames: (chunkInfo: PreRenderedAsset) => assetFileNamesFn(chunkInfo, 'mjs'),
+          assetFileNames: assetFileNamesFn,
           preserveModules: false,
           globals: { vue: 'vue' }
         }
@@ -94,8 +94,8 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        api: 'modern'
-        // additionalData: `@use "@/styles/index.scss";`
+        api: 'modern',
+        additionalData: `@use "@/styles/index.css";`
       },
     },
   },

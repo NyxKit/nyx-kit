@@ -1,9 +1,10 @@
 {
   "name": "nyx-kit",
   "homepage": "http://nyxkit.github.io/nyx-kit",
-  "author": "Arne Decant",
-  "version": "1.0.0",
+  "author": "Arne Decant <hello@arnedecant.be>",
+  "version": "1.0.1",
   "private": false,
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -18,12 +19,57 @@
     "lint": "run-s lint:*",
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build",
-    "storybook:deploy": "gh-pages -d storybook-static"
+    "storybook:deploy": "gh-pages -d storybook-static",
+    "prepublishOnly": "yarn build"
+  },
+  "types": "./dist/types/index.d.ts",
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "exports": {
+    ".": {
+      "import": "./dist/index.es.js",
+      "types": "./dist/types/index.d.ts"
+    },
+    "./classes": {
+      "import": "./dist/classes.es.js",
+      "types": "./dist/types/classes.d.ts"
+    },
+    "./components": {
+      "import": "./dist/components.es.js",
+      "types": "./dist/types/components.d.ts"
+    },
+    "./compositions": {
+      "import": "./dist/compositions.es.js",
+      "types": "./dist/types/compositions.d.ts"
+    },
+    "./directives": {
+      "import": "./dist/directives.es.js",
+      "types": "./dist/types/directives.d.ts"
+    },
+    "./types": {
+      "import": "./dist/types.es.js",
+      "types": "./dist/types/types.d.ts"
+    },
+    "./utils": {
+      "import": "./dist/utils.es.js",
+      "types": "./dist/types/utils.d.ts"
+    },
+    "./style.css": {
+      "import": "./dist/assets/nyx-kit.css"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "URL": "https://github.com/NyxKit/nyx-kit"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "dependencies": {
-    "pinia": "^2.3.1",
-    "vue": "^3.5.13",
-    "vue-router": "^4.5.0"
+    "vue": "^3.5.13"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "3.2.4",
@@ -64,6 +110,10 @@
     "vite-plugin-vue-devtools": "^7.7.1",
     "vitest": "^3.0.5",
     "vue-tsc": "^2.2.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0",
+    "vue": "^3.0.0"
   },
   "eslintConfig": {
     "extends": [
