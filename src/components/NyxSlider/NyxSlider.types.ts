@@ -1,4 +1,4 @@
-import type { NyxTheme } from '@/types'
+import type { NyxShape, NyxTheme } from '@/types'
 
 export interface NyxSliderProps {
   min?: number|string
@@ -6,4 +6,6 @@ export interface NyxSliderProps {
   step?: number|string
   tooltip?: 'never'|'always'|'interact'
   theme?: NyxTheme
+  shape?: NyxShape
+  direction?: 'row'|'column'
 }

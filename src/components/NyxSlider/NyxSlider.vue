@@ -2,16 +2,18 @@
 import { computed, watch, nextTick, ref, useTemplateRef } from "vue"
 import './NyxSlider.scss'
 import type { NyxSliderProps } from './NyxSlider.types'
-import { NyxTheme, type CssVariablesDict } from '@/types'
+import { NyxShape, NyxTheme, type CssVariablesDict } from '@/types'
 import NyxTooltip from "../NyxTooltip/NyxTooltip.vue";
 
 type CurrentThumb = 'min'|'max'|'curr'|null
 
 const props = withDefaults(defineProps<NyxSliderProps>(), {
   theme: NyxTheme.Default,
+  shape: NyxShape.Circle,
   min: 0,
   max: 100,
-  tooltip: 'interact'
+  tooltip: 'interact',
+  direction: 'row'
 })
 
 const model = defineModel<T>({
@@ -64,7 +66,11 @@ const cssVars = computed<CssVariablesDict>(() => {
 </script>
 
 <template>
-  <div class="nyx-slider" :class="[`theme-${props.theme}`]" :style="cssVars">
+  <div
+    class="nyx-slider"
+    :class="[`theme-${props.theme}`, `shape-${props.shape}`]"
+    :style="cssVars"
+  >
     <div class="nyx-slider__track" />
     <template v-if="Array.isArray(model)">
       <div class="nyx-slider__track nyx-slider__track--active" />

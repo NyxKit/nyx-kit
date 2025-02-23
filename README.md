@@ -26,6 +26,7 @@ For more detailed information, usage examples, and live demos of components, vis
   - `type="datetime"`: Support a custom date/type system (module?).
   - `type="color"`: Support a custom color picker (module?).
 - `NyxTable`: Add sorting.
+- `NyxSlider`: Add direction (row,column), add shape (thumb), add track highlight between min and value.
 
 ### New Core Components
 - `NyxDropdown`: A menu for selecting one option from a list.
