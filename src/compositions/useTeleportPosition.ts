@@ -124,9 +124,12 @@ const useTeleportPosition = (
     computedTop = clamp(computedTop, 0, window.innerHeight - absHeight)
     computedLeft = clamp(computedLeft, 0, window.innerWidth - computedWidth)
 
-    cssVariables.value['--top'] = `${computedTop}px`
-    cssVariables.value['--left'] = `${computedLeft}px`
-    cssVariables.value['--width'] = isEqualWidth ? `${relWidth}px` : 'auto'
+    cssVariables.value = {
+      ...cssVariables.value,
+      '--top': `${computedTop}px`,
+      '--left': `${computedLeft}px`,
+      '--width': isEqualWidth ? `${relWidth}px` : 'auto'
+    }
   }
 
   watch([isUpdateAllowed, elRelative, elAbsolute, position], updateCssVariables, { immediate: true })

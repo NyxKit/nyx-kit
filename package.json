@@ -1,8 +1,9 @@
 {
   "name": "nyx-kit",
   "homepage": "http://nyxkit.github.io/nyx-kit",
+  "author": "Arne Decant",
   "version": "1.0.0",
-  "private": true,
+  "private": false,
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -59,6 +60,7 @@
     "storybook-dark-mode": "^4.0.2",
     "typescript": "~5.7.3",
     "vite": "^6.0.11",
+    "vite-plugin-dts": "^4.5.0",
     "vite-plugin-vue-devtools": "^7.7.1",
     "vitest": "^3.0.5",
     "vue-tsc": "^2.2.0"
