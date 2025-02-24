@@ -23,7 +23,6 @@ const useTeleportPosition = (
     const gapValue = window
       .getComputedStyle(document.body)
       .getPropertyValue(`--nyx-gap-${ options.gap.value }`) ?? '0'
-    console.log('gapValue', gapValue)
     if (gapValue.endsWith('rem')) {
       return parseFloat(gapValue) * 16 // Convert rem to pixels
     }
@@ -44,8 +43,6 @@ const useTeleportPosition = (
 
     const { top, bottom, left, right, width: relWidth, height: relHeight } = elRelative.value.getBoundingClientRect()
     const { width: absWidth, height: absHeight } = elAbsolute.value.getBoundingClientRect()
-
-    console.log('>>', { top, bottom, left, right, relWidth, relHeight })
 
     const computedWidth = isEqualWidth ? relWidth : absWidth
 

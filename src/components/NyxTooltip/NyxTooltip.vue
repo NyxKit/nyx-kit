@@ -37,10 +37,7 @@ const onClick = () => props.trigger === 'click' && open()
 const onClickOutside = () => props.trigger !== 'manual' && close()
 
 const forceUpdate = computed(() => props.forceUpdate)
-watch(forceUpdate, () => {
-  console.log('force')
-  updateCssVariables()
-})
+watch(forceUpdate, () => updateCssVariables())
 
 </script>
 

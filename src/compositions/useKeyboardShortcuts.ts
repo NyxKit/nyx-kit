@@ -24,7 +24,6 @@ const useKeyboardShortcuts = (shortcuts: Record<string, (event: KeyboardEvent) =
     const key = getNormalizedKeyName(event.key)
     keyHistory.add(key)
     const combination = Array.from(keyHistory).sort(keySort).join('+')
-    console.log('event', { key: event.key, keyHistory, combination })
 
     if (shortcuts[combination]) {
       event.preventDefault()
