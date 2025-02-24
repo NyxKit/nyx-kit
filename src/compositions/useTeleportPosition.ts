@@ -13,7 +13,7 @@ const useTeleportPosition = (
   elAbsolute: Ref<HTMLElement | null>,
   options?: TeleportPositionOptions
 ) => {
-  const position = options?.position ?? ref(NyxPosition.BottomCenter)
+  const position = options?.position ?? ref(NyxPosition.Bottom)
   const isEqualWidth = !!options?.isEqualWidth
   const isUpdateAllowed = computed(() => options?.isUpdateAllowed?.value !== false)
 
