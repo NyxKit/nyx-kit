@@ -50,19 +50,19 @@
     visibility: visible;
   }
 
-  &[data-position^="top-"] {
+  &[data-position^="top"] {
     transform: translate(0, -2rem);
   }
 
-  &[data-position^="bottom-"]  {
+  &[data-position^="bottom"]  {
     transform: translate(0, 2rem);
   }
 
-  &[data-position^="left-"] {
+  &[data-position^="left"] {
     transform: translate(-2rem, 0);
   }
 
-  &[data-position^="right-"] {
+  &[data-position^="right"] {
     transform: translate(2rem, 0);
   }
 
@@ -78,13 +78,13 @@
     pointer-events: none;
   }
 
-  &[data-position^="top-"] &-wrapper::after {
+  &[data-position^="top"] &-wrapper::after {
     border-color: var(--nyx-c-tooltip-bg) transparent transparent transparent;
     border-width: var(--nyx-w-tooltip-caret) var(--nyx-w-tooltip-caret) 0 var(--nyx-w-tooltip-caret);
     top: 100%;
   }
 
-  &[data-position^="bottom-"] &-wrapper::after {
+  &[data-position^="bottom"] &-wrapper::after {
     border-color: transparent transparent var(--nyx-c-tooltip-bg) transparent;
     border-width: 0 var(--nyx-w-tooltip-caret) var(--nyx-w-tooltip-caret) var(--nyx-w-tooltip-caret);
     bottom: 100%;
@@ -98,26 +98,26 @@
     right: var(--nyx-gap-tooltip-caret);
   }
 
-  &[data-position$="-center"] &-wrapper::after {
+  &[data-position="top"] &-wrapper::after,
+  &[data-position="bottom"] &-wrapper::after {
     left: 50%;
     transform: translateX(-50%);
   }
 
-  &[data-position^="left-"] &-wrapper::after {
+  &[data-position^="left"] &-wrapper::after {
     border-color: transparent transparent transparent var(--nyx-c-tooltip-bg);
     border-width: var(--nyx-w-tooltip-caret) 0 var(--nyx-w-tooltip-caret) var(--nyx-w-tooltip-caret);
     left: 100%;
   }
 
-  &[data-position^="right-"] &-wrapper::after {
+  &[data-position^="right"] &-wrapper::after {
     border-color: transparent var(--nyx-c-tooltip-bg) transparent transparent;
     border-width: var(--nyx-w-tooltip-caret) var(--nyx-w-tooltip-caret) var(--nyx-w-tooltip-caret) 0;
     right: 100%;
   }
 
-  &[data-position$="-top"] &-wrapper::after,
-  &[data-position$="-bottom"] &-wrapper::after,
-  &[data-position$="-middle"] &-wrapper::after {
+  &[data-position^="left"] &-wrapper::after,
+  &[data-position^="right"] &-wrapper::after {
     top: 50%;
     transform: translateY(-50%);
   }

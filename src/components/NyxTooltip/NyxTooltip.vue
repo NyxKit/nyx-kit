@@ -9,7 +9,7 @@ const props = withDefaults(defineProps<NyxTooltipProps>(), {
   theme: NyxTheme.Default,
   size: NyxSize.Medium,
   variant: NyxVariant.Solid,
-  position: NyxPosition.TopCenter,
+  position: NyxPosition.Top,
   disabled: false,
   trigger: 'hover',
   forceUpdate: false

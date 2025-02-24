@@ -102,7 +102,7 @@
       border-bottom-color: var(--nyx-c-select-highlight);
     }
 
-    &--open.nyx-select__control--top-center {
+    &--open.nyx-select__control--top {
       border-top-right-radius: 0;
       border-top-left-radius: 0;
       border-bottom-right-radius: var(--nyx-radius-select);
@@ -153,24 +153,24 @@
       pointer-events: all;
     }
 
-    &--top-center {
+    &--top {
       border-top-left-radius: var(--nyx-radius-select);
       border-top-right-radius: var(--nyx-radius-select);
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
     }
   }
-  
+
   &__option {
     padding: var(--nyx-pad-select);
     cursor: pointer;
   }
-  
+
   &__option:hover,
   &__option--selected {
     background-color: var(--nyx-c-select-highlight);
   }
-  
+
   &__hidden {
     display: none;
   }

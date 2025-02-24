@@ -4,16 +4,16 @@ export type CssVariablesDict = {}|{
 }
 
 export enum NyxPosition {
+  Top = 'top',
   TopLeft = 'top-left',
-  TopCenter = 'top-center',
   TopRight = 'top-right',
+  Bottom = 'bottom',
   BottomLeft = 'bottom-left',
-  BottomCenter = 'bottom-center',
   BottomRight = 'bottom-right',
   // LeftTop = 'left-top',
-  LeftMiddle = 'left-middle',
+  Left = 'left',
   // LeftBottom = 'left-bottom',
   // RightTop = 'right-top',
-  RightMiddle = 'right-middle',
+  Right = 'right',
   // RightBottom = 'right-bottom'
 }

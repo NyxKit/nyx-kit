@@ -65,18 +65,18 @@ const useTeleportPosition = (
           return hasSpaceBelow ? pos : NyxPosition.TopLeft
         case NyxPosition.BottomRight:
           return hasSpaceBelow ? pos : NyxPosition.TopRight
-        case NyxPosition.BottomCenter:
-          return hasSpaceBelow ? pos : NyxPosition.TopCenter
+        case NyxPosition.Bottom:
+          return hasSpaceBelow ? pos : NyxPosition.Top
         case NyxPosition.TopLeft:
           return hasSpaceAbove ? pos : NyxPosition.BottomLeft
         case NyxPosition.TopRight:
           return hasSpaceAbove ? pos : NyxPosition.BottomRight
-        case NyxPosition.TopCenter:
-          return hasSpaceAbove ? pos : NyxPosition.BottomCenter
-        case NyxPosition.LeftMiddle:
-          return hasSpaceLeft ? pos : NyxPosition.RightMiddle
-        case NyxPosition.RightMiddle:
-          return hasSpaceRight ? pos : NyxPosition.LeftMiddle
+        case NyxPosition.Top:
+          return hasSpaceAbove ? pos : NyxPosition.Bottom
+        case NyxPosition.Left:
+          return hasSpaceLeft ? pos : NyxPosition.Right
+        case NyxPosition.Right:
+          return hasSpaceRight ? pos : NyxPosition.Left
         default:
           return pos
       }
@@ -94,7 +94,7 @@ const useTeleportPosition = (
         computedTop = bottom + gap.value
         computedLeft = right - computedWidth
         break
-      case NyxPosition.BottomCenter:
+      case NyxPosition.Bottom:
         computedTop = bottom + gap.value
         computedLeft = left + (relWidth - computedWidth) / 2
         break
@@ -106,15 +106,15 @@ const useTeleportPosition = (
         computedTop = top - absHeight - gap.value
         computedLeft = right - computedWidth
         break
-      case NyxPosition.TopCenter:
+      case NyxPosition.Top:
         computedTop = top - absHeight - gap.value
         computedLeft = left + (relWidth - computedWidth) / 2
         break
-      case NyxPosition.LeftMiddle:
+      case NyxPosition.Left:
         computedTop = top + (relHeight - absHeight) / 2
         computedLeft = left - absWidth - gap.value
         break
-      case NyxPosition.RightMiddle:
+      case NyxPosition.Right:
         computedTop = top + (relHeight - absHeight) / 2
         computedLeft = right + gap.value
         break
