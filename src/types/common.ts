@@ -41,3 +41,8 @@ export interface NyxBreadcrumb {
   label: string,
   href?: string
 }
+
+export enum NyxTabsVariant {
+  Classic = 'classic',
+  Modern = 'modern'
+}

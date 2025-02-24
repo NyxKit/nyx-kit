@@ -94,6 +94,7 @@ code,
 kbd,
 samp {
   font-family: var(--nyx-font-family-mono);
+  font-size: var(--nyx-font-size-sm);
 }
 
 img,
@@ -207,4 +208,11 @@ fieldset {
   clip-path: inset(50%);
   height: 1px;
   width: 1px;
+}
+
+code {
+  display: block;
+  padding: var(--nyx-pad-md);
+  background-color: var(--nyx-c-bg-soft);
+  margin: var(--nyx-pad-md) 0;
 }

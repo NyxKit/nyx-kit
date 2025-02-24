@@ -2,7 +2,7 @@ import { NyxLog } from '@/classes'
 import { NyxVariant, type KeyDict } from '@/types'
 import { computed } from 'vue'
 
-const propKeys = ['theme', 'size', 'shape', 'variant', 'gradient', 'backlight']
+const propKeys = ['theme', 'size', 'shape', 'variant', 'gradient', 'backlight', 'position']
 
 const useNyxProps = (props: KeyDict<unknown>, origin: string = 'Nyx') => {
   const gradient = computed(() => {
