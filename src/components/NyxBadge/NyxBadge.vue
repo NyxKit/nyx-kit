@@ -2,7 +2,6 @@
 import './NyxBadge.scss'
 import { NyxSize, NyxVariant, NyxTheme, NyxShape } from '@/types'
 import type { NyxBadgeProps, NyxBadgeEmits } from './NyxBadge.types'
-import { computed, getCurrentInstance } from 'vue'
 import NyxButton from '../NyxButton/NyxButton.vue'
 
 const props = withDefaults(defineProps<NyxBadgeProps>(), {
