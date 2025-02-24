@@ -31,7 +31,6 @@ For more detailed information, usage examples, and live demos of components, vis
 ### New Core Components
 - `NyxDropdown`: A menu for selecting one option from a list.
 - `NyxAccordion`: A collapsible container for displaying content in an expandable/collapsible format.
-- `NyxTabs`: A tabbed navigation component for switching between sections.
 - `NyxLayout`: A responsive layout system. Default is "grid".
 - `NyxToast`: A temporary notification popup.
 - `NyxSkeleton`: A placeholder loading animation for components.

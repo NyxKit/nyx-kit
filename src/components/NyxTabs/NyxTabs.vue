@@ -54,9 +54,9 @@ const cssVars = computed(() => ({
         class="nyx-tabs__tab"
         :class="{ 'active': tab === currentTab }"
       >
-        <slot :name="`tab-content-${tab}`">
+        <slot :name="`tab-${tab}`">
           <p>This tab has no content. Add content by using the following template.</p>
-          <code>{{ `<template v-slot:tab-content-${tab}>Your content here</template>` }}</code>
+          <code>{{ `<template v-slot:tab-${tab}>Your content here</template>` }}</code>
         </slot>
       </div>
     </div>
