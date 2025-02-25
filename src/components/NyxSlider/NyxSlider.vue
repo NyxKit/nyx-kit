@@ -2,91 +2,84 @@
 import './NyxSlider.scss'
 import { ref, computed, onBeforeUnmount } from 'vue'
 import type { NyxSliderProps } from './NyxSlider.types'
-import { NyxShape, NyxTheme } from '@/types'
+import { NyxShape, NyxTheme, roundToStep } from '@/types'
+import NyxTooltip from '../NyxTooltip/NyxTooltip.vue'
+import useNyxProps from '@/compositions/useNyxProps'
 
 const props = withDefaults(defineProps<NyxSliderProps>(), {
   theme: NyxTheme.Default,
   shape: NyxShape.Circle,
   min: 0,
   max: 100,
-  step: 1,
-  marks: 4,
-  snap: false,
   tooltip: 'interact',
   direction: 'row'
 })
 
-const model = defineModel<number|number[]>()
+const model = defineModel<number | [number, number]>()
 
-const emit = defineEmits<{
-  (e: 'update:modelValue', value: number | [number, number]): void
-}>()
-
-// Ref for the track element
 const track = ref<HTMLDivElement | null>(null)
-// Ref to keep track of the currently dragging thumb (0 or 1)
 const draggingThumb = ref<number | null>(null)
 
-// Determine whether we are in range mode (two values) or single value mode.
 const isRange = computed(() => Array.isArray(model.value))
 
-// Extract first value (or only value)
 const value1 = computed<number>(() => {
   return isRange.value ? (model.value as [number, number])[0] : model.value as number
 })
-// In range mode, extract the second value.
-const value2 = computed<number|null>(() => {
+
+const value2 = computed<number | null>(() => {
   return isRange.value ? (model.value as [number, number])[1] : null
 })
 
-// Calculate the thumb positions as a percentage of the track width.
-const thumbPosition1 = computed(() => {
-  return ((value1.value - props.min) / (props.max - props.min)) * 100
-})
-const thumbPosition2 = computed(() => {
-  if (!isRange.value) return 0
-  return (((value2.value as number) - props.min) / (props.max - props.min)) * 100
-})
+const thumbPosition1 = computed(() => ((value1.value - props.min) / (props.max - props.min)) * 100)
+const thumbPosition2 = computed(() => (!isRange.value ? 0 : (((value2.value as number) - props.min) / (props.max - props.min)) * 100))
 
-// Start dragging a thumb.
-function startDrag(thumbIndex: number, event: MouseEvent) {
+const snapToStep = (value: number): number => {
+  if (!props.step) return value
+  return roundToStep(value, props.step, props.min)
+}
+
+const updateValue = (index: number, newValue: number) => {
+  newValue = snapToStep(newValue)
+
+  if (isRange.value) {
+    let newValues: [number, number] = [...(model.value as [number, number])]
+    newValues[index] = newValue
+
+    if (newValues[0] > newValues[1]) {
+      newValues = [newValues[1], newValues[0]]
+      draggingThumb.value = draggingThumb.value === 0 ? 1 : 0
+    }
+
+    model.value = newValues
+  } else {
+    model.value = newValue
+  }
+}
+
+const startDrag = (thumbIndex: number, event: MouseEvent) => {
   event.preventDefault()
   draggingThumb.value = thumbIndex
   document.addEventListener('mousemove', onDrag)
   document.addEventListener('mouseup', stopDrag)
 }
 
-// Handle mouse movements and update the slider value(s).
-function onDrag(event: MouseEvent) {
+const onDrag = (event: MouseEvent) => {
   if (draggingThumb.value === null || !track.value) return
   const rect = track.value.getBoundingClientRect()
   let newPosition = (event.clientX - rect.left) / rect.width
   newPosition = Math.min(Math.max(newPosition, 0), 1)
   const newValue = props.min + newPosition * (props.max - props.min)
 
-  if (isRange.value) {
-    // Copy current values and update the dragging thumb.
-    const newValues: [number, number] = [...(model.value as [number, number])]
-    if (draggingThumb.value === 0) {
-      newValues[0] = Math.min(newValue, newValues[1])
-    } else {
-      newValues[1] = Math.max(newValue, newValues[0])
-    }
-    emit('update:modelValue', newValues)
-  } else {
-    emit('update:modelValue', newValue)
-  }
+  updateValue(draggingThumb.value, newValue)
 }
 
-// Stop dragging and clean up event listeners.
-function stopDrag() {
+const stopDrag = () => {
   document.removeEventListener('mousemove', onDrag)
   document.removeEventListener('mouseup', stopDrag)
   draggingThumb.value = null
 }
 
-// When clicking on the track, move the closest thumb to the click position.
-function onTrackMouseDown(event: MouseEvent) {
+const onTrackMouseDown = (event: MouseEvent) => {
   if (!track.value) return
   const rect = track.value.getBoundingClientRect()
   let clickPosition = (event.clientX - rect.left) / rect.width
@@ -96,20 +89,44 @@ function onTrackMouseDown(event: MouseEvent) {
   if (isRange.value) {
     const distToFirst = Math.abs(newValue - value1.value)
     const distToSecond = Math.abs(newValue - (value2.value as number))
-    const thumbIndex = distToFirst < distToSecond ? 0 : 1
-    const newValues: [number, number] = [...(model.value as [number, number])]
-    if (thumbIndex === 0) {
-      newValues[0] = Math.min(newValue, newValues[1])
-    } else {
-      newValues[1] = Math.max(newValue, newValues[0])
-    }
-    emit('update:modelValue', newValues)
+    let thumbIndex = distToFirst < distToSecond ? 0 : 1
+
+    updateValue(thumbIndex, newValue)
+    draggingThumb.value = thumbIndex
   } else {
-    emit('update:modelValue', newValue)
+    model.value = newValue
   }
 }
 
-// Clean up the event listeners when the component is unmounted.
+const onKeyDown = (event: KeyboardEvent, index: number) => {
+  let newValue = isRange.value ? (model.value as [number, number])[index] : (model.value as number)
+  const step = props.step ?? 1
+
+  switch (event.key) {
+    case 'ArrowLeft':
+    case 'ArrowDown':
+      newValue = Math.max(props.min, newValue - step)
+      break
+    case 'ArrowRight':
+    case 'ArrowUp':
+      newValue = Math.min(props.max, newValue + step)
+      break
+    case 'Home':
+      newValue = props.min
+      break
+    case 'End':
+      newValue = props.max
+      break
+    default:
+      return
+  }
+
+  event.preventDefault()
+  updateValue(index, newValue)
+}
+
+const { classList } = useNyxProps(props)
+
 onBeforeUnmount(() => {
   document.removeEventListener('mousemove', onDrag)
   document.removeEventListener('mouseup', stopDrag)
@@ -119,19 +136,64 @@ onBeforeUnmount(() => {
 <template>
   <div
     class="nyx-slider"
+    :class="classList"
     ref="track"
     @mousedown="onTrackMouseDown"
   >
-    <div
-      class="nyx-slider__thumb"
-      :style="{ left: thumbPosition1 + '%' }"
-      @mousedown="(e) => startDrag(0, e)"
-    ></div>
-    <div
-      v-if="isRange"
-      class="nyx-slider__thumb"
-      :style="{ left: thumbPosition2 + '%' }"
-      @mousedown="(e) => startDrag(1, e)"
-    ></div>
+    <!-- First Thumb -->
+    <input
+      type="range"
+      :min="props.min"
+      :max="props.max"
+      :step="props.step || 'any'"
+      v-model="model"
+      @keydown="(e) => onKeyDown(e, 0)"
+      aria-label="Slider value"
+      :aria-valuenow="value1"
+      :aria-valuemin="props.min"
+      :aria-valuemax="props.max"
+      class="sr-only"
+    />
+    <NyxTooltip :text="value1">
+      <div
+        class="nyx-slider__thumb"
+        :style="{ left: thumbPosition1 + '%' }"
+        role="slider"
+        tabindex="0"
+        :aria-valuenow="value1"
+        :aria-valuemin="props.min"
+        :aria-valuemax="props.max"
+        @mousedown="(e) => startDrag(0, e)"
+        @keydown="(e) => onKeyDown(e, 0)"
+      ></div>
+    </NyxTooltip>
+
+    <!-- Second Thumb (Only if range mode) -->
+    <template v-if="isRange && Array.isArray(model) && model[1]">
+      <input
+        type="range"
+        :min="props.min"
+        :max="props.max"
+        :step="props.step || 'any'"
+        v-model="model[1]"
+        @keydown="(e) => onKeyDown(e, 1)"
+        aria-label="Slider second value"
+        :aria-valuenow="value2 ?? undefined"
+        :aria-valuemin="props.min"
+        :aria-valuemax="props.max"
+        class="sr-only"
+      />
+      <div
+        class="nyx-slider__thumb"
+        :style="{ left: thumbPosition2 + '%' }"
+        role="slider"
+        tabindex="0"
+        :aria-valuenow="value2 ?? undefined"
+        :aria-valuemin="props.min"
+        :aria-valuemax="props.max"
+        @mousedown="(e) => startDrag(1, e)"
+        @keydown="(e) => onKeyDown(e, 1)"
+      ></div>
+    </template>
   </div>
 </template>

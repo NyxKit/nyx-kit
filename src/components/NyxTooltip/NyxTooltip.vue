@@ -63,8 +63,7 @@ watch(forceUpdate, () => updateCssVariables())
         ref="elTooltipContent"
       >
         <div class="nyx-tooltip__content-wrapper">
-          <span v-if="props.text">{{ props.text }}</span>
-          <slot name="tooltip-content" v-else>NyxTooltip</slot>
+          <slot name="tooltip-content"><span>{{ props.text }}</span></slot>
         </div>
       </div>
     </Teleport>
