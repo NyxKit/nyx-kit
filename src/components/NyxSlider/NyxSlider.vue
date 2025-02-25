@@ -3,7 +3,6 @@ import './NyxSlider.scss'
 import { ref, computed, onBeforeUnmount } from 'vue'
 import type { NyxSliderProps } from './NyxSlider.types'
 import { NyxShape, NyxTheme, roundToStep } from '@/types'
-import NyxTooltip from '../NyxTooltip/NyxTooltip.vue'
 import useNyxProps from '@/compositions/useNyxProps'
 
 const props = withDefaults(defineProps<NyxSliderProps>(), {
@@ -154,19 +153,17 @@ onBeforeUnmount(() => {
       :aria-valuemax="props.max"
       class="sr-only"
     />
-    <NyxTooltip :text="value1">
-      <div
-        class="nyx-slider__thumb"
-        :style="{ left: thumbPosition1 + '%' }"
-        role="slider"
-        tabindex="0"
-        :aria-valuenow="value1"
-        :aria-valuemin="props.min"
-        :aria-valuemax="props.max"
-        @mousedown="(e) => startDrag(0, e)"
-        @keydown="(e) => onKeyDown(e, 0)"
-      ></div>
-    </NyxTooltip>
+    <div
+      class="nyx-slider__thumb"
+      :style="{ left: thumbPosition1 + '%' }"
+      role="slider"
+      tabindex="0"
+      :aria-valuenow="value1"
+      :aria-valuemin="props.min"
+      :aria-valuemax="props.max"
+      @mousedown="(e) => startDrag(0, e)"
+      @keydown="(e) => onKeyDown(e, 0)"
+    ></div>
 
     <!-- Second Thumb (Only if range mode) -->
     <template v-if="isRange && Array.isArray(model) && model[1]">
