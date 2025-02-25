@@ -10,7 +10,3 @@ export interface NyxSelectProps {
   options: NyxSelectOption[],
   id?: string
 }
-
-export interface NyxSelectEmits {
-  (event: 'change', value: string): void
-}

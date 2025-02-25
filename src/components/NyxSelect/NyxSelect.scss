@@ -76,6 +76,10 @@
 }
 
 .nyx-select {
+  input {
+    cursor: pointer;
+  }
+
   &__control {
     user-select: none;
     display: flex;
@@ -171,8 +175,10 @@
     background-color: var(--nyx-c-select-highlight);
   }
 
-  &__hidden {
-    display: none;
+  &__option--empty,
+  &__option--empty:hover {
+    cursor: not-allowed;
+    background-color: var(--nyx-c-select);
   }
 
   &.variant-outline &__control {
