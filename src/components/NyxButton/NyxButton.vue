@@ -14,7 +14,8 @@ const props = withDefaults(defineProps<NyxButtonProps>(), {
   shape: NyxShape.Rectangle,
   size: NyxSize.Medium,
   gradient: false,
-  backlight: false
+  backlight: false,
+  pixel: false
 })
 
 const emit = defineEmits<NyxButtonEmits>()

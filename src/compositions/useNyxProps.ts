@@ -1,6 +1,9 @@
 import { NyxLog } from '@/classes'
+import type { NyxKitOptions } from '@/main'
 import { NyxVariant, type KeyDict } from '@/types'
-import { computed } from 'vue'
+import { computed, inject } from 'vue'
+
+const libOptions = inject<NyxKitOptions>('nyxkit') ?? {}
 
 const propKeys = ['theme', 'size', 'shape', 'variant', 'gradient', 'backlight', 'position']
 
@@ -25,6 +28,8 @@ const useNyxProps = (props: KeyDict<unknown>, origin: string = 'Nyx') => {
         list.push(`${key}-${props[key]}`)
       }
     }
+    const isPixel = !!props.pixel || !!libOptions.pixel
+    if (isPixel) list.push('pixel')
     return list
   })
 

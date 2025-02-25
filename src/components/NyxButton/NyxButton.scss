@@ -1,3 +1,5 @@
+@use '../../styles/mixins.scss' as *;
+
 .nyx-button {
   --nyx-c-button-text: var(--nyx-c-white-soft);
   --nyx-c-button: var(--nyx-c-default);
@@ -5,7 +7,9 @@
   --nyx-c-button-alt: var(--nyx-c-default-alt);
   --nyx-rgb-button: var(--nyx-rgb-default);
   --nyx-gap-button: var(--nyx-gap-md);
-  --nyx-pad-button: var(--nyx-pad-md);
+  --nyx-pad-button-base: var(--nyx-pad-md);
+  --nyx-pad-button-multiplier: 1;
+  --nyx-pad-button: calc(var(--nyx-pad-button-base) * var(--nyx-pad-button-multiplier));
   --nyx-font-size-button: var(--nyx-font-size-md);
   --nyx-border-size-button: 1px;
 
@@ -245,28 +249,28 @@
 
   &.size-xs {
     --nyx-gap-button: var(--nyx-gap-xs);
-    --nyx-pad-button: var(--nyx-pad-xs);
+    --nyx-pad-button-base: var(--nyx-pad-xs);
     --nyx-font-size-button: var(--nyx-font-size-xs);
     --nyx-border-size-button: 1px;
   }
 
   &.size-sm {
     --nyx-gap-button: var(--nyx-gap-sm);
-    --nyx-pad-button: var(--nyx-pad-sm);
+    --nyx-pad-button-base: var(--nyx-pad-sm);
     --nyx-font-size-button: var(--nyx-font-size-sm);
     --nyx-border-size-button: 1px;
   }
 
   &.size-lg {
     --nyx-gap-button: var(--nyx-gap-lg);
-    --nyx-pad-button: var(--nyx-pad-lg);
+    --nyx-pad-button-base: var(--nyx-pad-lg);
     --nyx-font-size-button: var(--nyx-font-size-lg);
     --nyx-border-size-button: 2px;
   }
 
   &.size-xl {
     --nyx-gap-button: var(--nyx-gap-xl);
-    --nyx-pad-button: var(--nyx-pad-xl);
+    --nyx-pad-button-base: var(--nyx-pad-xl);
     --nyx-font-size-button: var(--nyx-font-size-xl);
     --nyx-border-size-button: 3px;
   }
@@ -283,4 +287,14 @@
     border-radius: var(--nyx-radius-max);
   }
 
+  &.pixel {
+    --nyx-pixel-c: var(--nyx-c-button-alt);
+
+    @include pixel;
+
+    &.shape-circle,
+    &.shape-square {
+      overflow: visible;
+    }
+  }
 }

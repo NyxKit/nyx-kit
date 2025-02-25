@@ -8,7 +8,9 @@ export * from './directives'
 export * from './types'
 export * from './utils'
 
-export type NyxKitOptions = {}
+export type NyxKitOptions = {
+  pixel?: boolean
+}
 
 /**
  * Generic Components explained
@@ -18,7 +20,7 @@ export type NyxKitOptions = {}
  */
 
 export const NyxKit = {
-  install: (app: App, options?: NyxKitOptions) => {
+  install: (app: App, options: NyxKitOptions = {}) => {
     app.directive('click-outside', vClickOutside)
     app.provide('nyxkit', options)
   }

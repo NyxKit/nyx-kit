@@ -1,0 +1,31 @@
+@mixin pixel {
+  font-family: var(--nyx-font-family-pixel);
+  background-color: var(--nyx-pixel-c);
+  border-radius: 0;
+  border: var(--nyx-pixel-size) solid var(--nyx-pixel-c-highlight);
+  box-shadow: var(--nyx-pixel-shadow);
+  transition: none;
+  image-rendering: pixelated; /* prevents anti-aliasing */
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    box-shadow: var(--nyx-pixel-shadow-after);
+  }
+
+  &:hover {
+    background-color: var(--nyx-pixel-c);
+  }
+
+  &:active {
+    // transform: translate(var(--nyx-pixel-size), var(--nyx-pixel-size));
+    box-shadow: var(--nyx-pixel-shadow-interact);
+    border-color: transparent;
+  }
+}

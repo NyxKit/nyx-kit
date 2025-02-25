@@ -1,11 +1,11 @@
 export type KeyDict<T> = { [key: string]: T }
 
-export enum NyxSize {
-  XSmall = 'xs',
-  Small = 'sm',
-  Medium = 'md',
-  Large = 'lg',
-  XLarge = 'xl'
+export interface NyxComponentProps {
+  theme?: NyxTheme
+  size?: NyxSize
+  variant?: NyxVariant
+  shape?: NyxShape
+  pixel?: boolean
 }
 
 export enum NyxTheme {
@@ -16,6 +16,14 @@ export enum NyxTheme {
   Warning = 'warning',
   Danger = 'danger',
   Info = 'info'
+}
+
+export enum NyxSize {
+  XSmall = 'xs',
+  Small = 'sm',
+  Medium = 'md',
+  Large = 'lg',
+  XLarge = 'xl'
 }
 
 export enum NyxVariant {
