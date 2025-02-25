@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import useNyxProps from '@/compositions/useNyxProps';
 import './NyxInput.scss'
 import type { NyxInputProps, NyxInputEmits } from './NyxInput.types'
 import { NyxInputType, NyxTheme, NyxVariant, NyxSize } from '@/types'
@@ -14,12 +15,14 @@ const emit = defineEmits<NyxInputEmits>()
 
 const model = defineModel<string>()
 
+const { classList } = useNyxProps(props)
+
 </script>
 
 <template>
   <div
     class="nyx-input"
-    :class="[`theme-${props.theme}`, `variant-${props.variant}`, `size-${props.size}`]"
+    :class="classList"
   >
     <input
       :type="props.type"

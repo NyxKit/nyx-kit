@@ -1,9 +1,60 @@
-@mixin pixel {
+$pixel-shadow:
+  /* inner border */
+  var(--nyx-pixel-size) 0px var(--nyx-pixel-c-highlight),
+  0px var(--nyx-pixel-size) var(--nyx-pixel-c-highlight),
+  calc(0px - var(--nyx-pixel-size)) 0px var(--nyx-pixel-c-highlight),
+  0px calc(0px - var(--nyx-pixel-size)) var(--nyx-pixel-c-highlight);
+
+$pixel-shadow-button:
+  /* inner border */
+  var(--nyx-pixel-size) 0px var(--nyx-pixel-c-highlight),
+  0px var(--nyx-pixel-size) var(--nyx-pixel-c-highlight),
+  calc(0px - var(--nyx-pixel-size)) 0px var(--nyx-pixel-c-highlight),
+  0px calc(0px - var(--nyx-pixel-size)) var(--nyx-pixel-c-highlight),
+
+  /* outer border */
+  calc(var(--nyx-pixel-size) * 2) 0px var(--nyx-pixel-c-alt),
+  0px calc(var(--nyx-pixel-size) * 2) var(--nyx-pixel-c-alt),
+  calc(0px - 2 * var(--nyx-pixel-size)) 0px var(--nyx-pixel-c-alt),
+  0px calc(0px - 2 * var(--nyx-pixel-size)) var(--nyx-pixel-c-alt),
+
+  /* outer border corners */
+  var(--nyx-pixel-size) calc(0px - var(--nyx-pixel-size)) var(--nyx-pixel-c-alt),
+  calc(0px - var(--nyx-pixel-size)) var(--nyx-pixel-size) var(--nyx-pixel-c-alt),
+  calc(0px - var(--nyx-pixel-size)) calc(0px - var(--nyx-pixel-size)) var(--nyx-pixel-c-alt),
+  calc(var(--nyx-pixel-size)) var(--nyx-pixel-size) var(--nyx-pixel-c-alt);
+
+$pixel-shadow-after:
+  var(--nyx-pixel-size) 0 var(--nyx-pixel-c),
+  0 var(--nyx-pixel-size) var(--nyx-pixel-c),
+  calc(0px - var(--nyx-pixel-size)) 0 var(--nyx-pixel-c),
+  0 calc(0px - var(--nyx-pixel-size)) var(--nyx-pixel-c);
+
+$pixel-shadow-button-interact:
+  /* inner border */
+  var(--nyx-pixel-size) 0px var(--nyx-pixel-c),
+  0px var(--nyx-pixel-size) var(--nyx-pixel-c),
+  calc(0px - var(--nyx-pixel-size)) 0px var(--nyx-pixel-c),
+  0px calc(0px - var(--nyx-pixel-size)) var(--nyx-pixel-c),
+
+  /* outer border */
+  calc(var(--nyx-pixel-size) * 2) 0px var(--nyx-pixel-c-highlight),
+  0px calc(var(--nyx-pixel-size) * 2) var(--nyx-pixel-c-highlight),
+  calc(0px - 2 * var(--nyx-pixel-size)) 0px var(--nyx-pixel-c-highlight),
+  0px calc(0px - 2 * var(--nyx-pixel-size)) var(--nyx-pixel-c-highlight),
+
+  /* outer border corners */
+  var(--nyx-pixel-size) calc(0px - var(--nyx-pixel-size)) var(--nyx-pixel-c-highlight),
+  calc(0px - var(--nyx-pixel-size)) var(--nyx-pixel-size) var(--nyx-pixel-c-highlight),
+  calc(0px - var(--nyx-pixel-size)) calc(0px - var(--nyx-pixel-size)) var(--nyx-pixel-c-highlight),
+  calc(var(--nyx-pixel-size)) var(--nyx-pixel-size) var(--nyx-pixel-c-highlight);
+
+@mixin pixel-button {
   font-family: var(--nyx-font-family-pixel);
   background-color: var(--nyx-pixel-c);
   border-radius: 0;
   border: var(--nyx-pixel-size) solid var(--nyx-pixel-c-highlight);
-  box-shadow: var(--nyx-pixel-shadow);
+  box-shadow: $pixel-shadow-button;
   transition: none;
   image-rendering: pixelated; /* prevents anti-aliasing */
   position: relative;
@@ -16,16 +67,36 @@
     height: 100%;
     left: 0;
     top: 0;
-    box-shadow: var(--nyx-pixel-shadow-after);
+    box-shadow: $pixel-shadow-after;
   }
 
   &:hover {
     background-color: var(--nyx-pixel-c);
   }
+}
 
-  &:active {
-    // transform: translate(var(--nyx-pixel-size), var(--nyx-pixel-size));
-    box-shadow: var(--nyx-pixel-shadow-interact);
-    border-color: transparent;
+@mixin pixel-field {
+  font-family: var(--nyx-font-family-pixel);
+  background-color: var(--nyx-pixel-c);
+  border-radius: 0;
+  border: var(--nyx-pixel-size) solid var(--nyx-pixel-c-highlight);
+  box-shadow: $pixel-shadow;
+  transition: none;
+  image-rendering: pixelated; /* prevents anti-aliasing */
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    box-shadow: $pixel-shadow-after;
   }
+
+  // &:hover {
+  //   background-color: var(--nyx-pixel-c);
+  // }
 }

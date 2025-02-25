@@ -289,8 +289,16 @@
 
   &.pixel {
     --nyx-pixel-c: var(--nyx-c-button-alt);
+    --nyx-pixel-c-highlight: var(--nyx-c-button-highlight);
+    --nyx-pixel-c-alt: var(--nyx-c-button);
 
-    @include pixel;
+    @include pixel-button;
+
+    &:active {
+      // transform: translate(var(--nyx-pixel-size), var(--nyx-pixel-size));
+      box-shadow: $pixel-shadow-button-interact;
+      border-color: transparent;
+    }
 
     &.shape-circle,
     &.shape-square {

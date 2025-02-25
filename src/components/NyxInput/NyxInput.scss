@@ -1,3 +1,5 @@
+@use '../../styles/mixins.scss' as *;
+
 .nyx-input {
   --nyx-c-input: var(--nyx-c-default);
   --nyx-c-input-highlight: var(--nyx-c-default-highlight);
@@ -27,7 +29,7 @@
       color: var(--nyx-c-input-text);
       opacity: 0.5;
     }
-    
+
     &:hover,
     &:active {
       background-color: var(--nyx-c-input-highlight);
@@ -154,5 +156,19 @@
     --nyx-pad-input: var(--nyx-pad-xl);
     --nyx-font-size-input: var(--nyx-font-size-xl);
     --nyx-border-size-input: 3px;
+  }
+
+  &.pixel {
+    --nyx-pixel-c: var(--nyx-c-bg);
+    --nyx-pixel-c-highlight: var(--nyx-c-input-highlight);
+
+    input {
+      font-family: var(--nyx-font-family-pixel);
+      border: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    @include pixel-field;
   }
 }
