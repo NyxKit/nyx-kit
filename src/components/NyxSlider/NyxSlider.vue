@@ -1,134 +1,199 @@
-<script setup lang="ts" generic="T extends number | [number, number]">
-import { computed, watch, ref, useTemplateRef } from "vue"
+<script setup lang="ts">
 import './NyxSlider.scss'
+import { ref, computed, onBeforeUnmount } from 'vue'
 import type { NyxSliderProps } from './NyxSlider.types'
-import { NyxShape, NyxTheme, type CssVariablesDict } from '@/types'
+import { NyxShape, NyxTheme, roundToStep } from '@/types'
 import NyxTooltip from '../NyxTooltip/NyxTooltip.vue'
-
-type CurrentThumb = 'min'|'max'|'curr'|null
+import useNyxProps from '@/compositions/useNyxProps'
 
 const props = withDefaults(defineProps<NyxSliderProps>(), {
   theme: NyxTheme.Default,
   shape: NyxShape.Circle,
   min: 0,
   max: 100,
-  step: 1,
-  marks: 4,
-  snap: false,
   tooltip: 'interact',
   direction: 'row'
 })
 
-const model = defineModel<T>({
-  required: true
+const model = defineModel<number | [number, number]>()
+
+const track = ref<HTMLDivElement | null>(null)
+const draggingThumb = ref<number | null>(null)
+
+const isRange = computed(() => Array.isArray(model.value))
+
+const value1 = computed<number>(() => {
+  return isRange.value ? (model.value as [number, number])[0] : model.value as number
 })
 
-const valMin = ref<string>(Array.isArray(model.value) ? `${model.value[0]}` : `${model.value}`)
-const valMax = ref<string>(Array.isArray(model.value) ? `${model.value[1]}` : `${model.value}`)
+const value2 = computed<number | null>(() => {
+  return isRange.value ? (model.value as [number, number])[1] : null
+})
 
-const iMinUpdate = ref(0)
-const iMaxUpdate = ref(0)
+const thumbPosition1 = computed(() => ((value1.value - props.min) / (props.max - props.min)) * 100)
+const thumbPosition2 = computed(() => (!isRange.value ? 0 : (((value2.value as number) - props.min) / (props.max - props.min)) * 100))
 
-const isTooltipMinVisible = ref(false)
-const isTooltipMaxVisible = ref(false)
+const snapToStep = (value: number): number => {
+  if (!props.step) return value
+  return roundToStep(value, props.step, props.min)
+}
 
-const propMin = computed(() => parseFloat(`${ props.min }`))
-const propMax = computed(() => parseFloat(`${ props.max }`))
+const updateValue = (index: number, newValue: number) => {
+  newValue = snapToStep(newValue)
 
-watch([valMin, valMax], ([newMin, newMax], [oldMin, oldMax]) => {
-  if (!Array.isArray(model.value)) return
-  const min = parseFloat(newMin)
-  const max = parseFloat(newMax)
-  if (min !== parseFloat(oldMin)) {
-    iMinUpdate.value++
-  } else if (max !== parseFloat(oldMax)) {
-    iMaxUpdate.value++
+  if (isRange.value) {
+    let newValues: [number, number] = [...(model.value as [number, number])]
+    newValues[index] = newValue
+
+    if (newValues[0] > newValues[1]) {
+      newValues = [newValues[1], newValues[0]]
+      draggingThumb.value = draggingThumb.value === 0 ? 1 : 0
+    }
+
+    model.value = newValues
+  } else {
+    model.value = newValue
   }
-  const sorted = [min, max].sort((a, b) => a - b)
-  // if (sorted[0] !== min) switchTooltipVisibile()
-  model.value = sorted as T
-})
+}
 
-const cssVars = computed<CssVariablesDict>(() => {
-  if (!Array.isArray(model.value)) return {}
+const startDrag = (thumbIndex: number, event: MouseEvent) => {
+  event.preventDefault()
+  draggingThumb.value = thumbIndex
+  document.addEventListener('mousemove', onDrag)
+  document.addEventListener('mouseup', stopDrag)
+}
 
-  const min = ((model.value[0] - propMin.value) / (propMax.value - propMin.value)) * 100
-  const max = ((model.value[1] - propMin.value) / (propMax.value - propMin.value)) * 100
+const onDrag = (event: MouseEvent) => {
+  if (draggingThumb.value === null || !track.value) return
+  const rect = track.value.getBoundingClientRect()
+  let newPosition = (event.clientX - rect.left) / rect.width
+  newPosition = Math.min(Math.max(newPosition, 0), 1)
+  const newValue = props.min + newPosition * (props.max - props.min)
 
-  return {
-    '--nyx-slider-min': `${min}%`,
-    '--nyx-slider-max': `${max}%`
+  updateValue(draggingThumb.value, newValue)
+}
+
+const stopDrag = () => {
+  document.removeEventListener('mousemove', onDrag)
+  document.removeEventListener('mouseup', stopDrag)
+  draggingThumb.value = null
+}
+
+const onTrackMouseDown = (event: MouseEvent) => {
+  if (!track.value) return
+  const rect = track.value.getBoundingClientRect()
+  let clickPosition = (event.clientX - rect.left) / rect.width
+  clickPosition = Math.min(Math.max(clickPosition, 0), 1)
+  const newValue = props.min + clickPosition * (props.max - props.min)
+
+  if (isRange.value) {
+    const distToFirst = Math.abs(newValue - value1.value)
+    const distToSecond = Math.abs(newValue - (value2.value as number))
+    let thumbIndex = distToFirst < distToSecond ? 0 : 1
+
+    updateValue(thumbIndex, newValue)
+    draggingThumb.value = thumbIndex
+  } else {
+    model.value = newValue
   }
-})
+}
 
-// const switchTooltipVisibile = () => {
-//   const memMin = Boolean(isTooltipMinVisible.value)
-//   isTooltipMinVisible.value = isTooltipMaxVisible.value
-//   isTooltipMaxVisible.value = memMin
-// }
+const onKeyDown = (event: KeyboardEvent, index: number) => {
+  let newValue = isRange.value ? (model.value as [number, number])[index] : (model.value as number)
+  const step = props.step ?? 1
+
+  switch (event.key) {
+    case 'ArrowLeft':
+    case 'ArrowDown':
+      newValue = Math.max(props.min, newValue - step)
+      break
+    case 'ArrowRight':
+    case 'ArrowUp':
+      newValue = Math.min(props.max, newValue + step)
+      break
+    case 'Home':
+      newValue = props.min
+      break
+    case 'End':
+      newValue = props.max
+      break
+    default:
+      return
+  }
+
+  event.preventDefault()
+  updateValue(index, newValue)
+}
+
+const { classList } = useNyxProps(props)
+
+onBeforeUnmount(() => {
+  document.removeEventListener('mousemove', onDrag)
+  document.removeEventListener('mouseup', stopDrag)
+})
 </script>
 
 <template>
   <div
     class="nyx-slider"
-    :class="[`theme-${props.theme}`, `shape-${props.shape}`]"
-    :style="cssVars"
+    :class="classList"
+    ref="track"
+    @mousedown="onTrackMouseDown"
   >
-    <div class="nyx-slider__track" />
-    <template v-if="Array.isArray(model)">
-      <div class="nyx-slider__track nyx-slider__track--active" />
-      <NyxTooltip
-        v-if="props.tooltip !== 'never'"
-        class="nyx-slider__thumb min"
-        trigger="manual"
-        v-model="isTooltipMinVisible"
-        :theme="props.theme"
-        :forceUpdate="iMinUpdate"
-      >
-        <template v-slot:tooltip-content>
-          <slot name="tooltip-min"><span>{{ valMin }}</span></slot>
-        </template>
-      </NyxTooltip>
-      <NyxTooltip
-        v-if="props.tooltip !== 'never'"
-        class="nyx-slider__thumb max"
-        trigger="manual"
-        v-model="isTooltipMaxVisible"
-        :theme="props.theme"
-        :forceUpdate="iMaxUpdate"
-      >
-        <template v-slot:tooltip-content>
-          <slot name="tooltip-max"><span>{{ valMax }}</span></slot>
-        </template>
-      </NyxTooltip>
+    <!-- First Thumb -->
+    <input
+      type="range"
+      :min="props.min"
+      :max="props.max"
+      :step="props.step || 'any'"
+      v-model="model"
+      @keydown="(e) => onKeyDown(e, 0)"
+      aria-label="Slider value"
+      :aria-valuenow="value1"
+      :aria-valuemin="props.min"
+      :aria-valuemax="props.max"
+      class="sr-only"
+    />
+    <NyxTooltip :text="value1">
+      <div
+        class="nyx-slider__thumb"
+        :style="{ left: thumbPosition1 + '%' }"
+        role="slider"
+        tabindex="0"
+        :aria-valuenow="value1"
+        :aria-valuemin="props.min"
+        :aria-valuemax="props.max"
+        @mousedown="(e) => startDrag(0, e)"
+        @keydown="(e) => onKeyDown(e, 0)"
+      ></div>
+    </NyxTooltip>
+
+    <!-- Second Thumb (Only if range mode) -->
+    <template v-if="isRange && Array.isArray(model) && model[1]">
       <input
         type="range"
-        :min="propMin"
-        :max="propMax"
-        :step="props.step"
-        v-model="valMin"
-        @mousedown="isTooltipMinVisible = true"
-        @mouseup="isTooltipMinVisible = false"
+        :min="props.min"
+        :max="props.max"
+        :step="props.step || 'any'"
+        v-model="model[1]"
+        @keydown="(e) => onKeyDown(e, 1)"
+        aria-label="Slider second value"
+        :aria-valuenow="value2 ?? undefined"
+        :aria-valuemin="props.min"
+        :aria-valuemax="props.max"
+        class="sr-only"
       />
-      <input
-        type="range"
-        :min="propMin"
-        :max="propMax"
-        :step="props.step"
-        v-model="valMax"
-        @mousedown="isTooltipMaxVisible = true"
-        @mouseup="isTooltipMaxVisible = false"
-      />
-    </template>
-    <template v-else>
-      <div class="nyx-slider__thumb" />
-      <input
-        type="range"
-        :min="propMin"
-        :max="propMax"
-        :step="props.step"
-        v-model="model"
-      />
+      <div
+        class="nyx-slider__thumb"
+        :style="{ left: thumbPosition2 + '%' }"
+        role="slider"
+        tabindex="0"
+        :aria-valuenow="value2 ?? undefined"
+        :aria-valuemin="props.min"
+        :aria-valuemax="props.max"
+        @mousedown="(e) => startDrag(1, e)"
+        @keydown="(e) => onKeyDown(e, 1)"
+      ></div>
     </template>
   </div>
 </template>

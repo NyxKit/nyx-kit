@@ -1,98 +1,45 @@
 .nyx-slider {
   --nyx-slider-min: 0;
   --nyx-slider-max: 100;
-  --nyx-slider-h: calc(var(--nyx-pad-md) * 0.5);
-  --nyx-slider-h-thumb: calc(var(--nyx-slider-h) * 2);
+  --nyx-slider-h-track: calc(var(--nyx-pad-md) * 0.5);
+  --nyx-slider-w-thumb: calc(var(--nyx-slider-h-track) * 2.25);
+  --nyx-slider-h-thumb: var(--nyx-slider-w-thumb);
   --nyx-c-slider: var(--nyx-c-default);
   --nyx-c-slider-highlight: var(--nyx-c-default-highlight);
+  --nyx-c-slider-alt: var(--nyx-c-default-alt);
   --nyx-rgb-slider: var(--nyx-rgb-default);
+  --nyx-radius-slider-thumb: var(--nyx-radius-sm);
 
   position: relative;
   width: 100%;
-  height: var(--nyx-slider-h);
+  height: calc(2 * var(--nyx-slider-w-thumb));
 
-  input[type="range"] {
-    width: 100%;
+  &::after,
+  &__thumb {
     position: absolute;
-    height: 100%;
-    top: 0;
-    left: 0;
-    appearance: none;
-    background: transparent;
-    cursor: pointer;
-    pointer-events: none;
-
-    &::-webkit-slider-runnable-track,
-    &::-moz-range-track {
-      width: 100%;
-      height: var(--nyx-slider-h);
-      background: transparent;
-    }
-
-    &::-webkit-slider-thumb,
-    &::-moz-range-thumb {
-      width: var(--nyx-slider-h-thumb);
-      height: var(--nyx-slider-h-thumb);
-      background: var(--nyx-c-text-1);
-      border: 2px solid var(--nyx-c-slider);
-      border-radius: 50%;
-      pointer-events: auto;
-    }
-
-    &::-webkit-slider-thumb {
-      appearance: none;
-      position: relative;
-    }
-  }
-
-  &.shape-square input[type="range"] ::-webkit-slider-thumb,
-  &.shape-square input[type="range"] ::-moz-range-track, {
-    border-radius: var(--nyx-radius-sm);
-  }
-
-  &.shape-rectangle input[type="range"]::-webkit-slider-thumb,
-  &.shape-rectangle input[type="range"]::-moz-range-track, {
-    border-radius: var(--nyx-radius-md);
-    height: calc(var(--nyx-slider-h-thumb) * 1.75);
-  }
-
-  &__track {
-    position: absolute;
-    height: 50%;
-    width: 100%;
-    border-radius: var(--nyx-radius-sm);
-    background-color: rgba(var(--nyx-rgb-slider), 0.5);
     top: 50%;
-    // transform: translateY(-50%);
+    transform: translate(0, -50%);
+  }
 
-    &--active {
-      --width: calc(var(--nyx-slider-max) - var(--nyx-slider-min));
-      --left: var(--nyx-slider-min);
-      background-color: var(--nyx-c-slider);
-      width: var(--width);
-      left: var(--left);
-      // width: 100%;
-      // left: 0;
-      // transform: scaleX(var(--width)) translateX(var(--left));
-      // transform-origin: left;
-    }
+  &::after {
+    content: '';
+    width: 100%;
+    height: var(--nyx-slider-h-track);
+    background-color: rgba(var(--nyx-rgb-slider), 0.25);
+    border-radius: var(--nyx-radius-md);
+    cursor: pointer;
+    z-index: -1;
   }
 
   &__thumb {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    background-color: red;
-
-    &.min {
-      left: var(--nyx-slider-min);
-      transform: translateX(calc(100% - var(--nyx-slider-min) - (var(--nyx-slider-h-thumb) * 0.5)))
-    }
-
-    &.max {
-      left: var(--nyx-slider-max);
-      transform: translateX(calc(100% - var(--nyx-slider-max) - (var(--nyx-slider-h-thumb) * 0.5)))
-    }
+    width: var(--nyx-slider-w-thumb);
+    height: var(--nyx-slider-h-thumb);
+    background-color: var(--nyx-c-slider-alt);
+    border: 2px solid var(--nyx-c-slider-highlight);
+    border-radius: var(--nyx-radius-slider-thumb);
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
 
   &.theme-primary {
@@ -135,5 +82,13 @@
     --nyx-c-slider-highlight: var(--nyx-c-danger-highlight);
     --nyx-c-slider-alt: var(--nyx-c-danger-alt);
     --nyx-rgb-slider: var(--nyx-rgb-danger);
+  }
+
+  &.shape-circle &__thumb {
+    border-radius: 50%;
+  }
+
+  &.shape-rectangle {
+    --nyx-slider-h-thumb: calc(2 * var(--nyx-slider-w-thumb));
   }
 }
