@@ -20,7 +20,8 @@
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build",
     "storybook:deploy": "gh-pages -d storybook-static",
-    "prepublishOnly": "yarn build && yarn storybook:build && yarn storybook:deploy"
+    "storybook:publish": "storybook build && gh-pages -d storybook-static",
+    "prepublishOnly": "yarn build"
   },
   "types": "./dist/types/index.d.ts",
   "main": "./dist/index.mjs",
