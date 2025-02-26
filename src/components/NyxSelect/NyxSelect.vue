@@ -9,10 +9,18 @@ const props = withDefaults(defineProps<NyxSelectProps>(), {
   type: NyxSelectType.Single,
   theme: NyxTheme.Default,
   variant: NyxVariant.Outline,
-  size: NyxSize.Medium
+  size: NyxSize.Medium,
+  multiple: false
 })
 
-const model = defineModel<string>({ default: '' })
+const modelValue = defineModel<string | string[]>()
+const model = computed({
+  get: () => modelValue.value ?? (props.multiple ? [] : ''),
+  set: (value) => {
+    modelValue.value = value
+  }
+})
+
 const elInput = useTemplateRef<HTMLInputElement>('nyx-select-input')
 const searchQuery = ref('')
 
@@ -25,7 +33,15 @@ const { cssVariables, computedPosition } = useTeleportPosition(elControl, elDrop
   isUpdateAllowed: isOpen
 })
 
-const selectedLabel = computed(() => props.options.find((option) => option.value === model.value)?.label ?? '')
+const selectedLabels = computed(() => {
+  if (!props.multiple) {
+    const option = props.options.find((opt) => opt.value === model.value)
+    return option?.label ?? ''
+  }
+  return (model.value as string[])
+    .map(value => props.options.find(opt => opt.value === value)?.label ?? '')
+    .join(', ')
+})
 
 const filteredOptions = computed(() => {
   if (!searchQuery.value) return props.options
@@ -43,18 +59,36 @@ const closeDropdown = () => {
 }
 
 const onSelectOption = ({ value, label }: NyxSelectOption) => {
-  model.value = value
-  searchQuery.value = label
-  isOpen.value = false
+  if (props.multiple) {
+    const values = model.value as string[]
+    const index = values.indexOf(value)
+    if (index === -1) {
+      model.value = [...values, value]
+    } else {
+      model.value = values.filter(v => v !== value)
+    }
+    searchQuery.value = ''
+  } else {
+    model.value = value
+    searchQuery.value = label
+    isOpen.value = false
+  }
 }
 
 const setSearchQuery = (value?: string) => {
-  searchQuery.value = value === undefined ? selectedLabel.value : value
+  searchQuery.value = value === undefined ? selectedLabels.value : value
 }
 
 const onControlClick = () => {
   isOpen.value = true
   elInput.value?.focus()
+}
+
+const isSelected = (value: string): boolean => {
+  if (props.multiple) {
+    return (model.value as string[]).includes(value)
+  }
+  return value === model.value
 }
 
 watch(isOpen, (newVal) => {
@@ -83,7 +117,7 @@ watch(isOpen, (newVal) => {
         type="search"
         v-model="searchQuery"
         class="nyx-select__input"
-        placeholder="Select..."
+        :placeholder="props.multiple ? 'Select multiple...' : 'Select...'"
         ref="nyx-select-input"
       />
       <span class="nyx-select__arrow" @click="toggleDropdown">▼</span>
@@ -107,7 +141,7 @@ watch(isOpen, (newVal) => {
             :key="option.value"
             class="nyx-select__option"
             :class="{
-              'nyx-select__option--selected': option.value === v-model,
+              'nyx-select__option--selected': isSelected(option.value),
               'nyx-select__option--disabled': !!option.disabled
             }"
             @click="onSelectOption(option)"
@@ -121,7 +155,7 @@ watch(isOpen, (newVal) => {
       </div>
     </Teleport>
 
-    <select v-model="model" class="sr-only" :id="props.id">
+    <select v-model="model" class="sr-only" :id="props.id" :multiple="props.multiple">
       <option v-for="option in props.options" :value="option.value" :key="option.value">
         {{ option.label }}
       </option>
