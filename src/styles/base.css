@@ -216,3 +216,7 @@ code {
   background-color: var(--nyx-c-bg-soft);
   margin: var(--nyx-pad-md) 0;
 }
+
+p:not(:first-child) {
+  margin-top: var(--nyx-pad-xs);
+}

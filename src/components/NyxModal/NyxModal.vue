@@ -5,12 +5,14 @@ import NyxButton from '../NyxButton/NyxButton.vue'
 import { KeyboardKey, NyxSize, NyxVariant, NyxTheme } from '@/types'
 import { useKeyPress } from '@/compositions'
 import { computed, useSlots, type Slots } from 'vue'
+import useNyxProps from '@/compositions/useNyxProps'
 
 const props = withDefaults(defineProps<NyxModalProps>(), {
   cancelText: 'Close',
   size: NyxSize.Medium,
   backdrop: true,
-  static: false
+  static: false,
+  pixel: false
 })
 
 const emit = defineEmits<NyxModalEmits>()
@@ -37,6 +39,8 @@ const confirm = () => {
   emit('confirm')
   close()
 }
+
+const { classList } = useNyxProps(props)
 </script>
 
 <template>
@@ -45,7 +49,7 @@ const confirm = () => {
     <div
       class="nyx-modal"
       :class="[
-        `size-${props.size}`,
+        ...classList,
         !!customClass && `${customClass}`,
         { 'nyx-modal--open': model || props.static },
         { 'nyx-modal--no-backdrop': !props.backdrop }

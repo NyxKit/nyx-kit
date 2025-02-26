@@ -65,10 +65,27 @@ const TemplateAllProp = (prop: string, dict: KeyDict<string>) => () => defineCom
         v-bind="{ [prop]: currentValue }"
         :title="getLabel(currentValue)"
         v-model="isOpen"
-      ><template v-for="i in numLoops">{{ lipsum }}</template></nyx-modal>
+      ><template v-for="i in numLoops"><p>{{ lipsum }}</p></template></nyx-modal>
     </div>
   `,
 })
 
+const TemplatePixel = () => () => defineComponent({
+  components: { NyxModal, NyxButton },
+  setup () {
+    const isOpen = ref(false)
+    return { isOpen, lipsum }
+  },
+  template: `
+    <div class="flex">
+      <nyx-button pixel @click="isOpen = !isOpen">Pixel</nyx-button>
+      <nyx-modal pixel title="Pixel" v-model="isOpen">
+        <template v-for="i in 3"><p>{{ lipsum }}</p></template>
+      </nyx-modal>
+    </div>
+  `
+})
+
 export const Default = Template({})
 export const Sizes = TemplateAllProp('size', NyxSize)
+export const Pixel = TemplatePixel()

@@ -1,3 +1,5 @@
+@use '../../styles/mixins.scss' as *;
+
 .nyx-modal {
   --nyx-pad-modal: var(--nyx-pad-md);
   --nyx-pad-modal-y: var(--nyx-pad-modal);
@@ -112,6 +114,9 @@
 
   &__close {
     margin-left: auto;
+    font-size: 1.2em;
+    display: flex;
+    align-items: center;
   }
 
   &__body {
@@ -121,21 +126,19 @@
     overflow-y: auto;
   }
 
-  // &[open] &__content {
-  //   opacity: 1;
-  //   transform: translate(0, 0);
+  &.pixel &__content {
+    --nyx-pixel-c: var(--nyx-c-bg);
+    --nyx-pixel-c-highlight: var(--nyx-c-default-highlight);
+    --nyx-pixel-c-alt: var(--nyx-c-default);
 
-  //   @starting-style {
-  //     opacity: 0;
-  //     transform: translate(0, -2rem);
-  //   }
-  // }
+    @include pixel-modal();
+  }
 
-  // &[open]::after {
-  //   opacity: 1;
+  &.pixel &__body {
+    line-height: 1.75;
+  }
 
-  //   @starting-style {
-  //     opacity: 0;
-  //   }
-  // }
+  &.pixel &__close {
+    font-family: var(--nyx-font-family-pixel);
+  }
 }
