@@ -5,5 +5,6 @@ export enum NyxSelectType {
 
 export interface NyxSelectOption {
   label: string,
-  value: string
+  value: string,
+  disabled?: boolean
 }

@@ -176,9 +176,15 @@
   }
 
   &__option--empty,
-  &__option--empty:hover {
+  &__option--empty:hover,
+  &__option--disabled,
+  &__option--disabled:hover {
     cursor: not-allowed;
     background-color: var(--nyx-c-select);
+
+    span {
+      opacity: 0.5;
+    }
   }
 
   &.variant-outline &__control {

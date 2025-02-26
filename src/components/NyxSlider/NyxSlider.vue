@@ -139,6 +139,16 @@ onBeforeUnmount(() => {
     ref="track"
     @mousedown="onTrackMouseDown"
   >
+    <!-- Track highlight for range mode -->
+    <div
+      v-if="isRange"
+      class="nyx-slider__track-highlight"
+      :style="{
+        left: Math.min(thumbPosition1, thumbPosition2) + '%',
+        width: Math.abs(thumbPosition2 - thumbPosition1) + '%'
+      }"
+    ></div>
+
     <!-- First Thumb -->
     <input
       type="range"

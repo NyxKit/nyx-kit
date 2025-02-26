@@ -15,7 +15,8 @@
   height: calc(2 * var(--nyx-slider-w-thumb));
 
   &::after,
-  &__thumb {
+  &__thumb,
+  &__track-highlight {
     position: absolute;
     top: 50%;
     transform: translate(0, -50%);
@@ -28,6 +29,13 @@
     background-color: rgba(var(--nyx-rgb-slider), 0.25);
     border-radius: var(--nyx-radius-md);
     cursor: pointer;
+    z-index: -1;
+  }
+
+  &__track-highlight {
+    height: var(--nyx-slider-h-track);
+    background-color: var(--nyx-c-slider-highlight);
+    border-radius: var(--nyx-radius-md);
     z-index: -1;
   }
 

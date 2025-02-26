@@ -106,18 +106,17 @@ watch(isOpen, (newVal) => {
             v-for="option in filteredOptions"
             :key="option.value"
             class="nyx-select__option"
-            :class="{ 'nyx-select__option--selected': option.value === model }"
+            :class="{
+              'nyx-select__option--selected': option.value === v-model,
+              'nyx-select__option--disabled': !!option.disabled
+            }"
             @click="onSelectOption(option)"
-          >
-            {{ option.label }}
-          </li>
+          ><span>{{ option.label }}</span></li>
           <li
             v-if="filteredOptions.length === 0"
             class="nyx-select__option nyx-select__option--empty"
             @click.prevent.stop="elInput?.focus()"
-          >
-            <slot name="empty">No results found</slot>
-          </li>
+          ><slot name="empty"><span>No results found</span></slot></li>
         </ul>
       </div>
     </Teleport>

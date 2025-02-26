@@ -8,5 +8,6 @@ export interface NyxSelectProps {
   disabled?: boolean,
   placeholder?: string,
   options: NyxSelectOption[],
-  id?: string
+  id?: string,
+  multiple?: boolean
 }
