@@ -89,10 +89,17 @@ $pixel-shadow-button-interact:
 @mixin pixel-button {
   @include pixel-base();
   box-shadow: $pixel-shadow-button;
+  text-transform: uppercase;
   transition: none;
 
   &:hover {
     background-color: var(--nyx-pixel-c);
+  }
+
+  &:active {
+    transform: scale(0.95) translate(0, var(--nyx-pixel-size));
+    box-shadow: $pixel-shadow-button-interact;
+    border-color: transparent;
   }
 }
 

@@ -10,7 +10,9 @@
   --nyx-pad-button-base: var(--nyx-pad-md);
   --nyx-pad-button-multiplier: 1;
   --nyx-pad-button: calc(var(--nyx-pad-button-base) * var(--nyx-pad-button-multiplier));
-  --nyx-font-size-button: var(--nyx-font-size-md);
+  --nyx-font-size-button-base: var(--nyx-font-size-md);
+  --nyx-font-size-button-multiplier: 1;
+  --nyx-font-size-button: calc(var(--nyx-font-size-button-base) * var(--nyx-font-size-button-multiplier));
   --nyx-border-size-button: 1px;
 
   display: inline-flex;
@@ -250,28 +252,28 @@
   &.size-xs {
     --nyx-gap-button: var(--nyx-gap-xs);
     --nyx-pad-button-base: var(--nyx-pad-xs);
-    --nyx-font-size-button: var(--nyx-font-size-xs);
+    --nyx-font-size-button-base: var(--nyx-font-size-xs);
     --nyx-border-size-button: 1px;
   }
 
   &.size-sm {
     --nyx-gap-button: var(--nyx-gap-sm);
     --nyx-pad-button-base: var(--nyx-pad-sm);
-    --nyx-font-size-button: var(--nyx-font-size-sm);
+    --nyx-font-size-button-base: var(--nyx-font-size-sm);
     --nyx-border-size-button: 1px;
   }
 
   &.size-lg {
     --nyx-gap-button: var(--nyx-gap-lg);
     --nyx-pad-button-base: var(--nyx-pad-lg);
-    --nyx-font-size-button: var(--nyx-font-size-lg);
+    --nyx-font-size-button-base: var(--nyx-font-size-lg);
     --nyx-border-size-button: 2px;
   }
 
   &.size-xl {
     --nyx-gap-button: var(--nyx-gap-xl);
     --nyx-pad-button-base: var(--nyx-pad-xl);
-    --nyx-font-size-button: var(--nyx-font-size-xl);
+    --nyx-font-size-button-base: var(--nyx-font-size-xl);
     --nyx-border-size-button: 3px;
   }
 
@@ -291,18 +293,34 @@
     --nyx-pixel-c: var(--nyx-c-button-alt);
     --nyx-pixel-c-highlight: var(--nyx-c-button-highlight);
     --nyx-pixel-c-alt: var(--nyx-c-button);
+    --nyx-font-size-button-multiplier: 1;
+    --nyx-pad-button-multiplier: 0.75;
 
     @include pixel-button;
-
-    &:active {
-      // transform: translate(var(--nyx-pixel-size), var(--nyx-pixel-size));
-      box-shadow: $pixel-shadow-button-interact;
-      border-color: transparent;
-    }
 
     &.shape-circle,
     &.shape-square {
       overflow: visible;
+    }
+
+    &.size-xs {
+      --nyx-font-size-button-multiplier: 0.75;
+      --nyx-pad-button-multiplier: 0.5;
+    }
+
+    &.size-sm {
+      --nyx-font-size-button-multiplier: 0.875;
+      --nyx-pad-button-multiplier: 0.625;
+    }
+
+    &.size-lg {
+      --nyx-font-size-button-multiplier: 1.125;
+      --nyx-pad-button-multiplier: 0.875;
+    }
+
+    &.size-xl {
+      --nyx-font-size-button-multiplier: 1.25;
+      --nyx-pad-button-multiplier: 1;
     }
   }
 }

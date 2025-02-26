@@ -3,11 +3,11 @@ import type { NyxKitOptions } from '@/main'
 import { NyxVariant, type KeyDict } from '@/types'
 import { computed, inject } from 'vue'
 
-const libOptions = inject<NyxKitOptions>('nyxkit') ?? {}
-
 const propKeys = ['theme', 'size', 'shape', 'variant', 'gradient', 'backlight', 'position']
 
 const useNyxProps = (props: KeyDict<unknown>, origin: string = 'Nyx') => {
+  const libEnv = inject<NyxKitOptions>('libEnv') ?? {}
+
   const gradient = computed(() => {
     if (props.gradient !== false && props.variant !== NyxVariant.Solid) {
       NyxLog.error(origin, 'Gradients are only supported by NyxVariant.Solid')
@@ -28,7 +28,7 @@ const useNyxProps = (props: KeyDict<unknown>, origin: string = 'Nyx') => {
         list.push(`${key}-${props[key]}`)
       }
     }
-    const isPixel = !!props.pixel || !!libOptions.pixel
+    const isPixel = !!props.pixel || !!libEnv.pixel
     if (isPixel) list.push('pixel')
     return list
   })

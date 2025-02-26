@@ -8,6 +8,6 @@ export type NyxKitOptions = {
 export const NyxKit = {
   install: (app: App, options: NyxKitOptions = {}) => {
     app.directive('click-outside', vClickOutside)
-    app.provide('nyxkit', options)
+    app.provide('libEnv', options)
   }
 }
