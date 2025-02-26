@@ -39,15 +39,13 @@ const selectedLabels = computed(() => {
     return option?.label ?? ''
   }
   return (model.value as string[])
-    .map(value => props.options.find(opt => opt.value === value)?.label ?? '')
+    .map(value => props.options.find((opt) => opt.value === value)?.label ?? '')
     .join(', ')
 })
 
 const filteredOptions = computed(() => {
   if (!searchQuery.value) return props.options
-  return props.options.filter(option =>
-    option.label.toLowerCase().includes(searchQuery.value.toLowerCase())
-  )
+  return props.options.filter((option) => option.label.toLowerCase().includes(searchQuery.value.toLowerCase()))
 })
 
 const toggleDropdown = () => {
@@ -65,7 +63,7 @@ const onSelectOption = ({ value, label }: NyxSelectOption) => {
     if (index === -1) {
       model.value = [...values, value]
     } else {
-      model.value = values.filter(v => v !== value)
+      model.value = values.filter((v) => v !== value)
     }
     searchQuery.value = ''
   } else {
