@@ -37,6 +37,18 @@ const numColumns = computed(() => {
   return columnTitles.value.length + baseNumColumns
 })
 
+const data = computed(() => {
+  const whitelist = props.colWhitelist.length > 0 ? props.colWhitelist : Object.keys(model.value[0] ?? {}) as (keyof T)[]
+  const keys = whitelist.filter((col: keyof T) => !props.colBlacklist.includes(col))
+  return model.value.map((item) => {
+    const data: Partial<T> = {}
+    for (const key of keys) {
+      data[key] = item[key]
+    }
+    return data
+  })
+})
+
 const style = computed<CssVariablesDict>(() => {
   const actionsColumnValue = !!slots.actions ? 'auto' : ''
   const gridTemplateColumn = !!props.gridTemplateColumns
@@ -70,7 +82,7 @@ const style = computed<CssVariablesDict>(() => {
     </thead>
     <tbody>
       <template
-        v-for="(item) of model"
+        v-for="(item) of data"
         :key="typeof item === 'object' && !!props.itemKey ? item[props.itemKey] : item"
       >
         <tr>
