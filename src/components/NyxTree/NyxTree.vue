@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import './NyxTree.scss'
 import type { KeyDict } from '@/types'
 import NyxTreeNode from './NyxTreeNode.vue'
 
