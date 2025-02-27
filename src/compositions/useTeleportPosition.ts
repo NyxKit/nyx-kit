@@ -1,5 +1,5 @@
 import { clamp, type CssVariablesDict, NyxPosition, NyxSize } from '@/types'
-import { computed, onBeforeUnmount, onMounted, type Ref, ref, watch } from 'vue'
+import { computed, type DefineComponent, onBeforeUnmount, onMounted, type Ref, ref, watch } from 'vue'
 
 interface TeleportPositionOptions {
   position?: Ref<NyxPosition>
@@ -9,8 +9,8 @@ interface TeleportPositionOptions {
 }
 
 const useTeleportPosition = (
-  elRelative: Ref<HTMLElement | null>,
-  elAbsolute: Ref<HTMLElement | null>,
+  elRelative: Ref<HTMLElement | DefineComponent | null>,
+  elAbsolute: Ref<HTMLElement | DefineComponent | null>,
   options?: TeleportPositionOptions
 ) => {
   const position = options?.position ?? ref(NyxPosition.Bottom)
@@ -41,11 +41,17 @@ const useTeleportPosition = (
   const updateCssVariables = () => {
     if (!elRelative.value || !elAbsolute.value || !isUpdateAllowed.value) return
 
-    const { top, bottom, left, right, width: relWidth, height: relHeight } = elRelative.value.getBoundingClientRect()
-    const { width: absWidth, height: absHeight } = elAbsolute.value.getBoundingClientRect()
+    const elRelativeRect = ('getBoundingClientRect' in elRelative.value )
+      ? elRelative.value.getBoundingClientRect()
+      : (elRelative.value as DefineComponent).$el.getBoundingClientRect()
+    const elAbsoluteRect = ('getBoundingClientRect' in elAbsolute.value)
+      ? elAbsolute.value.getBoundingClientRect()
+      : (elAbsolute.value as DefineComponent).$el.getBoundingClientRect()
+
+    const { top, bottom, left, right, width: relWidth, height: relHeight } = elRelativeRect
+    const { width: absWidth, height: absHeight } = elAbsoluteRect
 
     const computedWidth = isEqualWidth ? relWidth : absWidth
-
     let computedTop = bottom
     let computedLeft = left
 
