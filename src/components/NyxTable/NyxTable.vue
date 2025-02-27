@@ -14,7 +14,9 @@ const props = withDefaults(defineProps<NyxTableProps<T>>(), {
   size: NyxSize.Medium,
   variant: NyxVariant.Outline,
   header: true,
-  striped: false
+  striped: false,
+  colWhitelist: () => [],
+  colBlacklist: () => []
 })
 
 const model = defineModel<T[]>({ default: [] })
@@ -24,7 +26,8 @@ const columnTitles = computed(() => {
   if (model.value.length === 0) return []
   const item = model.value[0]
   if (!isObject(item)) return []
-  return Object.keys(item)
+  const whitelist = props.colWhitelist.length > 0 ? props.colWhitelist : Object.keys(item) as (keyof T)[]
+  return whitelist.filter((col: keyof T) => !props.colBlacklist.includes(col))
 })
 
 const numColumns = computed(() => {

@@ -10,5 +10,7 @@ export interface NyxTableProps<T> {
   columnTitles?: string[],
   gridTemplateColumns?: string,
   header?: 'sticky'|boolean,
-  striped?: boolean
+  striped?: boolean,
+  colWhitelist?: (keyof T)[],
+  colBlacklist?: (keyof T)[]
 }
