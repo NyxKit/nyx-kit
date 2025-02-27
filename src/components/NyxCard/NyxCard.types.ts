@@ -10,7 +10,8 @@ export interface NyxCardProps {
   src?: string,
   textAlign?: 'left'|'center'|'right'|'justify',
   layout?: 'header-first'|'media-first',
-  blendMedia?: boolean
+  blendMedia?: boolean,
+  pixel?: boolean
 }
 
 export interface NyxCardEmits {

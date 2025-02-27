@@ -1,3 +1,5 @@
+@use '../../styles/mixins.scss' as *;
+
 .nyx-card {
   --nyx-c-card: var(--nyx-c-default);
   --nyx-c-card-highlight: var(--nyx-c-default-highlight);
@@ -8,7 +10,9 @@
   --nyx-pad-card-x: calc(1.5 * var(--nyx-pad-card));
   --nyx-radius-card: var(--nyx-radius-md);
   --nyx-font-size-card: var(--nyx-font-size-md);
-  --nyx-w-card: 20rem;
+  --nyx-w-card-base: 20rem;
+  --nyx-w-card-multiplier: 1;
+  --nyx-w-card: calc(var(--nyx-w-card-base) * var(--nyx-w-card-multiplier));
   --nyx-border-size-card: 1px;
   --nyx-card-blend-offset: calc(var(--nyx-pad-card-y) * 2);
 
@@ -305,7 +309,7 @@
     --nyx-font-size-card: var(--nyx-font-size-xs);
     --nyx-radius-card: var(--nyx-radius-md);
     --nyx-border-size-card: 1px;
-    --nyx-w-card: 10rem;
+    --nyx-w-card-base: 10rem;
   }
 
   &.size-sm {
@@ -314,7 +318,7 @@
     --nyx-font-size-card: var(--nyx-font-size-sm);
     --nyx-radius-card: var(--nyx-radius-md);
     --nyx-border-size-card: 1px;
-    --nyx-w-card: 15rem;
+    --nyx-w-card-base: 15rem;
   }
 
   &.size-lg {
@@ -323,7 +327,7 @@
     --nyx-font-size-card: var(--nyx-font-size-lg);
     --nyx-radius-card: var(--nyx-radius-lg);
     --nyx-border-size-card: 2px;
-    --nyx-w-card: 25rem;
+    --nyx-w-card-base: 25rem;
   }
 
   &.size-xl {
@@ -332,6 +336,25 @@
     --nyx-font-size-card: var(--nyx-font-size-xl);
     --nyx-radius-card: var(--nyx-radius-lg);
     --nyx-border-size-card: 3px;
-    --nyx-w-card: 30rem;
+    --nyx-w-card-base: 30rem;
+  }
+
+  &.pixel {
+    --nyx-pixel-c: var(--nyx-c-card-alt);
+    --nyx-pixel-c-highlight: var(--nyx-c-card-highlight);
+    --nyx-pixel-c-alt: var(--nyx-c-card);
+
+    &::after,
+    &:hover::after {
+      transition: none;
+      transform: none;
+      background-color: transparent;
+    }
+
+    @include pixel-modal();
+  }
+
+  &.pixel &__body {
+    line-height: 1.75;
   }
 }

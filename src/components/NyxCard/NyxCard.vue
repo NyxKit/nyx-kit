@@ -12,7 +12,8 @@ const props = withDefaults(defineProps<NyxCardProps>(), {
   variant: NyxVariant.Solid,
   textAlign: 'left',
   layout: 'media-first',
-  blendMedia: false
+  blendMedia: false,
+  pixel: false
 })
 
 const emit = defineEmits<NyxCardEmits>()
