@@ -6,6 +6,8 @@ interface TeleportPositionOptions {
   isEqualWidth?: boolean
   isUpdateAllowed?: Ref<boolean>
   gap?: Ref<NyxSize>
+  offsetX?: number
+  offsetY?: number
 }
 
 const useTeleportPosition = (
@@ -16,6 +18,8 @@ const useTeleportPosition = (
   const position = options?.position ?? ref(NyxPosition.Bottom)
   const isEqualWidth = !!options?.isEqualWidth
   const isUpdateAllowed = computed(() => options?.isUpdateAllowed?.value !== false)
+  const offsetX = options?.offsetX ?? 0
+  const offsetY = options?.offsetY ?? 0
 
   // Compute gap as a pixel value
   const gap = computed(() => {
@@ -90,36 +94,36 @@ const useTeleportPosition = (
     // Apply final positioning and factor in gap
     switch (computedPosition.value) {
       case NyxPosition.BottomLeft:
-        computedTop = bottom + gap.value
-        computedLeft = left
+        computedTop = bottom + gap.value + offsetY
+        computedLeft = left + offsetX
         break
       case NyxPosition.BottomRight:
-        computedTop = bottom + gap.value
-        computedLeft = right - computedWidth
+        computedTop = bottom + gap.value + offsetY
+        computedLeft = right - computedWidth + offsetX
         break
       case NyxPosition.Bottom:
-        computedTop = bottom + gap.value
-        computedLeft = left + (relWidth - computedWidth) / 2
+        computedTop = bottom + gap.value + offsetY
+        computedLeft = left + (relWidth - computedWidth) / 2 + offsetX
         break
       case NyxPosition.TopLeft:
-        computedTop = top - absHeight - gap.value
-        computedLeft = left
+        computedTop = top - absHeight - gap.value + offsetY
+        computedLeft = left + offsetX
         break
       case NyxPosition.TopRight:
-        computedTop = top - absHeight - gap.value
-        computedLeft = right - computedWidth
+        computedTop = top - absHeight - gap.value + offsetY
+        computedLeft = right - computedWidth + offsetX
         break
       case NyxPosition.Top:
-        computedTop = top - absHeight - gap.value
-        computedLeft = left + (relWidth - computedWidth) / 2
+        computedTop = top - absHeight - gap.value + offsetY
+        computedLeft = left + (relWidth - computedWidth) / 2 + offsetX
         break
       case NyxPosition.Left:
-        computedTop = top + (relHeight - absHeight) / 2
-        computedLeft = left - absWidth - gap.value
+        computedTop = top + (relHeight - absHeight) / 2 + offsetY
+        computedLeft = left - absWidth - gap.value + offsetX
         break
       case NyxPosition.Right:
-        computedTop = top + (relHeight - absHeight) / 2
-        computedLeft = right + gap.value
+        computedTop = top + (relHeight - absHeight) / 2 + offsetY
+        computedLeft = right + gap.value + offsetX
         break
     }
 
