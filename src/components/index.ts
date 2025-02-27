@@ -9,6 +9,7 @@ import NyxFormField from './NyxForm/NyxFormField.vue'
 import NyxInput from './NyxInput/NyxInput.vue'
 import NyxMedia from './NyxMedia/NyxMedia.vue'
 import NyxModal from './NyxModal/NyxModal.vue'
+import NyxProgress from './NyxProgress/NyxProgress.vue'
 import NyxSelect from './NyxSelect/NyxSelect.vue'
 import NyxSpinner from './NyxSpinner/NyxSpinner.vue'
 import NyxSwitch from './NyxSwitch/NyxSwitch.vue'
@@ -29,6 +30,7 @@ export {
   NyxInput,
   NyxMedia,
   NyxModal,
+  NyxProgress,
   NyxSelect,
   NyxSpinner,
   NyxSwitch,
