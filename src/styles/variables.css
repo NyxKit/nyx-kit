@@ -294,7 +294,7 @@
  * -------------------------------------------------------------------------- */
 
 :root {
-  --nyx-pixel-size: 5px;
+  --nyx-pixel-size: 4px;
   --nyx-pixel-c: var(--nyx-c-default-alt);
   --nyx-pixel-c-alt: var(--nyx-c-default);
   --nyx-pixel-c-highlight: var(--nyx-c-default-highlight);

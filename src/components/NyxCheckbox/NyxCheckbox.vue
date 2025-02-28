@@ -4,16 +4,20 @@ import { computed } from 'vue'
 import { NyxSize, NyxTheme, NyxVariant } from '@/types'
 import type { NyxCheckboxProps } from './NyxCheckbox.types'
 import { generateRandomString } from '@/utils/string';
+import useNyxProps from '@/compositions/useNyxProps';
 
 const props = withDefaults(defineProps<NyxCheckboxProps>(), {
   label: '',
   disabled: false,
   size: NyxSize.Medium,
   theme: NyxTheme.Default,
-  // variant: NyxVariant.Solid
+  pixel: false,
+  checkmark: '✔'
 })
 
 const model = defineModel<boolean>({ default: false })
+
+const { classList } = useNyxProps(props)
 
 const normalizedId = computed(() => props.id ?? `nyx-checkbox-${ generateRandomString(16) }`)
 
@@ -22,7 +26,7 @@ const normalizedId = computed(() => props.id ?? `nyx-checkbox-${ generateRandomS
 <template>
   <div
     class="nyx-checkbox"
-    :class="[`theme-${props.theme}`, `size-${props.size}`]"
+    :class="classList"
   >
     <input
       type="checkbox"

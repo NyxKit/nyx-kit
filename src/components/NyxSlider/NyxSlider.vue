@@ -11,7 +11,8 @@ const props = withDefaults(defineProps<NyxSliderProps>(), {
   min: 0,
   max: 100,
   tooltip: 'interact',
-  direction: 'row'
+  direction: 'row',
+  pixel: false
 })
 
 const model = defineModel<number | [number, number]>()

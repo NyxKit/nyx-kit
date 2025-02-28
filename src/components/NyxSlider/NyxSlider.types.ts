@@ -10,4 +10,5 @@ export interface NyxSliderProps {
   theme?: NyxTheme
   shape?: NyxShape
   direction?: 'row'|'column'
+  pixel?: boolean
 }

@@ -1,3 +1,5 @@
+@use '../../styles/mixins.scss' as *;
+
 .nyx-slider {
   --nyx-slider-min: 0;
   --nyx-slider-max: 100;
@@ -98,5 +100,20 @@
 
   &.shape-rectangle {
     --nyx-slider-h-thumb: calc(2 * var(--nyx-slider-w-thumb));
+  }
+
+  &.pixel {
+    --nyx-pixel-size: 2px;
+    --nyx-pixel-c: var(--nyx-c-slider);
+    --nyx-pixel-c-highlight: var(--nyx-c-slider-highlight);
+
+    &::after {
+      --nyx-slider-h-track: calc(var(--nyx-pad-md) * 0.6);
+      border-radius: 0;
+    }
+  }
+
+  &.pixel &__thumb {
+    @include pixel-field;
   }
 }
