@@ -35,6 +35,7 @@ const { classList } = useNyxProps(props)
       :required="props.required"
       :autocomplete="props.autocomplete"
       :autofocus="props.autofocus"
+      :tabindex="props.tabindex"
       :id="id"
       v-model="model"
       @click="emit('click')"
