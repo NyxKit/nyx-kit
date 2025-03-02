@@ -1,5 +1,6 @@
-import { clamp, type CssVariablesDict, NyxPosition, NyxSize } from '@/types'
 import { computed, type DefineComponent, onBeforeUnmount, onMounted, type Ref, ref, watch } from 'vue'
+import { type CssVariablesDict, NyxPosition, NyxSize } from '@/types'
+import { clamp } from '@/utils'
 
 interface TeleportPositionOptions {
   position?: Ref<NyxPosition>
