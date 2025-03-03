@@ -13,4 +13,7 @@ export const isOdd = (value: number) => value % 2 !== 0
 
 export const isDivisibleBy = (value: number, divisor: number) => value % divisor === 0
 
-export const getRandomBetween = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min
+export const getRandomBetween = (min: number, max: number, step: number = 1) => {
+  const random = Math.random() * (max - min) + min
+  return roundToStep(random, step)
+}
