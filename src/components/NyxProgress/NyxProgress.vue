@@ -37,5 +37,10 @@ const cssVars = computed<CssVariablesDict>(() => ({
       class="nyx-progress__bar"
       :class="{ 'indeterminate': model === null }"
     />
+    <span
+      v-if="showValue"
+      class="nyx-progress__label"
+      :class="`nyx-progress__label--${showValue}`"
+    >{{ model }}</span>
   </div>
 </template>

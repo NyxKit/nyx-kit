@@ -28,7 +28,28 @@
     }
   }
 
+  &__label {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--nyx-c-white);
+    text-align: center;
+    padding: 0 var(--nyx-pad-md);
 
+    &--start {
+      justify-content: flex-start;
+    }
+
+    &--end {
+      justify-content: flex-end;
+    }
+  }
 
   &.theme-primary {
     --nyx-c-progress: var(--nyx-c-primary);
