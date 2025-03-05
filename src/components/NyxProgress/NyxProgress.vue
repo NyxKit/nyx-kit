@@ -38,9 +38,9 @@ const cssVars = computed<CssVariablesDict>(() => ({
       :class="{ 'indeterminate': model === null }"
     />
     <span
-      v-if="showValue"
+      v-if="showValue && model !== null"
       class="nyx-progress__label"
       :class="`nyx-progress__label--${showValue}`"
-    >{{ model }}</span>
+    >{{ Math.round(model) }}</span>
   </div>
 </template>
