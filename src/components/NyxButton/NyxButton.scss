@@ -298,6 +298,22 @@
 
     @include pixel-button;
 
+    &.variant-outline {
+      --nyx-pad-button-multiplier: 1;
+      background-color: transparent;
+      box-shadow: none;
+      border-color: transparent;
+
+      &::after {
+        opacity: 0;
+        // transition: opacity var(--nyx-speed-fast);
+      }
+
+      &:hover::after {
+        opacity: 1;
+      }
+    }
+
     &.shape-circle,
     &.shape-square {
       overflow: visible;
