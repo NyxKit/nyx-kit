@@ -1,3 +1,5 @@
+@use '../../styles/mixins.scss' as *;
+
 .nyx-avatar {
   --nyx-c-avatar: var(--nyx-c-primary);
   --nyx-font-size-avatar: var(--nyx-font-size-md);
@@ -15,12 +17,10 @@
   gap: var(--nyx-gap-avatar);
   font-size: var(--nyx-font-size-avatar);
 
-  .nyx-media {
+  &__image {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: var(--nyx-w-avatar);
-    height: var(--nyx-h-avatar);
     border-radius: var(--nyx-radius-max);
     overflow: hidden;
     font-weight: bold;
@@ -29,6 +29,16 @@
     font-size: var(--nyx-font-size-avatar-image);
     line-height: 1;
     letter-spacing: 1.2;
+  }
+
+  &__image,
+  &__image.nyx-media {
+    width: var(--nyx-w-avatar);
+    height: var(--nyx-h-avatar);
+  }
+
+  &.shape-square &__image {
+    border-radius: var(--nyx-radius-md);
   }
 
   &.size-xs {
@@ -53,5 +63,13 @@
     --nyx-font-size-avatar: var(--nyx-font-size-xl);
     --nyx-font-size-avatar-multiplier: 5;
     --nyx-gap-avatar: var(--nyx-gap-xl);
+  }
+
+  &.pixel &__image {
+    font-family: var(--nyx-font-family-pixel);
+    font-size: calc(var(--nyx-h-avatar) * 0.35);
+    border-radius: 0;
+    border: var(--nyx-pixel-size) solid var(--nyx-c-avatar);
+    image-rendering: pixelated;
   }
 }

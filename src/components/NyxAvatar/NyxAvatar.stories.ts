@@ -1,6 +1,6 @@
 import { defineComponent } from 'vue'
 import NyxAvatar from './NyxAvatar.vue'
-import { NyxSize } from '@/types'
+import { NyxShape, NyxSize } from '@/types'
 import type { NyxAvatarProps } from './NyxAvatar.types'
 
 export default {
@@ -10,6 +10,10 @@ export default {
     size: {
       control: { type: 'select' },
       options: Object.values(NyxSize),
+    },
+    shape: {
+      control: { type: 'select' },
+      options: Object.values(NyxShape)
     }
   },
   args: {
