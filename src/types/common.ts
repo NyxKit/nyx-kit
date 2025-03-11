@@ -54,3 +54,8 @@ export enum NyxTabsVariant {
   Classic = 'classic',
   Modern = 'modern'
 }
+
+export enum NyxProgressVariant {
+  Line = 'line',
+  Dots = 'dots'
+}

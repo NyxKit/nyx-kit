@@ -1,6 +1,6 @@
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import NyxProgress from './NyxProgress.vue'
-import { NyxTheme, NyxSize, NyxVariant, NyxShape } from '@/types'
+import { NyxTheme, NyxSize, NyxVariant, NyxShape, NyxProgressVariant } from '@/types'
 import type { NyxProgressProps } from './NyxProgress.types'
 
 export default {
@@ -21,7 +21,7 @@ export default {
     },
     variant: {
       control: { type: 'select' },
-      options: Object.values(NyxVariant),
+      options: Object.values(NyxProgressVariant),
     },
     size: {
       control: { type: 'select' },
@@ -50,4 +50,21 @@ const Template = (args: NyxProgressProps) => defineComponent({
   `,
 })
 
+const TemplateDots = () => () => defineComponent({
+  components: { NyxProgress },
+  setup () {
+    const currProgress = ref(2.25)
+    return { currProgress, NyxProgressVariant, NyxSize }
+  },
+  template: `
+    <nyx-progress
+      v-model="currProgress"
+      :max="5"
+      :variant="NyxProgressVariant.Dots"
+      :size="NyxSize.Large"
+    />
+  `
+})
+
 export const Default = Template({})
+export const Dots = TemplateDots()

@@ -3,12 +3,14 @@
   --nyx-c-progress-highlight: var(--nyx-c-default-highlight);
   --nyx-c-progress-alt: var(--nyx-c-default-alt);
   --nyx-rgb-progress: var(--nyx-rgb-default);
-  --nyx-h-progress: 0.5rem;
+  --nyx-h-progress: 0.75rem;
+  --nyx-gap-progress: var(--nyx-gap-md);
+  --nyx-opacity-progress: 0.3;
   --progress: 100%;
 
   width: 100%;
   height: var(--nyx-h-progress);
-  background-color: rgba(var(--nyx-rgb-progress), 0.3);
+  background-color: rgba(var(--nyx-rgb-progress), var(--nyx-opacity-progress));
   position: relative;
   border-radius: 4px;
   overflow: hidden;
@@ -49,6 +51,46 @@
     &--end {
       justify-content: flex-end;
     }
+  }
+
+  &.variant-dots {
+    height: auto;
+    border-radius: 0;
+    background-color: transparent;
+    display: flex;
+    gap: var(--nyx-gap-progress);
+  }
+
+  &.variant-dots &__dot {
+    width: var(--nyx-h-progress);
+    height: var(--nyx-h-progress);
+    border-radius: 50%;
+    font-size: 0;
+    background: linear-gradient(
+      to right,
+      var(--nyx-c-progress-highlight) var(--dot-progress, 0),
+      rgba(var(--nyx-rgb-progress), var(--nyx-opacity-progress)) var(--dot-progress, 0)
+    );
+  }
+
+  &.size-xs {
+    --nyx-h-progress: 0.25rem;
+    --nyx-gap-progress: var(--nyx-gap-sm);
+  }
+
+  &.size-sm {
+    --nyx-h-progress: 0.5rem;
+    --nyx-gap-progress: var(--nyx-gap-sm);
+  }
+
+  &.size-lg {
+    --nyx-h-progress: 1rem;
+    --nyx-gap-progress: var(--nyx-gap-md);
+  }
+
+  &.size-xl {
+    --nyx-h-progress: 2rem;
+    --nyx-gap-progress: var(--nyx-gap-md);
   }
 
   &.theme-primary {

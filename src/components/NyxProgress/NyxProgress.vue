@@ -2,13 +2,16 @@
 import './NyxProgress.scss'
 import { computed } from 'vue'
 import type { NyxProgressProps } from './NyxProgress.types'
-import { NyxShape, NyxVariant, type CssVariablesDict } from '@/types'
+import { NyxProgressVariant, NyxShape, NyxSize, NyxVariant, type CssVariablesDict } from '@/types'
 import useNyxProps from '@/compositions/useNyxProps';
+import { clamp } from '@/utils';
 
 const props = withDefaults(defineProps<NyxProgressProps>(), {
+  min: 0,
   max: 100,
-  variant: NyxVariant.Solid,
+  variant: NyxProgressVariant.Line,
   shape: NyxShape.Rectangle,
+  size: NyxSize.Small,
   gradient: false
 })
 
@@ -25,15 +28,30 @@ const progressWidth = computed(() => {
 const cssVars = computed<CssVariablesDict>(() => ({
   '--progress': progressWidth.value
 }))
+
+const getDotCssVars = (i: number): CssVariablesDict => {
+  if (model.value === null) return { '--dot-progress': '0%' }
+  const progress = model.value - (i - 1)
+  return { '--dot-progress': `${clamp(progress, 0, 1) * 100}%` }
+}
 </script>
 
 <template>
   <div
     class="nyx-progress"
-    :class="classList"
+    :class="[...classList, `variant--${props.variant}`]"
     :style="cssVars"
   >
+    <template v-if="props.variant === NyxProgressVariant.Dots">
+      <div
+        class="nyx-progress__dot"
+        v-for="i in props.max"
+        :key="i"
+        :style="getDotCssVars(i)"
+      >{{ i }}</div>
+    </template>
     <div
+      v-else
       class="nyx-progress__bar"
       :class="{ 'indeterminate': model === null }"
     />

@@ -12,6 +12,7 @@
   display: grid;
   grid-template-columns: var(--grid-template-columns, auto);
   width: 100%;
+  overflow-x: auto;
   text-align: left;
   color: var(--nyx-c-table-text--color-default);
   border: 1px solid var(--nyx-c-table);

@@ -1,9 +1,10 @@
-import type { NyxPosition, NyxShape, NyxSize, NyxTheme, NyxVariant } from '@/types'
+import type { NyxProgressVariant, NyxShape, NyxSize, NyxTheme } from '@/types'
 
 export interface NyxProgressProps {
+  min?: number
   max?: number
   theme?: NyxTheme
-  variant?: NyxVariant
+  variant?: NyxProgressVariant
   shape?: NyxShape
   gradient?: NyxTheme|boolean
   size?: NyxSize
