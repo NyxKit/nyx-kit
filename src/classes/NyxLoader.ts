@@ -61,6 +61,7 @@ export default class NyxLoader {
   ): T | null {
     const value: unknown = this.handleData(data, key, 'string')
     if (enumValues.includes(value as T)) return value as T
+    if (value === null) return value
     return this.handleDefaultValue(defaultValue, key, 'enum')
   }
 
@@ -73,6 +74,7 @@ export default class NyxLoader {
   static loadArrayOrNull<T>(data: unknown, key: string, defaultValue: T[]): T[] | null {
     const value: unknown = this.handleData(data, key, 'array')
     if (Array.isArray(value)) return value as T[]
+    if (value === null) return value
     return this.handleDefaultValue(defaultValue, key, 'array')
   }
 
@@ -84,7 +86,27 @@ export default class NyxLoader {
 
   static loadObjectOrNull<T>(data: unknown, key: string, defaultValue: T): T | null {
     const value: unknown = this.handleData(data, key, 'object')
-    if (typeof value === 'object' && value !== null) return value as T
+    if (typeof value === 'object') return value as T
     return this.handleDefaultValue(defaultValue, key, 'object')
+  }
+
+  static loadDate(data: unknown, key: string, defaultValue: Date): Date {
+    const value: unknown = this.handleData(data, key, 'date')
+    if (value instanceof Date) return value
+    const isFirebaseDate = typeof value === 'object' && value !== null && 'seconds' in value
+    if (isFirebaseDate && typeof value.seconds === 'number') {
+      return new Date(value.seconds * 1000) // Firebase timestamp
+    }
+    return this.handleDefaultValue(defaultValue, key, 'date')
+  }
+
+  static loadDateOrNull(data: unknown, key: string, defaultValue: Date|null): Date | null {
+    const value: unknown = this.handleData(data, key, 'date')
+    if (value instanceof Date || value === null) return value
+    const isFirebaseDate = typeof value === 'object' && value !== null && 'seconds' in value
+    if (isFirebaseDate && typeof value.seconds === 'number') {
+      return new Date(value.seconds * 1000) // Firebase timestamp
+    }
+    return this.handleDefaultValue(defaultValue, key, 'date')
   }
 }
