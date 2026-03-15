@@ -4,7 +4,7 @@ import { NyxSize, NyxVariant, NyxTheme, NyxShape } from '@/types'
 import type { NyxButtonProps, NyxButtonEmits } from './NyxButton.types'
 import { computed } from 'vue';
 import { isCurrentDomain } from '@/utils'
-import useNyxProps from '@/compositions/useNyxProps';
+import useNyxProps from '@/composables/useNyxProps';
 
 const props = withDefaults(defineProps<NyxButtonProps>(), {
   type: 'button',

@@ -3,7 +3,7 @@ import './NyxTooltip.scss'
 import { computed, defineProps, defineSlots, ref, useTemplateRef, type Slots, watch } from 'vue'
 import { NyxPosition, NyxTheme, NyxSize, NyxVariant } from '@/types'
 import type { NyxTooltipProps } from './NyxTooltip.types'
-import { useTeleportPosition } from '@/compositions'
+import { useTeleportPosition } from '@/composables'
 
 const props = withDefaults(defineProps<NyxTooltipProps>(), {
   theme: NyxTheme.Default,

@@ -3,7 +3,7 @@ import './NyxSlider.scss'
 import { ref, computed, onBeforeUnmount } from 'vue'
 import type { NyxSliderProps } from './NyxSlider.types'
 import { NyxShape, NyxTheme } from '@/types'
-import useNyxProps from '@/compositions/useNyxProps'
+import useNyxProps from '@/composables/useNyxProps'
 import { roundToStep } from '@/utils'
 
 const props = withDefaults(defineProps<NyxSliderProps>(), {

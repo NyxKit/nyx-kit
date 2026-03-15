@@ -3,9 +3,9 @@ import './NyxModal.scss'
 import type { NyxModalEmits, NyxModalProps } from './NyxModal.types'
 import NyxButton from '../NyxButton/NyxButton.vue'
 import { KeyboardKey, NyxSize, NyxVariant, NyxTheme } from '@/types'
-import { useKeyPress } from '@/compositions'
+import { useKeyPress } from '@/composables'
 import { computed, useSlots, type Slots } from 'vue'
-import useNyxProps from '@/compositions/useNyxProps'
+import useNyxProps from '@/composables/useNyxProps'
 
 const props = withDefaults(defineProps<NyxModalProps>(), {
   cancelText: 'Close',

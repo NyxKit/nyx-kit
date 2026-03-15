@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import useNyxProps from '@/compositions/useNyxProps';
+import useNyxProps from '@/composables/useNyxProps';
 import './NyxInput.scss'
 import type { NyxInputProps, NyxInputEmits } from './NyxInput.types'
 import { NyxInputType, NyxTheme, NyxVariant, NyxSize } from '@/types'

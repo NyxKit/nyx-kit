@@ -4,7 +4,7 @@ import { ref, computed, onUnmounted, watch, useSlots, type Slots } from 'vue'
 import type { NyxCarouselProps } from './NyxCarousel.types'
 import { NyxTheme, type CssVariablesDict } from '@/types'
 import NyxMedia from '../NyxMedia/NyxMedia.vue'
-import { useKeyboardShortcuts } from '@/compositions'
+import { useKeyboardShortcuts } from '@/composables'
 
 const props = withDefaults(defineProps<NyxCarouselProps<T>>(), {
   theme: NyxTheme.Default,

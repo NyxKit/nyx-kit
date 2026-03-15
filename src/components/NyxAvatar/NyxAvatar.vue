@@ -4,7 +4,7 @@ import { computed } from 'vue'
 import NyxMedia from '../NyxMedia/NyxMedia.vue'
 import type { NyxAvatarProps } from './NyxAvatar.types'
 import { NyxMediaType, NyxShape, NyxSize } from '@/types'
-import useNyxProps from '@/compositions/useNyxProps'
+import useNyxProps from '@/composables/useNyxProps'
 
 const props = withDefaults(defineProps<NyxAvatarProps>(), {
   size: NyxSize.Medium,

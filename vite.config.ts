@@ -24,7 +24,7 @@ export default defineConfig({
         index: fileURLToPath(new URL('./src/main.ts', import.meta.url)),
         classes: fileURLToPath(new URL('./src/classes/index.ts', import.meta.url)),
         components: fileURLToPath(new URL('./src/components/index.ts', import.meta.url)),
-        compositions: fileURLToPath(new URL('./src/compositions/index.ts', import.meta.url)),
+        composables: fileURLToPath(new URL('./src/composables/index.ts', import.meta.url)),
         directives: fileURLToPath(new URL('./src/directives/index.ts', import.meta.url)),
         types: fileURLToPath(new URL('./src/types/index.ts', import.meta.url)),
         utils: fileURLToPath(new URL('./src/utils/index.ts', import.meta.url))

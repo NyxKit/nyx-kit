@@ -2,7 +2,7 @@
 import './NyxTabs.scss'
 import { NyxPosition, NyxSize, NyxTabsVariant, NyxTheme } from '@/types'
 import type { NyxTabsProps } from './NyxTabs.types'
-import useNyxProps from '@/compositions/useNyxProps'
+import useNyxProps from '@/composables/useNyxProps'
 import { computed, useSlots, type Slots } from 'vue'
 
 const props = withDefaults(defineProps<NyxTabsProps>(), {

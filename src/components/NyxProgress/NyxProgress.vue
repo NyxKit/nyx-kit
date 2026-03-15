@@ -3,7 +3,7 @@ import './NyxProgress.scss'
 import { computed } from 'vue'
 import type { NyxProgressProps } from './NyxProgress.types'
 import { NyxProgressVariant, NyxShape, NyxSize, NyxVariant, type CssVariablesDict } from '@/types'
-import useNyxProps from '@/compositions/useNyxProps';
+import useNyxProps from '@/composables/useNyxProps';
 import { clamp } from '@/utils';
 
 const props = withDefaults(defineProps<NyxProgressProps>(), {

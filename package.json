@@ -2,7 +2,7 @@
   "name": "nyx-kit",
   "homepage": "http://nyxkit.github.io/nyx-kit",
   "author": "Arne Decant <hello@arnedecant.be>",
-  "version": "1.1.23",
+  "version": "1.2.0",
   "private": false,
   "license": "MIT",
   "type": "module",
@@ -39,9 +39,13 @@
       "import": "./dist/components.mjs",
       "types": "./dist/types/components.d.ts"
     },
+    "./composables": {
+      "import": "./dist/composables.mjs",
+      "types": "./dist/types/composables.d.ts"
+    },
     "./compositions": {
-      "import": "./dist/compositions.mjs",
-      "types": "./dist/types/compositions.d.ts"
+      "import": "./dist/composables.mjs",
+      "types": "./dist/types/composables.d.ts"
     },
     "./directives": {
       "import": "./dist/directives.mjs",
