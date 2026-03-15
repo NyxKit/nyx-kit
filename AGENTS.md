@@ -153,6 +153,70 @@ Before considering any change complete, verify:
 
 ---
 
+## Audits
+
+When asked to perform an audit, create a new file in `docs/audits/` named `YYYYMMDD-HHMM.md` using the current date and time (e.g. `20260315-1944.md`). Do not reuse or overwrite existing audit files.
+
+### Audit standard
+
+Every audit of nyx-kit must be performed as a **senior-level codebase review** — not a shallow summary. Treat the library as production code intended for consumption across multiple apps.
+
+**Role:** Act as a principal frontend engineer / library architect. Be highly critical, practical, and specific. Reference actual files, components, and patterns. Do not praise unnecessarily.
+
+**Inspect all of the following where relevant:**
+component APIs, file/folder structure, naming consistency, architecture and layering, composables/utilities/helpers, styling strategy, theming/token usage, TypeScript types, props/events/slots patterns, state handling, accessibility, keyboard/focus behaviour, test coverage and quality, Storybook usage, build setup, bundling/output format, tree-shaking friendliness, public exports, package structure, dead code/duplication, docs and discoverability, developer experience, maintainability risks, likely breaking-change risks, performance issues, SSR/hydration risks, dependency hygiene.
+
+**Evaluate whether nyx-kit is:**
+1. Internally consistent
+2. Ergonomic for consumers
+3. Easy to extend safely
+4. Resilient against regressions
+5. Appropriately designed for a library rather than an app
+6. Aligned with modern frontend best practices
+
+**Explicitly check for:**
+- Inconsistent prop, event, or slot naming across components
+- Overly complex or leaky component APIs
+- Props that should be slots, or slots that should be props
+- Components doing too much
+- Logic duplicated across components
+- Styling too tightly coupled to implementation details
+- Poor separation between tokens, primitives, and opinionated components
+- Weak accessibility patterns or incorrect ARIA usage
+- Weak keyboard navigation support
+- Bad TypeScript patterns or unsafe `any` usage
+- Public types that are missing or poorly designed
+- Import/export structure problems or circular dependencies
+- Side effects that hurt tree-shaking
+- Places where consumers would struggle to override styles or behaviour
+- Places where future breaking changes are likely
+- Testing blind spots and docs gaps that would slow adoption
+
+**Output format — every audit must follow this structure:**
+
+```
+# Nyx-kit Audit — YYYYMMDD-HHMM
+
+## 1. Executive summary
+## 2. Severity overview (Critical / High / Medium / Low)
+   Each finding: Title, Severity, Why it matters, Evidence, Recommended fix, Breaking or not
+## 3. Architectural assessment
+## 4. API design assessment
+## 5. Styling and theming assessment
+## 6. TypeScript assessment
+## 7. Accessibility assessment
+## 8. Testing assessment
+## 9. Build/package assessment
+## 10. Top 10 improvements (ranked by impact, with effort, risk, breaking flag)
+## 11. Refactor roadmap (Phase 1: quick wins / Phase 2: structural / Phase 3: breaking)
+## 12. Scorecard (1–10): Architecture, API design, Type safety, Accessibility,
+        Testing, Styling/Theming, Maintainability, Consumer DX, Release readiness
+```
+
+**Style:** Write like an expert reviewer addressing a senior engineer. Concise, structured, sharp, and practical. Distinguish between objectively risky issues, stylistic preferences, and possible future improvements. When uncertain, say so explicitly.
+
+---
+
 ## Divergence Log
 
 When you notice that something in the codebase or stories is out of sync, record it here before fixing it.
