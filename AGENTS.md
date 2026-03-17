@@ -73,6 +73,17 @@ docs/
     README.md           # naming, file structure, Vue/TS code style, git
   testing/
     README.md           # test strategy (unit / E2E), coverage targets
+  specs/                # mirrors src/ structure — one living spec per exported symbol
+    components/
+      Nyx*.spec.md      # per-component specs
+    composables/
+      use*.spec.md      # per-composable specs
+    directives/
+      v*.spec.md        # per-directive specs
+    utils/
+      *.spec.md         # per-utility specs (only for non-trivial utilities)
+    classes/
+      *.spec.md         # per-class specs
 ```
 
 **Start here for context:**
@@ -97,15 +108,17 @@ docs/
 ### For new components
 
 1. Check `README.md` and `docs/architecture/component-model.md` for the intended API and conventions.
-2. Create a folder under `src/components/Nyx<Name>/` with the component file, an `index.ts` re-export, and a `.stories.ts` file.
-3. Register the export in `src/components/index.ts` and `src/index.ts`.
-4. Add unit tests (`.spec.ts`) for non-trivial logic.
+2. Create `docs/specs/components/Nyx<Name>.spec.md` — see **Component Spec Files** below.
+3. Create a folder under `src/components/Nyx<Name>/` with the component file, an `index.ts` re-export, and a `.stories.ts` file.
+4. Register the export in `src/components/index.ts` and `src/index.ts`.
+5. Add unit tests (`.spec.ts`) for non-trivial logic.
 
 ### For changes to existing components
 
 1. Read the component file, its story, and any relevant `docs/` section before touching anything.
 2. Keep prop names and defaults consistent with sibling components — check `docs/architecture/component-model.md`.
 3. Update the story if the API changes. A story that no longer compiles is a failing test.
+4. **Update `docs/specs/components/Nyx<Name>.spec.md`** to reflect any change to the component's props, emits, slots, internal architecture, or behaviour. The spec file is a living document — it must always describe the component as it currently exists.
 
 ### For changes to types, utils, or composables
 
@@ -130,6 +143,7 @@ docs/
 Before considering any change complete, verify:
 
 - [ ] All affected `docs/` files are updated and internally consistent
+- [ ] `docs/specs/<layer>/<Symbol>.spec.md` exists and reflects the current source (create for new symbols, update for changed ones)
 - [ ] Cross-references between docs use correct relative paths
 - [ ] The component compiles without TypeScript errors (`yarn type-check`)
 - [ ] The story renders correctly in Storybook
@@ -150,6 +164,83 @@ Before considering any change complete, verify:
 | `vite.config.ts` — entry points and exports | Changing an entry point or export path breaks the published package contract for consumers. |
 | `package.json` — `exports` map | Must stay in sync with `vite.config.ts`. Any mismatch breaks tree-shaking or type resolution for consumers. |
 | `src/composables/useNyxProps.ts` | The central prop-merging composable used by most components. Changes here cascade everywhere. |
+
+---
+
+## Component Spec Files
+
+Each non-trivial exported symbol has a dedicated spec file under `docs/specs/`, mirroring the `src/` folder structure:
+
+| Source location | Spec location |
+|---|---|
+| `src/components/NyxFoo/` | `docs/specs/components/NyxFoo.spec.md` |
+| `src/composables/useFoo.ts` | `docs/specs/composables/useFoo.spec.md` |
+| `src/directives/vFoo.ts` | `docs/specs/directives/vFoo.spec.md` |
+| `src/classes/Foo.ts` | `docs/specs/classes/Foo.spec.md` |
+| `src/utils/foo.ts` | `docs/specs/utils/foo.spec.md` (non-trivial only) |
+
+These are **living documents** — they must stay in sync with the source at all times.
+
+### When to create a spec file
+
+Create the spec file when a new symbol is introduced. Write it **before** implementing.
+
+### When to update a spec file
+
+Update the spec file **as part of the same change** whenever:
+- Props, emits, slots, or v-model bindings are added, removed, or renamed
+- The component's internal architecture changes (e.g. new sub-components, composables, state model)
+- Behaviour changes (e.g. keyboard handling, accessibility semantics, animation)
+- A known limitation is resolved or introduced
+
+Never leave a spec file describing an outdated version of the source.
+
+### Spec file structure
+
+```markdown
+# Nyx<Name>
+
+> One-line description of what the component does.
+
+## Purpose and scope
+
+What problem it solves, when to use it, when not to.
+
+## Internal architecture
+
+How the component is structured internally: sub-components, composables used,
+key reactive state, rendering strategy (teleport, slots, etc.).
+
+## Props
+
+| Prop | Type | Default | Description |
+
+## Emits
+
+| Event | Payload | When |
+
+## Slots
+
+| Slot | Scope | Purpose |
+
+## v-model
+
+What v-model binds to and its type.
+
+## Keyboard behaviour
+
+Key bindings and focus management.
+
+## Accessibility
+
+ARIA roles, attributes, and any a11y contracts.
+
+## Known limitations
+
+Anything that is intentionally out of scope or not yet implemented.
+```
+
+Not every section is required for every component — omit sections that genuinely don't apply (e.g. a display-only component has no keyboard section).
 
 ---
 
