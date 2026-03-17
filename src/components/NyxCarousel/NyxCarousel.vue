@@ -118,7 +118,13 @@ useKeyboardShortcuts({
       :style="cssVars"
       @transitionend="handleTransitionEnd"
     >
-      <div v-for="(slide, index) in duplicatedSlides" :key="index" class="nyx-carousel__slide">
+      <div
+        v-for="(slide, index) in duplicatedSlides"
+        :key="index"
+        class="nyx-carousel__slide"
+        :aria-hidden="index === 0 || index === duplicatedSlides.length - 1 ? 'true' : undefined"
+        :tabindex="index === 0 || index === duplicatedSlides.length - 1 ? -1 : undefined"
+      >
         <slot
           v-if="!!slots[getSlotName(index)]"
           :name="`slide-${index % slides.length}`"

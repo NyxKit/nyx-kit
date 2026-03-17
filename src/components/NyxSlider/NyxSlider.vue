@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import './NyxSlider.scss'
-import { ref, computed, onBeforeUnmount } from 'vue'
+import { ref, computed } from 'vue'
 import type { NyxSliderProps } from './NyxSlider.types'
 import { NyxShape, NyxTheme } from '@/types'
 import useNyxProps from '@/composables/useNyxProps'
@@ -57,14 +57,14 @@ const updateValue = (index: number, newValue: number) => {
   }
 }
 
-const startDrag = (thumbIndex: number, event: MouseEvent) => {
+const startDrag = (thumbIndex: number, event: PointerEvent) => {
   event.preventDefault()
+  event.stopPropagation()
   draggingThumb.value = thumbIndex
-  document.addEventListener('mousemove', onDrag)
-  document.addEventListener('mouseup', stopDrag)
+  ;(event.currentTarget as HTMLElement).setPointerCapture(event.pointerId)
 }
 
-const onDrag = (event: MouseEvent) => {
+const onDrag = (event: PointerEvent) => {
   if (draggingThumb.value === null || !track.value) return
   const rect = track.value.getBoundingClientRect()
   let newPosition = (event.clientX - rect.left) / rect.width
@@ -75,12 +75,10 @@ const onDrag = (event: MouseEvent) => {
 }
 
 const stopDrag = () => {
-  document.removeEventListener('mousemove', onDrag)
-  document.removeEventListener('mouseup', stopDrag)
   draggingThumb.value = null
 }
 
-const onTrackMouseDown = (event: MouseEvent) => {
+const onTrackMouseDown = (event: PointerEvent) => {
   if (!track.value) return
   const rect = track.value.getBoundingClientRect()
   let clickPosition = (event.clientX - rect.left) / rect.width
@@ -127,11 +125,6 @@ const onKeyDown = (event: KeyboardEvent, index: number) => {
 }
 
 const { classList } = useNyxProps(props)
-
-onBeforeUnmount(() => {
-  document.removeEventListener('mousemove', onDrag)
-  document.removeEventListener('mouseup', stopDrag)
-})
 </script>
 
 <template>
@@ -139,7 +132,7 @@ onBeforeUnmount(() => {
     class="nyx-slider"
     :class="classList"
     ref="track"
-    @mousedown="onTrackMouseDown"
+    @pointerdown="onTrackMouseDown"
   >
     <!-- Track highlight for range mode -->
     <div
@@ -173,7 +166,10 @@ onBeforeUnmount(() => {
       :aria-valuenow="value1"
       :aria-valuemin="props.min"
       :aria-valuemax="props.max"
-      @mousedown="(e) => startDrag(0, e)"
+      @pointerdown="(e) => startDrag(0, e)"
+      @pointermove="onDrag"
+      @pointerup="stopDrag"
+      @pointercancel="stopDrag"
       @keydown="(e) => onKeyDown(e, 0)"
     ></div>
 
@@ -200,7 +196,10 @@ onBeforeUnmount(() => {
         :aria-valuenow="value2 ?? undefined"
         :aria-valuemin="props.min"
         :aria-valuemax="props.max"
-        @mousedown="(e) => startDrag(1, e)"
+        @pointerdown="(e) => startDrag(1, e)"
+        @pointermove="onDrag"
+        @pointerup="stopDrag"
+        @pointercancel="stopDrag"
         @keydown="(e) => onKeyDown(e, 1)"
       ></div>
     </template>

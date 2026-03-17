@@ -34,16 +34,6 @@ export default class NyxLog {
     return args.filter((arg) => typeof arg !== 'string')
   }
 
-  private static getCaller(): string {
-    const stack = new Error().stack
-    if (stack) {
-      const stackLines = stack.split('\n')
-      const caller = stackLines[3] ?? 'unknown'
-      return caller
-    }
-    return 'unknown'
-  }
-
   public static info(prefix: any, ...args: any[]): void {
     console.log.apply(console, [
       this.getFormattedMessage(prefix, this.getArgsStrings(args)),

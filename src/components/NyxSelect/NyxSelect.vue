@@ -21,7 +21,7 @@ const model = computed({
   }
 })
 
-const elInput = useTemplateRef<HTMLInputElement>('nyx-select-input')
+const elInput = useTemplateRef<HTMLInputElement>('elInput')
 const searchQuery = ref('')
 
 const elControl = useTemplateRef<HTMLDivElement>('elControl')
@@ -116,7 +116,7 @@ watch(isOpen, (newVal) => {
         v-model="searchQuery"
         class="nyx-select__input"
         :placeholder="props.multiple ? 'Select multiple...' : 'Select...'"
-        ref="nyx-select-input"
+        ref="elInput"
       />
       <span class="nyx-select__arrow" @click="toggleDropdown">▼</span>
     </div>
