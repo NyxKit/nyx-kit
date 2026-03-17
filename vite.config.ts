@@ -2,11 +2,10 @@ import { fileURLToPath, URL, resolve } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
-import type { PreRenderedAsset, PreRenderedChunk } from 'rolldown'
 import dts from 'vite-plugin-dts'
 
-const assetFileNamesFn = (_chunkInfo: PreRenderedAsset) => `assets/[name].[ext]`
-const chunkFileNamesFn = (chunkInfo: PreRenderedChunk, ext: string) => {
+const assetFileNamesFn = () => `assets/[name].[ext]`
+const chunkFileNamesFn = (chunkInfo: { facadeModuleId?: string | null }, ext: string) => {
   const fileName = `[name].[hash].${ ext }`
   if (chunkInfo.facadeModuleId?.endsWith('.svg')) {
     return `chunks/icons/${ fileName }`
@@ -38,7 +37,7 @@ export default defineConfig({
           format: 'es',
           dir: fileURLToPath(new URL('./dist', import.meta.url)),
           entryFileNames: '[name].mjs',
-          chunkFileNames: (chunkInfo: PreRenderedChunk) => chunkFileNamesFn(chunkInfo, 'mjs'),
+          chunkFileNames: (chunkInfo) => chunkFileNamesFn(chunkInfo, 'mjs'),
           assetFileNames: assetFileNamesFn,
           preserveModules: false,
           globals: { vue: 'vue' }
