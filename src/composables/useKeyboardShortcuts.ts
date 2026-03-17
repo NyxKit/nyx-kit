@@ -1,5 +1,4 @@
-import type { KeyDict } from '@/types'
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, type Ref } from 'vue'
 
 const getNormalizedKeyName = (key: string) => {
   if (key === ' ') return 'SPACE'
@@ -17,17 +16,38 @@ const keySort = (a: string, b: string) => {
   return 0
 }
 
-const useKeyboardShortcuts = (shortcuts: Record<string, (event: KeyboardEvent) => void>) => {
+const expandShortcuts = (
+  shortcuts: Record<string, (event: KeyboardEvent) => void>
+): Record<string, (event: KeyboardEvent) => void> => {
+  const expanded: Record<string, (event: KeyboardEvent) => void> = {}
+  for (const [combo, handler] of Object.entries(shortcuts)) {
+    if (combo.includes('SUPER')) {
+      expanded[combo.replace('SUPER', 'CTRL')] = handler
+      expanded[combo.replace('SUPER', 'META')] = handler
+    } else {
+      expanded[combo] = handler
+    }
+  }
+  return expanded
+}
+
+const useKeyboardShortcuts = (
+  shortcuts: Record<string, (event: KeyboardEvent) => void>,
+  target?: Ref<HTMLElement | null>
+) => {
+  const expanded = expandShortcuts(shortcuts)
   const keyHistory: Set<string> = new Set()
+
+  const getTarget = () => target?.value ?? window
 
   const keydownHandler = (event: KeyboardEvent) => {
     const key = getNormalizedKeyName(event.key)
     keyHistory.add(key)
     const combination = Array.from(keyHistory).sort(keySort).join('+')
 
-    if (shortcuts[combination]) {
+    if (expanded[combination]) {
       event.preventDefault()
-      shortcuts[combination](event)
+      expanded[combination](event)
     }
   }
 
@@ -36,13 +56,13 @@ const useKeyboardShortcuts = (shortcuts: Record<string, (event: KeyboardEvent) =
   }
 
   onMounted(() => {
-    window.addEventListener('keydown', keydownHandler)
-    window.addEventListener('keyup', keyupHandler)
+    getTarget().addEventListener('keydown', keydownHandler as EventListener)
+    getTarget().addEventListener('keyup', keyupHandler as EventListener)
   })
 
   onUnmounted(() => {
-    window.removeEventListener('keydown', keydownHandler)
-    window.removeEventListener('keyup', keyupHandler)
+    getTarget().removeEventListener('keydown', keydownHandler as EventListener)
+    getTarget().removeEventListener('keyup', keyupHandler as EventListener)
   })
 }
 

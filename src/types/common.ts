@@ -59,3 +59,13 @@ export enum NyxProgressVariant {
   Line = 'line',
   Dots = 'dots'
 }
+
+export enum NyxEditorMode {
+  Zen = 'zen',
+  Toolbar = 'toolbar'
+}
+
+export enum NyxEditorFormat {
+  Markdown = 'markdown',
+  Html = 'html'
+}
