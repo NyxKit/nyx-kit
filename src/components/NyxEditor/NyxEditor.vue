@@ -10,7 +10,6 @@ import { Markdown, type MarkdownStorage } from 'tiptap-markdown'
 import type { NyxEditorProps, NyxEditorEmits } from './NyxEditor.types'
 import { NyxEditorMode, NyxEditorFormat, NyxTheme, NyxVariant, NyxSize } from '@/types'
 import useNyxProps from '@/composables/useNyxProps'
-import useKeyboardShortcuts from '@/composables/useKeyboardShortcuts'
 import NyxEditorBubbleMenu from './NyxEditorBubbleMenu/NyxEditorBubbleMenu.vue'
 import {
   Bold, Italic, Underline, Strikethrough, Code,
