@@ -10,6 +10,7 @@ import { Markdown, type MarkdownStorage } from 'tiptap-markdown'
 import type { NyxEditorProps, NyxEditorEmits } from './NyxEditor.types'
 import { NyxEditorMode, NyxEditorFormat, NyxTheme, NyxVariant, NyxSize } from '@/types'
 import useNyxProps from '@/composables/useNyxProps'
+import useKeyboardShortcuts from '@/composables/useKeyboardShortcuts'
 import NyxEditorBubbleMenu from './NyxEditorBubbleMenu/NyxEditorBubbleMenu.vue'
 
 const props = withDefaults(defineProps<NyxEditorProps>(), {
@@ -40,6 +41,32 @@ const autoResizeSource = () => {
 }
 
 watch(sourceModel, (val) => { if (val) nextTick(autoResizeSource) })
+
+// ── Keyboard shortcuts ───────────────────────────────────────────────
+const editorRef = ref<HTMLElement | null>(null)
+
+const wrapSelection = (before: string, after = before) => {
+  const el = sourceRef.value
+  if (!el) return
+  const { selectionStart: start, selectionEnd: end } = el
+  el.setRangeText(`${before}${el.value.slice(start, end)}${after}`, start, end, 'select')
+  model.value = el.value
+  nextTick(autoResizeSource)
+}
+
+const sourceShortcut = (wrap: () => void) => () => { if (sourceModel.value) wrap() }
+
+useKeyboardShortcuts({
+  'CTRL+/':  () => { sourceModel.value = !sourceModel.value },
+  'META+/':  () => { sourceModel.value = !sourceModel.value },
+  'CTRL+B':  sourceShortcut(() => wrapSelection('**')),
+  'META+B':  sourceShortcut(() => wrapSelection('**')),
+  'CTRL+I':  sourceShortcut(() => wrapSelection('_')),
+  'META+I':  sourceShortcut(() => wrapSelection('_')),
+  'CTRL+S':  sourceShortcut(() => wrapSelection('~~')),
+  'META+S':  sourceShortcut(() => wrapSelection('~~')),
+  // Formatted view: Tiptap/ProseMirror handles B/I/U/S/Z natively
+}, editorRef)
 
 // ── Custom bubble menu state ─────────────────────────────────────────
 const bubbleVisible = ref(false)
@@ -121,7 +148,7 @@ watch(() => props.disabled, (val) => {
 </script>
 
 <template>
-  <div class="nyx-editor" :class="[...classList, `mode-${props.mode}`]">
+  <div ref="editorRef" class="nyx-editor" :class="[...classList, `mode-${props.mode}`]">
 
     <!-- Toolbar mode: persistent top bar -->
     <div

@@ -1,5 +1,4 @@
-import type { KeyDict } from '@/types'
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, type Ref } from 'vue'
 
 const getNormalizedKeyName = (key: string) => {
   if (key === ' ') return 'SPACE'
@@ -17,8 +16,13 @@ const keySort = (a: string, b: string) => {
   return 0
 }
 
-const useKeyboardShortcuts = (shortcuts: Record<string, (event: KeyboardEvent) => void>) => {
+const useKeyboardShortcuts = (
+  shortcuts: Record<string, (event: KeyboardEvent) => void>,
+  target?: Ref<HTMLElement | null>
+) => {
   const keyHistory: Set<string> = new Set()
+
+  const getTarget = () => target?.value ?? window
 
   const keydownHandler = (event: KeyboardEvent) => {
     const key = getNormalizedKeyName(event.key)
@@ -36,13 +40,13 @@ const useKeyboardShortcuts = (shortcuts: Record<string, (event: KeyboardEvent) =
   }
 
   onMounted(() => {
-    window.addEventListener('keydown', keydownHandler)
-    window.addEventListener('keyup', keyupHandler)
+    getTarget().addEventListener('keydown', keydownHandler as EventListener)
+    getTarget().addEventListener('keyup', keyupHandler as EventListener)
   })
 
   onUnmounted(() => {
-    window.removeEventListener('keydown', keydownHandler)
-    window.removeEventListener('keyup', keyupHandler)
+    getTarget().removeEventListener('keydown', keydownHandler as EventListener)
+    getTarget().removeEventListener('keyup', keyupHandler as EventListener)
   })
 }
 
