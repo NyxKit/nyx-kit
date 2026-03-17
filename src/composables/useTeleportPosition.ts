@@ -25,6 +25,7 @@ const useTeleportPosition = (
   // Compute gap as a pixel value
   const gap = computed(() => {
     if (!options?.gap?.value) return 0
+    if (typeof window === 'undefined') return 0
     const gapValue = window
       .getComputedStyle(document.body)
       .getPropertyValue(`--nyx-gap-${ options.gap.value }`) ?? '0'
@@ -44,6 +45,7 @@ const useTeleportPosition = (
   const computedPosition = ref<NyxPosition>(position.value)
 
   const updateCssVariables = () => {
+    if (typeof window === 'undefined') return
     if (!elRelative.value || !elAbsolute.value || !isUpdateAllowed.value) return
 
     const elRelativeRect = ('getBoundingClientRect' in elRelative.value )
