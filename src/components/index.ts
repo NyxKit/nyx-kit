@@ -1,3 +1,4 @@
+import NyxEditor from './NyxEditor/NyxEditor.vue'
 import NyxAvatar from './NyxAvatar/NyxAvatar.vue'
 import NyxBadge from './NyxBadge/NyxBadge.vue'
 import NyxBreadcrumbs from './NyxBreadcrumbs/NyxBreadcrumbs.vue'
@@ -23,6 +24,7 @@ import NyxTooltip from './NyxTooltip/NyxTooltip.vue'
 import NyxTree from './NyxTree/index'
 
 export {
+  NyxEditor,
   NyxAvatar,
   NyxBadge,
   NyxBreadcrumbs,

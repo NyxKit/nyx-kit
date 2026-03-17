@@ -1,0 +1,272 @@
+@use '../../styles/mixins.scss' as *;
+
+.nyx-editor {
+  --nyx-c-editor: var(--nyx-c-default);
+  --nyx-c-editor-highlight: var(--nyx-c-default-highlight);
+  --nyx-c-editor-alt: var(--nyx-c-default-alt);
+  --nyx-c-editor-text: var(--nyx-c-white-soft);
+  --nyx-gap-editor: var(--nyx-gap-md);
+  --nyx-pad-editor: var(--nyx-pad-md);
+  --nyx-font-size-editor: var(--nyx-font-size-md);
+  --nyx-border-size-editor: 1px;
+
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border-radius: var(--nyx-radius-md);
+  border: var(--nyx-border-size-editor) solid transparent;
+  overflow: hidden;
+  transition: border-color 0.2s;
+
+  // Variant: outline
+  &.variant-outline {
+    background-color: transparent;
+    border-color: var(--nyx-c-editor-alt);
+    color: var(--nyx-c-editor-alt);
+  }
+
+  // Variant: solid
+  &.variant-solid {
+    background-color: var(--nyx-c-editor);
+    color: var(--nyx-c-editor-text);
+  }
+
+  // Variant: ghost
+  &.variant-ghost {
+    background-color: transparent;
+    border-color: transparent;
+    color: var(--nyx-c-editor-alt);
+
+    &:focus-within {
+      border-color: var(--nyx-c-editor-alt);
+    }
+  }
+
+  // Themes
+  &.theme-primary {
+    --nyx-c-editor: var(--nyx-c-primary);
+    --nyx-c-editor-highlight: var(--nyx-c-primary-highlight);
+    --nyx-c-editor-alt: var(--nyx-c-primary-alt);
+  }
+
+  &.theme-secondary {
+    --nyx-c-editor: var(--nyx-c-secondary);
+    --nyx-c-editor-highlight: var(--nyx-c-secondary-highlight);
+    --nyx-c-editor-alt: var(--nyx-c-secondary-alt);
+  }
+
+  &.theme-info {
+    --nyx-c-editor: var(--nyx-c-info);
+    --nyx-c-editor-highlight: var(--nyx-c-info-highlight);
+    --nyx-c-editor-alt: var(--nyx-c-info-alt);
+  }
+
+  &.theme-success {
+    --nyx-c-editor: var(--nyx-c-success);
+    --nyx-c-editor-highlight: var(--nyx-c-success-highlight);
+    --nyx-c-editor-alt: var(--nyx-c-success-alt);
+  }
+
+  &.theme-warning {
+    --nyx-c-editor: var(--nyx-c-warning);
+    --nyx-c-editor-highlight: var(--nyx-c-warning-highlight);
+    --nyx-c-editor-alt: var(--nyx-c-warning-alt);
+  }
+
+  &.theme-danger {
+    --nyx-c-editor: var(--nyx-c-danger);
+    --nyx-c-editor-highlight: var(--nyx-c-danger-highlight);
+    --nyx-c-editor-alt: var(--nyx-c-danger-alt);
+  }
+
+  // Sizes
+  &.size-xs {
+    --nyx-gap-editor: var(--nyx-gap-xs);
+    --nyx-pad-editor: var(--nyx-pad-xs);
+    --nyx-font-size-editor: var(--nyx-font-size-xs);
+  }
+
+  &.size-sm {
+    --nyx-gap-editor: var(--nyx-gap-sm);
+    --nyx-pad-editor: var(--nyx-pad-sm);
+    --nyx-font-size-editor: var(--nyx-font-size-sm);
+  }
+
+  &.size-lg {
+    --nyx-gap-editor: var(--nyx-gap-lg);
+    --nyx-pad-editor: var(--nyx-pad-lg);
+    --nyx-font-size-editor: var(--nyx-font-size-lg);
+    --nyx-border-size-editor: 2px;
+  }
+
+  &.size-xl {
+    --nyx-gap-editor: var(--nyx-gap-xl);
+    --nyx-pad-editor: var(--nyx-pad-xl);
+    --nyx-font-size-editor: var(--nyx-font-size-xl);
+    --nyx-border-size-editor: 3px;
+  }
+
+  // ─── Toolbar (toolbar mode) ──────────────────────────────────────────
+
+  &__toolbar {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: calc(var(--nyx-pad-editor) * 0.5) var(--nyx-pad-editor);
+    border-bottom: var(--nyx-border-size-editor) solid var(--nyx-c-editor-alt);
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+
+  &__toolbar-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2em;
+    padding: 0.25em 0.4em;
+    font-size: var(--nyx-font-size-editor);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--nyx-radius-sm);
+    color: currentColor;
+    cursor: pointer;
+    transition: background-color 0.15s, border-color 0.15s;
+
+    &:hover:not(:disabled) {
+      background-color: var(--nyx-c-editor-highlight);
+    }
+
+    &.active {
+      background-color: var(--nyx-c-editor-highlight);
+      border-color: var(--nyx-c-editor-alt);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+
+  &__toolbar-sep {
+    display: inline-block;
+    width: 1px;
+    height: 1.2em;
+    background-color: var(--nyx-c-editor-alt);
+    margin: 0 4px;
+    opacity: 0.4;
+    flex-shrink: 0;
+
+    &--grow {
+      width: auto;
+      height: auto;
+      background: none;
+      flex: 1;
+    }
+  }
+
+  // ─── Bubble menu (zen mode) ──────────────────────────────────────────
+
+  &__bubble {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 4px 6px;
+    background-color: var(--nyx-c-bg, #1a1a1a);
+    border: 1px solid var(--nyx-c-editor-alt);
+    border-radius: var(--nyx-radius-md);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  &__bubble-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.8em;
+    padding: 0.2em 0.35em;
+    font-size: var(--nyx-font-size-editor);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--nyx-radius-sm);
+    color: var(--nyx-c-editor-text, #fff);
+    cursor: pointer;
+    transition: background-color 0.15s, border-color 0.15s;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    &.active {
+      background-color: var(--nyx-c-editor-highlight);
+      border-color: var(--nyx-c-editor-alt);
+    }
+  }
+
+  &__bubble-sep {
+    display: inline-block;
+    width: 1px;
+    height: 1.2em;
+    background-color: rgba(255, 255, 255, 0.25);
+    margin: 0 4px;
+    flex-shrink: 0;
+  }
+
+  // ─── Editor content ──────────────────────────────────────────────────
+
+  &__content {
+    flex: 1;
+
+    .tiptap {
+      min-height: 120px;
+      padding: var(--nyx-pad-editor);
+      font-size: var(--nyx-font-size-editor);
+      outline: none;
+      color: inherit;
+
+      p { margin: 0 0 0.5em; }
+      h1, h2, h3, h4, h5, h6 { font-weight: bold; margin: 0.75em 0 0.25em; }
+      h1 { font-size: 1.8em; }
+      h2 { font-size: 1.5em; }
+      h3 { font-size: 1.25em; }
+
+      ul, ol { padding-left: 1.5em; margin: 0.5em 0; }
+      li { margin: 0.2em 0; }
+
+      blockquote {
+        border-left: 3px solid var(--nyx-c-editor-alt);
+        padding-left: 1em;
+        margin: 0.5em 0;
+        opacity: 0.75;
+      }
+
+      code {
+        font-family: var(--nyx-font-family-mono, monospace);
+        background-color: rgba(255, 255, 255, 0.08);
+        border-radius: 3px;
+        padding: 0.1em 0.3em;
+        font-size: 0.9em;
+      }
+
+      pre {
+        background-color: rgba(0, 0, 0, 0.3);
+        border-radius: var(--nyx-radius-md);
+        padding: var(--nyx-pad-editor);
+        overflow-x: auto;
+        margin: 0.5em 0;
+
+        code {
+          background: none;
+          padding: 0;
+        }
+      }
+
+      p.is-editor-empty:first-child::before {
+        content: attr(data-placeholder);
+        float: left;
+        color: currentColor;
+        opacity: 0.4;
+        pointer-events: none;
+        height: 0;
+      }
+    }
+  }
+}
