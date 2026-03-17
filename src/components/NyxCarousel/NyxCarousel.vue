@@ -32,7 +32,7 @@ const getSlotName = (index: number) => `slide-${index % props.slides.length}`
 const resetInterval = () => {
   if (intervalId) clearInterval(intervalId)
   if (props.autoplay) {
-    intervalId = setInterval(next, props.interval)
+    intervalId = window.setInterval(next, props.interval)
   }
 }
 
@@ -95,7 +95,7 @@ const handleTransitionEnd = () => {
 
 watch(isAutoplay, (newVal: boolean) => {
   if (newVal && !intervalId) {
-    intervalId = setInterval(next, props.interval)
+    intervalId = window.setInterval(next, props.interval)
   } else if (intervalId) {
     clearInterval(intervalId)
   }
