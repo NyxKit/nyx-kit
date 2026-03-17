@@ -20,6 +20,7 @@ import NyxTableCell from './NyxTable/NyxTableCell.vue'
 import NyxTabs from './NyxTabs/NyxTabs.vue'
 import NyxTextarea from './NyxTextarea/NyxTextarea.vue'
 import NyxTooltip from './NyxTooltip/NyxTooltip.vue'
+import NyxTree from './NyxTree/index'
 
 export {
   NyxAvatar,
@@ -43,5 +44,6 @@ export {
   NyxTableCell,
   NyxTabs,
   NyxTextarea,
-  NyxTooltip
+  NyxTooltip,
+  NyxTree
 }

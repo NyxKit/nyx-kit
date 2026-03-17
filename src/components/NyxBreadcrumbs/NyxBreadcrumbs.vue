@@ -31,8 +31,6 @@ const slots: Slots = useSlots()
     <template v-for="(item, index) in normalizedItems" :key="index">
       <a
         :href="item.href"
-        :size="NyxSize.Small"
-        :variant="NyxVariant.Text"
         @click="() => emit('click', item)"
       >{{ item.label }}</a>
       <span class="nyx-breadcrumbs__separator" v-if="index < normalizedItems.length - 1">

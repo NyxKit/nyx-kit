@@ -2,7 +2,7 @@
   "name": "nyx-kit",
   "homepage": "http://nyxkit.github.io/nyx-kit",
   "author": "Arne Decant <hello@arnedecant.be>",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "private": false,
   "license": "MIT",
   "type": "module",
@@ -63,6 +63,9 @@
       "import": "./dist/assets/nyx-kit.css"
     }
   },
+  "sideEffects": [
+    "**/*.css"
+  ],
   "files": [
     "dist"
   ],
@@ -122,9 +125,6 @@
   },
   "eslintConfig": {
     "extends": [
-      "plugin:storybook/recommended",
-      "plugin:storybook/recommended",
-      "plugin:storybook/recommended",
       "plugin:storybook/recommended"
     ]
   }

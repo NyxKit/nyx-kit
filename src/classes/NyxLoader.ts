@@ -1,10 +1,10 @@
 export default class NyxLoader {
-  private static handleDefaultValue<T>(defaultValue: T | undefined, key: string, type: string): T {
+  private static handleDefaultValue<T> (defaultValue: T | undefined, key: string, type: string): T {
     if (defaultValue !== undefined) return defaultValue
     throw new Error(`Could not load data, expected ${key} to be of type ${type}`)
   }
 
-  private static handleData(data: unknown, key: string, type: string): unknown {
+  private static handleData (data: unknown, key: string, type: string): unknown {
     if (!data || typeof data !== 'object') {
       return this.handleDefaultValue(undefined, key, type)
     }

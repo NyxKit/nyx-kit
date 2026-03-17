@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import './NyxTextarea.scss'
+import { computed } from 'vue'
 import type { NyxTextareaProps, NyxTextareaEmits } from './NyxTextarea.types'
 import { NyxTheme, NyxVariant, NyxSize } from '@/types'
+import { generateRandomString } from '@/utils/string'
 
 const props = withDefaults(defineProps<NyxTextareaProps>(), {
   theme: NyxTheme.Default,
@@ -12,6 +14,8 @@ const props = withDefaults(defineProps<NyxTextareaProps>(), {
 const emit = defineEmits<NyxTextareaEmits>()
 
 const model = defineModel<string>()
+
+const normalizedId = computed(() => props.id ?? `nyx-textarea-${generateRandomString(16)}`)
 
 </script>
 
@@ -30,7 +34,7 @@ const model = defineModel<string>()
       :required="props.required"
       :autocomplete="props.autocomplete"
       :autofocus="props.autofocus"
-      :id="id"
+      :id="normalizedId"
       v-model="model"
       @click="emit('click')"
       @focus="emit('focus')"
