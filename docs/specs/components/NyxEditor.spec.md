@@ -47,9 +47,12 @@ NyxEditor provides an opinionated but flexible rich-text editing experience. It 
 
 ## v-model
 
-`defineModel<string>()` — binds to the serialized content string. Format depends on the `format` prop:
-- `markdown`: a Markdown string (e.g. `# Hello\n\n**world**`)
-- `html`: an HTML string (e.g. `<h1>Hello</h1><p><strong>world</strong></p>`)
+| Binding | Type | Default | Description |
+|---|---|---|---|
+| `v-model` | `string` | `''` | Serialized content — Markdown or HTML depending on `format` |
+| `v-model:source` | `boolean` | `false` | When `true`, shows a raw source `<textarea>` instead of the formatted editor |
+
+The source toggle button (top-right corner of the editor) also drives `v-model:source`.
 
 ## Keyboard behaviour
 

@@ -24,6 +24,7 @@ const props = withDefaults(defineProps<NyxEditorProps>(), {
 const emit = defineEmits<NyxEditorEmits>()
 
 const model = defineModel<string>({ default: '' })
+const sourceModel = defineModel<boolean>('source', { default: false })
 
 const { classList } = useNyxProps(props)
 
@@ -215,7 +216,25 @@ watch(() => props.disabled, (val) => {
       >↪</button>
     </div>
 
-    <EditorContent :editor="editor" class="nyx-editor__content" />
+    <!-- Source toggle button -->
+    <button
+      class="nyx-editor__source-toggle"
+      :class="{ active: sourceModel }"
+      @click="sourceModel = !sourceModel"
+      aria-label="Toggle source"
+    >&lt;/&gt;</button>
+
+    <!-- Source view -->
+    <textarea
+      v-if="sourceModel"
+      class="nyx-editor__source"
+      v-model="model"
+      :disabled="props.disabled"
+      spellcheck="false"
+    />
+
+    <!-- Formatted view -->
+    <EditorContent v-else :editor="editor" class="nyx-editor__content" />
 
     <!-- Zen mode: custom bubble menu, teleported to body for correct z-index -->
     <Teleport to="body">
