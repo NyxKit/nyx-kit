@@ -226,7 +226,7 @@ watch(() => props.disabled, (val) => {
           role="toolbar"
           aria-label="Text formatting"
           :style="{ top: bubbleStyle.top, left: bubbleStyle.left }"
-          @mousedown="onBubbleMousedown"
+          @mousedown.prevent="onBubbleMousedown"
         >
           <button
             class="nyx-editor__bubble-btn"
