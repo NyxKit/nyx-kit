@@ -239,33 +239,44 @@
       ol { list-style-type: decimal; padding-left: 1.5em; margin: 0.5em 0; }
       li { margin: 0.2em 0; }
 
-      // Task list
+      // Task list — override list-item display so checkbox and text sit in a row
       ul[data-type="taskList"] {
         list-style: none;
-        padding-left: 0.25em;
+        padding-left: 0;
+      }
 
-        li[data-type="taskItem"] {
-          display: flex;
-          align-items: flex-start;
-          gap: 0.5em;
+      li[data-type="taskItem"] {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 0.5em;
+        list-style: none;
+        margin: 0.2em 0;
 
-          > label {
-            flex-shrink: 0;
-            margin-top: 0.1em;
+        > label {
+          display: inline-flex;
+          align-items: center;
+          flex-shrink: 0;
+          padding-top: 0.2em;
+          cursor: pointer;
 
-            input[type="checkbox"] {
-              cursor: pointer;
-            }
+          input[type="checkbox"] {
+            cursor: pointer;
+            margin: 0;
           }
 
-          > div {
-            flex: 1;
-          }
+          // empty span tiptap renders next to the checkbox
+          > span { display: none; }
+        }
 
-          &[data-checked="true"] > div {
-            opacity: 0.6;
-            text-decoration: line-through;
-          }
+        > div {
+          flex: 1;
+          min-width: 0;
+        }
+
+        &[data-checked="true"] > div {
+          opacity: 0.6;
+          text-decoration: line-through;
         }
       }
 
