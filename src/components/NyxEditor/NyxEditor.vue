@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import './NyxEditor.scss'
-import { watch } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
-import { BubbleMenu } from '@tiptap/vue-3/menus'
 import StarterKit from '@tiptap/starter-kit'
+import Underline from '@tiptap/extension-underline'
+import TaskList from '@tiptap/extension-task-list'
+import TaskItem from '@tiptap/extension-task-item'
 import { Markdown, type MarkdownStorage } from 'tiptap-markdown'
 import type { NyxEditorProps, NyxEditorEmits } from './NyxEditor.types'
 import { NyxEditorMode, NyxEditorFormat, NyxTheme, NyxVariant, NyxSize } from '@/types'
@@ -25,6 +27,45 @@ const model = defineModel<string>({ default: '' })
 
 const { classList } = useNyxProps(props)
 
+// ── Custom bubble menu state ─────────────────────────────────────────
+const bubbleVisible = ref(false)
+const bubbleStyle = reactive({ top: '0px', left: '0px' })
+
+// Prevent hiding the bubble while a bubble button is being clicked
+let suppressNextHide = false
+
+const updateBubble = () => {
+  if (suppressNextHide) return
+  if (!editor.value || props.mode !== NyxEditorMode.Zen) {
+    bubbleVisible.value = false
+    return
+  }
+  if (editor.value.state.selection.empty) {
+    bubbleVisible.value = false
+    return
+  }
+  const sel = window.getSelection()
+  if (!sel || sel.rangeCount === 0) {
+    bubbleVisible.value = false
+    return
+  }
+  const rect = sel.getRangeAt(0).getBoundingClientRect()
+  if (!rect.width && !rect.height) {
+    bubbleVisible.value = false
+    return
+  }
+  bubbleStyle.top = `${rect.top + window.scrollY - 8}px`
+  bubbleStyle.left = `${rect.left + window.scrollX + rect.width / 2}px`
+  bubbleVisible.value = true
+}
+
+const onBubbleMousedown = () => {
+  suppressNextHide = true
+  // Allow the click handler to fire, then restore normal behaviour
+  requestAnimationFrame(() => { suppressNextHide = false })
+}
+
+// ── Content helpers ─────────────────────────────────────────────────
 const getContent = () => {
   if (!editor.value) return ''
   return props.format === NyxEditorFormat.Markdown
@@ -35,6 +76,9 @@ const getContent = () => {
 const editor = useEditor({
   extensions: [
     StarterKit,
+    Underline,
+    TaskList,
+    TaskItem.configure({ nested: true }),
     ...(props.format === NyxEditorFormat.Markdown ? [Markdown] : []),
   ],
   content: model.value,
@@ -44,8 +88,12 @@ const editor = useEditor({
     model.value = content
     emit('change', content)
   },
+  onSelectionUpdate: updateBubble,
   onFocus: ({ event }) => emit('focus', event as FocusEvent),
-  onBlur: ({ event }) => emit('blur', event as FocusEvent),
+  onBlur: ({ event }) => {
+    bubbleVisible.value = false
+    emit('blur', event as FocusEvent)
+  },
 })
 
 watch(() => model.value, (value) => {
@@ -63,8 +111,15 @@ watch(() => props.disabled, (val) => {
 
 <template>
   <div class="nyx-editor" :class="[...classList, `mode-${props.mode}`]">
+
     <!-- Toolbar mode: persistent top bar -->
-    <div v-if="props.mode === NyxEditorMode.Toolbar" class="nyx-editor__toolbar" role="toolbar" aria-label="Text formatting">
+    <div
+      v-if="props.mode === 'toolbar'"
+      class="nyx-editor__toolbar"
+      role="toolbar"
+      aria-label="Text formatting"
+      @mousedown.prevent
+    >
       <button
         class="nyx-editor__toolbar-btn"
         :class="{ active: editor?.isActive('bold') }"
@@ -79,6 +134,12 @@ watch(() => props.disabled, (val) => {
       ><em>I</em></button>
       <button
         class="nyx-editor__toolbar-btn"
+        :class="{ active: editor?.isActive('underline') }"
+        @click="editor?.chain().focus().toggleUnderline().run()"
+        aria-label="Underline"
+      ><u>U</u></button>
+      <button
+        class="nyx-editor__toolbar-btn"
         :class="{ active: editor?.isActive('strike') }"
         @click="editor?.chain().focus().toggleStrike().run()"
         aria-label="Strikethrough"
@@ -89,6 +150,27 @@ watch(() => props.disabled, (val) => {
         @click="editor?.chain().focus().toggleCode().run()"
         aria-label="Inline code"
       >&lt;&gt;</button>
+
+      <span class="nyx-editor__toolbar-sep" aria-hidden="true" />
+
+      <button
+        class="nyx-editor__toolbar-btn"
+        :class="{ active: editor?.isActive('bulletList') }"
+        @click="editor?.chain().focus().toggleBulletList().run()"
+        aria-label="Bullet list"
+      >UL</button>
+      <button
+        class="nyx-editor__toolbar-btn"
+        :class="{ active: editor?.isActive('orderedList') }"
+        @click="editor?.chain().focus().toggleOrderedList().run()"
+        aria-label="Ordered list"
+      >OL</button>
+      <button
+        class="nyx-editor__toolbar-btn"
+        :class="{ active: editor?.isActive('taskList') }"
+        @click="editor?.chain().focus().toggleTaskList().run()"
+        aria-label="Task list"
+      >☐</button>
 
       <span class="nyx-editor__toolbar-sep" aria-hidden="true" />
 
@@ -110,33 +192,12 @@ watch(() => props.disabled, (val) => {
         @click="editor?.chain().focus().toggleHeading({ level: 3 }).run()"
         aria-label="Heading 3"
       >H3</button>
-
-      <span class="nyx-editor__toolbar-sep" aria-hidden="true" />
-
       <button
         class="nyx-editor__toolbar-btn"
-        :class="{ active: editor?.isActive('bulletList') }"
-        @click="editor?.chain().focus().toggleBulletList().run()"
-        aria-label="Bullet list"
-      >• List</button>
-      <button
-        class="nyx-editor__toolbar-btn"
-        :class="{ active: editor?.isActive('orderedList') }"
-        @click="editor?.chain().focus().toggleOrderedList().run()"
-        aria-label="Ordered list"
-      >1. List</button>
-      <button
-        class="nyx-editor__toolbar-btn"
-        :class="{ active: editor?.isActive('blockquote') }"
-        @click="editor?.chain().focus().toggleBlockquote().run()"
-        aria-label="Blockquote"
-      >"</button>
-      <button
-        class="nyx-editor__toolbar-btn"
-        :class="{ active: editor?.isActive('codeBlock') }"
-        @click="editor?.chain().focus().toggleCodeBlock().run()"
-        aria-label="Code block"
-      >{ }</button>
+        :class="{ active: editor?.isActive('paragraph') }"
+        @click="editor?.chain().focus().setParagraph().run()"
+        aria-label="Paragraph"
+      >P</button>
 
       <span class="nyx-editor__toolbar-sep nyx-editor__toolbar-sep--grow" aria-hidden="true" />
 
@@ -154,61 +215,100 @@ watch(() => props.disabled, (val) => {
       >↪</button>
     </div>
 
-    <!-- Zen mode: bubble menu appears on text selection -->
-    <BubbleMenu
-      v-if="editor && props.mode === NyxEditorMode.Zen"
-      :editor="editor"
-      :tippy-options="{ duration: 100, placement: 'top' }"
-    >
-      <div class="nyx-editor__bubble" role="toolbar" aria-label="Text formatting">
-        <button
-          class="nyx-editor__bubble-btn"
-          :class="{ active: editor.isActive('bold') }"
-          @click="editor.chain().focus().toggleBold().run()"
-          aria-label="Bold"
-        ><strong>B</strong></button>
-        <button
-          class="nyx-editor__bubble-btn"
-          :class="{ active: editor.isActive('italic') }"
-          @click="editor.chain().focus().toggleItalic().run()"
-          aria-label="Italic"
-        ><em>I</em></button>
-        <button
-          class="nyx-editor__bubble-btn"
-          :class="{ active: editor.isActive('strike') }"
-          @click="editor.chain().focus().toggleStrike().run()"
-          aria-label="Strikethrough"
-        ><s>S</s></button>
-        <button
-          class="nyx-editor__bubble-btn"
-          :class="{ active: editor.isActive('code') }"
-          @click="editor.chain().focus().toggleCode().run()"
-          aria-label="Inline code"
-        >&lt;&gt;</button>
-
-        <span class="nyx-editor__bubble-sep" aria-hidden="true" />
-
-        <button
-          class="nyx-editor__bubble-btn"
-          :class="{ active: editor.isActive('heading', { level: 1 }) }"
-          @click="editor.chain().focus().toggleHeading({ level: 1 }).run()"
-          aria-label="Heading 1"
-        >H1</button>
-        <button
-          class="nyx-editor__bubble-btn"
-          :class="{ active: editor.isActive('heading', { level: 2 }) }"
-          @click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
-          aria-label="Heading 2"
-        >H2</button>
-        <button
-          class="nyx-editor__bubble-btn"
-          :class="{ active: editor.isActive('heading', { level: 3 }) }"
-          @click="editor.chain().focus().toggleHeading({ level: 3 }).run()"
-          aria-label="Heading 3"
-        >H3</button>
-      </div>
-    </BubbleMenu>
-
     <EditorContent :editor="editor" class="nyx-editor__content" />
+
+    <!-- Zen mode: custom bubble menu, teleported to body for correct z-index -->
+    <Teleport to="body">
+      <Transition name="nyx-bubble">
+        <div
+          v-if="props.mode === 'zen' && bubbleVisible"
+          class="nyx-editor__bubble"
+          role="toolbar"
+          aria-label="Text formatting"
+          :style="{ top: bubbleStyle.top, left: bubbleStyle.left }"
+          @mousedown="onBubbleMousedown"
+        >
+          <button
+            class="nyx-editor__bubble-btn"
+            :class="{ active: editor?.isActive('bold') }"
+            @click="editor?.chain().focus().toggleBold().run()"
+            aria-label="Bold"
+          ><strong>B</strong></button>
+          <button
+            class="nyx-editor__bubble-btn"
+            :class="{ active: editor?.isActive('italic') }"
+            @click="editor?.chain().focus().toggleItalic().run()"
+            aria-label="Italic"
+          ><em>I</em></button>
+          <button
+            class="nyx-editor__bubble-btn"
+            :class="{ active: editor?.isActive('underline') }"
+            @click="editor?.chain().focus().toggleUnderline().run()"
+            aria-label="Underline"
+          ><u>U</u></button>
+          <button
+            class="nyx-editor__bubble-btn"
+            :class="{ active: editor?.isActive('strike') }"
+            @click="editor?.chain().focus().toggleStrike().run()"
+            aria-label="Strikethrough"
+          ><s>S</s></button>
+          <button
+            class="nyx-editor__bubble-btn"
+            :class="{ active: editor?.isActive('code') }"
+            @click="editor?.chain().focus().toggleCode().run()"
+            aria-label="Inline code"
+          >&lt;&gt;</button>
+
+          <span class="nyx-editor__bubble-sep" aria-hidden="true" />
+
+          <button
+            class="nyx-editor__bubble-btn"
+            :class="{ active: editor?.isActive('bulletList') }"
+            @click="editor?.chain().focus().toggleBulletList().run()"
+            aria-label="Bullet list"
+          >UL</button>
+          <button
+            class="nyx-editor__bubble-btn"
+            :class="{ active: editor?.isActive('orderedList') }"
+            @click="editor?.chain().focus().toggleOrderedList().run()"
+            aria-label="Ordered list"
+          >OL</button>
+          <button
+            class="nyx-editor__bubble-btn"
+            :class="{ active: editor?.isActive('taskList') }"
+            @click="editor?.chain().focus().toggleTaskList().run()"
+            aria-label="Task list"
+          >☐</button>
+
+          <span class="nyx-editor__bubble-sep" aria-hidden="true" />
+
+          <button
+            class="nyx-editor__bubble-btn"
+            :class="{ active: editor?.isActive('heading', { level: 1 }) }"
+            @click="editor?.chain().focus().toggleHeading({ level: 1 }).run()"
+            aria-label="Heading 1"
+          >H1</button>
+          <button
+            class="nyx-editor__bubble-btn"
+            :class="{ active: editor?.isActive('heading', { level: 2 }) }"
+            @click="editor?.chain().focus().toggleHeading({ level: 2 }).run()"
+            aria-label="Heading 2"
+          >H2</button>
+          <button
+            class="nyx-editor__bubble-btn"
+            :class="{ active: editor?.isActive('heading', { level: 3 }) }"
+            @click="editor?.chain().focus().toggleHeading({ level: 3 }).run()"
+            aria-label="Heading 3"
+          >H3</button>
+          <button
+            class="nyx-editor__bubble-btn"
+            :class="{ active: editor?.isActive('paragraph') }"
+            @click="editor?.chain().focus().setParagraph().run()"
+            aria-label="Paragraph"
+          >P</button>
+        </div>
+      </Transition>
+    </Teleport>
+
   </div>
 </template>

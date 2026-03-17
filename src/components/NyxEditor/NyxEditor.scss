@@ -116,6 +116,7 @@
     border-bottom: var(--nyx-border-size-editor) solid var(--nyx-c-editor-alt);
     flex-shrink: 0;
     flex-wrap: wrap;
+    color: var(--nyx-c-editor-alt, #ccc);
   }
 
   &__toolbar-btn {
@@ -128,7 +129,7 @@
     background: transparent;
     border: 1px solid transparent;
     border-radius: var(--nyx-radius-sm);
-    color: currentColor;
+    color: inherit;
     cursor: pointer;
     transition: background-color 0.15s, border-color 0.15s;
 
@@ -162,52 +163,6 @@
       background: none;
       flex: 1;
     }
-  }
-
-  // ─── Bubble menu (zen mode) ──────────────────────────────────────────
-
-  &__bubble {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-    padding: 4px 6px;
-    background-color: var(--nyx-c-bg, #1a1a1a);
-    border: 1px solid var(--nyx-c-editor-alt);
-    border-radius: var(--nyx-radius-md);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  }
-
-  &__bubble-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 1.8em;
-    padding: 0.2em 0.35em;
-    font-size: var(--nyx-font-size-editor);
-    background: transparent;
-    border: 1px solid transparent;
-    border-radius: var(--nyx-radius-sm);
-    color: var(--nyx-c-editor-text, #fff);
-    cursor: pointer;
-    transition: background-color 0.15s, border-color 0.15s;
-
-    &:hover {
-      background-color: rgba(255, 255, 255, 0.1);
-    }
-
-    &.active {
-      background-color: var(--nyx-c-editor-highlight);
-      border-color: var(--nyx-c-editor-alt);
-    }
-  }
-
-  &__bubble-sep {
-    display: inline-block;
-    width: 1px;
-    height: 1.2em;
-    background-color: rgba(255, 255, 255, 0.25);
-    margin: 0 4px;
-    flex-shrink: 0;
   }
 
   // ─── Editor content ──────────────────────────────────────────────────
@@ -269,4 +224,66 @@
       }
     }
   }
+}
+
+// ─── Bubble menu — teleported to <body>, position: fixed ─────────────
+
+.nyx-editor__bubble {
+  position: fixed;
+  z-index: 9999;
+  transform: translateX(-50%) translateY(-100%);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 6px;
+  background-color: var(--nyx-c-bg, #1e1e1e);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--nyx-radius-md, 6px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  margin-top: -4px;
+}
+
+.nyx-editor__bubble-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.8em;
+  padding: 0.2em 0.35em;
+  font-size: 0.85rem;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+  }
+
+  &.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+}
+
+.nyx-editor__bubble-sep {
+  display: inline-block;
+  width: 1px;
+  height: 1.2em;
+  background-color: rgba(255, 255, 255, 0.2);
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+
+// Bubble transition
+.nyx-bubble-enter-active,
+.nyx-bubble-leave-active {
+  transition: opacity 0.1s, transform 0.1s;
+}
+
+.nyx-bubble-enter-from,
+.nyx-bubble-leave-to {
+  opacity: 0;
+  transform: translateX(-50%) translateY(calc(-100% + 4px));
 }

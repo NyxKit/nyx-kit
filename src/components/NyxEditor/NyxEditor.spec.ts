@@ -9,10 +9,6 @@ vi.mock('@tiptap/vue-3', () => ({
   EditorContent: { template: '<div class="tiptap" />' },
 }))
 
-vi.mock('@tiptap/vue-3/menus', () => ({
-  BubbleMenu: { template: '<div class="nyx-editor__bubble"><slot /></div>', props: ['editor', 'tippyOptions'] },
-}))
-
 vi.mock('@tiptap/starter-kit', () => ({ default: {} }))
 vi.mock('tiptap-markdown', () => ({ Markdown: {} }))
 

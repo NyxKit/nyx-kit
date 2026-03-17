@@ -18,9 +18,9 @@ NyxEditor provides an opinionated but flexible rich-text editing experience. It 
 ## Internal architecture
 
 - Uses `useEditor` and `EditorContent` from `@tiptap/vue-3`
-- Extensions loaded: `StarterKit` always; `Markdown` (from `tiptap-markdown`) when `format` is `markdown`
-- **Zen mode**: uses `BubbleMenu` from `@tiptap/vue-3` — a floating toolbar that appears on text selection
-- **Toolbar mode**: renders a fixed `<div class="nyx-editor__toolbar">` above the editor content
+- Extensions loaded: `StarterKit`, `Underline`, `TaskList`, `TaskItem` always; `Markdown` (from `tiptap-markdown`) when `format` is `markdown`
+- **Zen mode**: custom bubble menu — listens to `onSelectionUpdate`, reads `window.getSelection().getRangeAt(0).getBoundingClientRect()` to position a `<Teleport>`-ed `div` above the selection. `@mousedown` on the bubble sets a `suppressNextHide` flag (cleared with `requestAnimationFrame`) so that clicking a formatting button does not collapse the bubble before the command fires.
+- **Toolbar mode**: renders a fixed `<div class="nyx-editor__toolbar">` above the editor content. _(See Known Limitations — not yet rendering in Storybook.)_
 - v-model syncs bi-directionally via `onUpdate` (editor → model) and a `watch` (model → editor)
 - `useNyxProps` is used for visual prop integration (theme, size, variant, pixel)
 
@@ -56,6 +56,7 @@ NyxEditor provides an opinionated but flexible rich-text editing experience. It 
 Inherited from Tiptap/ProseMirror defaults:
 - `Mod+B` — Toggle bold
 - `Mod+I` — Toggle italic
+- `Mod+U` — Toggle underline
 - `Mod+Z` / `Mod+Shift+Z` — Undo / Redo
 - Standard browser text-editing shortcuts
 
@@ -64,41 +65,45 @@ No custom key bindings added at the NyxEditor level.
 ## Accessibility
 
 - The editor root element is a `<div>` with `role="textbox"` and `aria-multiline="true"` applied by Tiptap
-- Toolbar buttons include `aria-label` attributes
+- All bubble and toolbar buttons include `aria-label` attributes
 - `disabled` prop maps to Tiptap's `editable: false`, which prevents all input
 
 ## Mode names
 
 | Mode | Value | Description |
 |---|---|---|
-| Zen | `zen` | Clean surface; a floating `BubbleMenu` appears on text selection with common formatting controls. No persistent UI chrome. |
+| Zen | `zen` | Clean surface; a custom floating bubble menu appears on text selection with common formatting controls. No persistent UI chrome. |
 | Toolbar | `toolbar` | A persistent toolbar above the editor surface, styled after word processors (Google Docs / Word). Contains buttons for all supported formatting operations. |
 
-## Toolbar actions
+## Bubble menu actions (zen mode)
 
-Both the bubble menu (zen) and the toolbar (toolbar) expose the same formatting actions:
+Order: **B** **I** **U** ~~S~~ `<>` | UL OL ☐ | H1 H2 H3 P
 
-| Action | Icon label | Tiptap command |
+| Action | Label | Tiptap command |
 |---|---|---|
-| Bold | **B** | `toggleBold` |
-| Italic | *I* | `toggleItalic` |
-| Strike | ~~S~~ | `toggleStrike` |
+| Bold | `B` | `toggleBold` |
+| Italic | `I` | `toggleItalic` |
+| Underline | `U` | `toggleUnderline` |
+| Strikethrough | `S` | `toggleStrike` |
 | Inline code | `<>` | `toggleCode` |
+| Bullet list | `UL` | `toggleBulletList` |
+| Ordered list | `OL` | `toggleOrderedList` |
+| Task list | `☐` | `toggleTaskList` |
 | Heading 1 | `H1` | `toggleHeading({ level: 1 })` |
 | Heading 2 | `H2` | `toggleHeading({ level: 2 })` |
 | Heading 3 | `H3` | `toggleHeading({ level: 3 })` |
-| Bullet list | `• List` | `toggleBulletList` |
-| Ordered list | `1. List` | `toggleOrderedList` |
-| Blockquote | `"` | `toggleBlockquote` |
-| Code block | `{ }` | `toggleCodeBlock` |
-| Undo | `←` | `undo` (toolbar only) |
-| Redo | `→` | `redo` (toolbar only) |
+| Paragraph | `P` | `setParagraph` |
 
-The bubble menu omits Undo/Redo and list/blockquote/code-block actions to keep the floating UI compact.
+## Toolbar actions (toolbar mode)
+
+Same set as the bubble menu, plus Undo / Redo at the trailing edge.
+
+> **TODO**: Toolbar mode is not currently rendering in Storybook. The `v-if="props.mode === 'toolbar'"` condition and the toolbar markup are implemented but require investigation. Deferred — not needed short-term.
 
 ## Known limitations
 
+- **Toolbar mode not rendering** — see TODO above.
 - HTML output format is implemented but HTML → editor round-tripping depends on Tiptap's built-in HTML parser. Custom HTML produced outside Tiptap may not parse correctly.
 - No image upload support.
 - No collaborative editing support.
-- Tiptap extensions beyond `StarterKit` and `tiptap-markdown` are not exposed — consumers who need them must integrate Tiptap directly.
+- Tiptap extensions beyond those bundled (`StarterKit`, `Underline`, `TaskList`, `TaskItem`, `tiptap-markdown`) are not exposed — consumers who need them must integrate Tiptap directly.
