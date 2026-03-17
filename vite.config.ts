@@ -2,7 +2,7 @@ import { fileURLToPath, URL, resolve } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
-import { PreRenderedAsset, PreRenderedChunk } from 'rollup'
+import type { PreRenderedAsset, PreRenderedChunk } from 'rolldown'
 import dts from 'vite-plugin-dts'
 
 const assetFileNamesFn = (_chunkInfo: PreRenderedAsset) => `assets/[name].[ext]`
@@ -18,7 +18,7 @@ const chunkFileNamesFn = (chunkInfo: PreRenderedChunk, ext: string) => {
 // https://vite.dev/config/
 export default defineConfig({
   build: {
-    target: 'ESNext',
+    target: 'esnext',
     lib: {
       entry: {
         index: fileURLToPath(new URL('./src/main.ts', import.meta.url)),
@@ -94,7 +94,6 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        api: 'modern',
         additionalData: `@use "@/styles/index.css";`
       },
     },

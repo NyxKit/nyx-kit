@@ -1,6 +1,6 @@
 import '../src/styles/index.css'
 import { type Preview, setup } from '@storybook/vue3'
-import { themes } from '@storybook/theming'
+import { themes } from 'storybook/theming'
 import { vClickOutside } from '../src/directives'
 
 setup((app) => {
