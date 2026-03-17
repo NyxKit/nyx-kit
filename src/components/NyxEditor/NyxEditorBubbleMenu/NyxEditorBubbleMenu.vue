@@ -1,16 +1,28 @@
 <script setup lang="ts">
+import { ref, watch, nextTick } from 'vue'
 import type { Editor } from '@tiptap/vue-3'
-import type { CSSProperties } from 'vue'
+import { NyxPosition } from '@/types'
+import useSelectionPosition from '@/composables/useSelectionPosition'
 
-defineProps<{
+const props = defineProps<{
   editor: Editor | null
   visible: boolean
-  style: CSSProperties
 }>()
 
 const emit = defineEmits<{
   mousedown: []
 }>()
+
+const bubbleRef = ref<HTMLElement | null>(null)
+
+const { cssVariables, updateCssVariables } = useSelectionPosition(bubbleRef, {
+  position: ref(NyxPosition.Top),
+  offsetY: -8,
+})
+
+watch(() => props.visible, (val) => {
+  if (val) nextTick(updateCssVariables)
+})
 </script>
 
 <template>
@@ -18,10 +30,11 @@ const emit = defineEmits<{
     <Transition name="nyx-bubble">
       <div
         v-if="visible"
+        ref="bubbleRef"
         class="nyx-editor__bubble"
         role="toolbar"
         aria-label="Text formatting"
-        :style="style"
+        :style="cssVariables"
         @mousedown.prevent="emit('mousedown')"
       >
         <button

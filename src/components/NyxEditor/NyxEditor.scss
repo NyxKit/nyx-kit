@@ -321,8 +321,9 @@
 
 .nyx-editor__bubble {
   position: fixed;
+  top: var(--top);
+  left: var(--left);
   z-index: 9999;
-  transform: translateX(-50%) translateY(-100%);
   display: flex;
   align-items: center;
   gap: 2px;
@@ -331,7 +332,6 @@
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: var(--nyx-radius-md, 6px);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-  margin-top: -4px;
 }
 
 .nyx-editor__bubble-btn {
@@ -376,5 +376,5 @@
 .nyx-bubble-enter-from,
 .nyx-bubble-leave-to {
   opacity: 0;
-  transform: translateX(-50%) translateY(calc(-100% + 4px));
+  transform: translateY(4px);
 }

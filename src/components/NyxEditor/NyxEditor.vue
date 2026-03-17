@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import './NyxEditor.scss'
-import { ref, reactive, watch, nextTick } from 'vue'
+import { ref, watch, nextTick } from 'vue'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
@@ -43,7 +43,6 @@ watch(sourceModel, (val) => { if (val) nextTick(autoResizeSource) })
 
 // ── Custom bubble menu state ─────────────────────────────────────────
 const bubbleVisible = ref(false)
-const bubbleStyle = reactive({ top: '0px', left: '0px' })
 
 // Prevent hiding the bubble while a bubble button is being clicked
 let suppressNextHide = false
@@ -68,8 +67,6 @@ const updateBubble = () => {
     bubbleVisible.value = false
     return
   }
-  bubbleStyle.top = `${rect.top + window.scrollY - 8}px`
-  bubbleStyle.left = `${rect.left + window.scrollX + rect.width / 2}px`
   bubbleVisible.value = true
 }
 
@@ -256,7 +253,6 @@ watch(() => props.disabled, (val) => {
       v-if="props.mode === 'zen'"
       :editor="editor ?? null"
       :visible="bubbleVisible"
-      :style="{ top: bubbleStyle.top, left: bubbleStyle.left }"
       @mousedown="onBubbleMousedown"
     />
 
