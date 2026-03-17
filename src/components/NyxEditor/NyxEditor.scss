@@ -194,8 +194,8 @@
   // ─── Source textarea ─────────────────────────────────────────────────
 
   &__source {
-    flex: 1;
     min-height: 120px;
+    overflow: hidden;
     padding: var(--nyx-pad-editor);
     font-size: var(--nyx-font-size-editor);
     font-family: var(--nyx-font-family-mono, monospace);
@@ -239,44 +239,40 @@
       ol { list-style-type: decimal; padding-left: 1.5em; margin: 0.5em 0; }
       li { margin: 0.2em 0; }
 
+      ol p, ul p {
+        margin: 0;
+      }
+
       // Task list — override list-item display so checkbox and text sit in a row
       ul[data-type="taskList"] {
         list-style: none;
         padding-left: 0;
-      }
 
-      li[data-type="taskItem"] {
-        display: flex;
-        flex-direction: row;
-        align-items: flex-start;
-        gap: 0.5em;
-        list-style: none;
-        margin: 0.2em 0;
+        li {
+          display: flex;
+          flex-direction: row;
+          align-items: flex-start;
+          gap: 0.5em;
+          list-style: none;
+          margin: 0.2em 0;
 
-        > label {
-          display: inline-flex;
-          align-items: center;
-          flex-shrink: 0;
-          padding-top: 0.2em;
-          cursor: pointer;
-
-          input[type="checkbox"] {
+          > label {
+            display: inline-flex;
+            align-items: center;
+            flex-shrink: 0;
+            padding-top: 0.2em;
             cursor: pointer;
-            margin: 0;
+
+            input[type="checkbox"] { cursor: pointer; margin: 0; }
+            > span { display: none; }
           }
 
-          // empty span tiptap renders next to the checkbox
-          > span { display: none; }
-        }
+          > div { flex: 1; min-width: 0; }
 
-        > div {
-          flex: 1;
-          min-width: 0;
-        }
-
-        &[data-checked="true"] > div {
-          opacity: 0.6;
-          text-decoration: line-through;
+          &[data-checked="true"] > div {
+            opacity: 0.6;
+            text-decoration: line-through;
+          }
         }
       }
 

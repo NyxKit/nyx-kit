@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import './NyxEditor.scss'
-import { ref, reactive, watch } from 'vue'
+import { ref, reactive, watch, nextTick } from 'vue'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
@@ -27,6 +27,18 @@ const model = defineModel<string>({ default: '' })
 const sourceModel = defineModel<boolean>('source', { default: false })
 
 const { classList } = useNyxProps(props)
+
+// ── Source textarea auto-resize ──────────────────────────────────────
+const sourceRef = ref<HTMLTextAreaElement | null>(null)
+
+const autoResizeSource = () => {
+  const el = sourceRef.value
+  if (!el) return
+  el.style.height = 'auto'
+  el.style.height = `${el.scrollHeight}px`
+}
+
+watch(sourceModel, (val) => { if (val) nextTick(autoResizeSource) })
 
 // ── Custom bubble menu state ─────────────────────────────────────────
 const bubbleVisible = ref(false)
@@ -227,10 +239,12 @@ watch(() => props.disabled, (val) => {
     <!-- Source view -->
     <textarea
       v-if="sourceModel"
+      ref="sourceRef"
       class="nyx-editor__source"
       v-model="model"
       :disabled="props.disabled"
       spellcheck="false"
+      @input="autoResizeSource"
     />
 
     <!-- Formatted view -->
