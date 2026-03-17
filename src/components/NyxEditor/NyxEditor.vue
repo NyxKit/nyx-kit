@@ -48,28 +48,6 @@ const autoResizeSource = () => {
 
 watch(sourceModel, (val) => { if (val) nextTick(autoResizeSource) })
 
-// ── Keyboard shortcuts ───────────────────────────────────────────────
-const editorRef = ref<HTMLElement | null>(null)
-
-const wrapSelection = (before: string, after = before) => {
-  const el = sourceRef.value
-  if (!el) return
-  const { selectionStart: start, selectionEnd: end } = el
-  el.setRangeText(`${before}${el.value.slice(start, end)}${after}`, start, end, 'select')
-  model.value = el.value
-  nextTick(autoResizeSource)
-}
-
-const sourceShortcut = (wrap: () => void) => () => { if (sourceModel.value) wrap() }
-
-useKeyboardShortcuts({
-  'SUPER+/': () => { sourceModel.value = !sourceModel.value },
-  'SUPER+B': sourceShortcut(() => wrapSelection('**')),
-  'SUPER+I': sourceShortcut(() => wrapSelection('_')),
-  'SUPER+S': sourceShortcut(() => wrapSelection('~~')),
-  // Formatted view: Tiptap/ProseMirror handles B/I/U/S/Z natively
-}, editorRef)
-
 // ── Custom bubble menu state ─────────────────────────────────────────
 const bubbleVisible = ref(false)
 
@@ -150,7 +128,7 @@ watch(() => props.disabled, (val) => {
 </script>
 
 <template>
-  <div ref="editorRef" class="nyx-editor" :class="[...classList, `mode-${props.mode}`]">
+  <div class="nyx-editor" :class="[...classList, `mode-${props.mode}`]">
 
     <!-- Toolbar mode: persistent top bar -->
     <div
