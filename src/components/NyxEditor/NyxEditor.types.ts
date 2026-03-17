@@ -9,6 +9,7 @@ export interface NyxEditorProps {
   pixel?: boolean
   disabled?: boolean
   placeholder?: string
+  sourceToggle?: boolean
 }
 
 export interface NyxEditorEmits {

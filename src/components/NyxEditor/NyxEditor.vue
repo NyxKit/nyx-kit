@@ -26,6 +26,7 @@ const props = withDefaults(defineProps<NyxEditorProps>(), {
   size: NyxSize.Medium,
   disabled: false,
   placeholder: '',
+  sourceToggle: false,
 })
 
 const emit = defineEmits<NyxEditorEmits>()
@@ -192,6 +193,7 @@ watch(() => props.disabled, (val) => {
 
     <!-- Source toggle button -->
     <button
+      v-if="props.sourceToggle"
       class="nyx-editor__source-toggle"
       :class="{ active: sourceModel }"
       @click="sourceModel = !sourceModel"
