@@ -50,7 +50,7 @@ const { classList } = useNyxProps(props)
       class="nyx-modal"
       :class="[
         ...classList,
-        !!customClass && `${customClass}`,
+        !!props.customClass && `${props.customClass}`,
         { 'nyx-modal--open': model || props.static },
         { 'nyx-modal--no-backdrop': !props.backdrop }
       ]"
@@ -59,7 +59,7 @@ const { classList } = useNyxProps(props)
       <article class="nyx-modal__content">
         <header class="nyx-modal__header" v-if="isHeaderVisible">
           <slot name="header">
-            <h1>{{ title }}</h1>
+            <h1>{{ props.title }}</h1>
           </slot>
           <button class="nyx-modal__close" @click="close" v-if="!props.static">&times;</button>
         </header>
@@ -78,7 +78,7 @@ const { classList } = useNyxProps(props)
               v-if="props.confirmText"
               :theme="NyxTheme.Primary"
               @click="confirm"
-            >{{ confirmText }}</NyxButton>
+            >{{ props.confirmText }}</NyxButton>
           </slot>
         </footer>
       </article>
