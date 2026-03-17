@@ -2,6 +2,8 @@
 
 Read `AGENTS.md` before doing anything else.
 
+Persistent memory lives in `.claude/memory/`. Read `MEMORY.md` there for accumulated context and feedback before starting work.
+
 ---
 
 ## Edit Style
