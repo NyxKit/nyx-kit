@@ -16,10 +16,26 @@ const keySort = (a: string, b: string) => {
   return 0
 }
 
+const expandShortcuts = (
+  shortcuts: Record<string, (event: KeyboardEvent) => void>
+): Record<string, (event: KeyboardEvent) => void> => {
+  const expanded: Record<string, (event: KeyboardEvent) => void> = {}
+  for (const [combo, handler] of Object.entries(shortcuts)) {
+    if (combo.includes('SUPER')) {
+      expanded[combo.replace('SUPER', 'CTRL')] = handler
+      expanded[combo.replace('SUPER', 'META')] = handler
+    } else {
+      expanded[combo] = handler
+    }
+  }
+  return expanded
+}
+
 const useKeyboardShortcuts = (
   shortcuts: Record<string, (event: KeyboardEvent) => void>,
   target?: Ref<HTMLElement | null>
 ) => {
+  const expanded = expandShortcuts(shortcuts)
   const keyHistory: Set<string> = new Set()
 
   const getTarget = () => target?.value ?? window
@@ -29,9 +45,9 @@ const useKeyboardShortcuts = (
     keyHistory.add(key)
     const combination = Array.from(keyHistory).sort(keySort).join('+')
 
-    if (shortcuts[combination]) {
+    if (expanded[combination]) {
       event.preventDefault()
-      shortcuts[combination](event)
+      expanded[combination](event)
     }
   }
 

@@ -57,14 +57,10 @@ const wrapSelection = (before: string, after = before) => {
 const sourceShortcut = (wrap: () => void) => () => { if (sourceModel.value) wrap() }
 
 useKeyboardShortcuts({
-  'CTRL+/':  () => { sourceModel.value = !sourceModel.value },
-  'META+/':  () => { sourceModel.value = !sourceModel.value },
-  'CTRL+B':  sourceShortcut(() => wrapSelection('**')),
-  'META+B':  sourceShortcut(() => wrapSelection('**')),
-  'CTRL+I':  sourceShortcut(() => wrapSelection('_')),
-  'META+I':  sourceShortcut(() => wrapSelection('_')),
-  'CTRL+S':  sourceShortcut(() => wrapSelection('~~')),
-  'META+S':  sourceShortcut(() => wrapSelection('~~')),
+  'SUPER+/': () => { sourceModel.value = !sourceModel.value },
+  'SUPER+B': sourceShortcut(() => wrapSelection('**')),
+  'SUPER+I': sourceShortcut(() => wrapSelection('_')),
+  'SUPER+S': sourceShortcut(() => wrapSelection('~~')),
   // Formatted view: Tiptap/ProseMirror handles B/I/U/S/Z natively
 }, editorRef)
 
