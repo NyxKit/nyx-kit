@@ -166,7 +166,7 @@
   }
 
   &__group-label {
-    padding: calc(var(--nyx-pad-select) * 0.5) var(--nyx-pad-select);
+    padding: var(--nyx-pad-select);
     font-size: 0.75em;
     font-weight: bold;
     text-transform: uppercase;
@@ -174,11 +174,19 @@
     cursor: default;
     opacity: 0.6;
     pointer-events: none;
+    
+    &:not(:first-child) {
+      border-top: var(--nyx-border-size-select) solid var(--nyx-c-select-highlight);
+    }
   }
 
   &__option {
     padding: var(--nyx-pad-select);
     cursor: pointer;
+
+    &--group {
+      padding-left: calc(var(--nyx-pad-select) * 2);
+    }
   }
 
   &__option:hover,

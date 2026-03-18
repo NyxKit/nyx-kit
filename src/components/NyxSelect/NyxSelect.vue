@@ -158,7 +158,7 @@ watch(isOpen, (newVal) => {
               <li
                 v-for="option in group.options"
                 :key="option.value"
-                class="nyx-select__option"
+                class="nyx-select__option nyx-select__option--group"
                 :class="{
                   'nyx-select__option--selected': isSelected(option.value),
                   'nyx-select__option--disabled': !!option.disabled
