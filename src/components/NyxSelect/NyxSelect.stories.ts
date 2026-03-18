@@ -8,6 +8,31 @@ import NyxFormField from '../NyxForm/NyxFormField.vue'
 
 const options = Object.values(NyxTheme).map((theme) => ({ label: theme, value: theme }))
 
+const groupedOptions = [
+  {
+    label: 'Neutral',
+    options: [
+      { label: 'Default', value: NyxTheme.Default },
+    ]
+  },
+  {
+    label: 'Brand',
+    options: [
+      { label: 'Primary', value: NyxTheme.Primary },
+      { label: 'Secondary', value: NyxTheme.Secondary },
+    ]
+  },
+  {
+    label: 'Status',
+    options: [
+      { label: 'Info', value: NyxTheme.Info },
+      { label: 'Success', value: NyxTheme.Success },
+      { label: 'Warning', value: NyxTheme.Warning },
+      { label: 'Danger', value: NyxTheme.Danger },
+    ]
+  }
+]
+
 export default {
   title: 'Components/NyxSelect',
   component: NyxSelect,
@@ -36,6 +61,7 @@ export default {
 
 const Template = (args: NyxSelectProps) => defineComponent({
   components: { NyxSelect },
+  inheritAttrs: false,
   setup () {
     return { args }
   },
@@ -68,6 +94,13 @@ const TemplateAll = (prop: string, dict: KeyDict<string>) => () => defineCompone
 })
 
 export const Default = Template({ options })
+export const WithGroups = () => defineComponent({
+  components: { NyxSelect },
+  setup () {
+    return { options: groupedOptions }
+  },
+  template: `<nyx-select :options="options" placeholder="NyxSelect" />`,
+})
 export const Types = TemplateAll('type', NyxSelectType)
 export const Themes = TemplateAll('theme', NyxTheme)
 export const Variants = TemplateAll('variant', NyxVariant)

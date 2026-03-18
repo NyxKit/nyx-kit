@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, useTemplateRef, watch } from 'vue'
-import { NyxSelectType, NyxSize, NyxVariant, NyxTheme, type NyxSelectOption } from '@/types'
+import { NyxSelectType, NyxSize, NyxVariant, NyxTheme, type NyxSelectOption, type NyxSelectOptionGroup } from '@/types'
 import './NyxSelect.scss'
 import type { NyxSelectProps } from './NyxSelect.types'
 import { useTeleportPosition } from '@/composables'
@@ -33,19 +33,37 @@ const { cssVariables, computedPosition } = useTeleportPosition(elControl, elDrop
   isUpdateAllowed: isOpen
 })
 
+const isGrouped = computed(() => props.options.length > 0 && 'options' in props.options[0])
+
+const flatOptions = computed((): NyxSelectOption[] => {
+  if (!isGrouped.value) return props.options as NyxSelectOption[]
+  return (props.options as NyxSelectOptionGroup[]).flatMap((group) => group.options)
+})
+
 const selectedLabels = computed(() => {
   if (!props.multiple) {
-    const option = props.options.find((opt) => opt.value === model.value)
+    const option = flatOptions.value.find((opt) => opt.value === model.value)
     return option?.label ?? ''
   }
   return (model.value as string[])
-    .map(value => props.options.find((opt) => opt.value === value)?.label ?? '')
+    .map((value) => flatOptions.value.find((opt) => opt.value === value)?.label ?? '')
     .join(', ')
 })
 
 const filteredOptions = computed(() => {
-  if (!searchQuery.value) return props.options
-  return props.options.filter((option) => option.label.toLowerCase().includes(searchQuery.value.toLowerCase()))
+  const query = searchQuery.value.toLowerCase()
+  if (!query) return props.options
+  if (isGrouped.value) {
+    return (props.options as NyxSelectOptionGroup[])
+      .map((group) => ({
+        ...group,
+        options: group.options.filter((opt) => opt.label.toLowerCase().includes(query))
+      }))
+      .filter((group) => group.options.length > 0)
+  }
+  return (props.options as NyxSelectOption[]).filter((opt) =>
+    opt.label.toLowerCase().includes(query)
+  )
 })
 
 const toggleDropdown = () => {
@@ -134,29 +152,56 @@ watch(isOpen, (newVal) => {
         :style="cssVariables"
       >
         <ul>
-          <li
-            v-for="option in filteredOptions"
-            :key="option.value"
-            class="nyx-select__option"
-            :class="{
-              'nyx-select__option--selected': isSelected(option.value),
-              'nyx-select__option--disabled': !!option.disabled
-            }"
-            @click="onSelectOption(option)"
-          ><span>{{ option.label }}</span></li>
-          <li
-            v-if="filteredOptions.length === 0"
-            class="nyx-select__option nyx-select__option--empty"
-            @click.prevent.stop="elInput?.focus()"
-          ><slot name="empty"><span>No results found</span></slot></li>
+          <template v-if="isGrouped">
+            <template v-for="group in (filteredOptions as NyxSelectOptionGroup[])" :key="group.label">
+              <li class="nyx-select__group-label"><span>{{ group.label }}</span></li>
+              <li
+                v-for="option in group.options"
+                :key="option.value"
+                class="nyx-select__option"
+                :class="{
+                  'nyx-select__option--selected': isSelected(option.value),
+                  'nyx-select__option--disabled': !!option.disabled
+                }"
+                @click="onSelectOption(option)"
+              ><span>{{ option.label }}</span></li>
+            </template>
+            <li
+              v-if="(filteredOptions as NyxSelectOptionGroup[]).length === 0"
+              class="nyx-select__option nyx-select__option--empty"
+              @click.prevent.stop="elInput?.focus()"
+            ><slot name="empty"><span>No results found</span></slot></li>
+          </template>
+          <template v-else>
+            <li
+              v-for="option in (filteredOptions as NyxSelectOption[])"
+              :key="option.value"
+              class="nyx-select__option"
+              :class="{
+                'nyx-select__option--selected': isSelected(option.value),
+                'nyx-select__option--disabled': !!option.disabled
+              }"
+              @click="onSelectOption(option)"
+            ><span>{{ option.label }}</span></li>
+            <li
+              v-if="(filteredOptions as NyxSelectOption[]).length === 0"
+              class="nyx-select__option nyx-select__option--empty"
+              @click.prevent.stop="elInput?.focus()"
+            ><slot name="empty"><span>No results found</span></slot></li>
+          </template>
         </ul>
       </div>
     </Teleport>
 
     <select v-model="model" class="sr-only" :id="props.id" :multiple="props.multiple">
-      <option v-for="option in props.options" :value="option.value" :key="option.value">
-        {{ option.label }}
-      </option>
+      <template v-if="isGrouped">
+        <optgroup v-for="group in (props.options as NyxSelectOptionGroup[])" :key="group.label" :label="group.label">
+          <option v-for="option in group.options" :value="option.value" :key="option.value">{{ option.label }}</option>
+        </optgroup>
+      </template>
+      <template v-else>
+        <option v-for="option in (props.options as NyxSelectOption[])" :value="option.value" :key="option.value">{{ option.label }}</option>
+      </template>
     </select>
   </div>
 </template>

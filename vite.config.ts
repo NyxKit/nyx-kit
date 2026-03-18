@@ -54,7 +54,7 @@ export default defineConfig({
   },
   plugins: [
     vue(),
-    vueDevTools(),
+    ...(process.env.STORYBOOK ? [] : [vueDevTools()]),
     // svgLoader({
     //   svgo: true,
     //   defaultImport: 'component',

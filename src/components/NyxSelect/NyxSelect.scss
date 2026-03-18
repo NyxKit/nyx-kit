@@ -165,6 +165,17 @@
     }
   }
 
+  &__group-label {
+    padding: calc(var(--nyx-pad-select) * 0.5) var(--nyx-pad-select);
+    font-size: 0.75em;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: default;
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
   &__option {
     padding: var(--nyx-pad-select);
     cursor: pointer;

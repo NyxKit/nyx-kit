@@ -3,6 +3,11 @@ export enum NyxSelectType {
   Multiple = 'multiple'
 }
 
+export interface NyxSelectOptionGroup {
+  label: string,
+  options: NyxSelectOption[]
+}
+
 export interface NyxSelectOption {
   label: string,
   value: string,
