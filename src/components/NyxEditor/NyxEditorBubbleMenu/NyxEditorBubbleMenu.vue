@@ -9,6 +9,7 @@ import {
   Heading1, Heading2, Heading3, Pilcrow,
   MessageSquare,
 } from 'lucide-vue-next'
+import type { NyxEditorSelection } from '@/types/editor'
 
 const props = defineProps<{
   editor: Editor | null
@@ -18,7 +19,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   mousedown: [],
-  comment: [{ text: string, range: { from: number, to: number } }]
+  comment: [NyxEditorSelection]
 }>()
 
 const bubbleRef = ref<HTMLElement | null>(null)
@@ -34,6 +35,13 @@ const hasComments = computed(() => [NyxEditorToolbar.CommentOnly, NyxEditorToolb
 watch(() => props.visible, (val) => {
   if (val) nextTick(updateCssVariables)
 })
+
+const onComment = () => {
+  if (!props.editor) return
+  const text = props.editor.state.doc.textBetween(props.editor.state.selection.from, props.editor.state.selection.to)
+  const range = { from: props.editor.state.selection.from, to: props.editor.state.selection.to }
+  emit('comment', { text, range })
+}
 </script>
 
 <template>
@@ -111,7 +119,7 @@ watch(() => props.visible, (val) => {
         
         <template v-if="hasComments">
           <button class="nyx-editor__bubble-btn" :class="{ active: editor?.isActive('comment') }"
-            @click="editor && emit('comment', { text: editor.state.doc.textBetween(editor.state.selection.from, editor.state.selection.to), range: { from: editor.state.selection.from, to: editor.state.selection.to } })" aria-label="Comment">
+            @click="onComment" aria-label="Comment">
             <MessageSquare :size="14" />
           </button>
         </template>
