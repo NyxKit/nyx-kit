@@ -69,3 +69,10 @@ export enum NyxEditorFormat {
   Markdown = 'markdown',
   Html = 'html'
 }
+
+export enum NyxEditorToolbar {
+  None = 'none',
+  Default = 'default',
+  CommentOnly = 'comment-only',
+  Full = 'full' // default + comment-only
+}

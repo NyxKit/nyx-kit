@@ -8,7 +8,7 @@ import TaskList from '@tiptap/extension-task-list'
 import TaskItem from '@tiptap/extension-task-item'
 import { Markdown, type MarkdownStorage } from 'tiptap-markdown'
 import type { NyxEditorProps, NyxEditorEmits } from './NyxEditor.types'
-import { NyxEditorMode, NyxEditorFormat, NyxTheme, NyxVariant, NyxSize } from '@/types'
+import { NyxEditorMode, NyxEditorFormat, NyxTheme, NyxVariant, NyxSize, NyxEditorToolbar } from '@/types'
 import useNyxProps from '@/composables/useNyxProps'
 import NyxEditorBubbleMenu from './NyxEditorBubbleMenu/NyxEditorBubbleMenu.vue'
 import {
@@ -21,6 +21,7 @@ import {
 const props = withDefaults(defineProps<NyxEditorProps>(), {
   mode: NyxEditorMode.Zen,
   format: NyxEditorFormat.Markdown,
+  toolbar: NyxEditorToolbar.Default,
   theme: NyxTheme.Default,
   variant: NyxVariant.Outline,
   size: NyxSize.Medium,
@@ -216,10 +217,12 @@ watch(() => props.disabled, (val) => {
 
     <!-- Zen mode: custom bubble menu -->
     <NyxEditorBubbleMenu
-      v-if="props.mode === 'zen'"
+      v-if="props.mode === NyxEditorMode.Zen && props.toolbar !== NyxEditorToolbar.None"
       :editor="editor ?? null"
       :visible="bubbleVisible"
+      :toolbar="props.toolbar"
       @mousedown="onBubbleMousedown"
+      @comment="emit('comment', $event)"
     />
 
   </div>

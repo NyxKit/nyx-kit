@@ -1,6 +1,6 @@
 import { defineComponent, ref } from 'vue'
 import NyxEditor from './NyxEditor.vue'
-import { NyxEditorMode, NyxEditorFormat, NyxTheme, NyxVariant, NyxSize } from '@/types'
+import { NyxEditorMode, NyxEditorFormat, NyxTheme, NyxVariant, NyxSize, NyxEditorToolbar } from '@/types'
 import type { NyxEditorProps } from './NyxEditor.types'
 
 export default {
@@ -26,6 +26,10 @@ export default {
     size: {
       control: { type: 'select' },
       options: Object.values(NyxSize),
+    },
+    toolbar: {
+      control: { type: 'select' },
+      options: Object.values(NyxEditorToolbar),
     },
   },
 }

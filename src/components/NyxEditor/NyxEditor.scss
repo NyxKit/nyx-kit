@@ -346,10 +346,11 @@
   border-radius: 4px;
   color: #fff;
   cursor: pointer;
-  transition: background-color 0.15s, border-color 0.15s;
+  transition: opacity 0.15s;
+  opacity: 0.75;
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.12);
+    opacity: 1;
   }
 
   &.active {

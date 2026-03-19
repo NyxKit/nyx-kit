@@ -44,6 +44,7 @@ NyxEditor provides an opinionated but flexible rich-text editing experience. It 
 | `change` | `string` | Fired on every editor content update, payload is the serialized content (MD or HTML) |
 | `focus` | `FocusEvent` | Editor receives focus |
 | `blur` | `FocusEvent` | Editor loses focus |
+| `comment` | `{ text: string, range: { from: number, to: number } }` | Fired when the comment button in the bubble menu is clicked; `text` is the selected text, `range` is the ProseMirror position range |
 
 ## v-model
 
