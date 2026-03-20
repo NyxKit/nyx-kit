@@ -30,7 +30,8 @@ export enum NyxVariant {
   Solid = 'solid',
   Outline = 'outline',
   Ghost = 'ghost',
-  Text = 'text'
+  Text = 'text',
+  Subtle = 'subtle'
 }
 
 export enum NyxShape {

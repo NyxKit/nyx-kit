@@ -5,6 +5,7 @@
   --nyx-c-input-highlight: var(--nyx-c-default-highlight);
   --nyx-c-input-alt: var(--nyx-c-default-alt);
   --nyx-c-input-text: var(--nyx-c-white-soft);
+  --nyx-rgb-input: var(--nyx-rgb-default);
   --nyx-gap-input: var(--nyx-gap-md);
   --nyx-pad-input: var(--nyx-pad-md);
   --nyx-font-size-input: var(--nyx-font-size-md);
@@ -47,36 +48,42 @@
     --nyx-c-input: var(--nyx-c-primary);
     --nyx-c-input-highlight: var(--nyx-c-primary-highlight);
     --nyx-c-input-alt: var(--nyx-c-primary-alt);
+    --nyx-rgb-input: var(--nyx-rgb-primary);
   }
 
   &.theme-secondary {
     --nyx-c-input: var(--nyx-c-secondary);
     --nyx-c-input-highlight: var(--nyx-c-secondary-highlight);
     --nyx-c-input-alt: var(--nyx-c-secondary-alt);
+    --nyx-rgb-input: var(--nyx-rgb-secondary);
   }
 
   &.theme-info {
     --nyx-c-input: var(--nyx-c-info);
     --nyx-c-input-highlight: var(--nyx-c-info-highlight);
     --nyx-c-input-alt: var(--nyx-c-info-alt);
+    --nyx-rgb-input: var(--nyx-rgb-info);
   }
 
   &.theme-success {
     --nyx-c-input: var(--nyx-c-success);
     --nyx-c-input-highlight: var(--nyx-c-success-highlight);
     --nyx-c-input-alt: var(--nyx-c-success-alt);
+    --nyx-rgb-input: var(--nyx-rgb-success);
   }
 
   &.theme-warning {
     --nyx-c-input: var(--nyx-c-warning);
     --nyx-c-input-highlight: var(--nyx-c-warning-highlight);
     --nyx-c-input-alt: var(--nyx-c-warning-alt);
+    --nyx-rgb-input: var(--nyx-rgb-warning);
   }
 
   &.theme-danger {
     --nyx-c-input: var(--nyx-c-danger);
     --nyx-c-input-highlight: var(--nyx-c-danger-highlight);
     --nyx-c-input-alt: var(--nyx-c-danger-alt);
+    --nyx-rgb-input: var(--nyx-rgb-danger);
   }
 
   &.variant-outline input {
@@ -97,6 +104,17 @@
     &:hover,
     &:focus {
       border-color: var(--nyx-c-input-alt);
+    }
+  }
+
+  &.variant-subtle input {
+    background-color: transparent;
+    border-color: transparent;
+    color: var(--nyx-c-input-alt);
+
+    &:hover,
+    &:focus {
+      background-color: rgba(var(--nyx-rgb-input), 0.12);
     }
   }
 

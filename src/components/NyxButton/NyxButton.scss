@@ -195,6 +195,20 @@
     }
   }
 
+  &.variant-subtle {
+    background-color: transparent;
+    border-color: transparent;
+    color: var(--nyx-c-button-alt);
+
+    &:hover {
+      background-color: rgba(var(--nyx-rgb-button), 0.12);
+    }
+
+    &:active {
+      background-color: rgba(var(--nyx-rgb-button), 0.18);
+    }
+  }
+
   &.variant-text {
     background-color: transparent;
     border-color: transparent;

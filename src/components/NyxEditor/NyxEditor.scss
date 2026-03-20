@@ -5,6 +5,7 @@
   --nyx-c-editor-highlight: var(--nyx-c-default-highlight);
   --nyx-c-editor-alt: var(--nyx-c-default-alt);
   --nyx-c-editor-text: var(--nyx-c-white-soft);
+  --nyx-rgb-editor: var(--nyx-rgb-default);
   --nyx-gap-editor: var(--nyx-gap-md);
   --nyx-pad-editor: var(--nyx-pad-md);
   --nyx-font-size-editor: var(--nyx-font-size-md);
@@ -17,7 +18,7 @@
   border-radius: var(--nyx-radius-md);
   border: var(--nyx-border-size-editor) solid transparent;
   overflow: hidden;
-  transition: border-color 0.2s;
+  transition: background-color 0.2s, border-color 0.2s;
 
   // Variant: outline
   &.variant-outline {
@@ -30,6 +31,17 @@
   &.variant-solid {
     background-color: var(--nyx-c-editor);
     color: var(--nyx-c-editor-text);
+  }
+
+  // Variant: subtle
+  &.variant-subtle {
+    background-color: rgba(var(--nyx-rgb-editor), 0.08);
+    border-color: transparent;
+    color: var(--nyx-c-editor-alt);
+
+    &:focus-within {
+      background-color: rgba(var(--nyx-rgb-editor), 0.14);
+    }
   }
 
   // Variant: ghost
@@ -48,36 +60,42 @@
     --nyx-c-editor: var(--nyx-c-primary);
     --nyx-c-editor-highlight: var(--nyx-c-primary-highlight);
     --nyx-c-editor-alt: var(--nyx-c-primary-alt);
+    --nyx-rgb-editor: var(--nyx-rgb-primary);
   }
 
   &.theme-secondary {
     --nyx-c-editor: var(--nyx-c-secondary);
     --nyx-c-editor-highlight: var(--nyx-c-secondary-highlight);
     --nyx-c-editor-alt: var(--nyx-c-secondary-alt);
+    --nyx-rgb-editor: var(--nyx-rgb-secondary);
   }
 
   &.theme-info {
     --nyx-c-editor: var(--nyx-c-info);
     --nyx-c-editor-highlight: var(--nyx-c-info-highlight);
     --nyx-c-editor-alt: var(--nyx-c-info-alt);
+    --nyx-rgb-editor: var(--nyx-rgb-info);
   }
 
   &.theme-success {
     --nyx-c-editor: var(--nyx-c-success);
     --nyx-c-editor-highlight: var(--nyx-c-success-highlight);
     --nyx-c-editor-alt: var(--nyx-c-success-alt);
+    --nyx-rgb-editor: var(--nyx-rgb-success);
   }
 
   &.theme-warning {
     --nyx-c-editor: var(--nyx-c-warning);
     --nyx-c-editor-highlight: var(--nyx-c-warning-highlight);
     --nyx-c-editor-alt: var(--nyx-c-warning-alt);
+    --nyx-rgb-editor: var(--nyx-rgb-warning);
   }
 
   &.theme-danger {
     --nyx-c-editor: var(--nyx-c-danger);
     --nyx-c-editor-highlight: var(--nyx-c-danger-highlight);
     --nyx-c-editor-alt: var(--nyx-c-danger-alt);
+    --nyx-rgb-editor: var(--nyx-rgb-danger);
   }
 
   // Sizes

@@ -3,6 +3,7 @@
   --nyx-c-badge: var(--nyx-c-default);
   --nyx-c-badge-highlight: var(--nyx-c-default-highlight);
   --nyx-c-badge-alt: var(--nyx-c-default-alt);
+  --nyx-rgb-badge: var(--nyx-rgb-default);
   --nyx-pad-badge: var(--nyx-pad-md);
   --nyx-font-size-badge: var(--nyx-font-size-md);
   --nyx-h-badge: calc(var(--nyx-font-size-badge) * 1.5);
@@ -71,36 +72,42 @@
     --nyx-c-badge: var(--nyx-c-primary);
     --nyx-c-badge-highlight: var(--nyx-c-primary-highlight);
     --nyx-c-badge-alt: var(--nyx-c-primary-alt);
+    --nyx-rgb-badge: var(--nyx-rgb-primary);
   }
 
   &.theme-secondary {
     --nyx-c-badge: var(--nyx-c-secondary);
     --nyx-c-badge-highlight: var(--nyx-c-secondary-highlight);
     --nyx-c-badge-alt: var(--nyx-c-secondary-alt);
+    --nyx-rgb-badge: var(--nyx-rgb-secondary);
   }
 
   &.theme-info {
     --nyx-c-badge: var(--nyx-c-info);
     --nyx-c-badge-highlight: var(--nyx-c-info-highlight);
     --nyx-c-badge-alt: var(--nyx-c-info-alt);
+    --nyx-rgb-badge: var(--nyx-rgb-info);
   }
 
   &.theme-success {
     --nyx-c-badge: var(--nyx-c-success);
     --nyx-c-badge-highlight: var(--nyx-c-success-highlight);
     --nyx-c-badge-alt: var(--nyx-c-success-alt);
+    --nyx-rgb-badge: var(--nyx-rgb-success);
   }
 
   &.theme-warning {
     --nyx-c-badge: var(--nyx-c-warning);
     --nyx-c-badge-highlight: var(--nyx-c-warning-highlight);
     --nyx-c-badge-alt: var(--nyx-c-warning-alt);
+    --nyx-rgb-badge: var(--nyx-rgb-warning);
   }
 
   &.theme-danger {
     --nyx-c-badge: var(--nyx-c-danger);
     --nyx-c-badge-highlight: var(--nyx-c-danger-highlight);
     --nyx-c-badge-alt: var(--nyx-c-danger-alt);
+    --nyx-rgb-badge: var(--nyx-rgb-danger);
   }
 
   &.variant-outline {
@@ -122,6 +129,20 @@
 
     &:hover {
       border-color: var(--nyx-c-badge-alt);
+    }
+  }
+
+  &.variant-subtle {
+    background-color: transparent;
+    border-color: transparent;
+    color: var(--nyx-c-badge-alt);
+
+    &:hover {
+      background-color: rgba(var(--nyx-rgb-badge), 0.12);
+    }
+
+    &:active {
+      background-color: rgba(var(--nyx-rgb-badge), 0.18);
     }
   }
 

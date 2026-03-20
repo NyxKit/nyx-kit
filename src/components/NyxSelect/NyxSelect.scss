@@ -4,6 +4,7 @@
   --nyx-c-select: var(--nyx-c-default);
   --nyx-c-select-highlight: var(--nyx-c-default-highlight);
   --nyx-c-select-alt: var(--nyx-c-default-alt);
+  --nyx-rgb-select: var(--nyx-rgb-default);
   --nyx-gap-select: var(--nyx-gap-md);
   --nyx-pad-select: var(--nyx-pad-md);
   --nyx-font-size-select: var(--nyx-font-size-md);
@@ -14,36 +15,42 @@
     --nyx-c-select: var(--nyx-c-primary);
     --nyx-c-select-highlight: var(--nyx-c-primary-highlight);
     --nyx-c-select-alt: var(--nyx-c-primary-alt);
+    --nyx-rgb-select: var(--nyx-rgb-primary);
   }
 
   &.theme-secondary {
     --nyx-c-select: var(--nyx-c-secondary);
     --nyx-c-select-highlight: var(--nyx-c-secondary-highlight);
     --nyx-c-select-alt: var(--nyx-c-secondary-alt);
+    --nyx-rgb-select: var(--nyx-rgb-secondary);
   }
 
   &.theme-info {
     --nyx-c-select: var(--nyx-c-info);
     --nyx-c-select-highlight: var(--nyx-c-info-highlight);
     --nyx-c-select-alt: var(--nyx-c-info-alt);
+    --nyx-rgb-select: var(--nyx-rgb-info);
   }
 
   &.theme-success {
     --nyx-c-select: var(--nyx-c-success);
     --nyx-c-select-highlight: var(--nyx-c-success-highlight);
     --nyx-c-select-alt: var(--nyx-c-success-alt);
+    --nyx-rgb-select: var(--nyx-rgb-success);
   }
 
   &.theme-warning {
     --nyx-c-select: var(--nyx-c-warning);
     --nyx-c-select-highlight: var(--nyx-c-warning-highlight);
     --nyx-c-select-alt: var(--nyx-c-warning-alt);
+    --nyx-rgb-select: var(--nyx-rgb-warning);
   }
 
   &.theme-danger {
     --nyx-c-select: var(--nyx-c-danger);
     --nyx-c-select-highlight: var(--nyx-c-danger-highlight);
     --nyx-c-select-alt: var(--nyx-c-danger-alt);
+    --nyx-rgb-select: var(--nyx-rgb-danger);
   }
 
   &.size-xs {
@@ -225,6 +232,17 @@
     &:focus,
     &--open {
       border-color: var(--nyx-c-select);
+    }
+  }
+
+  &.variant-subtle &__control {
+    background-color: transparent;
+    border-color: transparent;
+    color: var(--nyx-c-select-alt);
+
+    &:hover,
+    &--open {
+      background-color: rgba(var(--nyx-rgb-select), 0.12);
     }
   }
 

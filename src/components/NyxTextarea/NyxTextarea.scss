@@ -3,6 +3,7 @@
   --nyx-c-textarea-highlight: var(--nyx-c-default-highlight);
   --nyx-c-textarea-alt: var(--nyx-c-default-alt);
   --nyx-c-textarea-text: var(--nyx-c-white-soft);
+  --nyx-rgb-textarea: var(--nyx-rgb-default);
   --nyx-gap-textarea: var(--nyx-gap-md);
   --nyx-pad-textarea: var(--nyx-pad-md);
   --nyx-font-size-textarea: var(--nyx-font-size-md);
@@ -48,36 +49,42 @@
     --nyx-c-textarea: var(--nyx-c-primary);
     --nyx-c-textarea-highlight: var(--nyx-c-primary-highlight);
     --nyx-c-textarea-alt: var(--nyx-c-primary-alt);
+    --nyx-rgb-textarea: var(--nyx-rgb-primary);
   }
 
   &.theme-secondary {
     --nyx-c-textarea: var(--nyx-c-secondary);
     --nyx-c-textarea-highlight: var(--nyx-c-secondary-highlight);
     --nyx-c-textarea-alt: var(--nyx-c-secondary-alt);
+    --nyx-rgb-textarea: var(--nyx-rgb-secondary);
   }
 
   &.theme-info {
     --nyx-c-textarea: var(--nyx-c-info);
     --nyx-c-textarea-highlight: var(--nyx-c-info-highlight);
     --nyx-c-textarea-alt: var(--nyx-c-info-alt);
+    --nyx-rgb-textarea: var(--nyx-rgb-info);
   }
 
   &.theme-success {
     --nyx-c-textarea: var(--nyx-c-success);
     --nyx-c-textarea-highlight: var(--nyx-c-success-highlight);
     --nyx-c-textarea-alt: var(--nyx-c-success-alt);
+    --nyx-rgb-textarea: var(--nyx-rgb-success);
   }
 
   &.theme-warning {
     --nyx-c-textarea: var(--nyx-c-warning);
     --nyx-c-textarea-highlight: var(--nyx-c-warning-highlight);
     --nyx-c-textarea-alt: var(--nyx-c-warning-alt);
+    --nyx-rgb-textarea: var(--nyx-rgb-warning);
   }
 
   &.theme-danger {
     --nyx-c-textarea: var(--nyx-c-danger);
     --nyx-c-textarea-highlight: var(--nyx-c-danger-highlight);
     --nyx-c-textarea-alt: var(--nyx-c-danger-alt);
+    --nyx-rgb-textarea: var(--nyx-rgb-danger);
   }
 
   &.variant-outline textarea {
@@ -98,6 +105,17 @@
     &:hover,
     &:focus {
       border-color: var(--nyx-c-textarea-alt);
+    }
+  }
+
+  &.variant-subtle textarea {
+    background-color: transparent;
+    border-color: transparent;
+    color: var(--nyx-c-textarea-alt);
+
+    &:hover,
+    &:focus {
+      background-color: rgba(var(--nyx-rgb-textarea), 0.12);
     }
   }
 
