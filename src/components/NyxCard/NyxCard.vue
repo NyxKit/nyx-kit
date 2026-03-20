@@ -21,6 +21,7 @@ const emit = defineEmits<NyxCardEmits>()
 const slots: Slots = useSlots()
 
 const { classList } = useNyxProps(props)
+const effectiveLayout = computed(() => props.layout === 'media-first' && !props.src ? 'header-first' : props.layout)
 const cssVars = computed<CssVariablesDict>(() => ({
   '--nyx-card-text-align': props.textAlign
 }))
@@ -34,7 +35,7 @@ const onClick = () => emit('click')
     class="nyx-card"
     :class="[
       ...classList,
-      props.layout,
+      effectiveLayout.value,
       props.blendMedia && 'blend-media'
     ]"
     :style="cssVars"

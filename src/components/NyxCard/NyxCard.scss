@@ -115,6 +115,7 @@
   &.variant-ghost {
     background-color: transparent;
     border-color: transparent;
+    box-shadow: none;
     color: var(--nyx-c-card-alt);
 
     &:hover {
@@ -124,8 +125,24 @@
 
   &.variant-text {
     background-color: transparent;
-    color: var(--nyx-c-card-alt);
     border-color: transparent;
+    box-shadow: none;
+    color: var(--nyx-c-card-alt);
+
+    &:hover {
+      background-color: rgba(var(--nyx-rgb-card), 0.06);
+    }
+  }
+
+  &.variant-subtle {
+    background-color: rgba(var(--nyx-rgb-card), 0.08);
+    border-color: transparent;
+    box-shadow: none;
+    color: var(--nyx-c-card-alt);
+
+    &:hover {
+      background-color: rgba(var(--nyx-rgb-card), 0.14);
+    }
   }
 
   &[class*="backlight-"]:hover {
@@ -216,34 +233,6 @@
     --nyx-c-card: var(--nyx-c-danger);
     --nyx-c-card-highlight: var(--nyx-c-danger-highlight);
     --nyx-c-card-alt: var(--nyx-c-danger-alt);
-    --nyx-rgb-card: var(--nyx-rgb-danger);
-  }
-
-  &.backlight-default {
-    --nyx-rgb-card: var(--nyx-rgb-default);
-  }
-
-  &.backlight-primary {
-    --nyx-rgb-card: var(--nyx-rgb-primary);
-  }
-
-  &.backlight-secondary {
-    --nyx-rgb-card: var(--nyx-rgb-secondary);
-  }
-
-  &.backlight-info {
-    --nyx-rgb-card: var(--nyx-rgb-info);
-  }
-
-  &.backlight-success {
-    --nyx-rgb-card: var(--nyx-rgb-success);
-  }
-
-  &.backlight-warning {
-    --nyx-rgb-card: var(--nyx-rgb-warning);
-  }
-
-  &.backlight-danger {
     --nyx-rgb-card: var(--nyx-rgb-danger);
   }
 
