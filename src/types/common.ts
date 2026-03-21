@@ -27,11 +27,12 @@ export enum NyxSize {
 }
 
 export enum NyxVariant {
-  Solid = 'solid',
+  Filled = 'filled',
+  Soft = 'soft',
+  Subtle = 'subtle',
   Outline = 'outline',
   Ghost = 'ghost',
   Text = 'text',
-  Subtle = 'subtle'
 }
 
 export enum NyxShape {

@@ -8,7 +8,7 @@ import { NyxSize, NyxVariant, NyxTheme } from '@/types'
 const props = withDefaults(defineProps<NyxSwitchProps>(), {
   theme: NyxTheme.Success,
   size: NyxSize.Medium,
-  variant: NyxVariant.Solid
+  variant: NyxVariant.Filled
 })
 
 const model = defineModel<boolean>({ default: false })

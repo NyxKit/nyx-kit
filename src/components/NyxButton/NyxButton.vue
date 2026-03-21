@@ -10,7 +10,7 @@ const props = withDefaults(defineProps<NyxButtonProps>(), {
   type: 'button',
   disabled: false,
   theme: NyxTheme.Default,
-  variant: NyxVariant.Solid,
+  variant: NyxVariant.Filled,
   shape: NyxShape.Rectangle,
   size: NyxSize.Medium,
   gradient: false,

@@ -47,8 +47,8 @@ describe('NyxEditor', () => {
   })
 
   it('applies variant class', () => {
-    const wrapper = mount(NyxEditor, { props: { variant: NyxVariant.Solid } })
-    expect(wrapper.find('.nyx-editor').classes()).toContain('variant-solid')
+    const wrapper = mount(NyxEditor, { props: { variant: NyxVariant.Filled } })
+    expect(wrapper.find('.nyx-editor').classes()).toContain('variant-filled')
   })
 
   it('applies size class', () => {

@@ -109,7 +109,7 @@
   &.variant-outline {
     background-color: transparent;
     color: var(--nyx-c-card-alt);
-    border-color: var(--nyx-c-card-alt);
+    border-color: rgba(var(--nyx-rgb-card), 0.4);
   }
 
   &.variant-ghost {
@@ -119,7 +119,7 @@
     color: var(--nyx-c-card-alt);
 
     &:hover {
-      border-color: var(--nyx-c-card-alt);
+      border-color: rgba(var(--nyx-rgb-card), 0.4);
     }
   }
 
@@ -131,6 +131,17 @@
 
     &:hover {
       background-color: rgba(var(--nyx-rgb-card), 0.06);
+    }
+  }
+
+  &.variant-soft {
+    background-color: rgba(var(--nyx-rgb-card), 0.12);
+    border-color: transparent;
+    box-shadow: none;
+    color: var(--nyx-c-card-alt);
+
+    &:hover {
+      background-color: rgba(var(--nyx-rgb-card), 0.24);
     }
   }
 

@@ -23,14 +23,25 @@
   // Variant: outline
   &.variant-outline {
     background-color: transparent;
-    border-color: var(--nyx-c-editor-alt);
+    border-color: rgba(var(--nyx-rgb-editor), 0.4);
     color: var(--nyx-c-editor-alt);
   }
 
-  // Variant: solid
-  &.variant-solid {
+  // Variant: filled
+  &.variant-filled {
     background-color: var(--nyx-c-editor);
     color: var(--nyx-c-editor-text);
+  }
+
+  // Variant: soft
+  &.variant-soft {
+    background-color: rgba(var(--nyx-rgb-editor), 0.12);
+    border-color: transparent;
+    color: var(--nyx-c-editor-alt);
+
+    &:focus-within {
+      background-color: rgba(var(--nyx-rgb-editor), 0.24);
+    }
   }
 
   // Variant: subtle
@@ -51,7 +62,7 @@
     color: var(--nyx-c-editor-alt);
 
     &:focus-within {
-      border-color: var(--nyx-c-editor-alt);
+      border-color: rgba(var(--nyx-rgb-editor), 0.4);
     }
   }
 

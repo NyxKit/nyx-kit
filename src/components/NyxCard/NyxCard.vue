@@ -9,7 +9,7 @@ import { computed, useSlots, type Slots } from 'vue'
 const props = withDefaults(defineProps<NyxCardProps>(), {
   theme: NyxTheme.Default,
   size: NyxSize.Medium,
-  variant: NyxVariant.Solid,
+  variant: NyxVariant.Filled,
   textAlign: 'left',
   layout: 'media-first',
   blendMedia: false,

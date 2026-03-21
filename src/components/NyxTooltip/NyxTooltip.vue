@@ -8,7 +8,7 @@ import { useTeleportPosition } from '@/composables'
 const props = withDefaults(defineProps<NyxTooltipProps>(), {
   theme: NyxTheme.Default,
   size: NyxSize.Medium,
-  variant: NyxVariant.Solid,
+  variant: NyxVariant.Filled,
   position: NyxPosition.Top,
   disabled: false,
   trigger: 'hover',

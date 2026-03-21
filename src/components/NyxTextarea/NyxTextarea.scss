@@ -90,10 +90,11 @@
   &.variant-outline textarea {
     background-color: transparent;
     color: var(--nyx-c-textarea-alt);
-    border-color: var(--nyx-c-textarea-alt);
+    border-color: rgba(var(--nyx-rgb-textarea), 0.4);
 
-    &:hover {
-      border-color: var(--nyx-c-textarea-alt);
+    &:hover,
+    &:focus {
+      border-color: rgba(var(--nyx-rgb-textarea), 0.4);
     }
   }
 
@@ -104,7 +105,18 @@
 
     &:hover,
     &:focus {
-      border-color: var(--nyx-c-textarea-alt);
+      border-color: rgba(var(--nyx-rgb-textarea), 0.4);
+    }
+  }
+
+  &.variant-soft textarea {
+    background-color: rgba(var(--nyx-rgb-textarea), 0.12);
+    border-color: transparent;
+    color: var(--nyx-c-textarea-alt);
+
+    &:hover,
+    &:focus {
+      background-color: rgba(var(--nyx-rgb-textarea), 0.24);
     }
   }
 

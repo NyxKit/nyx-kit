@@ -5,7 +5,7 @@ export interface NyxBreadcrumbsProps {
   separator?: string
   theme?: NyxTheme
   size?: NyxSize
-  variant?: NyxVariant.Solid|NyxVariant.Text
+  variant?: NyxVariant.Filled|NyxVariant.Text
 }
 
 export interface NyxBreadcrumbsEmits {

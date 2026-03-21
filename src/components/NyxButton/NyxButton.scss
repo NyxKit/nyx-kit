@@ -171,11 +171,11 @@
   &.variant-outline {
     background-color: transparent;
     color: var(--nyx-c-button-alt);
-    border-color: var(--nyx-c-button-alt);
+    border-color: rgba(var(--nyx-rgb-button), 0.4);
 
     &:hover {
       background-color: var(--nyx-c-button-alt);
-      border-color: var(--nyx-c-button-alt);
+      border-color: rgba(var(--nyx-rgb-button), 0.4);
       color: var(--nyx-c-button-text);
     }
   }
@@ -186,12 +186,23 @@
     color: var(--nyx-c-button-alt);
 
     &:hover {
-      border-color: var(--nyx-c-button-alt);
+      border-color: rgba(var(--nyx-rgb-button), 0.4);
     }
 
     &:active {
       background-color: var(--nyx-c-button-alt);
       color: var(--nyx-c-button-text);
+    }
+  }
+
+  &.variant-soft {
+    background-color: rgba(var(--nyx-rgb-button), 0.12);
+    border-color: transparent;
+    color: var(--nyx-c-button-alt);
+
+    &:hover,
+    &:active {
+      background-color: rgba(var(--nyx-rgb-button), 0.24);
     }
   }
 

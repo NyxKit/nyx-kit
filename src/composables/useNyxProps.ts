@@ -9,8 +9,8 @@ const useNyxProps = (props: KeyDict<unknown>, origin: string = 'Nyx') => {
   const libEnv = inject<NyxKitOptions>('libEnv') ?? {}
 
   const gradient = computed(() => {
-    if (props.gradient !== false && props.variant !== NyxVariant.Solid) {
-      NyxLog.error(origin, 'Gradients are only supported by NyxVariant.Solid')
+    if (props.gradient !== false && props.variant !== NyxVariant.Filled) {
+      NyxLog.error(origin, 'Gradients are only supported by NyxVariant.Filled')
       return props.theme
     }
     return props.gradient === true ? props.theme : props.gradient

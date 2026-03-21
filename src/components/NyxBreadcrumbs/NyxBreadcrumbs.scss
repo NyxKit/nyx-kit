@@ -31,12 +31,12 @@
     }
   }
 
-  &.variant-solid {
+  &.variant-filled {
     background-color: var(--nyx-c-breadcrumbs-separator);
     color: var(--nyx-c-text-1);
   }
 
-  &.variant-solid &__separator {
+  &.variant-filled &__separator {
     color: var(--nyx-c-text-1);
     fill: var(--nyx-c-text-1);
   }

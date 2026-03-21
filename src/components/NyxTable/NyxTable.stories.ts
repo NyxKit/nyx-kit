@@ -72,7 +72,7 @@ const TemplateAll = (prop: string, dict: KeyDict<string>) => () => defineCompone
       <nyx-table v-model="data" v-bind="{ [prop]: value }" v-for="value of values">
         <template #actions="{ item }">
           <nyx-button
-            :variant="prop === 'variant' ? value : NyxVariant.Solid"
+            :variant="prop === 'variant' ? value : NyxVariant.Filled"
             :size="prop === 'size' ? value : NyxSize.XSmall"
             :theme="prop === 'theme' ? value : NyxTheme.Danger"
           >{{ getLabel(value) }}</nyx-button>

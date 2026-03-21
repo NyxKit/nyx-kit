@@ -89,10 +89,11 @@
   &.variant-outline input {
     background-color: transparent;
     color: var(--nyx-c-input-alt);
-    border-color: var(--nyx-c-input-alt);
+    border-color: rgba(var(--nyx-rgb-input), 0.4);
 
-    &:hover {
-      border-color: var(--nyx-c-input-alt);
+    &:hover,
+    &:focus {
+      border-color: rgba(var(--nyx-rgb-input), 0.4);
     }
   }
 
@@ -103,7 +104,18 @@
 
     &:hover,
     &:focus {
-      border-color: var(--nyx-c-input-alt);
+      border-color: rgba(var(--nyx-rgb-input), 0.4);
+    }
+  }
+
+  &.variant-soft input {
+    background-color: rgba(var(--nyx-rgb-input), 0.12);
+    border-color: transparent;
+    color: var(--nyx-c-input-alt);
+
+    &:hover,
+    &:focus {
+      background-color: rgba(var(--nyx-rgb-input), 0.24);
     }
   }
 

@@ -113,11 +113,11 @@
   &.variant-outline {
     background-color: transparent;
     color: var(--nyx-c-badge-alt);
-    border-color: var(--nyx-c-badge-alt);
+    border-color: rgba(var(--nyx-rgb-badge), 0.4);
 
     &:hover {
       background-color: var(--nyx-c-badge-alt);
-      border-color: var(--nyx-c-badge-alt);
+      border-color: rgba(var(--nyx-rgb-badge), 0.4);
       color: var(--nyx-c-badge-text);
     }
   }
@@ -128,7 +128,17 @@
     color: var(--nyx-c-badge-alt);
 
     &:hover {
-      border-color: var(--nyx-c-badge-alt);
+      border-color: rgba(var(--nyx-rgb-badge), 0.4);
+    }
+  }
+
+  &.variant-soft {
+    background-color: rgba(var(--nyx-rgb-badge), 0.12);
+    border-color: transparent;
+    color: var(--nyx-c-badge-alt);
+
+    &:hover {
+      background-color: rgba(var(--nyx-rgb-badge), 0.24);
     }
   }
 

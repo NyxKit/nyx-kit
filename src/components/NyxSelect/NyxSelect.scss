@@ -215,23 +215,35 @@
 
   &.variant-outline &__control {
     background-color: transparent;
-    color: var(--nyx-c-select);
+    color: var(--nyx-c-select-alt);
+    border-color: rgba(var(--nyx-rgb-select), 0.4);
 
     &:hover,
     &--open {
-      border-color: var(--nyx-c-select-highlight);
+      border-color: rgba(var(--nyx-rgb-select), 0.4);
     }
   }
 
   &.variant-ghost &__control {
     background-color: transparent;
     border-color: transparent;
-    color: var(--nyx-c-select);
+    color: var(--nyx-c-select-alt);
 
     &:hover,
     &:focus,
     &--open {
-      border-color: var(--nyx-c-select);
+      border-color: rgba(var(--nyx-rgb-select), 0.4);
+    }
+  }
+
+  &.variant-soft &__control {
+    background-color: rgba(var(--nyx-rgb-select), 0.12);
+    border-color: transparent;
+    color: var(--nyx-c-select-alt);
+
+    &:hover,
+    &--open {
+      background-color: rgba(var(--nyx-rgb-select), 0.24);
     }
   }
 

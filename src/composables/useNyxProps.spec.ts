@@ -31,8 +31,8 @@ describe('useNyxProps — classList', () => {
   })
 
   it('generates a variant class', () => {
-    const { classList } = useSetup(() => useNyxProps({ variant: NyxVariant.Solid }))
-    expect(classList.value).toContain('variant-solid')
+    const { classList } = useSetup(() => useNyxProps({ variant: NyxVariant.Filled }))
+    expect(classList.value).toContain('variant-filled')
   })
 
   it('generates a shape class', () => {
@@ -86,7 +86,7 @@ describe('useNyxProps — gradient', () => {
 
   it('returns false when gradient prop is false', () => {
     const { gradient } = useSetup(() =>
-      useNyxProps({ theme: NyxTheme.Primary, variant: NyxVariant.Solid, gradient: false })
+      useNyxProps({ theme: NyxTheme.Primary, variant: NyxVariant.Filled, gradient: false })
     )
     // gradient === false → returns false (no gradient applied)
     expect(gradient.value).toBe(false)
@@ -94,7 +94,7 @@ describe('useNyxProps — gradient', () => {
 
   it('returns theme when gradient is true and variant is Solid', () => {
     const { gradient } = useSetup(() =>
-      useNyxProps({ theme: NyxTheme.Danger, variant: NyxVariant.Solid, gradient: true })
+      useNyxProps({ theme: NyxTheme.Danger, variant: NyxVariant.Filled, gradient: true })
     )
     expect(gradient.value).toBe(NyxTheme.Danger)
   })

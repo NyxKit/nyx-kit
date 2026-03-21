@@ -7,7 +7,7 @@ import NyxButton from '../NyxButton/NyxButton.vue'
 const props = withDefaults(defineProps<NyxBadgeProps>(), {
   disabled: false,
   theme: NyxTheme.Default,
-  variant: NyxVariant.Solid,
+  variant: NyxVariant.Filled,
   size: NyxSize.Medium,
   hasClose: false
 })
