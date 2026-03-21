@@ -21,7 +21,7 @@ const fallback = computed(() => {
 
 const alt = computed(() => props.name ?? props.placeholder ?? '')
 
-const { classList } = useNyxProps(props)
+const { classList } = useNyxProps(props, { origin: 'NyxAvatar' })
 </script>
 
 <template>

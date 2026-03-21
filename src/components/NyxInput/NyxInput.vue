@@ -14,7 +14,7 @@ const emit = defineEmits<NyxInputEmits>()
 
 const model = defineModel<string>()
 
-const { classList } = useNyxProps(props)
+const { classList } = useNyxProps(props, { origin: 'NyxInput', primitive: 'input' })
 
 const normalizedId = computed(() => props.id ?? `nyx-input-${generateRandomString(16)}`)
 

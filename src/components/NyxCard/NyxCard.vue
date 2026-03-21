@@ -17,7 +17,7 @@ const emit = defineEmits<NyxCardEmits>()
 
 const slots: Slots = useSlots()
 
-const { classList } = useNyxProps(props)
+const { classList } = useNyxProps(props, { origin: 'NyxCard' })
 const effectiveLayout = computed(() => props.layout === 'media-first' && !props.src ? 'header-first' : props.layout)
 const cssVars = computed<CssVariablesDict>(() => ({
   '--nyx-card-text-align': props.textAlign

@@ -50,10 +50,17 @@ describe('useNyxProps — classList', () => {
     expect(classList.value).not.toContain('pixel')
   })
 
-  it('skips keys with undefined values', () => {
-    const { classList } = useSetup(() => useNyxProps({ theme: undefined }))
-    // size, variant, shape etc. should not appear
-    expect(classList.value.some(c => c.startsWith('size-'))).toBe(false)
+  it('always resolves theme, size, variant to fallbacks when undefined', () => {
+    const { classList } = useSetup(() => useNyxProps({ theme: undefined, size: undefined, variant: undefined }))
+    expect(classList.value.some(c => c.startsWith('theme-'))).toBe(true)
+    expect(classList.value.some(c => c.startsWith('size-'))).toBe(true)
+    expect(classList.value.some(c => c.startsWith('variant-'))).toBe(true)
+  })
+
+  it('skips props with no fallback when undefined', () => {
+    const { classList } = useSetup(() => useNyxProps({}))
+    expect(classList.value.some(c => c.startsWith('shape-'))).toBe(false)
+    expect(classList.value.some(c => c.startsWith('position-'))).toBe(false)
   })
 
   it('generates multiple classes together', () => {

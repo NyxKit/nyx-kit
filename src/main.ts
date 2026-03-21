@@ -2,13 +2,16 @@ import { type App } from 'vue'
 import { vClickOutside } from './directives'
 import type { NyxSize, NyxTheme, NyxVariant } from './types'
 
+export type NyxKitPrimitive = 'all'|'button'|'input'|'select'|'textarea'|'checkbox'|'radio'|'switch'
+export interface NyxKitDefaults {
+  theme?: NyxTheme
+  size?: NyxSize
+  variant?: NyxVariant
+}
+
 export type NyxKitOptions = {
   pixel?: boolean
-  defaults?: {
-    theme?: NyxTheme
-    size?: NyxSize
-    variant?: NyxVariant
-  }
+  defaults?: Record<NyxKitPrimitive, NyxKitDefaults>
 }
 
 export const NyxKit = {

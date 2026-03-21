@@ -16,7 +16,7 @@ const props = withDefaults(defineProps<NyxTabsProps>(), {
 const model = defineModel<string>()
 const slots: Slots = useSlots()
 
-const { classList } = useNyxProps(props, 'NyxTabs')
+const { classList } = useNyxProps(props, { origin: 'NyxTabs' })
 
 const currentTab = computed(() => model.value ?? props.tabs[0])
 

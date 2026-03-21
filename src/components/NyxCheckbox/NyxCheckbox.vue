@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<NyxCheckboxProps>(), {
 
 const model = defineModel<boolean>({ default: false })
 
-const { classList } = useNyxProps(props)
+const { classList } = useNyxProps(props, { origin: 'NyxCheckbox', primitive: 'checkbox' })
 
 const normalizedId = computed(() => props.id ?? `nyx-checkbox-${ generateRandomString(16) }`)
 

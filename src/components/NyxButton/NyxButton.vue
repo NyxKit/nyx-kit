@@ -16,7 +16,7 @@ const props = withDefaults(defineProps<NyxButtonProps>(), {
 })
 
 const emit = defineEmits<NyxButtonEmits>()
-const { classList } = useNyxProps(props)
+const { classList } = useNyxProps(props, { origin: 'NyxButton', primitive: 'button' })
 const anchorTarget = computed(() => props.href && isCurrentDomain(props.href) ? '_self' : '_blank')
 
 </script>

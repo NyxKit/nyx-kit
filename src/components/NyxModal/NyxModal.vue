@@ -39,7 +39,7 @@ const confirm = () => {
   close()
 }
 
-const { classList } = useNyxProps(props)
+const { classList } = useNyxProps(props, { origin: 'NyxModal' })
 </script>
 
 <template>

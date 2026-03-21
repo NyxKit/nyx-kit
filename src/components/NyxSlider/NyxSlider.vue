@@ -123,7 +123,7 @@ const onKeyDown = (event: KeyboardEvent, index: number) => {
   updateValue(index, newValue)
 }
 
-const { classList } = useNyxProps(props)
+const { classList } = useNyxProps(props, { origin: 'NyxSlider' })
 </script>
 
 <template>

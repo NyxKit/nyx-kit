@@ -16,7 +16,7 @@ const props = withDefaults(defineProps<NyxProgressProps>(), {
 
 const model = defineModel<number|null>({ default: null })
 
-const { classList } = useNyxProps(props)
+const { classList } = useNyxProps(props, { origin: 'NyxProgress' })
 
 const progressWidth = computed(() => {
   if (model.value === null) return '100%'

@@ -1,28 +1,38 @@
 import { NyxLoader, NyxLog } from '@/classes'
-import type { NyxKitOptions } from '@/main'
+import type { NyxKitDefaults, NyxKitOptions, NyxKitPrimitive } from '@/main'
 import { NyxVariant, NyxSize, NyxTheme, type KeyDict } from '@/types'
 import { computed, inject } from 'vue'
 
 const propKeys = ['theme', 'size', 'shape', 'variant', 'gradient', 'backlight', 'position']
 
-const useNyxProps = (props: KeyDict<unknown>, origin: string = 'Nyx') => {
+const useNyxProps = (props: KeyDict<unknown>, args?: { origin?: string, primitive?: NyxKitPrimitive }) => {
   const libEnv = inject<NyxKitOptions>('libEnv') ?? {}
 
+  const getFallback = <T>(key: keyof NyxKitDefaults, absoluteFallback: T): T => {
+    const primitive = args?.primitive
+    const libPrimitiveFallback = primitive ? libEnv.defaults?.[primitive]?.[key] as T : undefined
+    if (libPrimitiveFallback !== undefined) return libPrimitiveFallback
+    return libEnv.defaults?.all?.[key] as T ?? absoluteFallback
+  }
+
   const nyxTheme = computed<NyxTheme>(() => {
-    return NyxLoader.loadEnum(props, 'theme', libEnv.defaults?.theme ?? NyxTheme.Primary, Object.values(NyxTheme))
+    const fallback = getFallback('theme', NyxTheme.Primary)
+    return NyxLoader.loadEnum(props, 'theme', fallback, Object.values(NyxTheme))
   })
 
   const nyxSize = computed<NyxSize>(() => {
-    return NyxLoader.loadEnum(props, 'size', libEnv.defaults?.size ?? NyxSize.Medium, Object.values(NyxSize))
+    const fallback = getFallback('size', NyxSize.Medium)
+    return NyxLoader.loadEnum(props, 'size', fallback, Object.values(NyxSize))
   })
 
   const nyxVariant = computed<NyxVariant>(() => {
-    return NyxLoader.loadEnum(props, 'variant', libEnv.defaults?.variant ?? NyxVariant.Soft, Object.values(NyxVariant))
+    const fallback = getFallback('variant', NyxVariant.Soft)
+    return NyxLoader.loadEnum(props, 'variant', fallback, Object.values(NyxVariant))
   })
 
   const gradient = computed(() => {
     if (props.gradient !== false && nyxVariant.value !== NyxVariant.Filled) {
-      NyxLog.error(origin, 'Gradients are only supported by NyxVariant.Filled')
+      NyxLog.error(args?.origin ?? 'Nyx', 'Gradients are only supported by NyxVariant.Filled')
       return nyxTheme.value
     }
     return props.gradient === true ? nyxTheme.value : props.gradient

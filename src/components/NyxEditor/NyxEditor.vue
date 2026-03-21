@@ -32,7 +32,7 @@ const emit = defineEmits<NyxEditorEmits>()
 const model = defineModel<string>({ default: '' })
 const sourceModel = defineModel<boolean>('source', { default: false })
 
-const { classList } = useNyxProps(props)
+const { classList } = useNyxProps(props, { origin: 'NyxEditor' })
 
 // ── Source textarea auto-resize ──────────────────────────────────────
 const sourceRef = ref<HTMLTextAreaElement | null>(null)
