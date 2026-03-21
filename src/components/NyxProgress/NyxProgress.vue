@@ -2,7 +2,7 @@
 import './NyxProgress.scss'
 import { computed } from 'vue'
 import type { NyxProgressProps } from './NyxProgress.types'
-import { NyxProgressVariant, NyxShape, NyxSize, NyxVariant, type CssVariablesDict } from '@/types'
+import { NyxProgressVariant, NyxShape, type CssVariablesDict } from '@/types'
 import useNyxProps from '@/composables/useNyxProps';
 import { clamp } from '@/utils';
 
@@ -11,7 +11,6 @@ const props = withDefaults(defineProps<NyxProgressProps>(), {
   max: 100,
   variant: NyxProgressVariant.Line,
   shape: NyxShape.Rectangle,
-  size: NyxSize.Small,
   gradient: false
 })
 

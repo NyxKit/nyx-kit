@@ -2,12 +2,11 @@
 import './NyxSlider.scss'
 import { ref, computed } from 'vue'
 import type { NyxSliderProps } from './NyxSlider.types'
-import { NyxShape, NyxTheme } from '@/types'
+import { NyxShape } from '@/types'
 import useNyxProps from '@/composables/useNyxProps'
 import { roundToStep } from '@/utils'
 
 const props = withDefaults(defineProps<NyxSliderProps>(), {
-  theme: NyxTheme.Default,
   shape: NyxShape.Circle,
   min: 0,
   max: 100,

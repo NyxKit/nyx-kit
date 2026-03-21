@@ -1,8 +1,14 @@
 import { type App } from 'vue'
 import { vClickOutside } from './directives'
+import type { NyxSize, NyxTheme, NyxVariant } from './types'
 
 export type NyxKitOptions = {
   pixel?: boolean
+  defaults?: {
+    theme?: NyxTheme
+    size?: NyxSize
+    variant?: NyxVariant
+  }
 }
 
 export const NyxKit = {

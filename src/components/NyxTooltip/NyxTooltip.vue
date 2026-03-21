@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import './NyxTooltip.scss'
 import { computed, defineProps, defineSlots, ref, useTemplateRef, type Slots, watch } from 'vue'
-import { NyxPosition, NyxTheme, NyxSize, NyxVariant } from '@/types'
+import { NyxPosition, NyxSize } from '@/types'
 import type { NyxTooltipProps } from './NyxTooltip.types'
 import { useTeleportPosition } from '@/composables'
 
 const props = withDefaults(defineProps<NyxTooltipProps>(), {
-  theme: NyxTheme.Default,
-  size: NyxSize.Medium,
-  variant: NyxVariant.Filled,
   position: NyxPosition.Top,
   disabled: false,
   trigger: 'hover',

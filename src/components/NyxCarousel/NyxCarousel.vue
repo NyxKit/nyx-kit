@@ -2,12 +2,11 @@
 import './NyxCarousel.scss'
 import { ref, computed, onUnmounted, watch, useSlots, type Slots } from 'vue'
 import type { NyxCarouselProps } from './NyxCarousel.types'
-import { NyxTheme, type CssVariablesDict } from '@/types'
+import { type CssVariablesDict } from '@/types'
 import NyxMedia from '../NyxMedia/NyxMedia.vue'
 import { useKeyboardShortcuts } from '@/composables'
 
 const props = withDefaults(defineProps<NyxCarouselProps<T>>(), {
-  theme: NyxTheme.Default,
   autoplay: true,
   interval: 3000,
   controls: true,
@@ -112,7 +111,7 @@ useKeyboardShortcuts({
 </script>
 
 <template>
-  <div class="nyx-carousel" :class="[`theme-${props.theme}`]">
+  <div class="nyx-carousel" :class="[props.theme && `theme-${props.theme}`]">
     <div
       class="nyx-carousel__container"
       :style="cssVars"

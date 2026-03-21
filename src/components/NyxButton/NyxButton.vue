@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import './NyxButton.scss'
-import { NyxSize, NyxVariant, NyxTheme, NyxShape } from '@/types'
+import { NyxShape } from '@/types'
 import type { NyxButtonProps, NyxButtonEmits } from './NyxButton.types'
 import { computed } from 'vue';
 import { isCurrentDomain } from '@/utils'
@@ -9,10 +9,7 @@ import useNyxProps from '@/composables/useNyxProps'
 const props = withDefaults(defineProps<NyxButtonProps>(), {
   type: 'button',
   disabled: false,
-  theme: NyxTheme.Default,
-  variant: NyxVariant.Filled,
   shape: NyxShape.Rectangle,
-  size: NyxSize.Medium,
   gradient: false,
   backlight: false,
   pixel: false

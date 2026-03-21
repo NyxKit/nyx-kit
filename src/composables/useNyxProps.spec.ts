@@ -46,12 +46,12 @@ describe('useNyxProps — classList', () => {
   })
 
   it('does not add pixel class when pixel is false', () => {
-    const { classList } = useSetup(() => useNyxProps({ theme: NyxTheme.Default, pixel: false }))
+    const { classList } = useSetup(() => useNyxProps({ pixel: false }))
     expect(classList.value).not.toContain('pixel')
   })
 
   it('skips keys with undefined values', () => {
-    const { classList } = useSetup(() => useNyxProps({ theme: NyxTheme.Default }))
+    const { classList } = useSetup(() => useNyxProps({ theme: undefined }))
     // size, variant, shape etc. should not appear
     expect(classList.value.some(c => c.startsWith('size-'))).toBe(false)
   })
@@ -117,7 +117,7 @@ describe('useNyxProps — backlight', () => {
 
   it('returns false when backlight is false', () => {
     const { backlight } = useSetup(() =>
-      useNyxProps({ theme: NyxTheme.Default, backlight: false })
+      useNyxProps({ backlight: false })
     )
     expect(backlight.value).toBe(false)
   })

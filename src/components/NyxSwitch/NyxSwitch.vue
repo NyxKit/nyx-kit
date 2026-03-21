@@ -3,13 +3,8 @@
 <script setup lang="ts">
 import './NyxSwitch.scss'
 import { type NyxSwitchProps } from './NyxSwitch.types'
-import { NyxSize, NyxVariant, NyxTheme } from '@/types'
 
-const props = withDefaults(defineProps<NyxSwitchProps>(), {
-  theme: NyxTheme.Success,
-  size: NyxSize.Medium,
-  variant: NyxVariant.Filled
-})
+const props = withDefaults(defineProps<NyxSwitchProps>(), {})
 
 const model = defineModel<boolean>({ default: false })
 
@@ -19,7 +14,9 @@ const model = defineModel<boolean>({ default: false })
   <div
     class="nyx-switch"
     :class="[
-      `theme-${props.theme}`, `variant-${props.variant}`, `size-${props.size}`,
+      props.theme && `theme-${props.theme}`,
+      props.variant && `variant-${props.variant}`,
+      props.size && `size-${props.size}`,
       { 'nyx-switch--on': model }
     ]"
     @click="model = !model"

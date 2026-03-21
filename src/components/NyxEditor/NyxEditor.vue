@@ -8,7 +8,7 @@ import TaskList from '@tiptap/extension-task-list'
 import TaskItem from '@tiptap/extension-task-item'
 import { Markdown, type MarkdownStorage } from 'tiptap-markdown'
 import type { NyxEditorProps, NyxEditorEmits } from './NyxEditor.types'
-import { NyxEditorMode, NyxEditorFormat, NyxTheme, NyxVariant, NyxSize, NyxEditorToolbar } from '@/types'
+import { NyxEditorMode, NyxEditorFormat, NyxEditorToolbar } from '@/types'
 import useNyxProps from '@/composables/useNyxProps'
 import NyxEditorBubbleMenu from './NyxEditorBubbleMenu/NyxEditorBubbleMenu.vue'
 import {
@@ -22,9 +22,6 @@ const props = withDefaults(defineProps<NyxEditorProps>(), {
   mode: NyxEditorMode.Zen,
   format: NyxEditorFormat.Markdown,
   toolbar: NyxEditorToolbar.Default,
-  theme: NyxTheme.Default,
-  variant: NyxVariant.Outline,
-  size: NyxSize.Medium,
   disabled: false,
   placeholder: '',
   hasSourceToggle: false,

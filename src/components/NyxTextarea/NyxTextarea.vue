@@ -2,14 +2,9 @@
 import './NyxTextarea.scss'
 import { computed } from 'vue'
 import type { NyxTextareaProps, NyxTextareaEmits } from './NyxTextarea.types'
-import { NyxTheme, NyxVariant, NyxSize } from '@/types'
 import { generateRandomString } from '@/utils/string'
 
-const props = withDefaults(defineProps<NyxTextareaProps>(), {
-  theme: NyxTheme.Default,
-  variant: NyxVariant.Outline,
-  size: NyxSize.Medium
-})
+const props = defineProps<NyxTextareaProps>()
 
 const emit = defineEmits<NyxTextareaEmits>()
 
@@ -22,7 +17,11 @@ const normalizedId = computed(() => props.id ?? `nyx-textarea-${generateRandomSt
 <template>
   <div
     class="nyx-textarea"
-    :class="[`theme-${props.theme}`, `variant-${props.variant}`, `size-${props.size}`]"
+    :class="[
+      props.theme && `theme-${props.theme}`,
+      props.variant && `variant-${props.variant}`,
+      props.size && `size-${props.size}`
+    ]"
   >
     <textarea
       :placeholder="props.placeholder"

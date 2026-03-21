@@ -1,15 +1,12 @@
 <script setup lang="ts">
 import './NyxCard.scss'
-import { NyxSize, NyxTheme, NyxVariant, type CssVariablesDict } from '@/types'
+import { type CssVariablesDict } from '@/types'
 import NyxMedia from '../NyxMedia/NyxMedia.vue'
 import type { NyxCardEmits, NyxCardProps } from './NyxCard.types'
 import useNyxProps from '@/composables/useNyxProps'
 import { computed, useSlots, type Slots } from 'vue'
 
 const props = withDefaults(defineProps<NyxCardProps>(), {
-  theme: NyxTheme.Default,
-  size: NyxSize.Medium,
-  variant: NyxVariant.Filled,
   textAlign: 'left',
   layout: 'media-first',
   blendMedia: false,

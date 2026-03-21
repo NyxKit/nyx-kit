@@ -3,14 +3,11 @@ import './NyxInput.scss'
 import { computed } from 'vue'
 import useNyxProps from '@/composables/useNyxProps'
 import type { NyxInputProps, NyxInputEmits } from './NyxInput.types'
-import { NyxInputType, NyxTheme, NyxVariant, NyxSize } from '@/types'
+import { NyxInputType } from '@/types'
 import { generateRandomString } from '@/utils/string'
 
 const props = withDefaults(defineProps<NyxInputProps>(), {
   type: NyxInputType.Text,
-  theme: NyxTheme.Default,
-  variant: NyxVariant.Outline,
-  size: NyxSize.Medium
 })
 
 const emit = defineEmits<NyxInputEmits>()

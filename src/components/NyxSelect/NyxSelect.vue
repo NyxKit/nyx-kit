@@ -1,15 +1,12 @@
 <script setup lang="ts">
 import { ref, computed, useTemplateRef, watch } from 'vue'
-import { NyxSelectType, NyxSize, NyxVariant, NyxTheme, type NyxSelectOption, type NyxSelectOptionGroup } from '@/types'
+import { NyxSelectType, type NyxSelectOption, type NyxSelectOptionGroup } from '@/types'
 import './NyxSelect.scss'
 import type { NyxSelectProps } from './NyxSelect.types'
 import { useTeleportPosition } from '@/composables'
 
 const props = withDefaults(defineProps<NyxSelectProps>(), {
   type: NyxSelectType.Single,
-  theme: NyxTheme.Default,
-  variant: NyxVariant.Outline,
-  size: NyxSize.Medium,
   multiple: false
 })
 

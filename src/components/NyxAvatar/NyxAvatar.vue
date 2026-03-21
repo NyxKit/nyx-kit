@@ -3,11 +3,10 @@ import './NyxAvatar.scss'
 import { computed } from 'vue'
 import NyxMedia from '../NyxMedia/NyxMedia.vue'
 import type { NyxAvatarProps } from './NyxAvatar.types'
-import { NyxMediaType, NyxShape, NyxSize } from '@/types'
+import { NyxMediaType, NyxShape } from '@/types'
 import useNyxProps from '@/composables/useNyxProps'
 
 const props = withDefaults(defineProps<NyxAvatarProps>(), {
-  size: NyxSize.Medium,
   shape: NyxShape.Circle,
   showName: false,
   pixel: false

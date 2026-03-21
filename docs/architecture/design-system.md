@@ -109,6 +109,27 @@ Pixel mode is only valid with `variant: Solid`. Components should guard against 
 
 These are intentionally minimal. Do not expand this file without discussion — component-scoped styles are preferred.
 
+## Consumer-Defined Defaults
+
+`NyxKitOptions.defaults` (set at plugin install time) lets a consuming project define the resolved values for `theme`, `size`, and `variant` when a component receives the `'default'` sentinel:
+
+```ts
+app.use(NyxKit, {
+  defaults: {
+    theme: 'primary',   // NyxTheme (excluding 'default')
+    size: 'md',         // NyxSize (excluding 'default')
+    variant: 'outline', // NyxVariant (excluding 'default')
+  }
+})
+```
+
+Resolution order (handled by `useNyxProps`):
+1. Explicit prop value (anything except `'default'`) — used as-is
+2. `NyxKitOptions.defaults.<prop>` — if set
+3. Absolute library fallback: `NyxTheme.Primary`, `NyxSize.Medium`, `NyxVariant.Filled`
+
+Components that do not use `useNyxProps` (e.g. `NyxSpinner`, `NyxSteps`, `NyxForm`) are not affected by this resolution chain.
+
 ## Theme Enum → CSS Class Mapping
 
 Components apply a CSS class derived from `NyxTheme`:

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import './NyxCheckbox.scss'
 import { computed } from 'vue'
-import { NyxSize, NyxTheme, NyxVariant } from '@/types'
 import type { NyxCheckboxProps } from './NyxCheckbox.types'
 import { generateRandomString } from '@/utils/string';
 import useNyxProps from '@/composables/useNyxProps';
@@ -9,8 +8,6 @@ import useNyxProps from '@/composables/useNyxProps';
 const props = withDefaults(defineProps<NyxCheckboxProps>(), {
   label: '',
   disabled: false,
-  size: NyxSize.Medium,
-  theme: NyxTheme.Default,
   pixel: false,
   checkmark: '✔'
 })

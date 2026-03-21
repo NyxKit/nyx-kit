@@ -10,12 +10,6 @@ const options = Object.values(NyxTheme).map((theme) => ({ label: theme, value: t
 
 const groupedOptions = [
   {
-    label: 'Neutral',
-    options: [
-      { label: 'Default', value: NyxTheme.Default },
-    ]
-  },
-  {
     label: 'Brand',
     options: [
       { label: 'Primary', value: NyxTheme.Primary },

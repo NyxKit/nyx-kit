@@ -7,7 +7,6 @@ import { type CssVariablesDict, NyxShape, NyxSize, NyxTheme } from '@/types'
 import { NyxLog } from '@/classes'
 
 const props = withDefaults(defineProps<NyxStepsProps>(), {
-  theme: NyxTheme.Default,
   shape: NyxShape.Circle,
   size: NyxSize.Medium,
   readonly: true,
@@ -36,7 +35,7 @@ const getStepStatus = (index: number): string => {
   return 'current'
 }
 
-const getButtonTheme = (index: number): NyxTheme => {
+const getButtonTheme = (index: number): NyxTheme | undefined => {
   if (index < currentStep.value) return props.themeComplete ?? props.theme
   if (index > currentStep.value) return props.themeIncomplete ?? props.theme
   return props.theme
@@ -60,7 +59,7 @@ const onClick = (index: number) => {
   <div
     class="nyx-steps"
     :class="[
-      `theme-${props.theme}`,
+      props.theme && `theme-${props.theme}`,
       `size-${props.size}`,
       props.themeComplete && `theme-complete-${props.themeComplete}`,
       props.themeIncomplete && `theme-incomplete-${props.themeIncomplete}`,

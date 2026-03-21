@@ -9,8 +9,8 @@ Every visual component accepts a consistent set of props defined by `NyxComponen
 | Prop | Type | Default | Purpose |
 |---|---|---|---|
 | `theme` | `NyxTheme` | `Default` | Colour theme |
-| `size` | `NyxSize` | `Medium` | Size scale |
-| `variant` | `NyxVariant` | `Solid` | Fill style |
+| `size` | `NyxSize` | `Default` | Size scale |
+| `variant` | `NyxVariant` | `Default` | Fill style |
 | `shape` | `NyxShape` | `Rectangle` | Border-radius preset |
 | `pixel` | `boolean` | `false` | Pixel-art mode |
 
@@ -27,7 +27,11 @@ Not every component exposes all five — only declare the props that are meaning
 
 All visual props must be processed through `useNyxProps`. It:
 
-- Injects `libEnv` (global `NyxKitOptions`) to read the library-level `pixel` default
+- Injects `libEnv` (global `NyxKitOptions`) to read library-level defaults
+- Resolves `theme`, `size`, and `variant` through a three-step chain:
+  1. If the prop is not `'default'`, use it as-is
+  2. Else if `NyxKitOptions.defaults.<prop>` is set, use that
+  3. Else fall back to the absolute default (`NyxTheme.Primary`, `NyxSize.Medium`, `NyxVariant.Filled`)
 - Computes `classList` — the reactive array of CSS classes to spread onto the root element
 - Computes `gradient` and `backlight` as CSS variable bindings
 

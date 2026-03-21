@@ -1,6 +1,6 @@
 <script setup lang="ts" generic="T extends Object">
 import './NyxTable.scss'
-import { type CssVariablesDict, NyxSize, NyxTheme, NyxVariant } from '@/types'
+import { type CssVariablesDict } from '@/types'
 import { computed, useSlots, type Slots } from 'vue'
 import { isObject } from '@/utils'
 import type { NyxTableProps } from './NyxTable.types'
@@ -10,9 +10,6 @@ const slots: Slots = useSlots()
 
 const props = withDefaults(defineProps<NyxTableProps<T>>(), {
   disabled: false,
-  theme: NyxTheme.Default,
-  size: NyxSize.Medium,
-  variant: NyxVariant.Outline,
   header: true,
   striped: false,
   colWhitelist: () => [],
@@ -64,9 +61,9 @@ const style = computed<CssVariablesDict>(() => {
   <table
     class="nyx-table"
     :class="[
-      `size-${props.size}`,
-      `theme-${props.theme}`,
-      `variant-${props.variant}`,
+      props.size && `size-${props.size}`,
+      props.theme && `theme-${props.theme}`,
+      props.variant && `variant-${props.variant}`,
       { 'striped': striped },
       { 'sticky': props.header === 'sticky' }
     ]"

@@ -30,9 +30,9 @@ NyxEditor provides an opinionated but flexible rich-text editing experience. It 
 |---|---|---|---|
 | `mode` | `NyxEditorMode` | `NyxEditorMode.Zen` | UI mode: `zen` (bubble menu) or `toolbar` (top bar) |
 | `format` | `NyxEditorFormat` | `NyxEditorFormat.Markdown` | Output format: `markdown` or `html` |
-| `theme` | `NyxTheme` | `NyxTheme.Default` | Colour theme |
-| `size` | `NyxSize` | `NyxSize.Medium` | Size scale |
-| `variant` | `NyxVariant` | `NyxVariant.Outline` | Fill style |
+| `theme` | `NyxTheme` | resolved via `NyxKitOptions.defaults` | Colour theme |
+| `size` | `NyxSize` | resolved via `NyxKitOptions.defaults` | Size scale |
+| `variant` | `NyxVariant` | resolved via `NyxKitOptions.defaults` | Fill style |
 | `pixel` | `boolean` | `false` | Pixel-art mode |
 | `disabled` | `boolean` | `false` | Makes the editor read-only |
 | `placeholder` | `string` | `''` | Placeholder shown when editor is empty |

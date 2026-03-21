@@ -9,7 +9,6 @@ export interface NyxComponentProps {
 }
 
 export enum NyxTheme {
-  Default = 'default',
   Primary = 'primary',
   Secondary = 'secondary',
   Success = 'success',
