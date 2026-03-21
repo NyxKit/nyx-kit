@@ -35,7 +35,7 @@ const onClick = () => emit('click')
     class="nyx-card"
     :class="[
       ...classList,
-      effectiveLayout.value,
+      effectiveLayout,
       props.blendMedia && 'blend-media'
     ]"
     :style="cssVars"
