@@ -1,4 +1,4 @@
-import { fileURLToPath, URL, resolve } from 'node:url'
+import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
@@ -31,7 +31,7 @@ export default defineConfig({
     },
     outDir: 'dist',
     emptyOutDir: true,
-    rollupOptions: {
+    rolldownOptions: {
       output: [
         {
           format: 'es',
