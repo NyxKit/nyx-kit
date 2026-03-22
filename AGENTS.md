@@ -107,8 +107,10 @@ docs/
 
 ### For new components
 
+> **Prefer spec-kit for new components.** Run `/speckit.specify` → `/speckit.plan` → `/speckit.tasks` → `/speckit.implement` to go from a description to an implementation plan with a full task list. Then follow the steps below.
+
 1. Check `README.md` and `docs/architecture/component-model.md` for the intended API and conventions.
-2. Create `docs/specs/components/Nyx<Name>.spec.md` — see **Component Spec Files** below.
+2. Create `docs/specs/components/Nyx<Name>.spec.md` — see **Component Spec Files** below. (This is also the output of `/speckit.specify` — keep both in sync.)
 3. Create a folder under `src/components/Nyx<Name>/` with the component file, an `index.ts` re-export, and a `.stories.ts` file.
 4. Register the export in `src/components/index.ts` and `src/index.ts`.
 5. Add unit tests (`.spec.ts`) for non-trivial logic.

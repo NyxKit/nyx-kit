@@ -19,3 +19,25 @@ Do not rewrite a file to clean it up unless that is the explicit request. Reform
 
 **Ask before introducing dependencies.**
 Do not add a new Rust crate, npm package, or external service without flagging it first. State what it is, why it is needed, and whether there is a lighter alternative already in scope.
+
+---
+
+## Spec-Driven Development (spec-kit)
+
+This project uses [GitHub spec-kit](https://github.com/github/spec-kit) for spec-driven development. Slash commands are available at `.claude/commands/speckit.*.md`.
+
+**Workflow for new features:**
+
+1. `/speckit.specify` — turn a feature description into a structured spec
+2. `/speckit.clarify` *(optional)* — de-risk ambiguous areas before planning
+3. `/speckit.plan` — generate a technical implementation plan
+4. `/speckit.checklist` *(optional)* — validate spec completeness
+5. `/speckit.tasks` — derive an ordered task list from the plan
+6. `/speckit.analyze` *(optional)* — cross-artifact consistency check
+7. `/speckit.implement` — execute all tasks
+
+Spec artifacts live in `.specify/<feature-branch>/` (spec.md, plan.md, tasks.md).
+
+**Nyx Kit specific rule:** every `/speckit.specify` run must also produce or update the corresponding `docs/specs/<layer>/<Symbol>.spec.md` file. The spec-kit artifact and the docs spec are complementary — keep both in sync.
+
+The project constitution is at `.specify/memory/constitution.md`.
