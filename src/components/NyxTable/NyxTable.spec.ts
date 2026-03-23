@@ -47,17 +47,17 @@ describe('NyxTable', () => {
     expect(wrapper.find('.nyx-table').classes()).toContain('striped')
   })
 
-  it('respects colWhitelist to limit visible columns', () => {
+  it('respects colInclude to limit visible columns', () => {
     const wrapper = mount(NyxTable, {
-      props: { modelValue: rows, colWhitelist: ['name', 'role'] as any }
+      props: { modelValue: rows, colInclude: ['name', 'role'] as any }
     })
     const headers = wrapper.findAll('th')
     expect(headers.map(h => h.text())).toEqual(['name', 'role'])
   })
 
-  it('respects colBlacklist to exclude columns', () => {
+  it('respects colExclude to exclude columns', () => {
     const wrapper = mount(NyxTable, {
-      props: { modelValue: rows, colBlacklist: ['age'] as any }
+      props: { modelValue: rows, colExclude: ['age'] as any }
     })
     const headers = wrapper.findAll('th')
     expect(headers.map(h => h.text())).not.toContain('age')

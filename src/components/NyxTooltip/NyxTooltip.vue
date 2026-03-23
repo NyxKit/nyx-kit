@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import './NyxTooltip.scss'
-import { computed, defineProps, defineSlots, ref, useId, useTemplateRef, type Slots, watch } from 'vue'
+import { defineExpose, defineSlots, ref, useId, useTemplateRef, type Slots } from 'vue'
 import { NyxPosition, NyxSize } from '@/types'
 import type { NyxTooltipProps } from './NyxTooltip.types'
 import { useTeleportPosition, useNyxProps } from '@/composables'
@@ -8,8 +8,7 @@ import { useTeleportPosition, useNyxProps } from '@/composables'
 const props = withDefaults(defineProps<NyxTooltipProps>(), {
   position: NyxPosition.Top,
   disabled: false,
-  trigger: 'hover',
-  forceUpdate: false
+  trigger: 'hover'
 })
 
 const model = defineModel<boolean>({ default: false })
@@ -37,9 +36,7 @@ const onClickOutside = () => props.trigger !== 'manual' && close()
 
 const tooltipId = useId()
 
-const forceUpdate = computed(() => props.forceUpdate)
-watch(forceUpdate, () => updateCssVariables())
-
+defineExpose({ updatePosition: updateCssVariables })
 </script>
 
 <template>

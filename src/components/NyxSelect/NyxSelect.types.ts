@@ -1,7 +1,6 @@
-import type { NyxSize, NyxVariant, NyxTheme, NyxSelectOption, NyxSelectType, NyxSelectOptionGroup } from '@/types'
+import type { NyxSize, NyxVariant, NyxTheme, NyxSelectOption, NyxSelectOptionGroup } from '@/types'
 
 export interface NyxSelectProps {
-  type?: NyxSelectType
   theme?: NyxTheme,
   variant?: NyxVariant
   size?: NyxSize,

@@ -11,6 +11,6 @@ export interface NyxTableProps<T> {
   gridTemplateColumns?: string,
   header?: 'sticky'|boolean,
   striped?: boolean,
-  colWhitelist?: (keyof T)[],
-  colBlacklist?: (keyof T)[]
+  colInclude?: (keyof T)[],
+  colExclude?: (keyof T)[]
 }

@@ -13,8 +13,8 @@ const props = withDefaults(defineProps<NyxTableProps<T>>(), {
   disabled: false,
   header: true,
   striped: false,
-  colWhitelist: () => [],
-  colBlacklist: () => []
+  colInclude: () => [],
+  colExclude: () => []
 })
 
 const model = defineModel<T[]>({ default: [] })
@@ -24,8 +24,8 @@ const columnTitles = computed(() => {
   if (model.value.length === 0) return []
   const item = model.value[0]
   if (!isObject(item)) return []
-  const whitelist = props.colWhitelist.length > 0 ? props.colWhitelist : Object.keys(item) as (keyof T)[]
-  return whitelist.filter((col: keyof T) => !props.colBlacklist.includes(col))
+  const include = props.colInclude.length > 0 ? props.colInclude : Object.keys(item) as (keyof T)[]
+  return include.filter((col: keyof T) => !props.colExclude.includes(col))
 })
 
 const numColumns = computed(() => {
@@ -36,8 +36,8 @@ const numColumns = computed(() => {
 })
 
 const data = computed(() => {
-  const whitelist = props.colWhitelist.length > 0 ? props.colWhitelist : Object.keys(model.value[0] ?? {}) as (keyof T)[]
-  const keys = whitelist.filter((col: keyof T) => !props.colBlacklist.includes(col))
+  const include = props.colInclude.length > 0 ? props.colInclude : Object.keys(model.value[0] ?? {}) as (keyof T)[]
+  const keys = include.filter((col: keyof T) => !props.colExclude.includes(col))
   return model.value.map((item) => {
     const data: Partial<T> = {}
     for (const key of keys) {
