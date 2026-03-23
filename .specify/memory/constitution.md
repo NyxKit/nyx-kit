@@ -17,6 +17,13 @@ Nyx Kit is a published npm library. Props, emits, slots, exported types, entry p
 ### IV-a. Opinionated Global Stylesheet (Non-Negotiable)
 `nyx-kit/style.css` intentionally ships a full CSS reset (Meyerweb v2.0) and global base styles (`body` font, colour, background). Consumers build on top of Nyx Kit's baseline — they are not expected to bring their own reset. **Do not recommend separating, scoping, or making the reset opt-in.** This is a deliberate design decision, not a defect.
 
+### IV-b. Dark-First Colour System (Non-Negotiable)
+Nyx Kit targets dark-first applications. `src/styles/variables.css` maps all semantic colour tokens to dark palette values unconditionally in `:root` — this default does not change. There is no `prefers-color-scheme` media query response.
+
+Since branch `004-colour-mode-system`, the library ships a first-class opt-in colour mode system: `NyxColourMode` enum, `useNyxColourMode()` composable, and a `html[data-nyx-mode="light"]` CSS override block. The active mode is applied as a `data-nyx-mode` attribute on `<html>`. Dark is always the default and requires no attribute. This is intentional and governed — do not remove it or flag it as a violation.
+
+Do not add `prefers-color-scheme` automation. Do not change the `:root` default token values. Consumers who do not opt into `NyxColourMode` see no change in behaviour.
+
 ### V. Test-First for Non-Trivial Logic
 Unit tests (Vitest) are written for non-trivial component logic and utilities. E2E tests (Playwright) cover interactive behaviour. Stories (Storybook) are the API contract for components — a story that no longer compiles is a failing test.
 

@@ -2,6 +2,78 @@
 
 All design tokens are CSS custom properties defined in `src/styles/variables.css`. Components must never hard-code colours, spacing, font sizes, or animation speeds — always reference a token.
 
+## Colour Mode
+
+**Nyx Kit is dark-first by default.** The `:root` semantic tokens always resolve to dark palette values. There is no `prefers-color-scheme` media query and no class toggle shipped by default.
+
+### NyxColourMode — first-class theming
+
+Since v0.x, Nyx Kit ships a three-value enum and a composable for runtime mode switching:
+
+```ts
+import { NyxColourMode, useNyxColourMode } from 'nyx-kit/composables'
+
+const { mode, setting, isDark, isLight, setMode } = useNyxColourMode()
+setMode(NyxColourMode.Light)   // apply light theme
+setMode(NyxColourMode.Adaptive) // follow local clock (light 06:00–20:00, dark otherwise)
+```
+
+| Mode | Behaviour |
+|------|-----------|
+| `NyxColourMode.Dark` | Always dark (default) |
+| `NyxColourMode.Light` | Always light |
+| `NyxColourMode.Adaptive` | Clock-driven: light during day, dark at night |
+
+The active mode is applied as `data-nyx-mode` on `<html>` and persisted to `localStorage` under the key `nyx-colour-mode`.
+
+### Setting the initial mode via plugin
+
+```ts
+import { NyxKit, NyxColourMode } from 'nyx-kit'
+
+app.use(NyxKit, {
+  colourMode: {
+    mode: NyxColourMode.Adaptive,
+    adaptiveDayStart: 7,   // optional, default 6
+    adaptiveDayEnd:   21,  // optional, default 20
+  }
+})
+```
+
+### CSS override mechanism
+
+`src/styles/variables.css` contains a `html[data-nyx-mode="light"]` block that re-maps the semantic tokens to light palette values. The full token list:
+
+| Token | Light value |
+|-------|-------------|
+| `--nyx-c-bg` | `var(--nyx-c-white)` |
+| `--nyx-c-bg-soft` | `var(--nyx-c-white-soft)` |
+| `--nyx-c-bg-mute` | `var(--nyx-c-white-mute)` |
+| `--nyx-c-divider` | `var(--nyx-c-divider-light-1)` |
+| `--nyx-c-divider-light` | `var(--nyx-c-divider-light-2)` |
+| `--nyx-c-divider-inverse` | `var(--nyx-c-divider-dark-1)` |
+| `--nyx-c-divider-inverse-light` | `var(--nyx-c-divider-dark-2)` |
+| `--nyx-c-text-1` | `var(--nyx-c-text-light-1)` |
+| `--nyx-c-text-2` | `var(--nyx-c-text-light-2)` |
+| `--nyx-c-text-3` | `var(--nyx-c-text-light-3)` |
+| `--nyx-c-text-4` | `var(--nyx-c-text-light-4)` |
+| `--nyx-c-text-inverse-1` | `var(--nyx-c-text-dark-1)` |
+| `--nyx-c-text-inverse-2` | `var(--nyx-c-text-dark-2)` |
+| `--nyx-c-text-inverse-3` | `var(--nyx-c-text-dark-3)` |
+| `--nyx-c-text-inverse-4` | `var(--nyx-c-text-dark-4)` |
+
+Consumers may also set the attribute directly (e.g. from a server-rendered page) without using the composable:
+
+```js
+document.documentElement.setAttribute('data-nyx-mode', 'light')
+```
+
+### SVG colour inheritance
+
+`base.css` sets `svg { fill: currentColor }`. This means all SVGs inherit the active text colour (`--nyx-c-text-1`) by default, so icon colours automatically follow the colour mode. Any explicit `fill` on a child `<path>` or `<circle>` still wins — no `!important` needed.
+
+> **Design decision:** the dark-first default is intentional. Nyx Kit targets dark-first applications. The `:root` block will not change without a major version bump.
+
 ## Colour System
 
 ### Text

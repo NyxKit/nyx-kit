@@ -22,7 +22,8 @@
  /* https://colormagic.app/palette/67a9eedf079f8ec4becb2836 */
 
  :root {
-  --nyx-c-white: #ffffff;
+  --nyx-c-white: #f5f5f5;
+  --nyx-c-white-pure: #ffffff;
   --nyx-c-white-soft: #f9f9f9;
   --nyx-c-white-mute: #f1f1f1;
 
@@ -116,6 +117,17 @@
 
 /**
  * Colors Theme
+ *
+ * Dark-first by design. These semantic tokens always resolve to dark values.
+ * There is no built-in light mode or prefers-color-scheme response.
+ *
+ * To override: re-declare the tokens below in your own stylesheet, scoped to
+ * a class, data attribute, or media query of your choice. The base palette
+ * variables (--nyx-c-white-*, --nyx-c-text-light-*, etc.) defined above are
+ * always available as building blocks.
+ *
+ * See docs/architecture/design-system.md § Colour Mode for the full override
+ * token list and examples.
  * -------------------------------------------------------------------------- */
 
 :root {
@@ -341,6 +353,36 @@
     calc(0px - var(--nyx-pixel-size)) var(--nyx-pixel-size) var(--nyx-pixel-c-highlight),
     calc(0px - var(--nyx-pixel-size)) calc(0px - var(--nyx-pixel-size)) var(--nyx-pixel-c-highlight),
     calc(var(--nyx-pixel-size)) var(--nyx-pixel-size) var(--nyx-pixel-c-highlight);
+}
+
+/**
+ * Colour Mode — Light Override
+ *
+ * Applied by useNyxColourMode() (or manually) via:
+ *   document.documentElement.setAttribute('data-nyx-mode', 'light')
+ *
+ * Dark mode is the :root default — no override block required.
+ * -------------------------------------------------------------------------- */
+
+html[data-nyx-mode="light"] {
+  --nyx-c-bg:                    var(--nyx-c-white);
+  --nyx-c-bg-soft:               var(--nyx-c-white-soft);
+  --nyx-c-bg-mute:               var(--nyx-c-white-mute);
+
+  --nyx-c-divider:               var(--nyx-c-divider-light-1);
+  --nyx-c-divider-light:         var(--nyx-c-divider-light-2);
+  --nyx-c-divider-inverse:       var(--nyx-c-divider-dark-1);
+  --nyx-c-divider-inverse-light: var(--nyx-c-divider-dark-2);
+
+  --nyx-c-text-1:                var(--nyx-c-text-light-1);
+  --nyx-c-text-2:                var(--nyx-c-text-light-2);
+  --nyx-c-text-3:                var(--nyx-c-text-light-3);
+  --nyx-c-text-4:                var(--nyx-c-text-light-4);
+
+  --nyx-c-text-inverse-1:        var(--nyx-c-text-dark-1);
+  --nyx-c-text-inverse-2:        var(--nyx-c-text-dark-2);
+  --nyx-c-text-inverse-3:        var(--nyx-c-text-dark-3);
+  --nyx-c-text-inverse-4:        var(--nyx-c-text-dark-4);
 }
 
 /**
