@@ -1,3 +1,4 @@
+// internal — used by NyxEditor's bubble menu; not part of the public composables API
 import { type DefineComponent, type Ref } from 'vue'
 import useTeleportPositionBase, { type TeleportPositionOptions } from './useTeleportPositionBase'
 

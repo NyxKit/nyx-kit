@@ -55,14 +55,18 @@ const useKeyboardShortcuts = (
     keyHistory.delete(getNormalizedKeyName(event.key))
   }
 
+  const blurHandler = () => keyHistory.clear()
+
   onMounted(() => {
     getTarget().addEventListener('keydown', keydownHandler as EventListener)
     getTarget().addEventListener('keyup', keyupHandler as EventListener)
+    window.addEventListener('blur', blurHandler)
   })
 
   onUnmounted(() => {
     getTarget().removeEventListener('keydown', keydownHandler as EventListener)
     getTarget().removeEventListener('keyup', keyupHandler as EventListener)
+    window.removeEventListener('blur', blurHandler)
   })
 }
 
