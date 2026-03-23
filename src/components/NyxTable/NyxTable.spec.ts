@@ -1,0 +1,75 @@
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { mount } from '@vue/test-utils'
+import NyxTable from './NyxTable.vue'
+
+beforeEach(() => {
+  vi.spyOn(console, 'warn').mockImplementation(() => {})
+})
+
+const rows = [
+  { name: 'Alice', age: 30, role: 'Admin' },
+  { name: 'Bob',   age: 25, role: 'User'  },
+  { name: 'Carol', age: 35, role: 'Editor'},
+]
+
+describe('NyxTable', () => {
+  it('renders without errors', () => {
+    const wrapper = mount(NyxTable, { props: { modelValue: rows } })
+    expect(wrapper.find('.nyx-table').exists()).toBe(true)
+  })
+
+  it('renders a row for each data item', () => {
+    const wrapper = mount(NyxTable, { props: { modelValue: rows } })
+    expect(wrapper.findAll('tbody tr').length).toBe(3)
+  })
+
+  it('renders header columns derived from object keys', () => {
+    const wrapper = mount(NyxTable, { props: { modelValue: rows } })
+    const headers = wrapper.findAll('th')
+    expect(headers.map(h => h.text())).toEqual(['name', 'age', 'role'])
+  })
+
+  it('renders custom columnTitles when provided', () => {
+    const wrapper = mount(NyxTable, {
+      props: { modelValue: rows, columnTitles: ['Name', 'Age', 'Role'] }
+    })
+    const headers = wrapper.findAll('th')
+    expect(headers.map(h => h.text())).toEqual(['Name', 'Age', 'Role'])
+  })
+
+  it('hides header when header=false', () => {
+    const wrapper = mount(NyxTable, { props: { modelValue: rows, header: false } })
+    expect(wrapper.find('thead').exists()).toBe(false)
+  })
+
+  it('applies striped class when striped=true', () => {
+    const wrapper = mount(NyxTable, { props: { modelValue: rows, striped: true } })
+    expect(wrapper.find('.nyx-table').classes()).toContain('striped')
+  })
+
+  it('respects colWhitelist to limit visible columns', () => {
+    const wrapper = mount(NyxTable, {
+      props: { modelValue: rows, colWhitelist: ['name', 'role'] }
+    })
+    const headers = wrapper.findAll('th')
+    expect(headers.map(h => h.text())).toEqual(['name', 'role'])
+  })
+
+  it('respects colBlacklist to exclude columns', () => {
+    const wrapper = mount(NyxTable, {
+      props: { modelValue: rows, colBlacklist: ['age'] }
+    })
+    const headers = wrapper.findAll('th')
+    expect(headers.map(h => h.text())).not.toContain('age')
+  })
+
+  it('renders empty tbody when modelValue is empty', () => {
+    const wrapper = mount(NyxTable, { props: { modelValue: [] } })
+    expect(wrapper.findAll('tbody tr').length).toBe(0)
+  })
+
+  it('renders as a <table> element', () => {
+    const wrapper = mount(NyxTable, { props: { modelValue: rows } })
+    expect(wrapper.element.tagName).toBe('TABLE')
+  })
+})

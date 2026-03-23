@@ -103,4 +103,35 @@ describe('NyxTooltip', () => {
     })
     expect(document.body.querySelector('.custom-tip')).not.toBeNull()
   })
+
+  it('wrapper has aria-describedby pointing to tooltip content', () => {
+    wrapper = mount(NyxTooltip, {
+      attachTo: document.body,
+      props: { text: 'Info' },
+      global: globalConfig
+    })
+    const describedById = wrapper.find('.nyx-tooltip').attributes('aria-describedby')
+    expect(describedById).toBeTruthy()
+  })
+
+  it('tooltip content element has role="tooltip"', () => {
+    wrapper = mount(NyxTooltip, {
+      attachTo: document.body,
+      props: { text: 'Info', modelValue: true },
+      global: globalConfig
+    })
+    const tooltipEl = document.body.querySelector('[role="tooltip"]')
+    expect(tooltipEl).not.toBeNull()
+  })
+
+  it('aria-describedby on wrapper matches id on tooltip content', () => {
+    wrapper = mount(NyxTooltip, {
+      attachTo: document.body,
+      props: { text: 'Info', modelValue: true },
+      global: globalConfig
+    })
+    const describedById = wrapper.find('.nyx-tooltip').attributes('aria-describedby')
+    const tooltipEl = document.body.querySelector('[role="tooltip"]')
+    expect(tooltipEl?.getAttribute('id')).toBe(describedById)
+  })
 })

@@ -129,4 +129,68 @@ describe('NyxSelect', () => {
     })
     expect(wrapper.find('select.sr-only').exists()).toBe(true)
   })
+
+  it('input has role="combobox"', () => {
+    wrapper = mount(NyxSelect, {
+      attachTo: document.body,
+      props: { options: sampleOptions },
+      global: globalConfig
+    })
+    expect(wrapper.find('[role="combobox"]').exists()).toBe(true)
+  })
+
+  it('combobox input has aria-expanded=false when closed', () => {
+    wrapper = mount(NyxSelect, {
+      attachTo: document.body,
+      props: { options: sampleOptions },
+      global: globalConfig
+    })
+    expect(wrapper.find('[role="combobox"]').attributes('aria-expanded')).toBe('false')
+  })
+
+  it('combobox input has aria-expanded=true when open', async () => {
+    wrapper = mount(NyxSelect, {
+      attachTo: document.body,
+      props: { options: sampleOptions },
+      global: globalConfig
+    })
+    await wrapper.find('.nyx-select__control').trigger('click')
+    expect(wrapper.find('[role="combobox"]').attributes('aria-expanded')).toBe('true')
+  })
+
+  it('dropdown has role="listbox"', async () => {
+    wrapper = mount(NyxSelect, {
+      attachTo: document.body,
+      props: { options: sampleOptions },
+      global: globalConfig
+    })
+    await wrapper.find('.nyx-select__control').trigger('click')
+    await nextTick()
+    expect(document.body.querySelector('[role="listbox"]')).not.toBeNull()
+  })
+
+  it('options have role="option"', async () => {
+    wrapper = mount(NyxSelect, {
+      attachTo: document.body,
+      props: { options: sampleOptions },
+      global: globalConfig
+    })
+    await wrapper.find('.nyx-select__control').trigger('click')
+    await nextTick()
+    const optionEls = document.body.querySelectorAll('[role="option"]')
+    expect(optionEls.length).toBe(3)
+  })
+
+  it('selected option has aria-selected=true', async () => {
+    wrapper = mount(NyxSelect, {
+      attachTo: document.body,
+      props: { options: sampleOptions, modelValue: 'b' },
+      global: globalConfig
+    })
+    await wrapper.find('.nyx-select__control').trigger('click')
+    await nextTick()
+    const optionEls = document.body.querySelectorAll('[role="option"]')
+    expect(optionEls[1].getAttribute('aria-selected')).toBe('true')
+    expect(optionEls[0].getAttribute('aria-selected')).toBe('false')
+  })
 })
