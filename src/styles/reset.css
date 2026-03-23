@@ -1,39 +1,48 @@
-/* Nyx Kit scoped reset
-   Resets browser defaults only within elements that carry a nyx-* class,
-   leaving all consumer styles outside of nyx-* components untouched.
-   Uses :where() for zero specificity — consumer overrides always win.
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
 */
 
-:where([class*="nyx-"]),
-:where([class*="nyx-"]) * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font-size: 100%;
-  font: inherit;
-  vertical-align: baseline;
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
 }
-
-:where([class*="nyx-"]) ul,
-:where([class*="nyx-"]) ol {
-  list-style: none;
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
 }
-
-:where([class*="nyx-"]) table {
-  border-collapse: collapse;
-  border-spacing: 0;
+body {
+	line-height: 1;
 }
-
-:where([class*="nyx-"]) blockquote,
-:where([class*="nyx-"]) q {
-  quotes: none;
+ol, ul {
+	list-style: none;
 }
-
-:where([class*="nyx-"]) blockquote::before,
-:where([class*="nyx-"]) blockquote::after,
-:where([class*="nyx-"]) q::before,
-:where([class*="nyx-"]) q::after {
-  content: '';
-  content: none;
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
 }
