@@ -60,9 +60,9 @@ describe('NyxProgress', () => {
     expect(wrapper.find('.nyx-progress__bar').exists()).toBe(false)
   })
 
-  it('applies variant-- double-dash class', () => {
+  it('applies variant class via useNyxProps', () => {
     const wrapper = mount(NyxProgress, { props: { variant: NyxProgressVariant.Line } })
-    expect(wrapper.find('.nyx-progress').classes()).toContain('variant--line')
+    expect(wrapper.find('.nyx-progress').classes()).toContain('variant-line')
   })
 
   it('shows label when showValue is provided and modelValue is not null', () => {

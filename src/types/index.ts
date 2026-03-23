@@ -1,4 +1,5 @@
 export * from './common'
+export * from './plugin'
 export * from './editor'
 export * from './input'
 export * from './number'

@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { getKeyDictKeyByValue, isObject } from './keydict'
+import { getKeyDictKeyByValue } from './keydict'
+import { isObject } from './object'
 
 describe('getKeyDictKeyByValue', () => {
   it('returns the key for a matching value', () => {

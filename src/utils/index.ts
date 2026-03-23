@@ -1,4 +1,6 @@
 export * from './keydict'
+export * from './object'
+export { default as NyxLoader } from './NyxLoader'
 export * from './number'
 export * from './string'
 export * from './url'

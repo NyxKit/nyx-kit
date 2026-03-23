@@ -38,7 +38,7 @@ const getDotCssVars = (i: number): CssVariablesDict => {
 <template>
   <div
     class="nyx-progress"
-    :class="[...classList, `variant--${props.variant}`]"
+    :class="[...classList, `variant-${props.variant}`]"
     :style="cssVars"
     role="progressbar"
     :aria-valuenow="model !== null ? model : undefined"
