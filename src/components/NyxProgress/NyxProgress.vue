@@ -40,6 +40,10 @@ const getDotCssVars = (i: number): CssVariablesDict => {
     class="nyx-progress"
     :class="[...classList, `variant--${props.variant}`]"
     :style="cssVars"
+    role="progressbar"
+    :aria-valuenow="model !== null ? model : undefined"
+    :aria-valuemin="props.min"
+    :aria-valuemax="props.max"
   >
     <template v-if="props.variant === NyxProgressVariant.Dots">
       <div

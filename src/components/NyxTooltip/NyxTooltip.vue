@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import './NyxTooltip.scss'
-import { computed, defineProps, defineSlots, ref, useTemplateRef, type Slots, watch } from 'vue'
+import { computed, defineProps, defineSlots, ref, useId, useTemplateRef, type Slots, watch } from 'vue'
 import { NyxPosition, NyxSize } from '@/types'
 import type { NyxTooltipProps } from './NyxTooltip.types'
 import { useTeleportPosition, useNyxProps } from '@/composables'
@@ -35,6 +35,8 @@ const onMouseLeave = () => props.trigger !== 'manual' && close()
 const onClick = () => props.trigger === 'click' && open()
 const onClickOutside = () => props.trigger !== 'manual' && close()
 
+const tooltipId = useId()
+
 const forceUpdate = computed(() => props.forceUpdate)
 watch(forceUpdate, () => updateCssVariables())
 
@@ -44,6 +46,7 @@ watch(forceUpdate, () => updateCssVariables())
   <div
     class="nyx-tooltip"
     ref="elTooltip"
+    :aria-describedby="tooltipId"
     @mouseover="onMouseOver"
     @mouseleave="onMouseLeave"
     @click="onClick"
@@ -57,6 +60,8 @@ watch(forceUpdate, () => updateCssVariables())
         :data-position="computedPosition"
         :style="cssVariables"
         ref="elTooltipContent"
+        :id="tooltipId"
+        role="tooltip"
       >
         <div class="nyx-tooltip__content-wrapper">
           <slot name="tooltip-content"><span>{{ props.text }}</span></slot>

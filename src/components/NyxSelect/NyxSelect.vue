@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, useTemplateRef, watch } from 'vue'
+import { ref, computed, useId, useTemplateRef, watch } from 'vue'
 import { NyxSelectType, type NyxSelectOption, type NyxSelectOptionGroup } from '@/types'
 import './NyxSelect.scss'
 import type { NyxSelectProps } from './NyxSelect.types'
@@ -26,6 +26,8 @@ const elDropdown = useTemplateRef<HTMLDivElement>('elDropdown')
 const isOpen = ref(false)
 
 const { classList } = useNyxProps(props, { origin: 'NyxSelect', primitive: 'select' })
+
+const dropdownId = useId()
 
 const { cssVariables, computedPosition } = useTeleportPosition(elControl, elDropdown, {
   isEqualWidth: true,
@@ -134,6 +136,11 @@ watch(isOpen, (newVal) => {
         class="nyx-select__input"
         :placeholder="props.multiple ? 'Select multiple...' : 'Select...'"
         ref="elInput"
+        role="combobox"
+        :aria-expanded="isOpen"
+        aria-haspopup="listbox"
+        aria-autocomplete="list"
+        :aria-controls="dropdownId"
       />
       <span class="nyx-select__arrow" @click="toggleDropdown">▼</span>
     </div>
@@ -148,6 +155,7 @@ watch(isOpen, (newVal) => {
         ]"
         ref="elDropdown"
         role="listbox"
+        :id="dropdownId"
         :style="cssVariables"
       >
         <ul>
@@ -162,6 +170,9 @@ watch(isOpen, (newVal) => {
                   'nyx-select__option--selected': isSelected(option.value),
                   'nyx-select__option--disabled': !!option.disabled
                 }"
+                role="option"
+                :aria-selected="isSelected(option.value)"
+                :aria-disabled="!!option.disabled || undefined"
                 @click="onSelectOption(option)"
               ><span>{{ option.label }}</span></li>
             </template>
@@ -180,6 +191,9 @@ watch(isOpen, (newVal) => {
                 'nyx-select__option--selected': isSelected(option.value),
                 'nyx-select__option--disabled': !!option.disabled
               }"
+              role="option"
+              :aria-selected="isSelected(option.value)"
+              :aria-disabled="!!option.disabled || undefined"
               @click="onSelectOption(option)"
             ><span>{{ option.label }}</span></li>
             <li
