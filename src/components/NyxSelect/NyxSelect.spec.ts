@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils'
 import { nextTick } from 'vue'
 import vClickOutside from '@/directives/vClickOutside'
 import NyxSelect from './NyxSelect.vue'
+import { NyxSelectType } from '@/types'
 
 const globalConfig = {
   directives: { clickOutside: vClickOutside }
@@ -107,7 +108,7 @@ describe('NyxSelect', () => {
   it('emits array with selected value in multiple mode', async () => {
     wrapper = mount(NyxSelect, {
       attachTo: document.body,
-      props: { options: sampleOptions, modelValue: [], multiple: true },
+      props: { options: sampleOptions, modelValue: [], type: NyxSelectType.Multiple },
       global: globalConfig
     })
     await wrapper.find('.nyx-select__control').trigger('click')

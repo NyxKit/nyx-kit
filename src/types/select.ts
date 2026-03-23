@@ -1,3 +1,8 @@
+export enum NyxSelectType {
+  Single = 'single',
+  Multiple = 'multiple'
+}
+
 export interface NyxSelectOptionGroup {
   label: string,
   options: NyxSelectOption[]

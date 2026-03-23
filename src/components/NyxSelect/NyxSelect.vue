@@ -1,17 +1,19 @@
 <script setup lang="ts">
 import { ref, computed, useId, useTemplateRef, watch } from 'vue'
-import { type NyxSelectOption, type NyxSelectOptionGroup } from '@/types'
+import { NyxSelectType, type NyxSelectOption, type NyxSelectOptionGroup } from '@/types'
 import './NyxSelect.scss'
 import type { NyxSelectProps } from './NyxSelect.types'
 import { useTeleportPosition, useNyxProps } from '@/composables'
 
 const props = withDefaults(defineProps<NyxSelectProps>(), {
-  multiple: false
+  type: NyxSelectType.Single
 })
+
+const isMultiple = computed(() => props.type === NyxSelectType.Multiple)
 
 const modelValue = defineModel<string | string[]>()
 const model = computed({
-  get: () => modelValue.value ?? (props.multiple ? [] : ''),
+  get: () => modelValue.value ?? (isMultiple.value ? [] : ''),
   set: (value) => {
     modelValue.value = value
   }
@@ -41,7 +43,7 @@ const flatOptions = computed((): NyxSelectOption[] => {
 })
 
 const selectedLabels = computed(() => {
-  if (!props.multiple) {
+  if (!isMultiple.value) {
     const option = flatOptions.value.find((opt) => opt.value === model.value)
     return option?.label ?? ''
   }
@@ -75,7 +77,7 @@ const closeDropdown = () => {
 }
 
 const onSelectOption = ({ value, label }: NyxSelectOption) => {
-  if (props.multiple) {
+  if (isMultiple.value) {
     const values = model.value as string[]
     const index = values.indexOf(value)
     if (index === -1) {
@@ -101,7 +103,7 @@ const onControlClick = () => {
 }
 
 const isSelected = (value: string): boolean => {
-  if (props.multiple) {
+  if (isMultiple.value) {
     return (model.value as string[]).includes(value)
   }
   return value === model.value
@@ -133,7 +135,7 @@ watch(isOpen, (newVal) => {
         type="search"
         v-model="searchQuery"
         class="nyx-select__input"
-        :placeholder="props.multiple ? 'Select multiple...' : 'Select...'"
+        :placeholder="isMultiple ? 'Select multiple...' : 'Select...'"
         ref="elInput"
         role="combobox"
         :aria-expanded="isOpen"
@@ -205,7 +207,7 @@ watch(isOpen, (newVal) => {
       </div>
     </Teleport>
 
-    <select v-model="model" class="sr-only" :id="props.id" :multiple="props.multiple">
+    <select v-model="model" class="sr-only" :id="props.id" :multiple="isMultiple">
       <template v-if="isGrouped">
         <optgroup v-for="group in (props.options as NyxSelectOptionGroup[])" :key="group.label" :label="group.label">
           <option v-for="option in group.options" :value="option.value" :key="option.value">{{ option.label }}</option>

@@ -1,6 +1,6 @@
 import { defineComponent } from 'vue'
 import NyxSelect from './NyxSelect.vue'
-import { NyxTheme, NyxVariant, NyxSize, type KeyDict } from '@/types'
+import { NyxTheme, NyxVariant, NyxSize, NyxSelectType, type KeyDict } from '@/types'
 import type { NyxSelectProps } from './NyxSelect.types'
 import { getKeyDictKeyByValue } from '@/utils'
 import NyxForm from '../NyxForm/NyxForm.vue'
@@ -31,6 +31,10 @@ export default {
   title: 'Components/NyxSelect',
   component: NyxSelect,
   argTypes: {
+    type: {
+      control: { type: 'select' },
+      options: Object.values(NyxSelectType),
+    },
     theme: {
       control: { type: 'select' },
       options: Object.values(NyxTheme),
@@ -91,6 +95,7 @@ export const WithGroups = () => defineComponent({
   },
   template: `<nyx-select :options="options" placeholder="NyxSelect" />`,
 })
+export const Types = TemplateAll('type', NyxSelectType)
 export const Themes = TemplateAll('theme', NyxTheme)
 export const Variants = TemplateAll('variant', NyxVariant)
 export const Sizes = TemplateAll('size', NyxSize)
