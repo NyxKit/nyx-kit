@@ -14,6 +14,9 @@ Make the smallest change that achieves the goal. Do not reformat, restructure, o
 ### IV. Consumer-Library Contract
 Nyx Kit is a published npm library. Props, emits, slots, exported types, entry points, and the `package.json` exports map are public contracts. Breaking changes must be flagged explicitly. Prefer additive changes (new optional props, new overloads) over breaking ones.
 
+### IV-a. Opinionated Global Stylesheet (Non-Negotiable)
+`nyx-kit/style.css` intentionally ships a full CSS reset (Meyerweb v2.0) and global base styles (`body` font, colour, background). Consumers build on top of Nyx Kit's baseline — they are not expected to bring their own reset. **Do not recommend separating, scoping, or making the reset opt-in.** This is a deliberate design decision, not a defect.
+
 ### V. Test-First for Non-Trivial Logic
 Unit tests (Vitest) are written for non-trivial component logic and utilities. E2E tests (Playwright) cover interactive behaviour. Stories (Storybook) are the API contract for components — a story that no longer compiles is a failing test.
 

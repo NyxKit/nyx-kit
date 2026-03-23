@@ -42,6 +42,12 @@ Spec artifacts live in `.specify/<feature-branch>/` (spec.md, plan.md, tasks.md)
 
 The project constitution is at `.specify/memory/constitution.md`.
 
+## Design Decisions — Do Not Re-Audit
+
+**Global CSS reset is intentional.** `nyx-kit/style.css` ships a full Meyerweb reset and `body` base styles by design. Consumers build on top of Nyx Kit's baseline. Do not flag the reset as a bug, recommend scoping it, or suggest making it opt-in.
+
+---
+
 ## Active Technologies
 - TypeScript 5.x / Vue 3 + `@vue/test-utils`, `vitest`, `@playwright/test`, `jsdom` (003-testing-improvements)
 
