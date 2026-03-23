@@ -4,7 +4,7 @@ import { computed } from 'vue'
 import NyxMedia from '../NyxMedia/NyxMedia.vue'
 import type { NyxAvatarProps } from './NyxAvatar.types'
 import { NyxMediaType, NyxShape } from '@/types'
-import useNyxProps from '@/composables/useNyxProps'
+import { useNyxProps } from '@/composables'
 
 const props = withDefaults(defineProps<NyxAvatarProps>(), {
   shape: NyxShape.Circle,

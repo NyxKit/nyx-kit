@@ -3,7 +3,7 @@ import './NyxCard.scss'
 import { type CssVariablesDict } from '@/types'
 import NyxMedia from '../NyxMedia/NyxMedia.vue'
 import type { NyxCardEmits, NyxCardProps } from './NyxCard.types'
-import useNyxProps from '@/composables/useNyxProps'
+import { useNyxProps } from '@/composables'
 import { computed, useSlots, type Slots } from 'vue'
 
 const props = withDefaults(defineProps<NyxCardProps>(), {

@@ -1,7 +1,7 @@
 <template>
   <svg
     class="nyx-spinner"
-    :class="[props.theme && `theme-${props.theme}`, props.size && `size-${props.size}`]"
+    :class="classList"
     :style="cssVars"
     role="progressbar"
     aria-label="Loading"
@@ -16,6 +16,7 @@ import './NyxSpinner.scss'
 import { computed } from 'vue'
 import { type NyxSpinnerProps } from './NyxSpinner.types'
 import { type CssVariablesDict } from '@/types'
+import { useNyxProps } from '@/composables'
 
 const props = withDefaults(defineProps<NyxSpinnerProps>(), {
   speed: '2s'
@@ -24,5 +25,7 @@ const props = withDefaults(defineProps<NyxSpinnerProps>(), {
 const cssVars = computed<CssVariablesDict>(() => ({
   '--nyx-speed-spinner': props.speed
 }))
+
+const { classList } = useNyxProps(props, { origin: 'NyxSpinner' })
 
 </script>

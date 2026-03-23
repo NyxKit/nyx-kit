@@ -3,7 +3,7 @@ import './NyxTooltip.scss'
 import { computed, defineProps, defineSlots, ref, useTemplateRef, type Slots, watch } from 'vue'
 import { NyxPosition, NyxSize } from '@/types'
 import type { NyxTooltipProps } from './NyxTooltip.types'
-import { useTeleportPosition } from '@/composables'
+import { useTeleportPosition, useNyxProps } from '@/composables'
 
 const props = withDefaults(defineProps<NyxTooltipProps>(), {
   position: NyxPosition.Top,
@@ -18,6 +18,8 @@ const slots: Slots = defineSlots()
 
 const elRelative = useTemplateRef<HTMLDivElement>('elTooltip')
 const elAbsolute = useTemplateRef<HTMLDivElement>('elTooltipContent')
+
+const { classList } = useNyxProps(props, { origin: 'NyxTooltip' })
 
 const { cssVariables, computedPosition, updateCssVariables } = useTeleportPosition(elRelative, elAbsolute, {
   position: ref(props.position),
@@ -51,10 +53,7 @@ watch(forceUpdate, () => updateCssVariables())
     <Teleport to="body">
       <div
         class="nyx-tooltip__content"
-        :class="[
-          `theme-${props.theme}`, `variant-${props.variant}`, `size-${props.size}`,
-          { 'nyx-tooltip__content--open': model }
-        ]"
+        :class="[...classList, { 'nyx-tooltip__content--open': model }]"
         :data-position="computedPosition"
         :style="cssVariables"
         ref="elTooltipContent"

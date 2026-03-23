@@ -3,6 +3,7 @@ import './NyxBadge.scss'
 import { NyxVariant, NyxShape } from '@/types'
 import type { NyxBadgeProps, NyxBadgeEmits } from './NyxBadge.types'
 import NyxButton from '../NyxButton/NyxButton.vue'
+import { useNyxProps } from '@/composables'
 
 const props = withDefaults(defineProps<NyxBadgeProps>(), {
   disabled: false,
@@ -11,17 +12,14 @@ const props = withDefaults(defineProps<NyxBadgeProps>(), {
 
 const emit = defineEmits<NyxBadgeEmits>()
 
+const { classList } = useNyxProps(props, { origin: 'NyxBadge' })
+
 </script>
 
 <template>
   <div
     class="nyx-badge"
-    :class="[
-      { 'nyx-badge--closable': hasClose },
-      props.theme && `theme-${props.theme}`,
-      props.variant && `variant-${props.variant}`,
-      props.size && `size-${props.size}`
-    ]"
+    :class="[...classList, { 'nyx-badge--closable': hasClose }]"
     @click.self="emit('click')"
   >
     <span><slot>NyxBadge</slot></span>

@@ -3,7 +3,7 @@ import './NyxCheckbox.scss'
 import { computed } from 'vue'
 import type { NyxCheckboxProps } from './NyxCheckbox.types'
 import { generateRandomString } from '@/utils/string';
-import useNyxProps from '@/composables/useNyxProps';
+import { useNyxProps } from '@/composables';
 
 const props = withDefaults(defineProps<NyxCheckboxProps>(), {
   label: '',

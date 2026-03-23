@@ -3,6 +3,7 @@ import './NyxTextarea.scss'
 import { computed } from 'vue'
 import type { NyxTextareaProps, NyxTextareaEmits } from './NyxTextarea.types'
 import { generateRandomString } from '@/utils/string'
+import { useNyxProps } from '@/composables'
 
 const props = defineProps<NyxTextareaProps>()
 
@@ -12,16 +13,14 @@ const model = defineModel<string>()
 
 const normalizedId = computed(() => props.id ?? `nyx-textarea-${generateRandomString(16)}`)
 
+const { classList } = useNyxProps(props, { origin: 'NyxTextarea', primitive: 'textarea' })
+
 </script>
 
 <template>
   <div
     class="nyx-textarea"
-    :class="[
-      props.theme && `theme-${props.theme}`,
-      props.variant && `variant-${props.variant}`,
-      props.size && `size-${props.size}`
-    ]"
+    :class="classList"
   >
     <textarea
       :placeholder="props.placeholder"

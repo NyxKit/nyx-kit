@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import './NyxInput.scss'
 import { computed } from 'vue'
-import useNyxProps from '@/composables/useNyxProps'
+import { useNyxProps } from '@/composables'
 import type { NyxInputProps, NyxInputEmits } from './NyxInput.types'
 import { NyxInputType } from '@/types'
 import { generateRandomString } from '@/utils/string'

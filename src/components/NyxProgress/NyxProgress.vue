@@ -3,7 +3,7 @@ import './NyxProgress.scss'
 import { computed } from 'vue'
 import type { NyxProgressProps } from './NyxProgress.types'
 import { NyxProgressVariant, NyxShape, type CssVariablesDict } from '@/types'
-import useNyxProps from '@/composables/useNyxProps';
+import { useNyxProps } from '@/composables';
 import { clamp } from '@/utils';
 
 const props = withDefaults(defineProps<NyxProgressProps>(), {
@@ -20,7 +20,7 @@ const { classList } = useNyxProps(props, { origin: 'NyxProgress' })
 
 const progressWidth = computed(() => {
   if (model.value === null) return '100%'
-  const percentage = Math.min(100, (model.value / props.max) * 100)
+  const percentage = Math.min(100, ((model.value - props.min) / (props.max - props.min)) * 100)
   return `${percentage}%`
 })
 
@@ -47,7 +47,7 @@ const getDotCssVars = (i: number): CssVariablesDict => {
         v-for="i in props.max"
         :key="i"
         :style="getDotCssVars(i)"
-      >{{ i }}</div>
+      ></div>
     </template>
     <div
       v-else

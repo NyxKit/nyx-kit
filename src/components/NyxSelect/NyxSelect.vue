@@ -3,7 +3,7 @@ import { ref, computed, useTemplateRef, watch } from 'vue'
 import { NyxSelectType, type NyxSelectOption, type NyxSelectOptionGroup } from '@/types'
 import './NyxSelect.scss'
 import type { NyxSelectProps } from './NyxSelect.types'
-import { useTeleportPosition } from '@/composables'
+import { useTeleportPosition, useNyxProps } from '@/composables'
 
 const props = withDefaults(defineProps<NyxSelectProps>(), {
   type: NyxSelectType.Single,
@@ -24,6 +24,8 @@ const searchQuery = ref('')
 const elControl = useTemplateRef<HTMLDivElement>('elControl')
 const elDropdown = useTemplateRef<HTMLDivElement>('elDropdown')
 const isOpen = ref(false)
+
+const { classList } = useNyxProps(props, { origin: 'NyxSelect', primitive: 'select' })
 
 const { cssVariables, computedPosition } = useTeleportPosition(elControl, elDropdown, {
   isEqualWidth: true,
@@ -113,7 +115,7 @@ watch(isOpen, (newVal) => {
 <template>
   <div
     class="nyx-select"
-    :class="[`theme-${props.theme}`, `variant-${props.variant}`, `size-${props.size}`]"
+    :class="classList"
   >
     <div
       class="nyx-select__control"
@@ -140,7 +142,7 @@ watch(isOpen, (newVal) => {
       <div
         class="nyx-select__dropdown"
         :class="[
-          `theme-${props.theme}`, `variant-${props.variant}`, `size-${props.size}`,
+          ...classList,
           `nyx-select__dropdown--${computedPosition}`,
           { 'nyx-select__dropdown--open': isOpen }
         ]"

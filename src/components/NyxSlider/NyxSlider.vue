@@ -3,7 +3,7 @@ import './NyxSlider.scss'
 import { ref, computed } from 'vue'
 import type { NyxSliderProps } from './NyxSlider.types'
 import { NyxShape } from '@/types'
-import useNyxProps from '@/composables/useNyxProps'
+import { useNyxProps } from '@/composables'
 import { roundToStep } from '@/utils'
 
 const props = withDefaults(defineProps<NyxSliderProps>(), {
@@ -66,7 +66,10 @@ const startDrag = (thumbIndex: number, event: PointerEvent) => {
 const onDrag = (event: PointerEvent) => {
   if (draggingThumb.value === null || !track.value) return
   const rect = track.value.getBoundingClientRect()
-  let newPosition = (event.clientX - rect.left) / rect.width
+  const isVertical = props.direction === 'column'
+  let newPosition = isVertical
+    ? (event.clientY - rect.top) / rect.height
+    : (event.clientX - rect.left) / rect.width
   newPosition = Math.min(Math.max(newPosition, 0), 1)
   const newValue = props.min + newPosition * (props.max - props.min)
 
@@ -80,7 +83,10 @@ const stopDrag = () => {
 const onTrackMouseDown = (event: PointerEvent) => {
   if (!track.value) return
   const rect = track.value.getBoundingClientRect()
-  let clickPosition = (event.clientX - rect.left) / rect.width
+  const isVertical = props.direction === 'column'
+  let clickPosition = isVertical
+    ? (event.clientY - rect.top) / rect.height
+    : (event.clientX - rect.left) / rect.width
   clickPosition = Math.min(Math.max(clickPosition, 0), 1)
   const newValue = props.min + clickPosition * (props.max - props.min)
 
@@ -173,7 +179,7 @@ const { classList } = useNyxProps(props, { origin: 'NyxSlider' })
     ></div>
 
     <!-- Second Thumb (Only if range mode) -->
-    <template v-if="isRange && Array.isArray(model) && model[1]">
+    <template v-if="isRange && Array.isArray(model) && model[1] != null">
       <input
         type="range"
         :min="props.min"

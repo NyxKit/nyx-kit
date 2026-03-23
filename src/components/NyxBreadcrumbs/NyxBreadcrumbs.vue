@@ -3,12 +3,15 @@ import './NyxBreadcrumbs.scss'
 import { useSlots, computed, type Slots } from 'vue'
 import { type NyxBreadcrumb } from '@/types'
 import type { NyxBreadcrumbsEmits, NyxBreadcrumbsProps } from './NyxBreadcrumbs.types'
+import { useNyxProps } from '@/composables'
 
 const props = withDefaults(defineProps<NyxBreadcrumbsProps>(), {
   separator: '/',
 })
 
 const emit = defineEmits<NyxBreadcrumbsEmits>()
+
+const { classList } = useNyxProps(props, { origin: 'NyxBreadcrumbs' })
 
 const normalizedItems = computed<NyxBreadcrumb[]>(() => {
   return props.items
@@ -23,11 +26,7 @@ const slots: Slots = useSlots()
 <template>
   <nav
     class="nyx-breadcrumbs"
-    :class="[
-      props.theme && `theme-${props.theme}`,
-      props.size && `size-${props.size}`,
-      props.variant && `variant-${props.variant}`
-    ]"
+    :class="classList"
   >
     <template v-for="(item, index) in normalizedItems" :key="index">
       <a

@@ -3,22 +3,20 @@
 <script setup lang="ts">
 import './NyxSwitch.scss'
 import { type NyxSwitchProps } from './NyxSwitch.types'
+import { useNyxProps } from '@/composables'
 
 const props = withDefaults(defineProps<NyxSwitchProps>(), {})
 
 const model = defineModel<boolean>({ default: false })
+
+const { classList } = useNyxProps(props, { origin: 'NyxSwitch', primitive: 'switch' })
 
 </script>
 
 <template>
   <div
     class="nyx-switch"
-    :class="[
-      props.theme && `theme-${props.theme}`,
-      props.variant && `variant-${props.variant}`,
-      props.size && `size-${props.size}`,
-      { 'nyx-switch--on': model }
-    ]"
+    :class="[...classList, { 'nyx-switch--on': model }]"
     @click="model = !model"
   >
     <div class="nyx-switch__knob"></div>

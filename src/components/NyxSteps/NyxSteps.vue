@@ -5,6 +5,7 @@ import type { NyxStepsProps } from './NyxSteps.types'
 import NyxButton from '../NyxButton/NyxButton.vue'
 import { type CssVariablesDict, NyxShape, NyxSize, NyxTheme } from '@/types'
 import { NyxLog } from '@/classes'
+import { useNyxProps } from '@/composables'
 
 const props = withDefaults(defineProps<NyxStepsProps>(), {
   shape: NyxShape.Circle,
@@ -41,6 +42,8 @@ const getButtonTheme = (index: number): NyxTheme | undefined => {
   return props.theme
 }
 
+const { classList } = useNyxProps(props, { origin: 'NyxSteps' })
+
 const onClick = (index: number) => {
   if (props.readonly) return
   if (typeof model.value === 'number') {
@@ -59,8 +62,7 @@ const onClick = (index: number) => {
   <div
     class="nyx-steps"
     :class="[
-      props.theme && `theme-${props.theme}`,
-      `size-${props.size}`,
+      ...classList,
       props.themeComplete && `theme-complete-${props.themeComplete}`,
       props.themeIncomplete && `theme-incomplete-${props.themeIncomplete}`,
       { 'nyx-steps--readonly': props.readonly },

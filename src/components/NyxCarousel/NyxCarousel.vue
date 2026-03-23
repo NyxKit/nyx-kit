@@ -4,7 +4,7 @@ import { ref, computed, onUnmounted, watch, useSlots, type Slots } from 'vue'
 import type { NyxCarouselProps } from './NyxCarousel.types'
 import { type CssVariablesDict } from '@/types'
 import NyxMedia from '../NyxMedia/NyxMedia.vue'
-import { useKeyboardShortcuts } from '@/composables'
+import { useKeyboardShortcuts, useNyxProps } from '@/composables'
 
 const props = withDefaults(defineProps<NyxCarouselProps<T>>(), {
   autoplay: true,
@@ -19,7 +19,8 @@ const currentIndex = ref(0)
 const isTransitioning = ref(true)
 let intervalId: number|null = null
 
-const isAutoplay = computed(() => props.autoplay)
+const { classList } = useNyxProps(props, { origin: 'NyxCarousel' })
+
 const duplicatedSlides = computed(() => [props.slides[props.slides.length - 1], ...props.slides, props.slides[0]])
 const cssVars = computed<CssVariablesDict>(() => ({
   '--nyx-carousel-index': currentIndex.value,
@@ -92,7 +93,7 @@ const handleTransitionEnd = () => {
   }
 }
 
-watch(isAutoplay, (newVal: boolean) => {
+watch(() => props.autoplay, (newVal: boolean) => {
   if (newVal && !intervalId) {
     intervalId = window.setInterval(next, props.interval)
   } else if (intervalId) {
@@ -111,7 +112,7 @@ useKeyboardShortcuts({
 </script>
 
 <template>
-  <div class="nyx-carousel" :class="[props.theme && `theme-${props.theme}`]">
+  <div class="nyx-carousel" :class="classList">
     <div
       class="nyx-carousel__container"
       :style="cssVars"

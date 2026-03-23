@@ -9,7 +9,7 @@ import TaskItem from '@tiptap/extension-task-item'
 import { Markdown, type MarkdownStorage } from 'tiptap-markdown'
 import type { NyxEditorProps, NyxEditorEmits } from './NyxEditor.types'
 import { NyxEditorMode, NyxEditorFormat, NyxEditorToolbar } from '@/types'
-import useNyxProps from '@/composables/useNyxProps'
+import { useNyxProps } from '@/composables'
 import NyxEditorBubbleMenu from './NyxEditorBubbleMenu/NyxEditorBubbleMenu.vue'
 import {
   Bold, Italic, Underline, Strikethrough, Code,

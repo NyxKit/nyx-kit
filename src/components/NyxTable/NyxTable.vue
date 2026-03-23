@@ -5,6 +5,7 @@ import { computed, useSlots, type Slots } from 'vue'
 import { isObject } from '@/utils'
 import type { NyxTableProps } from './NyxTable.types'
 import NyxTableCell from './NyxTableCell.vue'
+import { useNyxProps } from '@/composables'
 
 const slots: Slots = useSlots()
 
@@ -46,6 +47,8 @@ const data = computed(() => {
   })
 })
 
+const { classList } = useNyxProps(props, { origin: 'NyxTable' })
+
 const style = computed<CssVariablesDict>(() => {
   const actionsColumnValue = !!slots.actions ? 'auto' : ''
   const gridTemplateColumn = !!props.gridTemplateColumns
@@ -60,13 +63,7 @@ const style = computed<CssVariablesDict>(() => {
 <template>
   <table
     class="nyx-table"
-    :class="[
-      props.size && `size-${props.size}`,
-      props.theme && `theme-${props.theme}`,
-      props.variant && `variant-${props.variant}`,
-      { 'striped': striped },
-      { 'sticky': props.header === 'sticky' }
-    ]"
+    :class="[...classList, { 'striped': striped }, { 'sticky': props.header === 'sticky' }]"
     :style="style"
   >
     <thead v-if="!!props.header">
