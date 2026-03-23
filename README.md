@@ -4,6 +4,84 @@ Nyx Kit is a lightweight and flexible developer kit for building Vue application
 ## Documentation
 For more detailed information, usage examples, and live demos of components, visit the [Storybook documentation](https://nyxkit.github.io/nyx-kit).
 
+## Installation
+
+```sh
+pnpm add nyx-kit
+```
+
+### Plugin setup
+
+```ts
+// main.ts
+import { createApp } from 'vue'
+import { NyxKit, NyxColourMode } from 'nyx-kit'
+import 'nyx-kit/style.css'
+import App from './App.vue'
+
+createApp(App)
+  .use(NyxKit, {
+    colourMode: {
+      mode: NyxColourMode.Dark, // 'dark' | 'light' | 'adaptive'
+    }
+  })
+  .mount('#app')
+```
+
+### Colour mode
+
+Three modes are available:
+
+| Mode | Behaviour |
+|------|-----------|
+| `NyxColourMode.Dark` | Always dark — the default |
+| `NyxColourMode.Light` | Always light |
+| `NyxColourMode.Adaptive` | Clock-driven: light `06:00–20:00`, dark otherwise |
+
+Switch modes at runtime with the `useNyxColourMode` composable:
+
+```ts
+import { useNyxColourMode, NyxColourMode } from 'nyx-kit/composables'
+
+const { mode, isDark, isLight, setMode } = useNyxColourMode()
+
+setMode(NyxColourMode.Light)    // override for this session
+setMode(NyxColourMode.Adaptive) // hand control back to the clock
+```
+
+The chosen mode is persisted to `localStorage` and restored on next load. The composable works without the plugin — `NyxKit.install()` is optional.
+
+## ESLint
+
+Nyx Kit ships a shareable ESLint flat config. To adopt the same rules in your project:
+
+**1. Install the peer dependencies**
+
+```sh
+pnpm add -D eslint eslint-plugin-vue @vue/eslint-config-typescript eslint-plugin-oxlint
+```
+
+**2. Extend the config**
+
+```ts
+// eslint.config.ts
+import nyxConfig from 'nyx-kit/eslint'
+
+export default [
+  ...nyxConfig,
+  {
+    // your project-specific overrides
+  },
+]
+```
+
+The config includes:
+- `eslint-plugin-vue` — Vue 3 essential rules
+- `@vue/eslint-config-typescript` — TypeScript recommended rules
+- `eslint-plugin-oxlint` — disables ESLint rules that oxlint handles (use alongside `oxlint` for faster linting)
+
+Test-framework rules (`@vitest/eslint-plugin`, `eslint-plugin-playwright`) are **not** included — add those yourself if needed.
+
 ## Features
 - **Modular and extensible** – Use only what you need, with easy customization.
 - **Consistent and themeable** – Provides a unified design system with full theming support.

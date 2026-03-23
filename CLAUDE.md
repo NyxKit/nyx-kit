@@ -50,6 +50,8 @@ The project constitution is at `.specify/memory/constitution.md`.
 
 ## Active Technologies
 - TypeScript 5.x / Vue 3 + `@vue/test-utils`, `vitest`, `@playwright/test`, `jsdom` (003-testing-improvements)
+- TypeScript 5.x / Vue 3.5+ + Vue `inject`, `ref`, `computed`, `onUnmounted` (all already in use) (004-colour-mode-system)
+- Module-level singleton `ref` (no persistence in v1) (004-colour-mode-system)
 
 ## Recent Changes
 - 003-testing-improvements: Added TypeScript 5.x / Vue 3 + `@vue/test-utils`, `vitest`, `@playwright/test`, `jsdom`
