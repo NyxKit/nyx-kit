@@ -1,8 +1,16 @@
-import { test, expect } from '@playwright/test';
-
-// See here how to get started:
-// https://playwright.dev/docs/intro
-test('visits the app root url', async ({ page }) => {
-  await page.goto('/');
-  await expect(page.locator('h1')).toHaveText('You did it!');
-})
+// E2E tests for nyx-kit components.
+//
+// These tests require a running dev server (pnpm dev) or preview server (pnpm preview).
+// Add component interaction tests here once the Storybook or playground page is configured
+// in playwright.config.ts.
+//
+// Example structure:
+//
+// import { test, expect } from '@playwright/test'
+//
+// test.describe('NyxButton', () => {
+//   test('is clickable', async ({ page }) => {
+//     await page.goto('/components/button')
+//     await page.click('.nyx-button')
+//   })
+// })

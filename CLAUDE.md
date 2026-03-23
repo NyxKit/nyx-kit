@@ -41,3 +41,9 @@ Spec artifacts live in `.specify/<feature-branch>/` (spec.md, plan.md, tasks.md)
 **Nyx Kit specific rule:** every `/speckit.specify` run must also produce or update the corresponding `docs/specs/<layer>/<Symbol>.spec.md` file. The spec-kit artifact and the docs spec are complementary — keep both in sync.
 
 The project constitution is at `.specify/memory/constitution.md`.
+
+## Active Technologies
+- TypeScript 5.x / Vue 3 + `@vue/test-utils`, `vitest`, `@playwright/test`, `jsdom` (003-testing-improvements)
+
+## Recent Changes
+- 003-testing-improvements: Added TypeScript 5.x / Vue 3 + `@vue/test-utils`, `vitest`, `@playwright/test`, `jsdom`

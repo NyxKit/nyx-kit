@@ -1,0 +1,132 @@
+import { describe, it, expect, afterEach, beforeEach, vi } from 'vitest'
+import { mount } from '@vue/test-utils'
+import { nextTick } from 'vue'
+import vClickOutside from '@/directives/vClickOutside'
+import NyxSelect from './NyxSelect.vue'
+
+const globalConfig = {
+  directives: { clickOutside: vClickOutside }
+}
+
+beforeEach(() => {
+  vi.spyOn(console, 'warn').mockImplementation(() => {})
+})
+
+let wrapper: ReturnType<typeof mount>
+
+afterEach(() => {
+  wrapper?.unmount()
+})
+
+const sampleOptions = [
+  { label: 'Option A', value: 'a' },
+  { label: 'Option B', value: 'b' },
+  { label: 'Option C', value: 'c' },
+]
+
+describe('NyxSelect', () => {
+  it('renders without errors', () => {
+    wrapper = mount(NyxSelect, {
+      attachTo: document.body,
+      props: { options: sampleOptions },
+      global: globalConfig
+    })
+    expect(wrapper.find('.nyx-select').exists()).toBe(true)
+  })
+
+  it('renders the control element', () => {
+    wrapper = mount(NyxSelect, {
+      attachTo: document.body,
+      props: { options: sampleOptions },
+      global: globalConfig
+    })
+    expect(wrapper.find('.nyx-select__control').exists()).toBe(true)
+  })
+
+  it('dropdown is not open by default', () => {
+    wrapper = mount(NyxSelect, {
+      attachTo: document.body,
+      props: { options: sampleOptions },
+      global: globalConfig
+    })
+    const control = wrapper.find('.nyx-select__control')
+    expect(control.classes()).not.toContain('nyx-select__control--open')
+  })
+
+  it('opens dropdown when control is clicked', async () => {
+    wrapper = mount(NyxSelect, {
+      attachTo: document.body,
+      props: { options: sampleOptions },
+      global: globalConfig
+    })
+    await wrapper.find('.nyx-select__control').trigger('click')
+    expect(wrapper.find('.nyx-select__control').classes()).toContain('nyx-select__control--open')
+  })
+
+  it('renders option items in the dropdown', async () => {
+    wrapper = mount(NyxSelect, {
+      attachTo: document.body,
+      props: { options: sampleOptions },
+      global: globalConfig
+    })
+    await wrapper.find('.nyx-select__control').trigger('click')
+    await nextTick()
+    const options = document.body.querySelectorAll('.nyx-select__option')
+    expect(options.length).toBe(3)
+  })
+
+  it('selects an option and closes dropdown on click', async () => {
+    wrapper = mount(NyxSelect, {
+      attachTo: document.body,
+      props: { options: sampleOptions, modelValue: '' },
+      global: globalConfig
+    })
+    await wrapper.find('.nyx-select__control').trigger('click')
+    await nextTick()
+    const firstOption = document.body.querySelector<HTMLElement>('.nyx-select__option')
+    firstOption?.click()
+    await nextTick()
+    expect(wrapper.emitted('update:modelValue')).toBeTruthy()
+    expect(wrapper.emitted('update:modelValue')![0][0]).toBe('a')
+    expect(wrapper.find('.nyx-select__control').classes()).not.toContain('nyx-select__control--open')
+  })
+
+  it('marks selected option with selected class', async () => {
+    wrapper = mount(NyxSelect, {
+      attachTo: document.body,
+      props: { options: sampleOptions, modelValue: 'b' },
+      global: globalConfig
+    })
+    await wrapper.find('.nyx-select__control').trigger('click')
+    await nextTick()
+    const options = document.body.querySelectorAll('.nyx-select__option')
+    expect(options[1].classList.contains('nyx-select__option--selected')).toBe(true)
+    expect(options[0].classList.contains('nyx-select__option--selected')).toBe(false)
+  })
+
+  it('emits array with selected value in multiple mode', async () => {
+    wrapper = mount(NyxSelect, {
+      attachTo: document.body,
+      props: { options: sampleOptions, modelValue: [], multiple: true },
+      global: globalConfig
+    })
+    await wrapper.find('.nyx-select__control').trigger('click')
+    await nextTick()
+    const firstOption = document.body.querySelector<HTMLElement>('.nyx-select__option')
+    firstOption?.click()
+    await nextTick()
+    expect(wrapper.emitted('update:modelValue')).toBeTruthy()
+    const emittedValue = wrapper.emitted('update:modelValue')![0][0]
+    expect(Array.isArray(emittedValue)).toBe(true)
+    expect(emittedValue).toContain('a')
+  })
+
+  it('has a hidden native <select> for accessibility', () => {
+    wrapper = mount(NyxSelect, {
+      attachTo: document.body,
+      props: { options: sampleOptions },
+      global: globalConfig
+    })
+    expect(wrapper.find('select.sr-only').exists()).toBe(true)
+  })
+})
