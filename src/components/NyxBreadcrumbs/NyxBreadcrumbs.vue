@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import './NyxBreadcrumbs.scss'
-import { useSlots, computed, type Slots } from 'vue'
+import { computed } from 'vue'
 import { type NyxBreadcrumb } from '@/types'
 import type { NyxBreadcrumbsEmits, NyxBreadcrumbsProps } from './NyxBreadcrumbs.types'
 import { useNyxProps } from '@/composables'
@@ -18,8 +18,6 @@ const normalizedItems = computed<NyxBreadcrumb[]>(() => {
     .map((item: string|NyxBreadcrumb) => (typeof item === 'string') ? { label: item } : item)
 })
 
-// Access slots
-const slots: Slots = useSlots()
 
 </script>
 

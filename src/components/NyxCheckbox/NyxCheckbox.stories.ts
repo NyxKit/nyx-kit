@@ -1,6 +1,6 @@
 import { defineComponent } from 'vue'
 import NyxCheckbox from './NyxCheckbox.vue'
-import { NyxTheme, NyxVariant, NyxSize, type KeyDict } from '@/types'
+import { NyxTheme, NyxSize, type KeyDict } from '@/types'
 import type { NyxCheckboxProps } from './NyxCheckbox.types'
 import { getKeyDictKeyByValue } from '@/utils'
 import NyxForm from '../NyxForm/NyxForm.vue'

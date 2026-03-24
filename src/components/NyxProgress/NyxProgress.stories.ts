@@ -1,6 +1,6 @@
 import { defineComponent, ref } from 'vue'
 import NyxProgress from './NyxProgress.vue'
-import { NyxTheme, NyxSize, NyxVariant, NyxShape, NyxProgressVariant } from '@/types'
+import { NyxTheme, NyxSize, NyxShape, NyxProgressVariant } from '@/types'
 import type { NyxProgressProps } from './NyxProgress.types'
 
 export default {

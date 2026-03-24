@@ -1,6 +1,6 @@
 import { defineComponent } from 'vue'
 import NyxSpinner from './NyxSpinner.vue'
-import { NyxTheme, NyxVariant, NyxSize, type KeyDict } from '@/types'
+import { NyxTheme, NyxSize, type KeyDict } from '@/types'
 import type { NyxSpinnerProps } from './NyxSpinner.types'
 import { getKeyDictKeyByValue } from '@/utils'
 
@@ -33,7 +33,7 @@ const Template = (args: NyxSpinnerProps) => defineComponent({
   `,
 })
 
-const TemplateAllProp = (prop: string, dict: KeyDict<string>) => () => defineComponent({
+const _TemplateAllProp = (prop: string, dict: KeyDict<string>) => () => defineComponent({
   components: { NyxSpinner },
   setup () {
     const values = Object.values(dict)

@@ -1,6 +1,6 @@
 import { defineComponent } from 'vue'
 import NyxSteps from './NyxSteps.vue'
-import { NyxTheme, NyxSize, NyxVariant, NyxShape } from '@/types'
+import { NyxTheme, NyxSize, NyxShape } from '@/types'
 import type { NyxStepsProps } from './NyxSteps.types'
 
 const steps = 5

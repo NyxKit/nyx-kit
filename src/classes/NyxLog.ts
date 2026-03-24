@@ -1,5 +1,5 @@
 export default class NyxLog {
-  private static getFormattedMessage (prefix: any, args: string[]): string {
+  private static getFormattedMessage (prefix: unknown, args: string[]): string {
     let p = prefix
     let a = args
     if (typeof prefix !== 'string' || !prefix.toLowerCase().startsWith('nyx')) {
@@ -26,11 +26,11 @@ export default class NyxLog {
     }
   }
 
-  private static getArgsStrings (args: any[]): string[] {
+  private static getArgsStrings (args: unknown[]): string[] {
     return args.filter((arg) => typeof arg === 'string')
   }
 
-  private static getArgsOther (args: any[]): any[] {
+  private static getArgsOther (args: unknown[]): unknown[] {
     return args.filter((arg) => typeof arg !== 'string')
   }
 
@@ -44,7 +44,7 @@ export default class NyxLog {
     return 'unknown'
   }
 
-  public static info (prefix: any, ...args: any[]): void {
+  public static info (prefix: unknown, ...args: unknown[]): void {
     console.log.apply(console, [
       this.getFormattedMessage(prefix, this.getArgsStrings(args)),
       this.getPrefixStyle(),
@@ -53,7 +53,7 @@ export default class NyxLog {
     ])
   }
 
-  public static warn (prefix: any, ...args: any[]): void {
+  public static warn (prefix: unknown, ...args: unknown[]): void {
     console.warn.apply(console, [
       this.getFormattedMessage(prefix, this.getArgsStrings(args)),
       this.getPrefixStyle(),
@@ -62,7 +62,7 @@ export default class NyxLog {
     ])
   }
 
-  public static error (prefix: any, ...args: any[]): void {
+  public static error (prefix: unknown, ...args: unknown[]): void {
     console.error.apply(console, [
       this.getFormattedMessage(prefix, this.getArgsStrings(args)),
       this.getPrefixStyle(),

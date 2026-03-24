@@ -106,8 +106,8 @@ onUnmounted(() => {
 })
 
 useKeyboardShortcuts({
-  'ARROWLEFT': (_event) => prev(),
-  'ARROWRIGHT': (_event) => next()
+  'ARROWLEFT': () => prev(),
+  'ARROWRIGHT': () => next()
 })
 </script>
 

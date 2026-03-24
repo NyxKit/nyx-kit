@@ -3,7 +3,7 @@ import './NyxTree.scss'
 import type { KeyDict } from '@/types'
 import NyxTreeNode from './NyxTreeNode.vue'
 
-const model = defineModel<KeyDict<string | KeyDict<any>>>({ required: true })
+const model = defineModel<KeyDict<string | KeyDict<unknown>>>({ required: true })
 </script>
 
 <template>

@@ -93,7 +93,7 @@ const onTrackMouseDown = (event: PointerEvent) => {
   if (isRange.value) {
     const distToFirst = Math.abs(newValue - value1.value)
     const distToSecond = Math.abs(newValue - (value2.value as number))
-    let thumbIndex = distToFirst < distToSecond ? 0 : 1
+    const thumbIndex = distToFirst < distToSecond ? 0 : 1
 
     updateValue(thumbIndex, newValue)
     draggingThumb.value = thumbIndex

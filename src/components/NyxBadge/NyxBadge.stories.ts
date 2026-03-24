@@ -1,6 +1,6 @@
 import { defineComponent } from 'vue'
 import NyxBadge from './NyxBadge.vue'
-import { NyxTheme, NyxVariant, NyxSize, type KeyDict, NyxShape } from '@/types'
+import { NyxTheme, NyxVariant, NyxSize, type KeyDict } from '@/types'
 import type { NyxBadgeProps } from './NyxBadge.types'
 import { getKeyDictKeyByValue } from '@/utils'
 

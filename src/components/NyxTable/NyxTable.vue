@@ -20,7 +20,7 @@ const props = withDefaults(defineProps<NyxTableProps<T>>(), {
 const model = defineModel<T[]>({ default: [] })
 
 const columnTitles = computed(() => {
-  if (!!props.columnTitles) return props.columnTitles
+  if (props.columnTitles) return props.columnTitles
   if (model.value.length === 0) return []
   const item = model.value[0]
   if (!isObject(item)) return []
@@ -29,7 +29,7 @@ const columnTitles = computed(() => {
 })
 
 const numColumns = computed(() => {
-  const baseNumColumns = !!slots.actions ? 1 : 0
+  const baseNumColumns = slots.actions ? 1 : 0
   if (props.columns !== undefined) return props.columns + baseNumColumns
   if (model.value.length === 0) return 1 + baseNumColumns
   return columnTitles.value.length + baseNumColumns
@@ -50,8 +50,8 @@ const data = computed(() => {
 const { classList } = useNyxProps(props, { origin: 'NyxTable' })
 
 const style = computed<CssVariablesDict>(() => {
-  const actionsColumnValue = !!slots.actions ? 'auto' : ''
-  const gridTemplateColumn = !!props.gridTemplateColumns
+  const actionsColumnValue = slots.actions ? 'auto' : ''
+  const gridTemplateColumn = props.gridTemplateColumns
     ? `${ props.gridTemplateColumns } ${ actionsColumnValue }`
     : `repeat(${ numColumns.value }, 1fr)`
   return {

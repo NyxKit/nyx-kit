@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { shallowRef } from 'vue'
 import { NyxEditorMode, NyxEditorFormat, NyxTheme, NyxVariant, NyxSize } from '@/types'
+import NyxEditor from './NyxEditor.vue'
 
 // Tiptap relies on browser APIs not available in jsdom; mock the integration layer
 vi.mock('@tiptap/vue-3', () => ({
@@ -11,9 +12,6 @@ vi.mock('@tiptap/vue-3', () => ({
 
 vi.mock('@tiptap/starter-kit', () => ({ default: {} }))
 vi.mock('tiptap-markdown', () => ({ Markdown: {} }))
-
-// eslint-disable-next-line import/first
-import NyxEditor from './NyxEditor.vue'
 
 describe('NyxEditor', () => {
   it('renders without errors', () => {

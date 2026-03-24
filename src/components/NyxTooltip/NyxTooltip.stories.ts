@@ -3,6 +3,7 @@ import NyxTooltip from './NyxTooltip.vue'
 import { NyxPosition, NyxTheme, NyxSize, type KeyDict, NyxVariant } from '@/types'
 import { getKeyDictKeyByValue } from '@/utils'
 import NyxButton from '../NyxButton/NyxButton.vue'
+import type { NyxTooltipProps } from './NyxTooltip.types'
 
 export default {
   title: 'Components/NyxTooltip',
@@ -23,7 +24,7 @@ export default {
   },
 }
 
-const Template = (args: any) => defineComponent({
+const Template = (args: NyxTooltipProps) => defineComponent({
   components: { NyxTooltip, NyxButton },
   setup () {
     return { args }

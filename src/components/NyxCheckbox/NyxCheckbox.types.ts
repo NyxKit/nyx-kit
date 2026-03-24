@@ -1,4 +1,4 @@
-import type { NyxSize, NyxTheme, NyxVariant } from '@/types'
+import type { NyxSize, NyxTheme } from '@/types'
 
 export interface NyxCheckboxProps {
   label?: string

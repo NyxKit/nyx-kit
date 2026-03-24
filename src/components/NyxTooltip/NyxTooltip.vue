@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import './NyxTooltip.scss'
-import { defineExpose, defineSlots, ref, useId, useTemplateRef, type Slots } from 'vue'
+import { defineExpose, ref, useId, useTemplateRef } from 'vue'
 import { NyxPosition, NyxSize } from '@/types'
 import type { NyxTooltipProps } from './NyxTooltip.types'
 import { useTeleportPosition, useNyxProps } from '@/composables'
@@ -12,8 +12,6 @@ const props = withDefaults(defineProps<NyxTooltipProps>(), {
 })
 
 const model = defineModel<boolean>({ default: false })
-
-const slots: Slots = defineSlots()
 
 const elRelative = useTemplateRef<HTMLDivElement>('elTooltip')
 const elAbsolute = useTemplateRef<HTMLDivElement>('elTooltipContent')
@@ -27,7 +25,6 @@ const { cssVariables, computedPosition, updateCssVariables } = useTeleportPositi
 
 const open = () => model.value = true
 const close = () => model.value = false
-const toggle = () => model.value = !model.value
 
 const onMouseOver = () => props.trigger === 'hover' && open()
 const onMouseLeave = () => props.trigger !== 'manual' && close()

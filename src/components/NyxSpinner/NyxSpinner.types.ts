@@ -1,4 +1,4 @@
-import type { NyxSize, NyxTheme, NyxVariant } from '@/types'
+import type { NyxSize, NyxTheme } from '@/types'
 import type { DurationSpeed } from '@/types/string'
 
 export enum NyxSpinnerVariant {
