@@ -1,13 +1,23 @@
-import type { KeyDict } from '@/types'
+export interface NyxTreeModel {
+  disabled?: boolean
+  [key: string]: string | boolean | NyxTreeModel | undefined
+}
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface NyxTreeProps {}
+export interface NyxTreeProps {
+  selected?: string[]
+  open?: string[][]
+  disabled?: boolean
+}
 
 export interface NyxTreeEmits {
-  (e: 'select', value: unknown[]): void
+  (e: 'select', path: string[]): void
 }
 
 export interface NyxTreeNodeProps {
-  node: string | KeyDict<string | KeyDict<unknown>>
+  label: string
+  node: string | NyxTreeModel
   path: string[]
+  selected?: string[]
+  open?: string[][]
+  disabled?: boolean
 }

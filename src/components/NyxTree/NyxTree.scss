@@ -1,7 +1,61 @@
 .nyx-tree {
   list-style: none;
+  outline: none;
+
+  &[aria-disabled='true'] {
+    opacity: 0.4;
+    pointer-events: none;
+  }
 
   .nyx-tree-node {
     padding-left: 1rem;
+
+    &__label {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.2rem 0.4rem;
+      border-radius: var(--nyx-radius-sm);
+      cursor: pointer;
+      user-select: none;
+
+      &:hover {
+        background-color: var(--nyx-c-gray-dark-3);
+      }
+    }
+
+    &__toggle {
+      font-size: 0.7em;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    &__value {
+      color: var(--nyx-c-gray);
+      font-size: 0.85em;
+      margin-left: 0.25rem;
+    }
+
+    &--selected > .nyx-tree-node__label {
+      background-color: var(--nyx-c-gray-dark-2);
+      color: var(--nyx-c-primary);
+    }
+
+    &--disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+  }
+
+  .nyx-tree-children {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.25s ease, opacity 0.2s ease;
+  }
+
+  .nyx-tree-node--expanded > .nyx-tree-children {
+    max-height: 2000px;
+    opacity: 1;
   }
 }
