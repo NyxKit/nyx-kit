@@ -107,7 +107,7 @@ docs/
 
 ### For new components
 
-> **Prefer spec-kit for new components.** Run `/speckit.specify` → `/speckit.plan` → `/speckit.tasks` → `/speckit.implement` to go from a description to an implementation plan with a full task list. Then follow the steps below.
+> **Prefer spec-kit for new components.** Spec Kit commands are mirrored for both Claude Code and OpenCode: use the files in `.claude/commands/` for Claude Code and `.opencode/commands/` for OpenCode. Run `/speckit.specify` → `/speckit.plan` → `/speckit.tasks` → `/speckit.implement` to go from a description to an implementation plan with a full task list. Then follow the steps below.
 
 1. Check `README.md` and `docs/architecture/component-model.md` for the intended API and conventions.
 2. Create `docs/specs/components/Nyx<Name>.spec.md` — see **Component Spec Files** below. (This is also the output of `/speckit.specify` — keep both in sync.)
@@ -121,6 +121,35 @@ docs/
 2. Keep prop names and defaults consistent with sibling components — check `docs/architecture/component-model.md`.
 3. Update the story if the API changes. A story that no longer compiles is a failing test.
 4. **Update `docs/specs/components/Nyx<Name>.spec.md`** to reflect any change to the component's props, emits, slots, internal architecture, or behaviour. The spec file is a living document — it must always describe the component as it currently exists.
+
+### Components that mutate nested model data
+
+When a component accepts an array or tree model (`T[]`) and needs to mutate a nested property (e.g. setting `status: Active` on a selected node inside a deeply nested structure), two things must happen:
+
+1. **Reassign the model after mutating.** Vue 3's `defineModel` only emits `update:modelValue` when the model reference itself changes — not when a nested property is mutated. The component must return a new array reference to fire the emit.
+
+2. **Also emit a semantic event** (e.g. `select`) carrying the affected node, so consumers can react to the specific interaction.
+
+```ts
+// Pattern for tree/list components mutating nested model data
+function updateNodeInTree(nodes: MyNode[], id: string, updater: (n: MyNode) => void): MyNode[] {
+  return nodes.map(node => {
+    if (node.id === id) { updater(node); return { ...node } }
+    if (node.children?.length) return { ...node, children: updateNodeInTree(node.children, id, updater) }
+    return node
+  })
+}
+
+function handleSelect(node: MyNode) {
+  const updated = updateNodeInTree(model.value, node.id, target => {
+    target.status = NodeStatus.Active
+  })
+  model.value = updated       // fires update:modelValue
+  emit('select', node)        // semantic notification
+}
+```
+
+Update stories and tests accordingly — consumers should not need manual mutation in `@select` handlers.
 
 ### For changes to types, utils, or composables
 

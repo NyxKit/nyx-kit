@@ -1,11 +1,5 @@
 .nyx-tree {
   list-style: none;
-  outline: none;
-
-  &[aria-disabled='true'] {
-    opacity: 0.4;
-    pointer-events: none;
-  }
 
   .nyx-tree-node {
     padding-left: 1rem;
@@ -30,13 +24,7 @@
       flex-shrink: 0;
     }
 
-    &__value {
-      color: var(--nyx-c-gray);
-      font-size: 0.85em;
-      margin-left: 0.25rem;
-    }
-
-    &--selected > .nyx-tree-node__label {
+    &--active > .nyx-tree-node__label {
       background-color: var(--nyx-c-gray-dark-2);
       color: var(--nyx-c-primary);
     }

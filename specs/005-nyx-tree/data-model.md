@@ -11,105 +11,107 @@
 The input data structure accepted by `NyxTree` via `v-model`.
 
 ```ts
-type NyxTreeModel = Record<string, string | NyxTreeModel>
+type NyxTreeModel = NyxTreeNodeBase[]
 ```
 
-- Keys are string labels (rendered as node labels)
-- Leaf values are strings (rendered as the leaf's value text, currently unused visually but preserved in the model)
-- Branch values are nested `NyxTreeModel` objects (recursive)
+- Top-level data is an ordered array of nodes
+- Each node has a stable `id`, display `label`, and recursive `children`
+- Expand/select state is derived from optional `status`
+- Disabled state is derived from optional `disabled`
 - Depth is unbounded
 
 **Examples:**
 
 ```ts
-// Flat (all leaves)
-const flat: NyxTreeModel = { Alpha: 'a', Beta: 'b', Gamma: 'c' }
+const flat: NyxTreeModel = [
+  { id: 'alpha', label: 'Alpha', children: [] },
+  { id: 'beta', label: 'Beta', children: [] },
+]
 
-// Nested (branches + leaves)
-const nested: NyxTreeModel = {
-  Fruits: { Apple: 'apple', Banana: 'banana' },
-  Veggies: { Carrot: 'carrot' }
+const nested: NyxTreeModel = [
+  {
+    id: 'fruits',
+    label: 'Fruits',
+    status: NyxTreeNodeStatus.Open,
+    children: [
+      { id: 'apple', label: 'Apple', children: [] },
+      { id: 'banana', label: 'Banana', children: [] },
+    ],
+  },
+]
+```
+
+---
+
+### NyxTreeNodeBase
+
+```ts
+interface NyxTreeNodeBase {
+  id: string
+  label: string
+  children: NyxTreeNodeBase[]
+  status?: NyxTreeNodeStatus
+  disabled?: boolean
 }
 ```
 
 ---
 
-### NyxTreePath
-
-A full path from the root to a specific node, represented as an ordered array of string keys.
+### NyxTreeNodeStatus
 
 ```ts
-type NyxTreePath = string[]
+enum NyxTreeNodeStatus {
+  Active = 'active',
+  Open = 'open',
+  Closed = 'closed',
+}
 ```
 
-**Examples:**
-
-```ts
-['Alpha']             // top-level leaf
-['Fruits']            // top-level branch
-['Fruits', 'Apple']   // nested leaf
-```
+- `Closed` is the default when status is omitted
+- `Open` expands a branch without selecting it
+- `Active` selects a node and also expands it when the node is a branch
 
 ---
 
-### NyxTreeProps (component props)
+### NyxTreeProps
 
 ```ts
 interface NyxTreeProps {
-  disabled?: boolean    // default: false — prevents all interaction
-  selected?: string[]   // default: [] — currently selected node path (controlled)
+  disabled?: boolean
 }
 ```
 
-`v-model` binds to `NyxTreeModel` (the full data object).
+`v-model` binds to `NyxTreeModel`.
 
 ---
 
-### NyxTreeEmits (component emits)
+### NyxTreeEmits
 
 ```ts
 interface NyxTreeEmits {
-  (e: 'select', path: string[]): void
+  (e: 'select', node: NyxTreeNodeBase): void
 }
 ```
 
-Emitted whenever a node is clicked or activated via keyboard. Carries the full `NyxTreePath` from root to the selected node.
-
----
-
-### NyxTreeNodeProps (internal sub-component props)
-
-```ts
-interface NyxTreeNodeProps {
-  label: string                                  // the key for this node in its parent dict
-  node: string | NyxTreeModel                    // leaf string or nested object
-  path: string[]                                 // full path from root to this node
-  selected?: string[]                            // propagated from NyxTree for highlighting
-  disabled?: boolean                             // propagated from NyxTree
-}
-```
+Emitted whenever a node label is clicked or activated via keyboard. Carries the full node object.
 
 ---
 
 ## State Transitions
 
-### Branch Node (expand/collapse)
+### Branch rendering
 
-```
-Initial state: expanded = true
-
-expanded=true  --[click label]--> expanded=false
-expanded=false --[click label]--> expanded=true
-expanded=true  --[ArrowLeft]----> expanded=false (if focused)
-expanded=false --[ArrowRight]---> expanded=true  (if focused)
+```text
+status omitted / Closed -> branch renders collapsed
+status Open            -> branch renders expanded
+status Active          -> branch renders expanded and selected
 ```
 
 ### Selection
 
-```
-No selection  --[click node / Enter / Space]--> node selected, 'select' emitted
-Node selected --[click different node]---------> previous deselected, new node selected, 'select' emitted
-Node selected --[click same node]--------------> 'select' emitted (no toggle in v1)
+```text
+Click / Enter / Space on node -> 'select' emitted with node object
+Parent updates node.status    -> tree re-renders to show new active/open state
 ```
 
 ---
@@ -118,8 +120,9 @@ Node selected --[click same node]--------------> 'select' emitted (no toggle in 
 
 | Rule | Detail |
 |------|--------|
-| Model may be empty | `{}` renders an empty `<ul>` with no nodes |
-| Leaf values may be empty string | Node still renders with its label |
-| Keys may contain any string | No length or character restrictions imposed by the component |
+| Model may be empty | `[]` renders an empty `<ul>` with no nodes |
+| Labels may be empty strings | Node still renders |
+| Labels may contain any string | No length or character restrictions imposed by the component |
 | Depth is unbounded | No artificial depth limit |
-| Mixed flat+nested in same object | Supported — each key is independently leaf or branch |
+| Mixed branch/leaf arrays | Supported — each node is evaluated independently |
+| Disabled nodes cascade | A node with `disabled: true` disables itself and its subtree |

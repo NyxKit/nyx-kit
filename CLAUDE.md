@@ -24,7 +24,7 @@ Do not add a new Rust crate, npm package, or external service without flagging i
 
 ## Spec-Driven Development (spec-kit)
 
-This project uses [GitHub spec-kit](https://github.com/github/spec-kit) for spec-driven development. Slash commands are available at `.claude/commands/speckit.*.md`.
+This project uses [GitHub spec-kit](https://github.com/github/spec-kit) for spec-driven development. Slash commands are available at `.claude/commands/speckit.*.md` for Claude Code and mirrored at `.opencode/commands/speckit.*.md` for OpenCode.
 
 **Workflow for new features:**
 
@@ -37,6 +37,8 @@ This project uses [GitHub spec-kit](https://github.com/github/spec-kit) for spec
 7. `/speckit.implement` — execute all tasks
 
 Spec artifacts live in `.specify/<feature-branch>/` (spec.md, plan.md, tasks.md).
+
+The OpenCode command mirrors are generated from the Claude command files by `.specify/scripts/bash/sync-opencode-commands.sh`. When a Spec Kit command changes, re-run that script so both environments stay aligned.
 
 **Nyx Kit specific rule:** every `/speckit.specify` run must also produce or update the corresponding `docs/specs/<layer>/<Symbol>.spec.md` file. The spec-kit artifact and the docs spec are complementary — keep both in sync.
 

@@ -74,6 +74,13 @@ export { default as NyxFoo } from './NyxFoo.vue'
 - One logical change per commit. Do not bundle unrelated changes.
 - Do not commit generated files (`dist/`, `storybook-static/`).
 
+## AI Workflow
+
+- GitHub spec-kit is the default workflow for new features and new exported symbols.
+- Keep Spec Kit slash commands available in both `.claude/commands/` and `.opencode/commands/`.
+- `.claude/commands/` is the authoring source; `.opencode/commands/` is the OpenCode mirror.
+- When a Spec Kit command changes, run `.specify/scripts/bash/sync-opencode-commands.sh` and commit the regenerated OpenCode command files in the same change.
+
 ## Storybook Stories
 
 - Every component must have a story file.

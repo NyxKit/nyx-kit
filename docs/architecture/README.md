@@ -76,4 +76,4 @@ A first-class alternative visual mode using the `Press Start 2P` font and `box-s
 | NyxTabs | Tabbed content with classic/modern variants |
 | NyxTextarea | Multiline text input |
 | NyxTooltip | Teleported tooltip |
-| NyxTree | Recursive tree from nested object |
+| NyxTree | Recursive tree from status-driven `NyxTreeNodeBase[]` data |

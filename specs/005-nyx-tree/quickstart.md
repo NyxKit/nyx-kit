@@ -11,29 +11,49 @@
 import { ref } from 'vue'
 import { NyxTree } from 'nyx-kit/components'
 
-const model = ref({
-  Fruits: {
-    Apple: 'apple',
-    Banana: 'banana',
+const model = ref([
+  {
+    id: 'fruits',
+    label: 'Fruits',
+    status: 'open',
+    children: [
+      { id: 'apple', label: 'Apple', children: [] },
+      { id: 'banana', label: 'Banana', children: [] },
+    ],
   },
-  Veggies: {
-    Carrot: 'carrot',
+  {
+    id: 'veggies',
+    label: 'Veggies',
+    children: [
+      { id: 'carrot', label: 'Carrot', children: [] },
+    ],
   },
-})
+])
 
-const selectedPath = ref<string[]>([])
+function clearActive(nodes: typeof model.value) {
+  for (const node of nodes) {
+    if (node.status === 'active') {
+      node.status = 'closed'
+    }
+    clearActive(node.children)
+  }
+}
 
-function onSelect(path: string[]) {
-  selectedPath.value = path
+function onSelect(node: (typeof model.value)[number]) {
+  if (!node.children.length) {
+    clearActive(model.value)
+    node.status = 'active'
+    return
+  }
+
+  node.status = node.status === 'open' || node.status === 'active'
+    ? 'closed'
+    : 'open'
 }
 </script>
 
 <template>
-  <NyxTree
-    v-model="model"
-    :selected="selectedPath"
-    @select="onSelect"
-  />
+  <NyxTree v-model="model" @select="onSelect" />
 </template>
 ```
 
@@ -43,8 +63,12 @@ function onSelect(path: string[]) {
 
 ```vue
 <NyxTree
-  v-model="{ Alpha: 'a', Beta: 'b', Gamma: 'c' }"
-  @select="(path) => console.log(path)"
+  v-model="[
+    { id: 'alpha', label: 'Alpha', children: [] },
+    { id: 'beta', label: 'Beta', children: [] },
+    { id: 'gamma', label: 'Gamma', children: [] },
+  ]"
+  @select="(node) => console.log(node.id)"
 />
 ```
 
@@ -58,15 +82,15 @@ function onSelect(path: string[]) {
 
 ---
 
-## Reading the selected path
+## Reading the selected node
 
-The `select` event emits a `string[]` path. For example, clicking `Apple` inside `Fruits` emits `['Fruits', 'Apple']`. Use this to drive routing, detail panels, or any downstream logic.
+The `select` event emits a `NyxTreeNodeBase`. Use the emitted node to drive routing, detail panels, or parent-managed `status` updates.
 
 ---
 
 ## Known limitations (v1)
 
 - Single selection only; multi-select is not supported.
-- Leaf values are not displayed (only labels/keys are rendered).
 - Slots for custom node content are not available yet.
 - Drag-and-drop reordering is not supported.
+- If no node is active, treeitem focus is programmatic rather than full roving-tabindex fallback.
