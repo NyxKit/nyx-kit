@@ -1,49 +1,72 @@
 .nyx-tree {
   list-style: none;
+  margin: 0;
+  padding: 0;
+  outline: none;
 
-  .nyx-tree-node {
-    padding-left: 1rem;
+  &[aria-disabled="true"] {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
+  }
+}
 
-    &__label {
-      display: flex;
-      align-items: center;
-      gap: 0.25rem;
-      padding: 0.2rem 0.4rem;
-      border-radius: var(--nyx-radius-sm);
-      cursor: pointer;
-      user-select: none;
+.nyx-tree-node {
+  list-style: none;
 
-      &:hover {
-        background-color: var(--nyx-c-gray-dark-3);
-      }
-    }
+  &__label {
+    display: flex;
+    align-items: center;
+    gap: var(--nyx-gap-xs, 0.4rem);
+    padding: calc(var(--nyx-pad-xs, 0.7rem) * 0.5) var(--nyx-pad-sm, 0.8rem);
+    border-radius: var(--nyx-radius-sm);
+    cursor: pointer;
+    font-size: var(--nyx-font-size-md, 0.9rem);
+    color: var(--nyx-c-text-dark-1, inherit);
+    user-select: none;
+    transition: background-color var(--nyx-speed-fast, 0.2s);
 
-    &__toggle {
-      font-size: 0.7em;
-      line-height: 1;
-      flex-shrink: 0;
-    }
-
-    &--active > .nyx-tree-node__label {
-      background-color: var(--nyx-c-gray-dark-2);
-      color: var(--nyx-c-primary);
-    }
-
-    &--disabled {
-      opacity: 0.4;
-      pointer-events: none;
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.06);
     }
   }
 
-  .nyx-tree-children {
-    overflow: hidden;
-    max-height: 0;
-    opacity: 0;
-    transition: max-height 0.25s ease, opacity 0.2s ease;
+  &__toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75em;
+    width: 1em;
+    flex-shrink: 0;
   }
 
-  .nyx-tree-node--expanded > .nyx-tree-children {
-    max-height: 2000px;
-    opacity: 1;
+  &--active > .nyx-tree-node__label {
+    background-color: var(--nyx-c-primary, var(--nyx-c-default));
+    color: var(--nyx-c-white-soft, #f9f9f9);
+
+    &:hover {
+      background-color: var(--nyx-c-primary-highlight, var(--nyx-c-default-highlight));
+    }
   }
+
+  &--disabled > .nyx-tree-node__label {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+.nyx-tree-children {
+  list-style: none;
+  margin: 0;
+  padding-left: var(--nyx-pad-md, 0.9rem);
+  display: none;
+
+  &[inert] {
+    display: none;
+  }
+}
+
+.nyx-tree-node--expanded > .nyx-tree-children {
+  display: block;
 }

@@ -1,83 +1,71 @@
 <script setup lang="ts">
 import './NyxTree.scss'
 import { ref } from 'vue'
-import type { NyxTreeProps, NyxTreeEmits, NyxTreeModel, NyxTreeNodeBase } from './NyxTree.types'
-import { NyxTreeNodeStatus } from './NyxTree.types'
 import NyxTreeNode from './NyxTreeNode.vue'
-
-const model = defineModel<NyxTreeModel>({ required: true })
+import { NyxTreeNodeStatus } from './NyxTree.types'
+import type { NyxTreeProps, NyxTreeEmits, NyxTreeModel, NyxTreeNodeBase } from './NyxTree.types'
 
 const props = withDefaults(defineProps<NyxTreeProps>(), {
   disabled: false,
 })
 
+const model = defineModel<NyxTreeModel>({ required: true })
+
 const emit = defineEmits<NyxTreeEmits>()
 
 const treeRef = ref<HTMLElement | null>(null)
 
-function findNode(nodes: NyxTreeNodeBase[], nodeId: string): NyxTreeNodeBase | undefined {
-  for (const node of nodes) {
-    if (node.id === nodeId) return node
-    if (node.children.length > 0) {
-      const found = findNode(node.children, nodeId)
-      if (found) return found
-    }
-  }
-  return undefined
-}
-
-function applySelection(nodes: NyxTreeNodeBase[], targetId: string): NyxTreeNodeBase[] {
-  return nodes.map(node => {
-    const newStatus = node.id === targetId
-      ? NyxTreeNodeStatus.Active
-      : node.status === NyxTreeNodeStatus.Active ? undefined : node.status
-    return {
-      ...node,
-      status: newStatus,
-      children: node.children.length > 0 ? applySelection(node.children, targetId) : node.children,
-    }
-  })
-}
-
-function handleNodeSelect(node: NyxTreeNodeBase) {
-  if (props.disabled) return
-
-  const target = findNode(model.value, node.id)
-  if (!target) return
-
-  model.value = applySelection(model.value, node.id)
-
-  emit('select', node)
-}
-
 function getVisibleItems(): HTMLElement[] {
-  return Array.from(treeRef.value?.querySelectorAll('[role="treeitem"]') ?? [])
-    .filter(el => !el.closest('[inert]')) as HTMLElement[]
+  if (!treeRef.value) return []
+  return Array
+    .from(treeRef.value.querySelectorAll<HTMLElement>('[role="treeitem"]'))
+    .filter(el => !el.closest('[inert]'))
 }
 
 function handleKeydown(event: KeyboardEvent) {
   if (props.disabled) return
+
   const items = getVisibleItems()
   const focused = document.activeElement as HTMLElement
-  const idx = items.indexOf(focused)
+  const currentIndex = items.indexOf(focused)
 
-  switch (event.key) {
-    case 'ArrowDown':
-      event.preventDefault()
-      items[Math.min(idx + 1, items.length - 1)]?.focus()
-      break
-    case 'ArrowUp':
-      event.preventDefault()
-      items[Math.max(idx - 1, 0)]?.focus()
-      break
-    case 'ArrowRight':
-    case 'ArrowLeft':
-    case 'Enter':
-    case ' ':
-      event.preventDefault()
-      focused?.querySelector<HTMLElement>('.nyx-tree-node__label')?.click()
-      break
+  if (event.key === 'ArrowDown') {
+    event.preventDefault()
+    const next = items[currentIndex + 1]
+    if (next) next.focus()
+  } else if (event.key === 'ArrowUp') {
+    event.preventDefault()
+    const prev = items[currentIndex - 1]
+    if (prev) prev.focus()
+  } else if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault()
+    const label = focused?.querySelector<HTMLElement>('.nyx-tree-node__label')
+    label?.click()
+  } else if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+    event.preventDefault()
+    const label = focused?.querySelector<HTMLElement>('.nyx-tree-node__label')
+    label?.click()
   }
+}
+
+function clearActive(nodes: NyxTreeModel) {
+  for (const node of nodes) {
+    if (node.status === NyxTreeNodeStatus.Active) node.status = NyxTreeNodeStatus.Closed
+    if (node.children.length) clearActive(node.children)
+  }
+}
+
+function handleSelect(node: NyxTreeNodeBase) {
+  if (node.children.length === 0) {
+    clearActive(model.value)
+    node.status = NyxTreeNodeStatus.Active
+  } else {
+    node.status =
+      node.status === NyxTreeNodeStatus.Open || node.status === NyxTreeNodeStatus.Active
+        ? NyxTreeNodeStatus.Closed
+        : NyxTreeNodeStatus.Open
+  }
+  emit('select', node)
 }
 </script>
 
@@ -86,7 +74,7 @@ function handleKeydown(event: KeyboardEvent) {
     ref="treeRef"
     class="nyx-tree"
     role="tree"
-    :aria-disabled="disabled || undefined"
+    :aria-disabled="props.disabled || undefined"
     :tabindex="0"
     @keydown="handleKeydown"
   >
@@ -94,8 +82,8 @@ function handleKeydown(event: KeyboardEvent) {
       v-for="node in model"
       :key="node.id"
       :node="node"
-      :disabled="disabled"
-      @select="handleNodeSelect"
+      :disabled="props.disabled"
+      @select="handleSelect"
     />
   </ul>
 </template>

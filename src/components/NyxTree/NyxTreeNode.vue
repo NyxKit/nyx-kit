@@ -12,14 +12,17 @@ const props = defineProps<{
   disabled?: boolean
 }>()
 
-const emit = defineEmits<{ (e: 'select', node: NyxTreeNodeBase): void }>()
+const emit = defineEmits<{
+  (e: 'select', node: NyxTreeNodeBase): void
+}>()
 
-const isLeaf = computed(() => !props.node.children.length)
-const isActive = computed(() => props.node.status === NyxTreeNodeStatus.Active)
+const isBranch = computed(() => props.node.children.length > 0)
 const isExpanded = computed(() =>
-  props.node.status === NyxTreeNodeStatus.Active || props.node.status === NyxTreeNodeStatus.Open
+  props.node.status === NyxTreeNodeStatus.Open ||
+  props.node.status === NyxTreeNodeStatus.Active
 )
-const isDisabled = computed(() => props.disabled || !!props.node.disabled)
+const isActive = computed(() => props.node.status === NyxTreeNodeStatus.Active)
+const isDisabled = computed(() => props.disabled || props.node.disabled)
 
 function handleClick() {
   if (isDisabled.value) return
@@ -31,24 +34,24 @@ function handleClick() {
   <li
     class="nyx-tree-node"
     :class="{
-      'nyx-tree-node--branch': !isLeaf,
-      'nyx-tree-node--leaf': isLeaf,
-      'nyx-tree-node--expanded': !isLeaf && isExpanded,
+      'nyx-tree-node--branch': isBranch,
+      'nyx-tree-node--leaf': !isBranch,
+      'nyx-tree-node--expanded': isBranch && isExpanded,
       'nyx-tree-node--active': isActive,
       'nyx-tree-node--disabled': isDisabled,
     }"
     role="treeitem"
-    :aria-expanded="!isLeaf ? isExpanded : undefined"
-    :aria-selected="isActive || undefined"
+    :aria-expanded="isBranch ? isExpanded : undefined"
+    :aria-selected="isActive"
     :aria-disabled="isDisabled || undefined"
     :tabindex="isActive ? 0 : -1"
   >
     <span class="nyx-tree-node__label" @click="handleClick">
-      <span v-if="!isLeaf" class="nyx-tree-node__toggle">{{ isExpanded ? '▾' : '▸' }}</span>
+      <span v-if="isBranch" class="nyx-tree-node__toggle">{{ isExpanded ? '▾' : '▸' }}</span>
       {{ node.label }}
     </span>
     <ul
-      v-if="!isLeaf"
+      v-if="isBranch"
       class="nyx-tree-children"
       role="group"
       :inert="!isExpanded || undefined"
@@ -57,7 +60,7 @@ function handleClick() {
         v-for="child in node.children"
         :key="child.id"
         :node="child"
-        :disabled="disabled"
+        :disabled="isDisabled"
         @select="emit('select', $event)"
       />
     </ul>

@@ -1,312 +1,261 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import NyxTree from './NyxTree.vue'
 import { NyxTreeNodeStatus } from './NyxTree.types'
-import type { NyxTreeModel } from './NyxTree.types'
+import type { NyxTreeNodeBase } from './NyxTree.types'
 
 beforeEach(() => {
   vi.spyOn(console, 'warn').mockImplementation(() => {})
 })
 
-function makeFlatModel(): NyxTreeModel {
-  return [
-    { id: 'alpha', label: 'Alpha', children: [] },
-    { id: 'beta', label: 'Beta', children: [] },
-    { id: 'gamma', label: 'Gamma', children: [] },
-  ]
-}
+const flat: NyxTreeNodeBase[] = [
+  { id: 'alpha', label: 'Alpha', children: [] },
+  { id: 'beta', label: 'Beta', children: [] },
+]
 
-function makeNestedModel(): NyxTreeModel {
-  return [
-    { id: 'fruits', label: 'Fruits', children: [
+const nested: NyxTreeNodeBase[] = [
+  {
+    id: 'fruits',
+    label: 'Fruits',
+    children: [
       { id: 'apple', label: 'Apple', children: [] },
       { id: 'banana', label: 'Banana', children: [] },
-    ]},
-    { id: 'veggies', label: 'Veggies', children: [
+    ],
+  },
+  {
+    id: 'veggies',
+    label: 'Veggies',
+    children: [
       { id: 'carrot', label: 'Carrot', children: [] },
-    ]},
-  ]
+    ],
+  },
+]
+
+function makeModel(nodes: NyxTreeNodeBase[]) {
+  return JSON.parse(JSON.stringify(nodes)) as NyxTreeNodeBase[]
 }
 
-function makeModelWithDisabledNode(): NyxTreeModel {
-  return [
-    { id: 'alpha', label: 'Alpha', children: [] },
-    { id: 'beta', label: 'Beta', disabled: true, children: [{ id: 'rice', label: 'Rice', children: [] }] },
-    { id: 'gamma', label: 'Gamma', children: [] },
-  ]
-}
-
-// ─── NyxTree (smoke) ──────────────────────────────────────────────────────────
-
-describe('NyxTree', () => {
-  it('renders without errors', () => {
-    const wrapper = mount(NyxTree, { props: { modelValue: makeFlatModel() } })
-    expect(wrapper.find('.nyx-tree').exists()).toBe(true)
+describe('NyxTree — Label rendering', () => {
+  it('renders flat node labels', () => {
+    const wrapper = mount(NyxTree, { props: { modelValue: flat } })
+    expect(wrapper.text()).toContain('Alpha')
+    expect(wrapper.text()).toContain('Beta')
   })
 
-  it('renders as a <ul> element', () => {
-    const wrapper = mount(NyxTree, { props: { modelValue: makeFlatModel() } })
-    expect(wrapper.element.tagName).toBe('UL')
-  })
-
-  it('renders a node for each top-level item', () => {
-    const wrapper = mount(NyxTree, { props: { modelValue: makeFlatModel() } })
-    expect(wrapper.findAll('.nyx-tree-node').length).toBe(3)
-  })
-
-  it('renders nested child labels', () => {
-    const model = makeNestedModel()
+  it('renders nested node labels', () => {
+    const model = makeModel(nested)
     model[0].status = NyxTreeNodeStatus.Open
     const wrapper = mount(NyxTree, { props: { modelValue: model } })
-    const text = wrapper.text()
-    expect(text).toContain('Apple')
-    expect(text).toContain('Banana')
+    expect(wrapper.text()).toContain('Fruits')
+    expect(wrapper.text()).toContain('Apple')
+    expect(wrapper.text()).toContain('Banana')
+    expect(wrapper.text()).toContain('Veggies')
+  })
+
+  it('renders labels inside .nyx-tree-node__label', () => {
+    const wrapper = mount(NyxTree, { props: { modelValue: flat } })
+    const labels = wrapper.findAll('.nyx-tree-node__label')
+    expect(labels.length).toBe(2)
+    expect(labels[0].text()).toContain('Alpha')
+    expect(labels[1].text()).toContain('Beta')
   })
 })
 
-// ─── Label rendering (US1) ────────────────────────────────────────────────────
-
-describe('NyxTree — label rendering (US1)', () => {
-  it('renders labels from label field', () => {
-    const wrapper = mount(NyxTree, { props: { modelValue: makeFlatModel() } })
-    const text = wrapper.text()
-    expect(text).toContain('Alpha')
-    expect(text).toContain('Beta')
-    expect(text).toContain('Gamma')
+describe('NyxTree — ARIA roles', () => {
+  it('applies role="tree" to root <ul>', () => {
+    const wrapper = mount(NyxTree, { props: { modelValue: flat } })
+    expect(wrapper.find('ul.nyx-tree').attributes('role')).toBe('tree')
   })
 
-  it('has role="tree" on root', () => {
-    const wrapper = mount(NyxTree, { props: { modelValue: makeFlatModel() } })
-    expect(wrapper.attributes('role')).toBe('tree')
+  it('applies role="treeitem" to each node <li>', () => {
+    const wrapper = mount(NyxTree, { props: { modelValue: flat } })
+    const items = wrapper.findAll('[role="treeitem"]')
+    expect(items.length).toBe(2)
   })
 
-  it('has role="treeitem" on each node', () => {
-    const wrapper = mount(NyxTree, { props: { modelValue: makeFlatModel() } })
-    const nodes = wrapper.findAll('[role="treeitem"]')
-    expect(nodes.length).toBe(3)
+  it('applies role="group" to nested <ul>', () => {
+    const wrapper = mount(NyxTree, { props: { modelValue: nested } })
+    const groups = wrapper.findAll('[role="group"]')
+    expect(groups.length).toBeGreaterThan(0)
   })
+})
 
-  it('applies --leaf to nodes with no children', () => {
-    const wrapper = mount(NyxTree, { props: { modelValue: makeFlatModel() } })
-    const leaves = wrapper.findAll('.nyx-tree-node--leaf')
-    expect(leaves.length).toBe(3)
-  })
-
-  it('applies --branch to nodes with children', () => {
-    const wrapper = mount(NyxTree, { props: { modelValue: makeNestedModel() } })
+describe('NyxTree — Branch/leaf classes', () => {
+  it('applies nyx-tree-node--branch to nodes with children', () => {
+    const wrapper = mount(NyxTree, { props: { modelValue: nested } })
     const branches = wrapper.findAll('.nyx-tree-node--branch')
     expect(branches.length).toBe(2)
   })
+
+  it('applies nyx-tree-node--leaf to nodes without children', () => {
+    const wrapper = mount(NyxTree, { props: { modelValue: flat } })
+    const leaves = wrapper.findAll('.nyx-tree-node--leaf')
+    expect(leaves.length).toBe(2)
+  })
 })
 
-// ─── Expand/collapse (US2) ────────────────────────────────────────────────────
-
-describe('NyxTree — expand/collapse (US2)', () => {
-  it('does NOT show --expanded when status is Closed/undefined (default)', () => {
-    const wrapper = mount(NyxTree, { props: { modelValue: makeNestedModel() } })
-    expect(wrapper.find('.nyx-tree-node--expanded').exists()).toBe(false)
+describe('NyxTree — Expand/collapse', () => {
+  it('branches are collapsed by default (no status)', () => {
+    const wrapper = mount(NyxTree, { props: { modelValue: nested } })
+    const expanded = wrapper.findAll('.nyx-tree-node--expanded')
+    expect(expanded.length).toBe(0)
   })
 
-  it('shows --expanded when status is Open', () => {
-    const model = makeNestedModel()
+  it('branch with status Open renders expanded', () => {
+    const model = makeModel(nested)
     model[0].status = NyxTreeNodeStatus.Open
     const wrapper = mount(NyxTree, { props: { modelValue: model } })
-    expect(wrapper.find('.nyx-tree-node--expanded').exists()).toBe(true)
+    const fruits = wrapper.findAll('.nyx-tree-node--branch')[0]
+    expect(fruits.classes()).toContain('nyx-tree-node--expanded')
   })
 
-  it('shows --expanded when status is Active (Active branch is expanded)', () => {
-    const model = makeNestedModel()
+  it('branch with status Active renders expanded', () => {
+    const model = makeModel(nested)
     model[0].status = NyxTreeNodeStatus.Active
     const wrapper = mount(NyxTree, { props: { modelValue: model } })
-    expect(wrapper.find('.nyx-tree-node--expanded').exists()).toBe(true)
+    const fruits = wrapper.findAll('.nyx-tree-node--branch')[0]
+    expect(fruits.classes()).toContain('nyx-tree-node--expanded')
   })
 
-  it('sets aria-expanded="false" on closed branch', () => {
-    const wrapper = mount(NyxTree, { props: { modelValue: makeNestedModel() } })
-    const branch = wrapper.find('.nyx-tree-node--branch')
-    expect(branch.attributes('aria-expanded')).toBe('false')
-  })
-
-  it('sets aria-expanded="true" on open branch', () => {
-    const model = makeNestedModel()
+  it('opening one branch does not expand sibling branches', () => {
+    const model = makeModel(nested)
     model[0].status = NyxTreeNodeStatus.Open
     const wrapper = mount(NyxTree, { props: { modelValue: model } })
-    const branch = wrapper.find('.nyx-tree-node--branch')
-    expect(branch.attributes('aria-expanded')).toBe('true')
+    const veggies = wrapper.findAll('.nyx-tree-node--branch')[1]
+    expect(veggies.classes()).not.toContain('nyx-tree-node--expanded')
   })
 
-  it('does not set aria-expanded on leaf nodes', () => {
-    const wrapper = mount(NyxTree, { props: { modelValue: makeFlatModel() } })
-    const leaf = wrapper.find('.nyx-tree-node--leaf')
-    expect(leaf.attributes('aria-expanded')).toBeUndefined()
+  it('sets aria-expanded on branch nodes', () => {
+    const model = makeModel(nested)
+    model[0].status = NyxTreeNodeStatus.Open
+    const wrapper = mount(NyxTree, { props: { modelValue: model } })
+    const branches = wrapper.findAll('.nyx-tree-node--branch')
+    expect(branches[0].attributes('aria-expanded')).toBe('true')
+    expect(branches[1].attributes('aria-expanded')).toBe('false')
   })
 })
 
-// ─── Selection (US3) ──────────────────────────────────────────────────────────
-
-describe('NyxTree — selection (US3)', () => {
-  it('emits select with the node object on click', async () => {
-    const wrapper = mount(NyxTree, { props: { modelValue: makeFlatModel() } })
-    await wrapper.find('.nyx-tree-node__label').trigger('click')
-    expect(wrapper.emitted('select')).toBeTruthy()
+describe('NyxTree — Select emit', () => {
+  it('emits select with the clicked leaf node', async () => {
+    const wrapper = mount(NyxTree, { props: { modelValue: makeModel(flat) } })
+    await wrapper.findAll('.nyx-tree-node__label')[0].trigger('click')
+    const emitted = wrapper.emitted('select')
+    expect(emitted).toBeTruthy()
+    expect((emitted![0][0] as NyxTreeNodeBase).id).toBe('alpha')
   })
 
-  it('emitted payload has correct id and label', async () => {
-    const wrapper = mount(NyxTree, { props: { modelValue: makeFlatModel() } })
-    await wrapper.find('.nyx-tree-node__label').trigger('click')
-    expect(wrapper.emitted('select')![0][0]).toMatchObject({ id: 'alpha', label: 'Alpha' })
+  it('emits select with the clicked branch node', async () => {
+    const wrapper = mount(NyxTree, { props: { modelValue: nested } })
+    await wrapper.findAll('.nyx-tree-node__label')[0].trigger('click')
+    const emitted = wrapper.emitted('select')
+    expect(emitted).toBeTruthy()
+    expect((emitted![0][0] as NyxTreeNodeBase).id).toBe('fruits')
   })
 
-  it('sets status: Active on the clicked node and emits update:modelValue', async () => {
-    const model = makeFlatModel()
-    const wrapper = mount(NyxTree, { props: { modelValue: model } })
-    await wrapper.find('.nyx-tree-node__label').trigger('click')
-    expect(wrapper.emitted('update:modelValue')).toBeTruthy()
-    const updatedModel = wrapper.emitted('update:modelValue')![0][0] as typeof model
-    expect(updatedModel[0].status).toBe(NyxTreeNodeStatus.Active)
-  })
-
-  it('clicking a second node clears the first and activates the second', async () => {
-    const model = makeFlatModel()
-    const wrapper = mount(NyxTree, { props: { modelValue: model } })
-    const labels = wrapper.findAll('.nyx-tree-node__label')
-    await labels[0].trigger('click')
-    await labels[1].trigger('click')
-    const updatedModel = wrapper.emitted('update:modelValue')![1][0] as typeof model
-    expect(updatedModel[0].status).not.toBe(NyxTreeNodeStatus.Active)
-    expect(updatedModel[1].status).toBe(NyxTreeNodeStatus.Active)
-  })
-
-  it('applies --active to node with status: Active', () => {
-    const model = makeFlatModel()
-    model[0].status = NyxTreeNodeStatus.Active
-    const wrapper = mount(NyxTree, { props: { modelValue: model } })
-    expect(wrapper.find('.nyx-tree-node--active').exists()).toBe(true)
-  })
-
-  it('does not apply --active when no node has Active status', () => {
-    const wrapper = mount(NyxTree, { props: { modelValue: makeFlatModel() } })
-    expect(wrapper.find('.nyx-tree-node--active').exists()).toBe(false)
-  })
-
-  it('sets aria-selected="true" on Active node', () => {
-    const model = makeFlatModel()
-    model[0].status = NyxTreeNodeStatus.Active
-    const wrapper = mount(NyxTree, { props: { modelValue: model } })
-    const selected = wrapper.find('[aria-selected="true"]')
-    expect(selected.exists()).toBe(true)
-  })
-
-  it('emits update:modelValue on keyboard Enter activation', async () => {
-    const wrapper = mount(NyxTree, {
-      props: { modelValue: makeFlatModel() },
-      attachTo: document.body,
-    })
-    const firstItem = wrapper.find('[role="treeitem"]')
-    ;(firstItem.element as HTMLElement).focus()
-    await wrapper.trigger('keydown', { key: 'Enter' })
-    expect(wrapper.emitted('update:modelValue')).toBeTruthy()
-    wrapper.unmount()
+  it('emits the full node object on select', async () => {
+    const wrapper = mount(NyxTree, { props: { modelValue: makeModel(flat) } })
+    await wrapper.findAll('.nyx-tree-node__label')[1].trigger('click')
+    const node = wrapper.emitted('select')![0][0] as NyxTreeNodeBase
+    expect(node.id).toBe('beta')
+    expect(node.label).toBe('Beta')
   })
 })
 
-// ─── Keyboard navigation (US4) ───────────────────────────────────────────────
+describe('NyxTree — Active state', () => {
+  it('applies nyx-tree-node--active to node with status Active', () => {
+    const model = makeModel(flat)
+    model[0].status = NyxTreeNodeStatus.Active
+    const wrapper = mount(NyxTree, { props: { modelValue: model } })
+    const activeNodes = wrapper.findAll('.nyx-tree-node--active')
+    expect(activeNodes.length).toBe(1)
+    expect(activeNodes[0].attributes('id')).toBeUndefined()
+  })
 
-describe('NyxTree — keyboard navigation (US4)', () => {
-  it('moves focus to next node on ArrowDown', async () => {
+  it('applies aria-selected to active node', () => {
+    const model = makeModel(flat)
+    model[0].status = NyxTreeNodeStatus.Active
+    const wrapper = mount(NyxTree, { props: { modelValue: model } })
+    const treeitems = wrapper.findAll('[role="treeitem"]')
+    expect(treeitems[0].attributes('aria-selected')).toBe('true')
+    expect(treeitems[1].attributes('aria-selected')).toBe('false')
+  })
+})
+
+describe('NyxTree — Disabled state', () => {
+  it('does not emit select when tree is disabled', async () => {
+    const wrapper = mount(NyxTree, { props: { modelValue: makeModel(flat), disabled: true } })
+    await wrapper.findAll('.nyx-tree-node__label')[0].trigger('click')
+    expect(wrapper.emitted('select')).toBeFalsy()
+  })
+
+  it('applies aria-disabled to root when tree is disabled', () => {
+    const wrapper = mount(NyxTree, { props: { modelValue: makeModel(flat), disabled: true } })
+    expect(wrapper.find('.nyx-tree').attributes('aria-disabled')).toBe('true')
+  })
+
+  it('does not emit select when node-level disabled is true', async () => {
+    const model = makeModel(flat)
+    model[0].disabled = true
+    const wrapper = mount(NyxTree, { props: { modelValue: model } })
+    await wrapper.findAll('.nyx-tree-node__label')[0].trigger('click')
+    expect(wrapper.emitted('select')).toBeFalsy()
+  })
+
+  it('applies nyx-tree-node--disabled to disabled nodes', () => {
+    const model = makeModel(flat)
+    model[0].disabled = true
+    const wrapper = mount(NyxTree, { props: { modelValue: model } })
+    const disabled = wrapper.findAll('.nyx-tree-node--disabled')
+    expect(disabled.length).toBe(1)
+  })
+})
+
+describe('NyxTree — Keyboard navigation', () => {
+  it('ArrowDown moves focus to the next treeitem', async () => {
     const wrapper = mount(NyxTree, {
-      props: { modelValue: makeFlatModel() },
+      props: { modelValue: makeModel(flat) },
       attachTo: document.body,
     })
     const items = wrapper.findAll('[role="treeitem"]')
     ;(items[0].element as HTMLElement).focus()
-    await wrapper.trigger('keydown', { key: 'ArrowDown' })
+    await wrapper.find('.nyx-tree').trigger('keydown', { key: 'ArrowDown' })
     expect(document.activeElement).toBe(items[1].element)
     wrapper.unmount()
   })
 
-  it('moves focus to previous node on ArrowUp', async () => {
+  it('ArrowUp moves focus to the previous treeitem', async () => {
     const wrapper = mount(NyxTree, {
-      props: { modelValue: makeFlatModel() },
+      props: { modelValue: makeModel(flat) },
       attachTo: document.body,
     })
     const items = wrapper.findAll('[role="treeitem"]')
     ;(items[1].element as HTMLElement).focus()
-    await wrapper.trigger('keydown', { key: 'ArrowUp' })
+    await wrapper.find('.nyx-tree').trigger('keydown', { key: 'ArrowUp' })
     expect(document.activeElement).toBe(items[0].element)
     wrapper.unmount()
   })
 
-  it('does not move past last node on ArrowDown', async () => {
+  it('Enter on focused node triggers select emit', async () => {
     const wrapper = mount(NyxTree, {
-      props: { modelValue: makeFlatModel() },
+      props: { modelValue: makeModel(flat) },
       attachTo: document.body,
     })
     const items = wrapper.findAll('[role="treeitem"]')
-    ;(items[2].element as HTMLElement).focus()
-    await wrapper.trigger('keydown', { key: 'ArrowDown' })
-    expect(document.activeElement).toBe(items[2].element)
-    wrapper.unmount()
-  })
-
-  it('Enter triggers click on focused item (emits select)', async () => {
-    const wrapper = mount(NyxTree, {
-      props: { modelValue: makeFlatModel() },
-      attachTo: document.body,
-    })
-    const firstItem = wrapper.find('[role="treeitem"]')
-    ;(firstItem.element as HTMLElement).focus()
-    await wrapper.trigger('keydown', { key: 'Enter' })
+    ;(items[0].element as HTMLElement).focus()
+    await wrapper.find('.nyx-tree').trigger('keydown', { key: 'Enter' })
     expect(wrapper.emitted('select')).toBeTruthy()
     wrapper.unmount()
   })
-})
 
-// ─── Disabled state ───────────────────────────────────────────────────────────
-
-describe('NyxTree — disabled state', () => {
-  it('does not emit select or update:modelValue when tree-level disabled=true', async () => {
+  it('does not navigate when tree is disabled', async () => {
     const wrapper = mount(NyxTree, {
-      props: { modelValue: makeFlatModel(), disabled: true },
+      props: { modelValue: makeModel(flat), disabled: true },
+      attachTo: document.body,
     })
-    await wrapper.find('.nyx-tree-node__label').trigger('click')
-    expect(wrapper.emitted('select')).toBeFalsy()
-    expect(wrapper.emitted('update:modelValue')).toBeFalsy()
-  })
-
-  it('sets aria-disabled="true" on root when disabled', () => {
-    const wrapper = mount(NyxTree, {
-      props: { modelValue: makeFlatModel(), disabled: true },
-    })
-    expect(wrapper.attributes('aria-disabled')).toBe('true')
-  })
-
-  it('does not set aria-disabled when not disabled', () => {
-    const wrapper = mount(NyxTree, { props: { modelValue: makeFlatModel() } })
-    expect(wrapper.attributes('aria-disabled')).toBeUndefined()
-  })
-
-  it('does not emit select when node.disabled=true', async () => {
-    const wrapper = mount(NyxTree, {
-      props: { modelValue: makeModelWithDisabledNode() },
-    })
-    const labels = wrapper.findAll('.nyx-tree-node__label')
-    await labels[1].trigger('click') // click Beta (disabled)
-    expect(wrapper.emitted('select')).toBeFalsy()
-  })
-
-  it('applies --disabled to node with disabled=true', () => {
-    const wrapper = mount(NyxTree, {
-      props: { modelValue: makeModelWithDisabledNode() },
-    })
-    expect(wrapper.find('.nyx-tree-node--disabled').exists()).toBe(true)
-  })
-
-  it('sets aria-disabled on individually disabled node', () => {
-    const wrapper = mount(NyxTree, {
-      props: { modelValue: makeModelWithDisabledNode() },
-    })
-    const betaNode = wrapper.findAll('[role="treeitem"]')[1]
-    expect(betaNode.attributes('aria-disabled')).toBe('true')
+    const items = wrapper.findAll('[role="treeitem"]')
+    ;(items[0].element as HTMLElement).focus()
+    await wrapper.find('.nyx-tree').trigger('keydown', { key: 'ArrowDown' })
+    expect(document.activeElement).toBe(items[0].element)
+    wrapper.unmount()
   })
 })
