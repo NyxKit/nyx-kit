@@ -56,6 +56,31 @@ Never manually construct class lists from `theme`, `size`, `variant`, etc. — a
 
 Prefer `defineModel` (Vue 3.4+) over manual `modelValue` prop + `update:modelValue` emit.
 
+### Components operating on nested or recursive data
+
+When a component accepts an array or tree of objects (`T[]`) and must mutate a nested property (e.g. a `status` field inside a deeply nested object), `defineModel` alone does not emit `update:modelValue` when a **nested property** is mutated — only when the array itself is reassigned.
+
+**Rule**: Components that mutate nested properties in an array/tree model must reassign the model after mutating, to ensure `update:modelValue` fires:
+
+```ts
+// WRONG: mutation without reassignment — update:modelValue does not fire
+function handleSelect(node: MyNode) {
+  node.status = NodeStatus.Active  // defineModel sees no change
+}
+
+// CORRECT: mutate then reassign to trigger update:modelValue
+function handleSelect(node: MyNode) {
+  const updated = updateNodeInTree(model.value, node.id, target => {
+    target.status = NodeStatus.Active
+  })
+  model.value = updated  // reassignment fires update:modelValue
+}
+```
+
+Use a recursive `updateNodeInTree` helper that traverses the structure, applies the mutation, and returns a new shallow-copy of the affected nodes and their ancestors to preserve reactivity.
+
+Also emit a semantic event (e.g. `select`) with the affected node so consumers can react to the specific interaction beyond the model update.
+
 ## Emits
 
 Emit names use camelCase. Common events across components:

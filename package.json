@@ -2,7 +2,7 @@
   "name": "nyx-kit",
   "homepage": "http://nyxkit.github.io/nyx-kit",
   "author": "Arne Decant <hello@arnedecant.be>",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "private": false,
   "license": "MIT",
   "type": "module",
@@ -135,10 +135,18 @@
     "vue": "^3.0.0"
   },
   "peerDependenciesMeta": {
-    "@vue/eslint-config-typescript": { "optional": true },
-    "eslint": { "optional": true },
-    "eslint-plugin-oxlint": { "optional": true },
-    "eslint-plugin-vue": { "optional": true }
+    "@vue/eslint-config-typescript": {
+      "optional": true
+    },
+    "eslint": {
+      "optional": true
+    },
+    "eslint-plugin-oxlint": {
+      "optional": true
+    },
+    "eslint-plugin-vue": {
+      "optional": true
+    }
   },
   "eslintConfig": {
     "extends": [

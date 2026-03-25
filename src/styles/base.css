@@ -109,10 +109,6 @@ object {
   vertical-align: middle;
 }
 
-svg {
-  fill: currentColor;
-}
-
 img,
 video {
   max-width: 100%;
