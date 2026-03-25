@@ -49,7 +49,7 @@ describe('NyxTable', () => {
 
   it('respects colInclude to limit visible columns', () => {
     const wrapper = mount(NyxTable, {
-      props: { modelValue: rows, colInclude: ['name', 'role'] as Array<keyof (typeof rows)[0]> }
+      props: { modelValue: rows, colInclude: ['name', 'role'] as any[] }
     })
     const headers = wrapper.findAll('th')
     expect(headers.map(h => h.text())).toEqual(['name', 'role'])
@@ -57,7 +57,7 @@ describe('NyxTable', () => {
 
   it('respects colExclude to exclude columns', () => {
     const wrapper = mount(NyxTable, {
-      props: { modelValue: rows, colExclude: ['age'] as Array<keyof (typeof rows)[0]> }
+      props: { modelValue: rows, colExclude: ['age'] as any[] }
     })
     const headers = wrapper.findAll('th')
     expect(headers.map(h => h.text())).not.toContain('age')

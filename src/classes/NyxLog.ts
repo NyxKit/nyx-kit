@@ -4,7 +4,7 @@ export default class NyxLog {
     let a = args
     if (typeof prefix !== 'string' || !prefix.toLowerCase().startsWith('nyx')) {
       p = 'NYX'
-      a = [prefix, ...args]
+      a = [String(prefix), ...args]
     }
     return `%c${ p }%c ${ a.join(' ') }`
   }
