@@ -345,4 +345,4 @@ When you notice that something in the codebase or stories is out of sync, record
 
 | Noticed | Location | Description | Status |
 |---|---|---|---|
-| — | — | No known divergences. | — |
+| 2026-03-26 | `README.md` vs `specs/006-add-nyx-grid/spec.md` | Planned feature naming diverged (`NyxLayout` in README, `NyxGrid` in spec). | Fixed |
