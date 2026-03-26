@@ -201,8 +201,8 @@ describe('NyxGrid', () => {
 
     expect(wrapper.classes()).toContain('nyx-grid--masonry')
     expect(wrapper.attributes('style')).toContain('--nyx-grid-columns: 2')
-    expect(items[0].style.left).toBe('0px')
-    expect(items[1].style.left).not.toBe(items[0].style.left)
+    expect(items[0].style.getPropertyValue('--nyx-grid-item-left')).toBe('0px')
+    expect(items[1].style.getPropertyValue('--nyx-grid-item-left')).not.toBe(items[0].style.getPropertyValue('--nyx-grid-item-left'))
   })
 
   it('lays out masonry items left to right before stacking downward', async () => {
@@ -225,13 +225,13 @@ describe('NyxGrid', () => {
 
     const items = wrapper.findAll('.nyx-grid__content > *').map(node => node.element as HTMLElement)
 
-    expect(items[0].style.top).toBe('0px')
-    expect(items[1].style.top).toBe('0px')
-    expect(items[2].style.top).toBe('0px')
-    expect(Number.parseFloat(items[1].style.left)).toBeGreaterThan(Number.parseFloat(items[0].style.left))
-    expect(Number.parseFloat(items[2].style.left)).toBeGreaterThan(Number.parseFloat(items[1].style.left))
-    expect(Number.parseFloat(items[3].style.top)).toBeGreaterThan(0)
-    expect(items[3].style.left).toBe(items[0].style.left)
+    expect(items[0].style.getPropertyValue('--nyx-grid-item-top')).toBe('0px')
+    expect(items[1].style.getPropertyValue('--nyx-grid-item-top')).toBe('0px')
+    expect(items[2].style.getPropertyValue('--nyx-grid-item-top')).toBe('0px')
+    expect(Number.parseFloat(items[1].style.getPropertyValue('--nyx-grid-item-left'))).toBeGreaterThan(Number.parseFloat(items[0].style.getPropertyValue('--nyx-grid-item-left')))
+    expect(Number.parseFloat(items[2].style.getPropertyValue('--nyx-grid-item-left'))).toBeGreaterThan(Number.parseFloat(items[1].style.getPropertyValue('--nyx-grid-item-left')))
+    expect(Number.parseFloat(items[3].style.getPropertyValue('--nyx-grid-item-top'))).toBeGreaterThan(0)
+    expect(items[3].style.getPropertyValue('--nyx-grid-item-left')).toBe(items[0].style.getPropertyValue('--nyx-grid-item-left'))
   })
 
   it('reflows keyed items when their order changes', async () => {

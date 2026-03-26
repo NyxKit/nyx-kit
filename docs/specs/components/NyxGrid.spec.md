@@ -22,7 +22,7 @@
 - Header resolution follows the standard slot-first rule: `header` slot first, then `title` fallback
 - Footer is slot-only and omitted entirely when absent
 - The default slot is normalized into internal item wrappers so the component can measure each top-level child and animate reflow
-- A shared layout engine computes positions for both `grid` and `masonry` modes
+- A shared layout engine computes positions for both `grid` and `masonry` modes and applies masonry placement through CSS custom properties rather than broad inline style rules
 - Reflow animation is transform-based and driven by item position deltas rather than external animation libraries
 
 ## Props

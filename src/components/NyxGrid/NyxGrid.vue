@@ -75,12 +75,9 @@ function getContentElements() {
 }
 
 function resetMasonryElement(element: HTMLElement) {
-  element.style.position = ''
-  element.style.left = ''
-  element.style.top = ''
-  element.style.width = ''
-  element.style.maxWidth = ''
-  element.style.boxSizing = ''
+  element.style.removeProperty('--nyx-grid-item-width')
+  element.style.removeProperty('--nyx-grid-item-left')
+  element.style.removeProperty('--nyx-grid-item-top')
 }
 
 function syncObservedElements() {
@@ -142,7 +139,7 @@ function layoutMasonry() {
   syncObservedElements()
 
   if (elements.length === 0) {
-    contentElement.style.height = ''
+    contentElement.style.removeProperty('--nyx-grid-masonry-height')
     return
   }
 
@@ -150,7 +147,7 @@ function layoutMasonry() {
   const availableWidth = contentElement.clientWidth
 
   if (!availableWidth) {
-    contentElement.style.height = ''
+    contentElement.style.removeProperty('--nyx-grid-masonry-height')
     elements.forEach(resetMasonryElement)
     return
   }
@@ -158,7 +155,7 @@ function layoutMasonry() {
   const columnWidth = Math.max(0, (availableWidth - (gapPx * Math.max(0, resolvedColumns.value - 1))) / resolvedColumns.value)
 
   if (!columnWidth) {
-    contentElement.style.height = ''
+    contentElement.style.removeProperty('--nyx-grid-masonry-height')
     elements.forEach(resetMasonryElement)
     return
   }
@@ -170,24 +167,24 @@ function layoutMasonry() {
     const x = columnIndex * (columnWidth + gapPx)
     const y = columnBottoms[columnIndex]
 
-    element.style.position = 'absolute'
-    element.style.boxSizing = 'border-box'
-    element.style.setProperty('width', `${columnWidth}px`)
-    element.style.setProperty('max-width', `${columnWidth}px`)
-    element.style.left = `${x}px`
-    element.style.top = `${y}px`
+    element.style.setProperty('--nyx-grid-item-width', `${columnWidth}px`)
+    element.style.setProperty('--nyx-grid-item-left', `${x}px`)
+    element.style.setProperty('--nyx-grid-item-top', `${y}px`)
 
     columnBottoms[columnIndex] += element.offsetHeight + gapPx
   })
 
-  contentElement.style.height = `${Math.max(0, ...columnBottoms.map(bottom => bottom - gapPx))}px`
+  contentElement.style.setProperty(
+    '--nyx-grid-masonry-height',
+    `${Math.max(0, ...columnBottoms.map(bottom => bottom - gapPx))}px`
+  )
 }
 
 function resetMasonryLayout() {
   const contentElement = elContent.value
   if (!contentElement) return
 
-  contentElement.style.height = ''
+  contentElement.style.removeProperty('--nyx-grid-masonry-height')
   getContentElements().forEach(resetMasonryElement)
 }
 
