@@ -10,9 +10,8 @@ import {
   watch,
   type CSSProperties,
 } from 'vue'
-import { NyxSize } from '@/types'
+import { NyxSize, NyxGridMode } from '@/types'
 import type { NyxGridProps } from './NyxGrid.types'
-import { NyxGridMode } from '@/types'
 
 const DEFAULT_COLUMNS = 3
 const GAP_REM_MAP: Record<NyxSize, number> = {
