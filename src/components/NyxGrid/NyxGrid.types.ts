@@ -1,10 +1,5 @@
 import type { VNode } from 'vue'
-import type { NyxSize } from '@/types'
-
-export enum NyxGridMode {
-  Grid = 'grid',
-  Masonry = 'masonry',
-}
+import type { NyxGridMode, NyxSize } from '@/types'
 
 export interface NyxGridProps {
   title?: string

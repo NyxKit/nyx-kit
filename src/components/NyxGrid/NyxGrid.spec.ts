@@ -1,10 +1,9 @@
 import { beforeAll, afterAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
-import { NyxSize } from '@/types'
+import { NyxGridMode, NyxSize } from '@/types'
 import NyxCard from '../NyxCard/NyxCard.vue'
 import NyxGrid from './NyxGrid.vue'
-import { NyxGridMode } from './NyxGrid.types'
 
 const originalClientWidth = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'clientWidth')
 const originalOffsetHeight = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'offsetHeight')

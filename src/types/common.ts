@@ -77,3 +77,8 @@ export enum NyxEditorToolbar {
   CommentOnly = 'comment-only',
   Full = 'full' // default + comment-only
 }
+
+export enum NyxGridMode {
+  Grid = 'grid',
+  Masonry = 'masonry',
+}

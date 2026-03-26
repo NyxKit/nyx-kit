@@ -1,10 +1,9 @@
 import { defineComponent, h, ref } from 'vue'
 import { X as LucideX } from 'lucide-vue-next'
-import { NyxSize, NyxTheme, NyxVariant } from '@/types'
+import { NyxSize, NyxTheme, NyxVariant, NyxGridMode } from '@/types'
 import NyxButton from '../NyxButton/NyxButton.vue'
 import NyxCard from '../NyxCard/NyxCard.vue'
 import NyxGrid from './NyxGrid.vue'
-import { NyxGridMode } from './NyxGrid.types'
 
 type NyxGridStoryArgs = {
   title?: string
