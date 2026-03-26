@@ -56,6 +56,8 @@ The project constitution is at `.specify/memory/constitution.md`.
 - Module-level singleton `ref` (no persistence in v1) (004-colour-mode-system)
 - TypeScript 5.7 / Vue 3.5 + Vue 3 (ref, computed, defineProps, defineEmits, defineModel), SCSS (005-nyx-tree)
 - N/A — all state is local/instance-level (005-nyx-tree)
+- TypeScript 5.7 / Vue 3.5 + Vue 3 (`computed`, `ref`, `useSlots`, `watch`, `nextTick`, lifecycle hooks), SCSS (006-add-nyx-grid)
+- N/A - layout state is ephemeral DOM measurement only (006-add-nyx-grid)
 
 ## Recent Changes
 - 003-testing-improvements: Added TypeScript 5.x / Vue 3 + `@vue/test-utils`, `vitest`, `@playwright/test`, `jsdom`

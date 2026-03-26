@@ -2,6 +2,7 @@ import { type App } from 'vue'
 import { vClickOutside } from './directives'
 import type { NyxKitOptions } from './types'
 import { initColourMode } from './composables/useNyxColourMode'
+export { NyxGrid } from './components'
 
 export type { NyxKitPrimitive, NyxKitDefaults, NyxKitOptions, NyxColourModeOptions } from './types'
 

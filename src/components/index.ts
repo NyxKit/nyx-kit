@@ -8,6 +8,7 @@ import NyxCarousel from './NyxCarousel/NyxCarousel.vue'
 import NyxCheckbox from './NyxCheckbox/NyxCheckbox.vue'
 import NyxForm from './NyxForm/NyxForm.vue'
 import NyxFormField from './NyxForm/NyxFormField.vue'
+import NyxGrid from './NyxGrid/NyxGrid.vue'
 import NyxInput from './NyxInput/NyxInput.vue'
 import NyxMedia from './NyxMedia/NyxMedia.vue'
 import NyxModal from './NyxModal/NyxModal.vue'
@@ -34,6 +35,7 @@ export {
   NyxCheckbox,
   NyxForm,
   NyxFormField,
+  NyxGrid,
   NyxInput,
   NyxMedia,
   NyxModal,

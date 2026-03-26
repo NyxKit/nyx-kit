@@ -12,6 +12,7 @@ node_modules
 dist
 dist-ssr
 coverage
+.env*
 *.local
 
 /cypress/videos/
@@ -28,6 +29,7 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+*.tmp
 
 test-results/
 playwright-report/

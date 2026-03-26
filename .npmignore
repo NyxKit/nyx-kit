@@ -1,0 +1,14 @@
+node_modules/
+src/
+docs/
+specs/
+e2e/
+.storybook/
+.opencode/
+.claude/
+coverage/
+test-results/
+playwright-report/
+storybook-static/
+*.log
+.env*
