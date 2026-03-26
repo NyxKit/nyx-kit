@@ -32,6 +32,7 @@
     gap: var(--nyx-grid-gap);
     width: 100%;
     min-height: 0;
+    overflow: hidden;
   }
 
   &__content > * {
