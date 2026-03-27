@@ -19,7 +19,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   mousedown: [],
-  comment: [NyxEditorSelection]
+  create: [NyxEditorSelection]
 }>()
 
 const bubbleRef = ref<HTMLElement | null>(null)
@@ -36,11 +36,11 @@ watch(() => props.visible, (val) => {
   if (val) nextTick(updateCssVariables)
 })
 
-const onComment = () => {
+const onCreate = () => {
   if (!props.editor) return
   const text = props.editor.state.doc.textBetween(props.editor.state.selection.from, props.editor.state.selection.to)
   const range = { from: props.editor.state.selection.from, to: props.editor.state.selection.to }
-  emit('comment', { text, range })
+  emit('create', { text, range })
 }
 </script>
 
@@ -118,8 +118,8 @@ const onComment = () => {
         </template>
         
         <template v-if="hasComments">
-          <button class="nyx-editor__bubble-btn" :class="{ active: editor?.isActive('comment') }"
-            @click="onComment" aria-label="Comment">
+          <button class="nyx-editor__bubble-btn"
+            @click="onCreate" aria-label="Comment">
             <MessageSquare :size="14" />
           </button>
         </template>

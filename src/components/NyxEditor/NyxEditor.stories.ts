@@ -1,7 +1,22 @@
 import { defineComponent, ref } from 'vue'
 import NyxEditor from './NyxEditor.vue'
-import { NyxEditorMode, NyxEditorFormat, NyxTheme, NyxVariant, NyxSize, NyxEditorToolbar } from '@/types'
+import NyxTextarea from '../NyxTextarea/NyxTextarea.vue'
+import {
+  NyxAnnotationAttachment,
+  NyxAnnotationInteraction,
+  NyxAnnotationStatus,
+  NyxEditorMode,
+  NyxEditorFormat,
+  NyxTheme,
+  NyxVariant,
+  NyxSize,
+  NyxEditorToolbar,
+} from '@/types'
 import type { NyxEditorProps } from './NyxEditor.types'
+import type {
+  NyxAnnotationAnchor,
+  NyxEditorSelection,
+} from '@/types/editor'
 
 export default {
   title: 'Components/NyxEditor',
@@ -75,6 +90,169 @@ export const Disabled = TemplateWithContent(
   { mode: NyxEditorMode.Toolbar, disabled: true },
   '# Read-only\n\nThis editor is disabled.',
 )
+
+export const SelectionAndAnnotationEvents = () => defineComponent({
+  components: { NyxEditor, NyxTextarea },
+  setup() {
+    const content = ref('# Select some text\n\nHighlight any part of this content to see the `selection` payload update live.')
+    const selectionOutput = ref('')
+    const annotationCreateOutput = ref('')
+    const annotationFocusOutput = ref('')
+    const annotationBlurOutput = ref('')
+    const annotations = ref([
+      {
+        id: 'annotation-1',
+        anchor: {
+          content: 'Highlight any part',
+          prefixContext: '',
+          suffixContext: ' of this content',
+          startOffset: 23,
+          endOffset: 41,
+        },
+        interaction: NyxAnnotationInteraction.Default,
+        status: NyxAnnotationStatus.Unresolved,
+        attachment: NyxAnnotationAttachment.Attached,
+      },
+    ])
+    const annotationStatusTheme = {
+      [NyxAnnotationStatus.Unresolved]: NyxTheme.Warning,
+      [NyxAnnotationStatus.Resolved]: NyxTheme.Success,
+    }
+
+    const handleSelection = (value: NyxEditorSelection) => {
+      selectionOutput.value = JSON.stringify(value, null, 2)
+    }
+
+    const handleAnnotationCreate = (value: NyxAnnotationAnchor) => {
+      annotationCreateOutput.value = JSON.stringify(value, null, 2)
+    }
+
+    const handleAnnotationFocus = (value: string) => {
+      annotationFocusOutput.value = JSON.stringify(value, null, 2)
+      annotationBlurOutput.value = ''
+      annotations.value = annotations.value.map((annotation) => ({
+        ...annotation,
+        interaction: annotation.id === value
+          ? NyxAnnotationInteraction.Focus
+          : NyxAnnotationInteraction.Default,
+      }))
+    }
+
+    const handleAnnotationBlur = (value: string) => {
+      annotationBlurOutput.value = JSON.stringify(value, null, 2)
+      annotations.value = annotations.value.map((annotation) => ({
+        ...annotation,
+        interaction: annotation.id === value
+          ? NyxAnnotationInteraction.Default
+          : annotation.interaction,
+      }))
+    }
+
+    return {
+      content,
+      selectionOutput,
+      annotationCreateOutput,
+      annotationFocusOutput,
+      annotationBlurOutput,
+      annotations,
+      annotationStatusTheme,
+      handleSelection,
+      handleAnnotationCreate,
+      handleAnnotationFocus,
+      handleAnnotationBlur,
+    }
+  },
+  template: `
+    <div style="display: grid; gap: 1rem;">
+      <nyx-editor
+        v-model="content"
+        :mode="'${NyxEditorMode.Zen}'"
+        :toolbar="'${NyxEditorToolbar.Full}'"
+        :annotations="annotations"
+        :annotation-status-theme="annotationStatusTheme"
+        @selection="handleSelection"
+        @annotation:create="handleAnnotationCreate"
+        @annotation:focus="handleAnnotationFocus"
+        @annotation:blur="handleAnnotationBlur"
+      />
+      <div style="font-weight: 600; font-size: 0.95rem;">Selection payload</div>
+      <nyx-textarea
+        v-model="selectionOutput"
+        readonly
+        placeholder="Selection event payload"
+      />
+      <div style="font-weight: 600; font-size: 0.95rem;">Annotation create payload</div>
+      <nyx-textarea
+        v-model="annotationCreateOutput"
+        readonly
+        placeholder="Annotation create event payload"
+      />
+      <div style="font-weight: 600; font-size: 0.95rem;">Annotation focus payload</div>
+      <nyx-textarea
+        v-model="annotationFocusOutput"
+        readonly
+        placeholder="Annotation focus event payload"
+      />
+      <div style="font-weight: 600; font-size: 0.95rem;">Annotation blur payload</div>
+      <nyx-textarea
+        v-model="annotationBlurOutput"
+        readonly
+        placeholder="Annotation blur event payload"
+      />
+    </div>
+  `,
+})
+
+export const AnnotationStates = () => defineComponent({
+  components: { NyxEditor },
+  setup() {
+    const content = ref('# Annotation states\n\nFocus, resolved, and detached annotations remain consumer-owned.')
+    const annotations = ref([
+      {
+        id: 'annotation-default',
+        anchor: {
+          content: 'Focus, resolved, and detached',
+          prefixContext: '',
+          suffixContext: ' annotations remain',
+          startOffset: 21,
+          endOffset: 49,
+        },
+        interaction: NyxAnnotationInteraction.Default,
+        status: NyxAnnotationStatus.Unresolved,
+        attachment: NyxAnnotationAttachment.Attached,
+      },
+      {
+        id: 'annotation-focus',
+        anchor: {
+          content: 'consumer-owned',
+          prefixContext: ' annotations remain ',
+          suffixContext: '.',
+          startOffset: 69,
+          endOffset: 83,
+        },
+        interaction: NyxAnnotationInteraction.Focus,
+        status: NyxAnnotationStatus.Resolved,
+        attachment: NyxAnnotationAttachment.Detached,
+      },
+    ])
+
+    const annotationStatusTheme = {
+      [NyxAnnotationStatus.Unresolved]: NyxTheme.Warning,
+      [NyxAnnotationStatus.Resolved]: NyxTheme.Success,
+    }
+
+    return { content, annotations, annotationStatusTheme }
+  },
+  template: `
+    <nyx-editor
+      v-model="content"
+      :mode="'${NyxEditorMode.Zen}'"
+      :toolbar="'${NyxEditorToolbar.Full}'"
+      :annotations="annotations"
+      :annotation-status-theme="annotationStatusTheme"
+    />
+  `,
+})
 
 export const Themes = () => defineComponent({
   components: { NyxEditor },
