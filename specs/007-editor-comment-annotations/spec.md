@@ -119,6 +119,7 @@ As a consuming project, I can pass annotation metadata into the editor and recei
 - `annotationStatusTheme` maps `NyxAnnotationStatus` values to `NyxTheme` tokens for highlight styling.
 - Consuming projects must not need to replace or duplicate annotation mapping logic in order to brand annotation highlights.
 - Annotation-specific mapping and event logic should be isolated behind an internal editor composition so the main component remains focused on editor mode, content syncing, and layout concerns.
+- Shared formatting controls should be isolated behind a reusable internal toolbar-content component, with separate wrapper components for inline toolbar and bubble-menu shells so `NyxEditor` does not own either shell directly.
 
 ### Overlapping Annotation Behavior
 

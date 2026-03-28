@@ -20,9 +20,11 @@ NyxEditor provides an opinionated but flexible rich-text editing experience. It 
 - Uses `useEditor` and `EditorContent` from `@tiptap/vue-3`
 - Extensions loaded: `StarterKit`, `Underline`, `TaskList`, `TaskItem` always; `Markdown` (from `tiptap-markdown`) when `format` is `markdown`
 - Annotation-specific logic is extracted into the internal `useEditorAnnotations` composition so anchor generation, decoration mapping, and annotation focus/blur events do not live directly in the component body.
-- **Zen mode**: custom bubble menu — listens to `onSelectionUpdate`, reads `window.getSelection().getRangeAt(0).getBoundingClientRect()` to position a `<Teleport>`-ed `div` above the selection, and emits `selection` as a `NyxAnnotationAnchor` whenever a non-empty selection exists. The annotation action emits the same anchor shape through `annotation:create`. `@mousedown` on the bubble sets a `suppressNextHide` flag (cleared with `requestAnimationFrame`) so that clicking a formatting button does not collapse the bubble before the command fires.
+- Formatting controls are centralized in an internal `NyxEditorToolbarContent` sub-component that renders the shared button groups for both toolbar mode and the zen bubble menu.
+- **Toolbar mode** uses an internal `NyxEditorToolbar` wrapper component so `NyxEditor` does not own the toolbar shell markup directly.
+- **Zen mode**: custom bubble menu — listens to `onSelectionUpdate`, reads `window.getSelection().getRangeAt(0).getBoundingClientRect()` to position a `<Teleport>`-ed `div` above the selection, and renders `NyxEditorToolbarContent` inside the teleported shell. It emits `selection` as a `NyxAnnotationAnchor` whenever a non-empty selection exists. The annotation action emits the same anchor shape through `annotation:create`. `@mousedown` on the bubble sets a `suppressNextHide` flag (cleared with `requestAnimationFrame`) so that clicking a formatting button does not collapse the bubble before the command fires.
 - Annotation rendering is implemented as a Tiptap/ProseMirror decoration plugin that reads `annotations` from props and decorates matching ranges with annotation classes and `data-nyx-annotation-*` attributes.
-- **Toolbar mode**: renders a fixed `<div class="nyx-editor__toolbar">` above the editor content. _(See Known Limitations — not yet rendering in Storybook.)_
+- **Toolbar mode**: renders an internal `NyxEditorToolbar` wrapper above the editor content; that wrapper hosts the shared `NyxEditorToolbarContent` controls. _(See Known Limitations — not yet rendering in Storybook.)_
 - v-model syncs bi-directionally via `onUpdate` (editor → model) and a `watch` (model → editor)
 - `useNyxProps` is used for visual prop integration (theme, size, variant, pixel)
 

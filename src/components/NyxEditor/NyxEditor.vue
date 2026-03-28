@@ -15,23 +15,19 @@ import {
   NyxAnnotationStatus,
   NyxEditorMode,
   NyxEditorFormat,
-  NyxEditorToolbar,
+  NyxEditorToolbar as NyxEditorToolbarMode,
   NyxTheme,
 } from '@/types'
 import { useNyxProps } from '@/composables'
 import NyxEditorBubbleMenu from './NyxEditorBubbleMenu/NyxEditorBubbleMenu.vue'
+import NyxEditorToolbar from './NyxEditorToolbar/NyxEditorToolbar.vue'
 import useEditorAnnotations from './useEditorAnnotations'
-import {
-  Bold, Italic, Underline, Strikethrough, Code,
-  List, ListOrdered, ListChecks,
-  Heading1, Heading2, Heading3, Pilcrow,
-  Undo2, Redo2, FileCode,
-} from 'lucide-vue-next'
+import { FileCode } from 'lucide-vue-next'
 
 const props = withDefaults(defineProps<NyxEditorProps>(), {
   mode: NyxEditorMode.Zen,
   format: NyxEditorFormat.Markdown,
-  toolbar: NyxEditorToolbar.Default,
+  toolbar: NyxEditorToolbarMode.Default,
   disabled: false,
   placeholder: '',
   hasSourceToggle: false,
@@ -178,65 +174,12 @@ watch(() => props.annotations, () => {
   <div class="nyx-editor" :class="[...classList, `mode-${props.mode}`]">
 
     <!-- Toolbar mode: persistent top bar -->
-    <div
+    <NyxEditorToolbar
       v-if="props.mode === 'toolbar'"
-      class="nyx-editor__toolbar"
-      role="toolbar"
-      aria-label="Text formatting"
-      @mousedown.prevent
-    >
-      <button class="nyx-editor__toolbar-btn" :class="{ active: editor?.isActive('bold') }"
-        @click="editor?.chain().focus().toggleBold().run()" aria-label="Bold">
-        <Bold :size="15" /></button>
-      <button class="nyx-editor__toolbar-btn" :class="{ active: editor?.isActive('italic') }"
-        @click="editor?.chain().focus().toggleItalic().run()" aria-label="Italic">
-        <Italic :size="15" /></button>
-      <button class="nyx-editor__toolbar-btn" :class="{ active: editor?.isActive('underline') }"
-        @click="editor?.chain().focus().toggleUnderline().run()" aria-label="Underline">
-        <Underline :size="15" /></button>
-      <button class="nyx-editor__toolbar-btn" :class="{ active: editor?.isActive('strike') }"
-        @click="editor?.chain().focus().toggleStrike().run()" aria-label="Strikethrough">
-        <Strikethrough :size="15" /></button>
-      <button class="nyx-editor__toolbar-btn" :class="{ active: editor?.isActive('code') }"
-        @click="editor?.chain().focus().toggleCode().run()" aria-label="Inline code">
-        <Code :size="15" /></button>
-
-      <span class="nyx-editor__toolbar-sep" aria-hidden="true" />
-
-      <button class="nyx-editor__toolbar-btn" :class="{ active: editor?.isActive('bulletList') }"
-        @click="editor?.chain().focus().toggleBulletList().run()" aria-label="Bullet list">
-        <List :size="15" /></button>
-      <button class="nyx-editor__toolbar-btn" :class="{ active: editor?.isActive('orderedList') }"
-        @click="editor?.chain().focus().toggleOrderedList().run()" aria-label="Ordered list">
-        <ListOrdered :size="15" /></button>
-      <button class="nyx-editor__toolbar-btn" :class="{ active: editor?.isActive('taskList') }"
-        @click="editor?.chain().focus().toggleTaskList().run()" aria-label="Task list">
-        <ListChecks :size="15" /></button>
-
-      <span class="nyx-editor__toolbar-sep" aria-hidden="true" />
-
-      <button class="nyx-editor__toolbar-btn" :class="{ active: editor?.isActive('heading', { level: 1 }) }"
-        @click="editor?.chain().focus().toggleHeading({ level: 1 }).run()" aria-label="Heading 1">
-        <Heading1 :size="15" /></button>
-      <button class="nyx-editor__toolbar-btn" :class="{ active: editor?.isActive('heading', { level: 2 }) }"
-        @click="editor?.chain().focus().toggleHeading({ level: 2 }).run()" aria-label="Heading 2">
-        <Heading2 :size="15" /></button>
-      <button class="nyx-editor__toolbar-btn" :class="{ active: editor?.isActive('heading', { level: 3 }) }"
-        @click="editor?.chain().focus().toggleHeading({ level: 3 }).run()" aria-label="Heading 3">
-        <Heading3 :size="15" /></button>
-      <button class="nyx-editor__toolbar-btn" :class="{ active: editor?.isActive('paragraph') }"
-        @click="editor?.chain().focus().setParagraph().run()" aria-label="Paragraph">
-        <Pilcrow :size="15" /></button>
-
-      <span class="nyx-editor__toolbar-sep nyx-editor__toolbar-sep--grow" aria-hidden="true" />
-
-      <button class="nyx-editor__toolbar-btn" :disabled="!editor?.can().undo()"
-        @click="editor?.chain().focus().undo().run()" aria-label="Undo">
-        <Undo2 :size="15" /></button>
-      <button class="nyx-editor__toolbar-btn" :disabled="!editor?.can().redo()"
-        @click="editor?.chain().focus().redo().run()" aria-label="Redo">
-        <Redo2 :size="15" /></button>
-    </div>
+      :editor="editor ?? null"
+      :toolbar="props.toolbar"
+      @create="onCreateAnnotation"
+    />
 
     <!-- Source toggle button -->
     <button
@@ -263,7 +206,7 @@ watch(() => props.annotations, () => {
 
     <!-- Zen mode: custom bubble menu -->
     <NyxEditorBubbleMenu
-      v-if="props.mode === NyxEditorMode.Zen && props.toolbar !== NyxEditorToolbar.None"
+      v-if="props.mode === NyxEditorMode.Zen && props.toolbar !== NyxEditorToolbarMode.None"
       :editor="editor ?? null"
       :visible="bubbleVisible"
       :toolbar="props.toolbar"
