@@ -6,33 +6,13 @@
 
 ## Entities
 
-### NyxEditorSelection
-
-The simple selection payload emitted from the `selection` event.
-
-- Contains the user-readable selected text
-- Contains a `{ from, to }` range for the selected text
-- Represents one continuous selection, even when the selection spans multiple content blocks
-- Is emitted only for non-empty valid selections
-
-**Validation rules:**
-
-| Rule | Detail |
-|------|--------|
-| Selection must be non-empty | Empty selections do not produce a comment target |
-| Range must be continuous | One user selection produces one annotation target |
-| Range uses editor offsets | The editor emits `from` and `to` positions for the current selection |
-| Structured content allowed | Lists, quotes, and code blocks may participate in the same continuous target |
-
----
-
 ### NyxAnnotationAnchor
 
-The richer anchor object emitted through `annotation:create`.
+The anchor object emitted through both `selection` and `annotation:create`.
 
-- Contains the selected content
-- Contains prefix and suffix context windows
-- Contains start and end offsets
+- Contains the selected text
+- Contains nested prefix and suffix context windows
+- Contains a nested selection range with `from` and `to`
 - Is used as the consumer-facing anchor shape for creating an external annotation record
 
 ---
@@ -106,7 +86,6 @@ String payload emitted when the editor focuses or blurs a rendered annotation.
 
 | From | Relationship | To |
 |------|--------------|----|
-| `NyxEditorSelection` | can become | `NyxAnnotationAnchor` |
 | `NyxAnnotationAnchor` | is contained by | `NyxAnnotation` |
 | `NyxAnnotation` | has one | `NyxAnnotationStatus` |
 | `NyxAnnotation` | has one | `NyxAnnotationAttachment` |
@@ -121,8 +100,8 @@ String payload emitted when the editor focuses or blurs a rendered annotation.
 
 ```text
 User makes non-empty selection
--> NyxEditor emits NyxEditorSelection
--> NyxEditor emits NyxAnnotationAnchor
+-> NyxEditor emits NyxAnnotationAnchor from `selection`
+-> NyxEditor emits NyxAnnotationAnchor from `annotation:create`
 -> Consumer persists external annotation record
 -> Consumer passes NyxAnnotation back into NyxEditor
 ```

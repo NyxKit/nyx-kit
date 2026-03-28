@@ -1,10 +1,5 @@
 import type { NyxTheme } from "./common"
 
-export interface NyxEditorSelection {
-  text: string
-  range: { from: number, to: number }
-}
-
 export enum NyxAnnotationInteraction {
   Default = 'default',
   Hover = 'hover',
@@ -24,11 +19,15 @@ export enum NyxAnnotationAttachment {
 export type NyxAnnotationStatusTheme = Record<NyxAnnotationStatus, NyxTheme>
 
 export interface NyxAnnotationAnchor {
-  content: string
-  prefixContext: string
-  suffixContext: string
-  startOffset: number
-  endOffset: number
+  text: string
+  context: {
+    prefix: string
+    suffix: string
+  }
+  range: {
+    from: number
+    to: number
+  }
 }
 
 export interface NyxAnnotation {

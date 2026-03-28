@@ -86,14 +86,14 @@ docs/specs/components/
   - `NyxAnnotationAttachment`
   - `NyxAnnotationAnchor`
   - `NyxAnnotation`
-- Keep `NyxEditorSelection` as the current simple payload for `selection`
+- Use `NyxAnnotationAnchor` for both `selection` and `annotation:create`
 
 ### Step 2 - Extend `NyxEditor` public props and emits
 
 **What changes:**
 - Keep `annotations?: NyxAnnotation[]` as the current additive prop surface
 - Add `annotationStatusTheme?: NyxAnnotationStatusTheme` so status styling can be themed independently of attachment state
-- Keep `selection` and `comment` using `NyxEditorSelection`
+- Keep `selection` and `annotation:create` aligned on the same `NyxAnnotationAnchor` payload
 - Remove the obsolete `comment` emit in favor of `annotation:create`
 - Keep `annotation:create`, `annotation:focus`, and `annotation:blur` as the annotation-specific emit surface
 - Do not plan `activeAnnotationId` or hover events until the code and types explicitly support them
@@ -101,7 +101,7 @@ docs/specs/components/
 ### Step 3 - Add editor-internal annotation mapping and rendering
 
 **What changes:**
-- Use the current anchor shape (`content`, context, offsets) to derive annotation decorations
+- Use the current anchor shape (`text`, context, range) to derive annotation decorations
 - Render all annotations passed in through `annotations`
 - Surface `interaction`, `status`, and `attachment` on each decoration through classes and data attributes
 - Keep per-annotation id addressing and `annotation:focus` emission intact

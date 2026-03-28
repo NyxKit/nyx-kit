@@ -66,11 +66,15 @@ const annotations = ref<NyxAnnotation[]>([
   {
     id: 'comment-1',
     anchor: {
-      content: 'Paragraph one',
-      prefixContext: '',
-      suffixContext: 'Paragraph two.',
-      startOffset: 1,
-      endOffset: 13,
+      text: 'Paragraph one',
+      context: {
+        prefix: '',
+        suffix: 'Paragraph two.',
+      },
+      range: {
+        from: 1,
+        to: 13,
+      },
     },
     interaction: NyxAnnotationInteraction.Default,
     status: NyxAnnotationStatus.Resolved,
@@ -79,11 +83,15 @@ const annotations = ref<NyxAnnotation[]>([
   {
     id: 'comment-2',
     anchor: {
-      content: 'Paragraph two',
-      prefixContext: 'Paragraph one.',
-      suffixContext: '',
-      startOffset: 16,
-      endOffset: 28,
+      text: 'Paragraph two',
+      context: {
+        prefix: 'Paragraph one.',
+        suffix: '',
+      },
+      range: {
+        from: 16,
+        to: 28,
+      },
     },
     interaction: NyxAnnotationInteraction.Focus,
     status: NyxAnnotationStatus.Unresolved,

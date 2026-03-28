@@ -26,8 +26,8 @@ This document defines the public-facing annotation API currently reflected in `N
 
 | Event | Payload | When |
 |-------|---------|------|
-| `selection` | `NyxEditorSelection` | Fired when the current editor selection changes to a non-empty valid range |
-| `annotation:create` | `NyxAnnotationAnchor` | Fired when the annotation action successfully creates an annotation anchor with `content`, context, and offsets from the current selection |
+| `selection` | `NyxAnnotationAnchor` | Fired when the current editor selection changes to a non-empty valid range |
+| `annotation:create` | `NyxAnnotationAnchor` | Fired when the annotation action successfully creates an annotation anchor with `text`, nested `context`, and nested `range` from the current selection |
 | `annotation:focus` | `string` | Fired when a rendered annotation is focused via click or supported keyboard interaction; payload is the annotation id |
 | `annotation:blur` | `string` | Fired when a rendered annotation loses focus; payload is the annotation id |
 
@@ -72,7 +72,6 @@ This document defines the public-facing annotation API currently reflected in `N
 
 The following types are public and exported from `src/types/editor.ts` and `src/types/index.ts`:
 
-- `NyxEditorSelection`
 - `NyxAnnotationInteraction`
 - `NyxAnnotationStatus`
 - `NyxAnnotationAttachment`

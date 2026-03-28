@@ -10,7 +10,6 @@ import type {
   NyxAnnotation,
   NyxAnnotationAnchor,
   NyxAnnotationStatusTheme,
-  NyxEditorSelection,
 } from '@/types/editor'
 
 export interface NyxEditorProps {
@@ -32,7 +31,7 @@ export interface NyxEditorEmits {
   (event: 'change', content: string): void
   (event: 'focus', e: FocusEvent): void
   (event: 'blur', e: FocusEvent): void
-  (event: 'selection', selection: NyxEditorSelection): void
+  (event: 'selection', selection: NyxAnnotationAnchor): void
   (event: 'annotation:create', anchor: NyxAnnotationAnchor): void
   (event: 'annotation:focus', id: string): void
   (event: 'annotation:blur', id: string): void

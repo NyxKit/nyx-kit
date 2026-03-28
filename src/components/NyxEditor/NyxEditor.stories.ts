@@ -15,7 +15,6 @@ import {
 import type { NyxEditorProps } from './NyxEditor.types'
 import type {
   NyxAnnotationAnchor,
-  NyxEditorSelection,
 } from '@/types/editor'
 
 export default {
@@ -103,11 +102,15 @@ export const SelectionAndAnnotationEvents = () => defineComponent({
       {
         id: 'annotation-1',
         anchor: {
-          content: 'Highlight any part',
-          prefixContext: '',
-          suffixContext: ' of this content',
-          startOffset: 23,
-          endOffset: 41,
+          text: 'Highlight any part',
+          context: {
+            prefix: '',
+            suffix: ' of this content',
+          },
+          range: {
+            from: 23,
+            to: 41,
+          },
         },
         interaction: NyxAnnotationInteraction.Default,
         status: NyxAnnotationStatus.Unresolved,
@@ -119,7 +122,7 @@ export const SelectionAndAnnotationEvents = () => defineComponent({
       [NyxAnnotationStatus.Resolved]: NyxTheme.Success,
     }
 
-    const handleSelection = (value: NyxEditorSelection) => {
+    const handleSelection = (value: NyxAnnotationAnchor) => {
       selectionOutput.value = JSON.stringify(value, null, 2)
     }
 
@@ -211,11 +214,15 @@ export const AnnotationStates = () => defineComponent({
       {
         id: 'annotation-default',
         anchor: {
-          content: 'Focus, resolved, and detached',
-          prefixContext: '',
-          suffixContext: ' annotations remain',
-          startOffset: 21,
-          endOffset: 49,
+          text: 'Focus, resolved, and detached',
+          context: {
+            prefix: '',
+            suffix: ' annotations remain',
+          },
+          range: {
+            from: 21,
+            to: 49,
+          },
         },
         interaction: NyxAnnotationInteraction.Default,
         status: NyxAnnotationStatus.Unresolved,
@@ -224,11 +231,15 @@ export const AnnotationStates = () => defineComponent({
       {
         id: 'annotation-focus',
         anchor: {
-          content: 'consumer-owned',
-          prefixContext: ' annotations remain ',
-          suffixContext: '.',
-          startOffset: 69,
-          endOffset: 83,
+          text: 'consumer-owned',
+          context: {
+            prefix: ' annotations remain ',
+            suffix: '.',
+          },
+          range: {
+            from: 69,
+            to: 83,
+          },
         },
         interaction: NyxAnnotationInteraction.Focus,
         status: NyxAnnotationStatus.Resolved,

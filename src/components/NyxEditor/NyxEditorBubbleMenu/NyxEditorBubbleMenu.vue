@@ -9,8 +9,6 @@ import {
   Heading1, Heading2, Heading3, Pilcrow,
   MessageSquare,
 } from 'lucide-vue-next'
-import type { NyxEditorSelection } from '@/types/editor'
-
 const props = defineProps<{
   editor: Editor | null
   toolbar: NyxEditorToolbar
@@ -19,7 +17,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   mousedown: [],
-  create: [NyxEditorSelection]
+  create: []
 }>()
 
 const bubbleRef = ref<HTMLElement | null>(null)
@@ -37,10 +35,7 @@ watch(() => props.visible, (val) => {
 })
 
 const onCreate = () => {
-  if (!props.editor) return
-  const text = props.editor.state.doc.textBetween(props.editor.state.selection.from, props.editor.state.selection.to)
-  const range = { from: props.editor.state.selection.from, to: props.editor.state.selection.to }
-  emit('create', { text, range })
+  emit('create')
 }
 </script>
 

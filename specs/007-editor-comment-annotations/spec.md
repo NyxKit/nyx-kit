@@ -15,7 +15,7 @@
 
 ### User Story 1 - Create annotations from a live selection (Priority: P1)
 
-As a product team using `NyxEditor`, I can respond to a user's current text selection with both a simple selection payload and a richer annotation-create payload so I can create an external annotation record without reverse-engineering the editor document.
+As a product team using `NyxEditor`, I can respond to a user's current text selection with a consistent anchor payload so I can create an external annotation record without reverse-engineering the editor document.
 
 **Why this priority**: Comment creation is the entry point for the whole feature. If a consuming project cannot reliably capture what the user selected, the rest of the annotation workflow has no usable foundation.
 
@@ -23,7 +23,7 @@ As a product team using `NyxEditor`, I can respond to a user's current text sele
 
 **Acceptance Scenarios**:
 
-1. **Given** a user selects content within the editor, **When** the consuming project listens for the annotation action, **Then** it receives the current `selection` payload and an `annotation:create` payload containing an annotation anchor.
+1. **Given** a user selects content within the editor, **When** the consuming project listens for `selection` or `annotation:create`, **Then** it receives the same `NyxAnnotationAnchor` payload shape.
 2. **Given** a user selection spans multiple content types in one continuous selection, **When** the comment action is triggered, **Then** the payload still represents one continuous annotation target rather than separate unrelated fragments.
 3. **Given** there is no active text selection, **When** the comment action is triggered, **Then** no incomplete or ambiguous annotation target is emitted.
 4. **Given** a user selection includes formatted or structured content such as list items, block quotes, or code blocks, **When** the comment action is triggered, **Then** the payload still identifies one continuous target that the consuming project can persist as a single comment anchor.
@@ -76,10 +76,10 @@ As a consuming project, I can pass annotation metadata into the editor and recei
 
 ### Functional Requirements
 
-- **FR-001**: `NyxEditor` MUST keep emitting `selection` payloads as `NyxEditorSelection` for non-empty selections.
+- **FR-001**: `NyxEditor` MUST emit `selection` payloads as `NyxAnnotationAnchor` for non-empty selections.
 - **FR-002**: The annotation-target payload MUST represent a continuous user selection even when that selection spans multiple content blocks or content types.
 - **FR-002a**: `NyxEditor` MUST emit `annotation:create` with a `NyxAnnotationAnchor` payload derived from the current selection.
-- **FR-003**: The annotation anchor MUST include `content`, `prefixContext`, `suffixContext`, `startOffset`, and `endOffset`.
+- **FR-003**: The annotation anchor MUST include `text`, `context: { prefix, suffix }`, and `range: { from, to }`.
 - **FR-004**: `NyxEditor` MUST allow consuming projects to pass `annotations?: NyxAnnotation[]` for rendering.
 - **FR-004a**: Each `NyxAnnotation` MUST include `id`, `anchor`, `interaction`, `status`, and `attachment`, with optional `tone`.
 - **FR-004b**: `NyxEditor` MUST allow consuming projects to provide `annotationStatusTheme?: NyxAnnotationStatusTheme` so `resolved` and `unresolved` annotations can map to different theme tokens even when both are attached.
@@ -118,6 +118,7 @@ As a consuming project, I can pass annotation metadata into the editor and recei
 - Consuming projects customize appearance through theme-driven styling hooks exposed by annotation classes and data attributes.
 - `annotationStatusTheme` maps `NyxAnnotationStatus` values to `NyxTheme` tokens for highlight styling.
 - Consuming projects must not need to replace or duplicate annotation mapping logic in order to brand annotation highlights.
+- Annotation-specific mapping and event logic should be isolated behind an internal editor composition so the main component remains focused on editor mode, content syncing, and layout concerns.
 
 ### Overlapping Annotation Behavior
 
@@ -128,7 +129,7 @@ As a consuming project, I can pass annotation metadata into the editor and recei
 ### Key Entities *(include if feature involves data)*
 
 - **NyxAnnotation**: A consumer-supplied annotation record containing `id`, `anchor`, `interaction`, `status`, `attachment`, and optional `tone`.
-- **NyxAnnotationAnchor**: The anchor object containing `content`, surrounding context, and editor offsets.
+- **NyxAnnotationAnchor**: The anchor object containing `text`, surrounding context, and editor offsets.
 - **Annotation focus/blur payload**: The focused or blurred annotation id emitted as a string.
 
 ## Assumptions

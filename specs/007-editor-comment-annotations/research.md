@@ -14,13 +14,13 @@
 
 ---
 
-## Finding 2: Selection remains simple while annotation creation becomes explicit
+## Finding 2: Selection and creation should share one anchor contract
 
-**Decision**: Keep `selection` as the simple selection payload and use `annotation:create` as the canonical annotation-creation event.
+**Decision**: Use `NyxAnnotationAnchor` for both `selection` and `annotation:create`.
 
-**Rationale**: This keeps the lightweight selection signal available while moving annotation creation to a dedicated event that better reflects the richer anchor contract.
+**Rationale**: A single payload shape is easier for consumers to reason about and avoids parallel selection models with overlapping meaning.
 
-**Alternatives considered**: Continuing to rely on a generic `comment` emit was rejected because `annotation:create` is the clearer public contract.
+**Alternatives considered**: Keeping a lighter `selection` payload was rejected because it creates two similar but different contracts for the same user selection.
 
 ---
 

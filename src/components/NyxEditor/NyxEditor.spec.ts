@@ -73,7 +73,7 @@ vi.mock('./NyxEditorBubbleMenu/NyxEditorBubbleMenu.vue', () => ({
   default: {
     name: 'NyxEditorBubbleMenu',
     emits: ['mousedown', 'create'],
-    template: '<button class="nyx-editor__bubble-comment" @click="$emit(\'create\', { text: \'picked\', range: { from: 2, to: 8 } })" />',
+    template: '<button class="nyx-editor__bubble-comment" @click="$emit(\'create\')" />',
   },
 }))
 
@@ -88,6 +88,9 @@ describe('NyxEditor', () => {
   })
 
   it('emits selection when the editor selection changes', () => {
+    const textBetweenMock = mockEditor.state.doc.textBetween as unknown as {
+      mockImplementation: (fn: (from: number, to: number) => string) => void
+    }
     const getSelection = vi.spyOn(window, 'getSelection').mockReturnValue({
       rangeCount: 1,
       getRangeAt: () => ({
@@ -96,7 +99,10 @@ describe('NyxEditor', () => {
     } as unknown as Selection)
 
     mockEditor.state.selection = { empty: false, from: 2, to: 8 }
-    mockEditor.state.doc.textBetween.mockReturnValue('picked')
+    textBetweenMock.mockImplementation((from: number, to: number) => {
+      if (from === 2 && to === 8) return 'picked'
+      return ''
+    })
 
     const wrapper = mount(NyxEditor)
 
@@ -104,6 +110,10 @@ describe('NyxEditor', () => {
 
     expect(wrapper.emitted('selection')).toEqual([[{
       text: 'picked',
+      context: {
+        prefix: '',
+        suffix: '',
+      },
       range: { from: 2, to: 8 },
     }]])
 
@@ -179,11 +189,15 @@ describe('NyxEditor', () => {
     const annotations = [{
       id: 'annotation-1',
       anchor: {
-        content: 'picked',
-        prefixContext: 'before',
-        suffixContext: 'after',
-        startOffset: 2,
-        endOffset: 8,
+        text: 'picked',
+        context: {
+          prefix: 'before',
+          suffix: 'after',
+        },
+        range: {
+          from: 2,
+          to: 8,
+        },
       },
       interaction: NyxAnnotationInteraction.Default,
       status: NyxAnnotationStatus.Unresolved,
@@ -206,12 +220,15 @@ describe('NyxEditor', () => {
     expect(wrapper.props('annotationStatusTheme')).toEqual(annotationStatusTheme)
   })
 
-  it('emits annotation:create with content, context, and offset fields', async () => {
+  it('emits annotation:create with text, context, and range fields', async () => {
     const textBetweenMock = mockEditor.state.doc.textBetween as unknown as {
       mockImplementation: (fn: (from: number, to: number) => string) => void
     }
 
+    mockEditor.state.selection = { empty: false, from: 2, to: 8 }
+
     textBetweenMock.mockImplementation((from: number, to: number) => {
+      if (from === 2 && to === 8) return 'picked'
       if (from === 1 && to === 2) return 'prefix'
       if (from === 8 && to === 40) return 'suffix'
       return ''
@@ -223,11 +240,15 @@ describe('NyxEditor', () => {
 
     expect(wrapper.emitted('annotation:create')).toEqual([[
       {
-        content: 'picked',
-        prefixContext: 'prefix',
-        suffixContext: 'suffix',
-        startOffset: 2,
-        endOffset: 8,
+        text: 'picked',
+        context: {
+          prefix: 'prefix',
+          suffix: 'suffix',
+        },
+        range: {
+          from: 2,
+          to: 8,
+        },
       },
     ]])
   })
@@ -241,11 +262,15 @@ describe('NyxEditor', () => {
       annotations: [{
         id: 'annotation-1',
         anchor: {
-          content: 'picked',
-          prefixContext: 'before',
-          suffixContext: 'after',
-          startOffset: 2,
-          endOffset: 8,
+          text: 'picked',
+          context: {
+            prefix: 'before',
+            suffix: 'after',
+          },
+          range: {
+            from: 2,
+            to: 8,
+          },
         },
         interaction: NyxAnnotationInteraction.Focus,
         status: NyxAnnotationStatus.Resolved,

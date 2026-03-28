@@ -19,7 +19,8 @@ NyxEditor provides an opinionated but flexible rich-text editing experience. It 
 
 - Uses `useEditor` and `EditorContent` from `@tiptap/vue-3`
 - Extensions loaded: `StarterKit`, `Underline`, `TaskList`, `TaskItem` always; `Markdown` (from `tiptap-markdown`) when `format` is `markdown`
-- **Zen mode**: custom bubble menu — listens to `onSelectionUpdate`, reads `window.getSelection().getRangeAt(0).getBoundingClientRect()` to position a `<Teleport>`-ed `div` above the selection, and emits a semantic `selection` event with the selected text and ProseMirror range whenever a non-empty selection exists. The annotation action derives a richer `NyxAnnotationAnchor` and emits `annotation:create`. `@mousedown` on the bubble sets a `suppressNextHide` flag (cleared with `requestAnimationFrame`) so that clicking a formatting button does not collapse the bubble before the command fires.
+- Annotation-specific logic is extracted into the internal `useEditorAnnotations` composition so anchor generation, decoration mapping, and annotation focus/blur events do not live directly in the component body.
+- **Zen mode**: custom bubble menu — listens to `onSelectionUpdate`, reads `window.getSelection().getRangeAt(0).getBoundingClientRect()` to position a `<Teleport>`-ed `div` above the selection, and emits `selection` as a `NyxAnnotationAnchor` whenever a non-empty selection exists. The annotation action emits the same anchor shape through `annotation:create`. `@mousedown` on the bubble sets a `suppressNextHide` flag (cleared with `requestAnimationFrame`) so that clicking a formatting button does not collapse the bubble before the command fires.
 - Annotation rendering is implemented as a Tiptap/ProseMirror decoration plugin that reads `annotations` from props and decorates matching ranges with annotation classes and `data-nyx-annotation-*` attributes.
 - **Toolbar mode**: renders a fixed `<div class="nyx-editor__toolbar">` above the editor content. _(See Known Limitations — not yet rendering in Storybook.)_
 - v-model syncs bi-directionally via `onUpdate` (editor → model) and a `watch` (model → editor)
@@ -47,8 +48,8 @@ NyxEditor provides an opinionated but flexible rich-text editing experience. It 
 | `change` | `string` | Fired on every editor content update, payload is the serialized content (MD or HTML) |
 | `focus` | `FocusEvent` | Editor receives focus |
 | `blur` | `FocusEvent` | Editor loses focus |
-| `selection` | `{ text: string, range: { from: number, to: number } }` | Fired when the current editor selection changes to a non-empty range |
-| `annotation:create` | `{ content: string, prefixContext: string, suffixContext: string, startOffset: number, endOffset: number }` | Fired when the annotation action successfully derives an annotation anchor from the current selection |
+| `selection` | `{ text: string, context: { prefix: string, suffix: string }, range: { from: number, to: number } }` | Fired when the current editor selection changes to a non-empty range |
+| `annotation:create` | `{ text: string, context: { prefix: string, suffix: string }, range: { from: number, to: number } }` | Fired when the annotation action successfully derives an annotation anchor from the current selection |
 | `annotation:focus` | `string` | Fired when a rendered annotation decoration is clicked or focused through the supported keyboard interaction; payload is the annotation id |
 | `annotation:blur` | `string` | Fired when a rendered annotation decoration loses focus after having been focused; payload is the annotation id |
 
@@ -87,7 +88,7 @@ Shared editor types currently define the annotation contract:
 - `NyxAnnotationStatus`: `resolved | unresolved`
 - `NyxAnnotationAttachment`: `attached | detached`
 - `NyxAnnotationStatusTheme`: `Record<NyxAnnotationStatus, NyxTheme>`
-- `NyxAnnotationAnchor`: `{ content, prefixContext, suffixContext, startOffset, endOffset }`
+- `NyxAnnotationAnchor`: `{ text, context: { prefix, suffix }, range: { from, to } }`
 - `NyxAnnotation`: `{ id, anchor, interaction, status, attachment, tone? }`
 
 `NyxEditor` currently renders all supplied annotations and exposes their metadata through BEM/state classes plus `data-nyx-annotation-id`, `data-nyx-annotation-interaction`, `data-nyx-annotation-status`, and `data-nyx-annotation-attachment` attributes.
