@@ -34,7 +34,7 @@ const props = withDefaults(defineProps<NyxEditorProps>(), {
   hasSourceToggle: false,
   annotationStatusTheme: (): NyxAnnotationStatusTheme => ({
     [NyxAnnotationStatus.Unresolved]: NyxTheme.Primary,
-    [NyxAnnotationStatus.Draft]: NyxTheme.Primary,
+    [NyxAnnotationStatus.Draft]: NyxTheme.Info,
     [NyxAnnotationStatus.InReview]: NyxTheme.Warning,
     [NyxAnnotationStatus.Approved]: NyxTheme.Success,
     [NyxAnnotationStatus.Resolved]: NyxTheme.Success,
@@ -66,9 +66,9 @@ const {
   annotations,
   annotationStatusTheme,
   updateAnnotations: (nextAnnotations) => { annotationsModel.value = nextAnnotations },
-  emitCreate: (anchor) => emit('annotation:create', anchor),
-  emitFocus: (id) => emit('annotation:focus', id),
-  emitBlur: (id) => emit('annotation:blur', id),
+  onCreate: (anchor) => emit('annotation:create', anchor),
+  onFocus: (id) => emit('annotation:focus', id),
+  onBlur: (id) => emit('annotation:blur', id),
 })
 
 // ── Source textarea auto-resize ──────────────────────────────────────

@@ -15,9 +15,9 @@ interface UseEditorAnnotationsOptions {
   annotations: Ref<NyxAnnotation[]> | ComputedRef<NyxAnnotation[]>
   annotationStatusTheme: Ref<NyxAnnotationStatusTheme> | ComputedRef<NyxAnnotationStatusTheme>
   updateAnnotations: (annotations: NyxAnnotation[]) => void
-  emitCreate: (anchor: NyxAnnotationAnchor) => void
-  emitFocus: (id: string) => void
-  emitBlur: (id: string) => void
+  onCreate: (anchor: NyxAnnotationAnchor) => void
+  onFocus: (id: string) => void
+  onBlur: (id: string) => void
 }
 
 const ANNOTATION_CONTEXT_WINDOW = 32
@@ -151,19 +151,19 @@ export default function useEditorAnnotations(options: UseEditorAnnotationsOption
     if (!id) return false
 
     if (focusedAnnotationId && focusedAnnotationId !== id) {
-      options.emitBlur(focusedAnnotationId)
+      options.onBlur(focusedAnnotationId)
     }
 
     focusedAnnotationId = id
 
-    options.emitFocus(id)
+    options.onFocus(id)
     return true
   }
 
   const clearFocusedAnnotation = () => {
     if (!focusedAnnotationId) return false
 
-    options.emitBlur(focusedAnnotationId)
+    options.onBlur(focusedAnnotationId)
     focusedAnnotationId = null
     return true
   }
@@ -248,7 +248,7 @@ export default function useEditorAnnotations(options: UseEditorAnnotationsOption
     const anchor = getCurrentSelectionAnchor()
     if (!anchor) return
 
-    options.emitCreate(anchor)
+    options.onCreate(anchor)
   }
 
   const syncAnnotations = () => {
