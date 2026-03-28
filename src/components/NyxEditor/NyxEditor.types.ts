@@ -24,6 +24,7 @@ export interface NyxEditorProps {
   disabled?: boolean
   placeholder?: string
   hasSourceToggle?: boolean
+  hasFooter?: boolean
   annotationStatusTheme?: NyxAnnotationStatusTheme
 }
 

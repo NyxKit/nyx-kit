@@ -26,7 +26,7 @@ NyxEditor provides an opinionated but flexible rich-text editing experience. It 
 - **Zen mode**: custom bubble menu — listens to `onSelectionUpdate`, reads `window.getSelection().getRangeAt(0).getBoundingClientRect()` to position a `<Teleport>`-ed `div` above the selection, and renders `NyxEditorToolbarContent` inside the teleported shell. It emits `selection` as a `NyxAnnotationAnchor` whenever a non-empty selection exists. The annotation action emits the same anchor shape through `annotation:create`. `@mousedown` on the bubble sets a `suppressNextHide` flag (cleared with `requestAnimationFrame`) so that clicking a formatting button does not collapse the bubble before the command fires.
 - Annotation rendering is implemented as a Tiptap/ProseMirror decoration plugin that reads the two-way `annotations` model and decorates matching ranges with annotation classes and `data-nyx-annotation-*` attributes.
 - **Toolbar mode**: renders an internal `NyxEditorToolbar` wrapper above the editor content; that wrapper hosts the shared `NyxEditorToolbarContent` controls. _(See Known Limitations — not yet rendering in Storybook.)_
-- A default footer renders structural path information on the left and word count on the right; the same payload is exposed through a scoped `footer` slot.
+- A default footer renders structural path information on the left and word count on the right when `hasFooter` is `true`; the footer also becomes visible automatically when a scoped `footer` slot is present.
 - The editor root is capped at `100dvh`; editor content/source areas scroll internally so the footer remains pinned to the bottom edge of the component.
 - v-model syncs bi-directionally via `onUpdate` (editor → model) and a `watch` (model → editor)
 - `useNyxProps` is used for visual prop integration (theme, size, variant, pixel)
@@ -43,6 +43,7 @@ NyxEditor provides an opinionated but flexible rich-text editing experience. It 
 | `pixel` | `boolean` | `false` | Pixel-art mode |
 | `disabled` | `boolean` | `false` | Makes the editor read-only |
 | `placeholder` | `string` | `''` | Placeholder shown when editor is empty |
+| `hasFooter` | `boolean` | `false` | Requests the default footer region; the footer also becomes visible automatically when a scoped `footer` slot is provided |
 | `annotationStatusTheme` | `NyxAnnotationStatusTheme` | partial map with built-in defaults | Maps annotation status values to the theme tokens used for highlight styling; missing keys fall back to `NyxTheme.Primary` |
 
 ## Emits

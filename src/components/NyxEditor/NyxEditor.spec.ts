@@ -309,6 +309,9 @@ describe('NyxEditor', () => {
     mockEditor.state.selection = { empty: true, from: 18, to: 18 }
 
     const wrapper = mount(NyxEditor, {
+      props: {
+        hasFooter: true,
+      },
       slots: {
         footer: ({ meta }: any) => h('div', { class: 'custom-footer' }, `${meta.pathText} :: ${meta.wordCount}`),
       },

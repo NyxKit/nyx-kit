@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import './NyxEditor.scss'
-import { computed, ref, shallowRef, watch, nextTick } from 'vue'
+import { computed, ref, shallowRef, watch, nextTick, useSlots } from 'vue'
 import { useEditor, EditorContent, type Editor } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import UnderlineExtension from '@tiptap/extension-underline'
@@ -33,6 +33,7 @@ const props = withDefaults(defineProps<NyxEditorProps>(), {
   disabled: false,
   placeholder: '',
   hasSourceToggle: false,
+  hasFooter: false,
   annotationStatusTheme: (): NyxAnnotationStatusTheme => ({
     [NyxAnnotationStatus.Unresolved]: NyxTheme.Primary,
     [NyxAnnotationStatus.Draft]: NyxTheme.Info,
@@ -44,7 +45,7 @@ const props = withDefaults(defineProps<NyxEditorProps>(), {
 })
 
 const emit = defineEmits<NyxEditorEmits>()
-defineSlots<NyxEditorSlots>()
+const slots = defineSlots<NyxEditorSlots>()
 
 const model = defineModel<string>({ default: '' })
 const sourceModel = defineModel<boolean>('source', { default: false })
@@ -54,6 +55,7 @@ const editorRef = shallowRef<Editor | null | undefined>(undefined)
 const { classList } = useNyxProps(props, { origin: 'NyxEditor' })
 const annotations = computed(() => annotationsModel.value)
 const annotationStatusTheme = computed(() => props.annotationStatusTheme)
+const isFooterVisible = computed(() => props.hasFooter || !!slots.footer)
 
 const {
   annotationExtension,
@@ -237,7 +239,7 @@ watch(() => annotationsModel.value, () => {
       @annotation:create="onCreateAnnotation"
     />
 
-    <footer class="nyx-editor__footer">
+    <footer v-if="isFooterVisible" class="nyx-editor__footer">
       <slot name="footer" :meta="meta">
         <span class="nyx-editor__footer-path" aria-label="Document structure">
           <template v-if="meta.segments.length">

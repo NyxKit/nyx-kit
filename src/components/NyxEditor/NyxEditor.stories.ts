@@ -225,6 +225,7 @@ Showcase.args = {
   modelValue: showcaseContent,
   annotations: showcaseAnnotations,
   annotationStatusTheme: showcaseStatusTheme,
+  hasFooter: true,
   mode: NyxEditorMode.Zen,
   format: NyxEditorFormat.Markdown,
   toolbar: NyxEditorToolbar.Full,
