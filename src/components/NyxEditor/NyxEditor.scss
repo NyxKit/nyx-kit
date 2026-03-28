@@ -5,6 +5,10 @@
   --nyx-c-editor-highlight: var(--nyx-c-default-highlight);
   --nyx-c-editor-alt: var(--nyx-c-default-alt);
   --nyx-c-editor-text: var(--nyx-c-white-soft);
+  --nyx-c-editor-annotation: rgba(var(--nyx-rgb-editor), 0.2);
+  --nyx-c-editor-annotation-hover: rgba(var(--nyx-rgb-editor), 0.28);
+  --nyx-c-editor-annotation-focus: rgba(var(--nyx-rgb-editor), 0.36);
+  --nyx-c-editor-annotation-detached: rgba(var(--nyx-rgb-warning), 0.14);
   --nyx-rgb-editor: var(--nyx-rgb-default);
   --nyx-gap-editor: var(--nyx-gap-md);
   --nyx-pad-editor: var(--nyx-pad-md);
@@ -340,6 +344,43 @@
         opacity: 0.4;
         pointer-events: none;
         height: 0;
+      }
+
+      .nyx-editor__annotation {
+        background-color: rgba(var(--nyx-annotation-rgb, var(--nyx-rgb-editor)), 0.2);
+        border-bottom: 2px solid rgba(var(--nyx-annotation-rgb, var(--nyx-rgb-editor)), 0.4);
+        border-radius: 0.2em;
+        cursor: pointer;
+        outline: none;
+        transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+
+        &.is-interaction-hover,
+        &:hover {
+          background-color: rgba(var(--nyx-annotation-rgb, var(--nyx-rgb-editor)), 0.28);
+        }
+
+        &.is-interaction-focus,
+        &:focus-visible {
+          background-color: rgba(var(--nyx-annotation-rgb, var(--nyx-rgb-editor)), 0.36);
+          box-shadow: 0 0 0 1px rgba(var(--nyx-annotation-rgb, var(--nyx-rgb-editor)), 0.45);
+        }
+
+        &.is-status-resolved {
+          border-bottom-style: dashed;
+        }
+
+        &.is-attachment-detached {
+          box-shadow: inset 0 0 0 1px rgba(var(--nyx-annotation-attachment-rgb, var(--nyx-rgb-warning)), 0.5);
+          border-bottom-color: rgba(var(--nyx-annotation-attachment-rgb, var(--nyx-rgb-warning)), 0.75);
+        }
+
+        &.is-status-resolved.is-attachment-detached {
+          background-image: linear-gradient(
+            135deg,
+            rgba(var(--nyx-annotation-rgb, var(--nyx-rgb-editor)), 0.18),
+            rgba(var(--nyx-annotation-attachment-rgb, var(--nyx-rgb-warning)), 0.18)
+          );
+        }
       }
     }
   }

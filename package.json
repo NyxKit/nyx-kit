@@ -2,7 +2,7 @@
   "name": "nyx-kit",
   "homepage": "http://nyxkit.github.io/nyx-kit",
   "author": "Arne Decant <hello@arnedecant.be>",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "private": false,
   "license": "MIT",
   "type": "module",
@@ -81,12 +81,15 @@
     "access": "public"
   },
   "dependencies": {
+    "@tiptap/core": "^3.20.4",
     "@tiptap/extension-task-item": "^3.20.4",
     "@tiptap/extension-task-list": "^3.20.4",
     "@tiptap/extension-underline": "^3.20.4",
     "@tiptap/starter-kit": "^3.20.4",
     "@tiptap/vue-3": "^3.20.4",
     "lucide-vue-next": "^0.577.0",
+    "prosemirror-state": "^1.4.4",
+    "prosemirror-view": "^1.41.7",
     "tiptap-markdown": "^0.9.0",
     "vue": "^3.5.13"
   },

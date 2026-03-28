@@ -19,8 +19,12 @@ NyxEditor provides an opinionated but flexible rich-text editing experience. It 
 
 - Uses `useEditor` and `EditorContent` from `@tiptap/vue-3`
 - Extensions loaded: `StarterKit`, `Underline`, `TaskList`, `TaskItem` always; `Markdown` (from `tiptap-markdown`) when `format` is `markdown`
-- **Zen mode**: custom bubble menu — listens to `onSelectionUpdate`, reads `window.getSelection().getRangeAt(0).getBoundingClientRect()` to position a `<Teleport>`-ed `div` above the selection. `@mousedown` on the bubble sets a `suppressNextHide` flag (cleared with `requestAnimationFrame`) so that clicking a formatting button does not collapse the bubble before the command fires.
-- **Toolbar mode**: renders a fixed `<div class="nyx-editor__toolbar">` above the editor content. _(See Known Limitations — not yet rendering in Storybook.)_
+- Annotation-specific logic is extracted into the internal `useEditorAnnotations` composition so anchor generation, decoration mapping, and annotation focus/blur events do not live directly in the component body.
+- Formatting controls are centralized in an internal `NyxEditorToolbarContent` sub-component that renders the shared button groups for both toolbar mode and the zen bubble menu.
+- **Toolbar mode** uses an internal `NyxEditorToolbar` wrapper component so `NyxEditor` does not own the toolbar shell markup directly.
+- **Zen mode**: custom bubble menu — listens to `onSelectionUpdate`, reads `window.getSelection().getRangeAt(0).getBoundingClientRect()` to position a `<Teleport>`-ed `div` above the selection, and renders `NyxEditorToolbarContent` inside the teleported shell. It emits `selection` as a `NyxAnnotationAnchor` whenever a non-empty selection exists. The annotation action emits the same anchor shape through `annotation:create`. `@mousedown` on the bubble sets a `suppressNextHide` flag (cleared with `requestAnimationFrame`) so that clicking a formatting button does not collapse the bubble before the command fires.
+- Annotation rendering is implemented as a Tiptap/ProseMirror decoration plugin that reads the two-way `annotations` model and decorates matching ranges with annotation classes and `data-nyx-annotation-*` attributes.
+- **Toolbar mode**: renders an internal `NyxEditorToolbar` wrapper above the editor content; that wrapper hosts the shared `NyxEditorToolbarContent` controls. _(See Known Limitations — not yet rendering in Storybook.)_
 - v-model syncs bi-directionally via `onUpdate` (editor → model) and a `watch` (model → editor)
 - `useNyxProps` is used for visual prop integration (theme, size, variant, pixel)
 
@@ -36,6 +40,7 @@ NyxEditor provides an opinionated but flexible rich-text editing experience. It 
 | `pixel` | `boolean` | `false` | Pixel-art mode |
 | `disabled` | `boolean` | `false` | Makes the editor read-only |
 | `placeholder` | `string` | `''` | Placeholder shown when editor is empty |
+| `annotationStatusTheme` | `NyxAnnotationStatusTheme` | partial map with built-in defaults | Maps annotation status values to the theme tokens used for highlight styling; missing keys fall back to `NyxTheme.Primary` |
 
 ## Emits
 
@@ -44,7 +49,10 @@ NyxEditor provides an opinionated but flexible rich-text editing experience. It 
 | `change` | `string` | Fired on every editor content update, payload is the serialized content (MD or HTML) |
 | `focus` | `FocusEvent` | Editor receives focus |
 | `blur` | `FocusEvent` | Editor loses focus |
-| `comment` | `{ text: string, range: { from: number, to: number } }` | Fired when the comment button in the bubble menu is clicked; `text` is the selected text, `range` is the ProseMirror position range |
+| `selection` | `{ text: string, context: { prefix: string, suffix: string }, range: { from: number, to: number } }` | Fired when the current editor selection changes to a non-empty range |
+| `annotation:create` | `{ text: string, context: { prefix: string, suffix: string }, range: { from: number, to: number } }` | Fired when the annotation action successfully derives an annotation anchor from the current selection |
+| `annotation:focus` | `string` | Fired when a rendered annotation decoration is clicked or focused through the supported keyboard interaction; payload is the annotation id |
+| `annotation:blur` | `string` | Fired when a rendered annotation decoration loses focus after having been focused; payload is the annotation id |
 
 ## v-model
 
@@ -52,6 +60,7 @@ NyxEditor provides an opinionated but flexible rich-text editing experience. It 
 |---|---|---|---|
 | `v-model` | `string` | `''` | Serialized content — Markdown or HTML depending on `format` |
 | `v-model:source` | `boolean` | `false` | When `true`, shows a raw source `<textarea>` instead of the formatted editor |
+| `v-model:annotations` | `NyxAnnotation[]` | `[]` | Two-way annotation model; `NyxEditor` may remap annotation positions and emit updated annotations as the document changes |
 
 The source toggle button (top-right corner of the editor) also drives `v-model:source`.
 
@@ -71,6 +80,26 @@ No custom key bindings added at the NyxEditor level.
 - The editor root element is a `<div>` with `role="textbox"` and `aria-multiline="true"` applied by Tiptap
 - All bubble and toolbar buttons include `aria-label` attributes
 - `disabled` prop maps to Tiptap's `editable: false`, which prevents all input
+- Rendered annotations expose annotation identity through `data-nyx-annotation-*` attributes; annotation focus/blur events are driven by editor click/blur handling rather than making inline decorated text itself tabbable.
+
+## Annotation model
+
+Shared editor types currently define the annotation contract:
+
+- `NyxAnnotationInteraction`: `default | hover | focus`
+- `NyxAnnotationStatus`: built-in values `Unresolved`, `Draft`, `InReview`, `Approved`, `Resolved`, `Archived`, while still allowing consumer-defined string derivatives
+- `NyxAnnotationAttachment`: `attached | detached`
+- `NyxAnnotationStatusTheme`: partial status-to-theme map; missing keys fall back to `NyxTheme.Primary`
+- `NyxAnnotationAnchor`: `{ text, context: { prefix, suffix }, range: { from, to } }`
+- `NyxAnnotation`: `{ id, anchor, interaction, status, attachment, tone? }`
+
+`NyxEditor` currently renders all supplied annotations and exposes their metadata through BEM/state classes plus `data-nyx-annotation-id`, `data-nyx-annotation-interaction`, `data-nyx-annotation-status`, and `data-nyx-annotation-attachment` attributes.
+
+Ownership split:
+
+- Consumer-owned: `id`, `tone`, and external comment/thread metadata stored outside the editor
+- Editor-managed: live `anchor.range` and `anchor.context` values when document edits remap annotation positions
+- Preserved as original selection text: `anchor.text` unless the contract is intentionally revised later
 
 ## Mode names
 
@@ -107,6 +136,8 @@ Same set as the bubble menu, plus Undo / Redo at the trailing edge.
 ## Known limitations
 
 - **Toolbar mode not rendering** — see TODO above.
+- **Caret jump while editing inside annotations** — current annotation decorations can disrupt inline text insertion. Reproduction example: content is `lorem ipsum dolor sit amet`, an annotation covers `lorem ipsum`, the caret is placed between `lorem ` and `ipsum`, and the user types `test`. The current broken result is `lorem tipsum dolor sit ametest` because the caret jumps toward the line end after the first key. Expected behavior is stable inline insertion at the caret position without moving text outside the intended edit location.
+- Annotation hover emits are not part of the current public API.
 - HTML output format is implemented but HTML → editor round-tripping depends on Tiptap's built-in HTML parser. Custom HTML produced outside Tiptap may not parse correctly.
 - No image upload support.
 - No collaborative editing support.
