@@ -20,7 +20,44 @@ import type {
 export default {
   title: 'Components/NyxEditor',
   component: NyxEditor,
+  parameters: {
+    docs: {
+      description: {
+        component: 'NyxEditor exposes three models: `v-model` for content, `v-model:source` for source-mode state, and `v-model:annotations` for the live annotation model.',
+      },
+    },
+  },
   argTypes: {
+    modelValue: {
+      control: { type: 'text' },
+      description: 'Primary `v-model` binding for serialized editor content.',
+      table: {
+        category: 'Models',
+      },
+    },
+    source: {
+      control: { type: 'boolean' },
+      description: 'Secondary `v-model:source` binding for source-mode visibility.',
+      table: {
+        category: 'Models',
+      },
+    },
+    annotations: {
+      control: { type: 'object' },
+      description: 'Secondary `v-model:annotations` binding for the live annotation model.',
+      table: {
+        category: 'Models',
+      },
+    },
+    annotationStatusTheme: {
+      control: { type: 'object' },
+      description: 'Partial status-to-theme map. Missing keys fall back to `NyxTheme.Primary`.',
+      table: {
+        defaultValue: {
+          summary: 'built-in status map',
+        },
+      },
+    },
     mode: {
       control: { type: 'select' },
       options: Object.values(NyxEditorMode),
