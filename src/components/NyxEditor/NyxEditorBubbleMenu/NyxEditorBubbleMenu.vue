@@ -4,6 +4,7 @@ import type { Editor } from '@tiptap/vue-3'
 import { NyxEditorToolbar, NyxPosition } from '@/types'
 import useSelectionPosition from '@/composables/useSelectionPosition'
 import NyxEditorToolbarContent from '../NyxEditorToolbarContent/NyxEditorToolbarContent.vue'
+
 const props = defineProps<{
   editor: Editor | null
   toolbar: NyxEditorToolbar
@@ -12,7 +13,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   mousedown: [],
-  create: []
+  'annotation:create': []
 }>()
 
 const bubbleRef = ref<HTMLElement | null>(null)
@@ -26,9 +27,6 @@ watch(() => props.visible, (val) => {
   if (val) nextTick(updateCssVariables)
 })
 
-const onCreate = () => {
-  emit('create')
-}
 </script>
 
 <template>
@@ -47,7 +45,7 @@ const onCreate = () => {
           :editor="editor"
           :toolbar="toolbar"
           surface="bubble"
-          @create="onCreate"
+          @annotation:create="emit('annotation:create')"
         />
       </div>
     </Transition>

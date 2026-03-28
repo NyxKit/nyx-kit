@@ -9,7 +9,7 @@ defineProps<{
 }>()
 
 const emit = defineEmits<{
-  create: []
+  'annotation:create': []
 }>()
 </script>
 
@@ -25,7 +25,7 @@ const emit = defineEmits<{
       :toolbar="toolbar"
       surface="toolbar"
       :show-undo-redo="true"
-      @create="emit('create')"
+      @annotation:create="emit('annotation:create')"
     />
   </div>
 </template>

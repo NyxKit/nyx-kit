@@ -19,74 +19,75 @@ const props = withDefaults(defineProps<{
 })
 
 const emit = defineEmits<{
-  create: []
+  'annotation:create': []
 }>()
 
 const hasFormatting = computed(() => [NyxEditorToolbar.Default, NyxEditorToolbar.Full].includes(props.toolbar))
 const hasComments = computed(() => [NyxEditorToolbar.CommentOnly, NyxEditorToolbar.Full].includes(props.toolbar))
 
-const buttonClass = computed(() => props.surface === 'bubble' ? 'nyx-editor__bubble-btn' : 'nyx-editor__toolbar-btn')
-const separatorClass = computed(() => props.surface === 'bubble' ? 'nyx-editor__bubble-sep' : 'nyx-editor__toolbar-sep')
+const iconSize = computed(() => props.surface === 'bubble' ? 14 : 15)
+const buttonClass = computed(() => `nyx-editor__${props.surface}-btn`)
+const separatorClass = computed(() => `nyx-editor__${props.surface}-sep`)
 const trailingSeparatorClass = computed(() => [separatorClass.value, props.surface === 'toolbar' ? 'nyx-editor__toolbar-sep--grow' : ''].filter(Boolean).join(' '))
 
-const onCreate = () => emit('create')
+const onAnnotationCreate = () => emit('annotation:create')
 </script>
 
 <template>
   <template v-if="hasFormatting">
     <button :class="[buttonClass, { active: editor?.isActive('bold') }]"
       @click="editor?.chain().focus().toggleBold().run()" aria-label="Bold">
-      <Bold :size="surface === 'bubble' ? 14 : 15" />
+      <Bold :size="iconSize" />
     </button>
     <button :class="[buttonClass, { active: editor?.isActive('italic') }]"
       @click="editor?.chain().focus().toggleItalic().run()" aria-label="Italic">
-      <Italic :size="surface === 'bubble' ? 14 : 15" />
+      <Italic :size="iconSize" />
     </button>
     <button :class="[buttonClass, { active: editor?.isActive('underline') }]"
       @click="editor?.chain().focus().toggleUnderline().run()" aria-label="Underline">
-      <Underline :size="surface === 'bubble' ? 14 : 15" />
+      <Underline :size="iconSize" />
     </button>
     <button :class="[buttonClass, { active: editor?.isActive('strike') }]"
       @click="editor?.chain().focus().toggleStrike().run()" aria-label="Strikethrough">
-      <Strikethrough :size="surface === 'bubble' ? 14 : 15" />
+      <Strikethrough :size="iconSize" />
     </button>
     <button :class="[buttonClass, { active: editor?.isActive('code') }]"
       @click="editor?.chain().focus().toggleCode().run()" aria-label="Inline code">
-      <Code :size="surface === 'bubble' ? 14 : 15" />
+      <Code :size="iconSize" />
     </button>
 
     <span :class="separatorClass" aria-hidden="true" />
 
     <button :class="[buttonClass, { active: editor?.isActive('bulletList') }]"
       @click="editor?.chain().focus().toggleBulletList().run()" aria-label="Bullet list">
-      <List :size="surface === 'bubble' ? 14 : 15" />
+      <List :size="iconSize" />
     </button>
     <button :class="[buttonClass, { active: editor?.isActive('orderedList') }]"
       @click="editor?.chain().focus().toggleOrderedList().run()" aria-label="Ordered list">
-      <ListOrdered :size="surface === 'bubble' ? 14 : 15" />
+      <ListOrdered :size="iconSize" />
     </button>
     <button :class="[buttonClass, { active: editor?.isActive('taskList') }]"
       @click="editor?.chain().focus().toggleTaskList().run()" aria-label="Task list">
-      <ListChecks :size="surface === 'bubble' ? 14 : 15" />
+      <ListChecks :size="iconSize" />
     </button>
 
     <span :class="separatorClass" aria-hidden="true" />
 
     <button :class="[buttonClass, { active: editor?.isActive('heading', { level: 1 }) }]"
       @click="editor?.chain().focus().toggleHeading({ level: 1 }).run()" aria-label="Heading 1">
-      <Heading1 :size="surface === 'bubble' ? 14 : 15" />
+      <Heading1 :size="iconSize" />
     </button>
     <button :class="[buttonClass, { active: editor?.isActive('heading', { level: 2 }) }]"
       @click="editor?.chain().focus().toggleHeading({ level: 2 }).run()" aria-label="Heading 2">
-      <Heading2 :size="surface === 'bubble' ? 14 : 15" />
+      <Heading2 :size="iconSize" />
     </button>
     <button :class="[buttonClass, { active: editor?.isActive('heading', { level: 3 }) }]"
       @click="editor?.chain().focus().toggleHeading({ level: 3 }).run()" aria-label="Heading 3">
-      <Heading3 :size="surface === 'bubble' ? 14 : 15" />
+      <Heading3 :size="iconSize" />
     </button>
     <button :class="[buttonClass, { active: editor?.isActive('paragraph') }]"
       @click="editor?.chain().focus().setParagraph().run()" aria-label="Paragraph">
-      <Pilcrow :size="surface === 'bubble' ? 14 : 15" />
+      <Pilcrow :size="iconSize" />
     </button>
   </template>
 
@@ -95,8 +96,8 @@ const onCreate = () => emit('create')
   </template>
 
   <template v-if="hasComments">
-    <button :class="buttonClass" @click="onCreate" aria-label="Comment">
-      <MessageSquare :size="surface === 'bubble' ? 14 : 15" />
+    <button :class="buttonClass" @click="onAnnotationCreate" aria-label="Comment">
+      <MessageSquare :size="iconSize" />
     </button>
   </template>
 
@@ -104,11 +105,11 @@ const onCreate = () => emit('create')
     <span :class="trailingSeparatorClass" aria-hidden="true" />
     <button :class="buttonClass" :disabled="!editor?.can().undo()"
       @click="editor?.chain().focus().undo().run()" aria-label="Undo">
-      <Undo2 :size="15" />
+      <Undo2 :size="iconSize" />
     </button>
     <button :class="buttonClass" :disabled="!editor?.can().redo()"
       @click="editor?.chain().focus().redo().run()" aria-label="Redo">
-      <Redo2 :size="15" />
+      <Redo2 :size="iconSize" />
     </button>
   </template>
 </template>
