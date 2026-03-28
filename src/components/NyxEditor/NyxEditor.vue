@@ -7,7 +7,7 @@ import UnderlineExtension from '@tiptap/extension-underline'
 import TaskList from '@tiptap/extension-task-list'
 import TaskItem from '@tiptap/extension-task-item'
 import { Markdown, type MarkdownStorage } from 'tiptap-markdown'
-import type { NyxEditorProps, NyxEditorEmits } from './NyxEditor.types'
+import type { NyxEditorProps, NyxEditorEmits, NyxEditorSlots } from './NyxEditor.types'
 import type {
   NyxAnnotation,
   NyxAnnotationStatusTheme,
@@ -23,7 +23,8 @@ import { useNyxProps } from '@/composables'
 import NyxEditorBubbleMenu from './NyxEditorBubbleMenu/NyxEditorBubbleMenu.vue'
 import NyxEditorToolbar from './NyxEditorToolbar/NyxEditorToolbar.vue'
 import useEditorAnnotations from './useEditorAnnotations'
-import { FileCode } from 'lucide-vue-next'
+import useEditorMeta from './useEditorMeta'
+import { ChevronRight, FileCode } from 'lucide-vue-next'
 
 const props = withDefaults(defineProps<NyxEditorProps>(), {
   mode: NyxEditorMode.Zen,
@@ -43,6 +44,7 @@ const props = withDefaults(defineProps<NyxEditorProps>(), {
 })
 
 const emit = defineEmits<NyxEditorEmits>()
+defineSlots<NyxEditorSlots>()
 
 const model = defineModel<string>({ default: '' })
 const sourceModel = defineModel<boolean>('source', { default: false })
@@ -70,6 +72,8 @@ const {
   onFocus: (id) => emit('annotation:focus', id),
   onBlur: (id) => emit('annotation:blur', id),
 })
+
+const { meta, refreshMeta } = useEditorMeta(editorRef)
 
 // ── Source textarea auto-resize ──────────────────────────────────────
 const sourceRef = ref<HTMLTextAreaElement | null>(null)
@@ -138,10 +142,12 @@ const editor = useEditor({
   editable: !props.disabled,
   onCreate: () => {
     syncAnnotationDecorations()
+    refreshMeta()
   },
   onUpdate: () => {
     const content = getContent()
     model.value = content
+    refreshMeta()
     emit('change', content)
   },
   onTransaction: ({ transaction }) => {
@@ -151,6 +157,7 @@ const editor = useEditor({
   },
   onSelectionUpdate: () => {
     updateBubble()
+    refreshMeta()
 
     const anchor = getCurrentSelectionAnchor()
     if (anchor) emit('selection', anchor)
@@ -165,6 +172,7 @@ const editor = useEditor({
 
 watch(editor, (value) => {
   editorRef.value = value
+  refreshMeta()
 }, { immediate: true })
 
 watch(() => model.value, (value) => {
@@ -172,6 +180,7 @@ watch(() => model.value, (value) => {
   const current = getContent()
   if (value !== current) {
     editor.value.commands.setContent(value, { emitUpdate: false })
+    refreshMeta()
   }
 })
 
@@ -192,7 +201,7 @@ watch(() => annotationsModel.value, () => {
       v-if="props.mode === 'toolbar'"
       :editor="editor ?? null"
       :toolbar="props.toolbar"
-      @create="onCreateAnnotation"
+      @annotation:create="onCreateAnnotation"
     />
 
     <!-- Source toggle button -->
@@ -225,8 +234,22 @@ watch(() => annotationsModel.value, () => {
       :visible="bubbleVisible"
       :toolbar="props.toolbar"
       @mousedown="onBubbleMousedown"
-      @create="onCreateAnnotation"
+      @annotation:create="onCreateAnnotation"
     />
 
+    <footer class="nyx-editor__footer">
+      <slot name="footer" :meta="meta">
+        <span class="nyx-editor__footer-path" aria-label="Document structure">
+          <template v-if="meta.segments.length">
+            <template v-for="(segment, index) in meta.segments" :key="`${segment.type}-${segment.label}-${index}`">
+              <ChevronRight v-if="index > 0" :size="12" class="nyx-editor__footer-separator" aria-hidden="true" />
+              <span class="nyx-editor__footer-segment">{{ segment.label }}</span>
+            </template>
+          </template>
+          <span v-else class="nyx-editor__footer-segment">Document</span>
+        </span>
+        <span class="nyx-editor__footer-word-count">{{ meta.wordCount }} words</span>
+      </slot>
+    </footer>
   </div>
 </template>

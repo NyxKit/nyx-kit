@@ -9,6 +9,7 @@ import type {
 import type {
   NyxAnnotation,
   NyxAnnotationAnchor,
+  NyxEditorMeta,
   NyxAnnotationStatusTheme,
 } from '@/types/editor'
 
@@ -34,4 +35,8 @@ export interface NyxEditorEmits {
   (event: 'annotation:create', anchor: NyxAnnotationAnchor): void
   (event: 'annotation:focus', id: string): void
   (event: 'annotation:blur', id: string): void
+}
+
+export interface NyxEditorSlots {
+  footer(props: { meta: NyxEditorMeta }): any
 }
