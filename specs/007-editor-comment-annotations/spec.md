@@ -86,14 +86,15 @@ As a consuming project, I can pass annotation metadata into the editor and recei
 - **FR-004**: `NyxEditor` MUST allow consuming projects to pass `annotations?: NyxAnnotation[]` for rendering.
 - **FR-004**: `NyxEditor` MUST expose annotations as a two-way model so consuming projects can bind persisted annotations with `v-model:annotations`.
 - **FR-004a**: Each `NyxAnnotation` MUST include `id`, `anchor`, `interaction`, `status`, and `attachment`, with optional `tone`.
-- **FR-004b**: `NyxEditor` MUST allow consuming projects to provide `annotationStatusTheme?: NyxAnnotationStatusTheme` so `resolved` and `unresolved` annotations can map to different theme tokens even when both are attached.
+- **FR-004b**: `NyxEditor` MUST allow consuming projects to provide `annotationStatusTheme?: NyxAnnotationStatusTheme` as a partial map, with missing statuses falling back to `NyxTheme.Primary`.
 - **FR-005**: `NyxEditor` MUST render all supplied annotations as inline decorations using their consumer-provided metadata.
 - **FR-006**: Rendered annotations MUST expose styling hooks for `interaction`, `status`, and `attachment`.
 - **FR-007**: Rendered annotations MUST remain individually addressable by annotation id through DOM metadata and focus interaction.
 - **FR-007a**: Rendering annotations MUST NOT break normal caret behavior or inline text insertion when the user edits inside or adjacent to an annotated range.
 - **FR-008**: `NyxEditor` MUST emit `annotation:focus` with the focused annotation id as a string when a rendered annotation is clicked or keyboard-focused through the supported interaction path.
 - **FR-008a**: `NyxEditor` MUST emit `annotation:blur` with the blurred annotation id as a string when a rendered annotation loses focus after having been focused.
-- **FR-009**: `NyxEditor` MUST preserve consumer-supplied `NyxAnnotationStatus` values of `resolved` and `unresolved`.
+- **FR-009**: `NyxEditor` MUST preserve consumer-supplied annotation status values, including the built-in statuses `Unresolved`, `Draft`, `InReview`, `Approved`, `Resolved`, and `Archived`.
+- **FR-009a**: `NyxEditor` MUST accept consumer-defined string derivatives of the built-in status set so apps can extend statuses for internal workflows.
 - **FR-010**: `NyxEditor` MUST preserve consumer-supplied `NyxAnnotationAttachment` values of `attached` and `detached`.
 - **FR-011**: `NyxEditor` MUST preserve consumer-supplied `NyxAnnotationInteraction` values of `default`, `hover`, and `focus` for rendering hooks.
 - **FR-011a**: `NyxEditor` MUST be allowed to update annotation positioning data when document edits change annotated ranges.
@@ -123,7 +124,7 @@ As a consuming project, I can pass annotation metadata into the editor and recei
 
 ### Annotation Rendering State
 
-- `NyxAnnotationStatus` is currently `resolved | unresolved`.
+- `NyxAnnotationStatus` includes the built-in values `unresolved`, `draft`, `in-review`, `approved`, `resolved`, and `archived`, while remaining extensible for consumer-defined statuses.
 - `NyxAnnotationAttachment` is currently `attached | detached`.
 - `NyxAnnotationInteraction` is currently `default | hover | focus`.
 - The editor renders annotations using the bound annotations model rather than inventing separate hidden business state.
@@ -132,7 +133,8 @@ As a consuming project, I can pass annotation metadata into the editor and recei
 
 - Annotation highlight rendering is owned by `NyxEditor`.
 - Consuming projects customize appearance through theme-driven styling hooks exposed by annotation classes and data attributes.
-- `annotationStatusTheme` maps `NyxAnnotationStatus` values to `NyxTheme` tokens for highlight styling.
+- `annotationStatusTheme` maps status values to `NyxTheme` tokens for highlight styling and may omit keys.
+- Any missing or custom status falls back to `NyxTheme.Primary`.
 - Consuming projects must not need to replace or duplicate annotation mapping logic in order to brand annotation highlights.
 - Annotation-specific mapping and event logic should be isolated behind an internal editor composition so the main component remains focused on editor mode, content syncing, and layout concerns.
 - Shared formatting controls should be isolated behind a reusable internal toolbar-content component, with separate wrapper components for inline toolbar and bubble-menu shells so `NyxEditor` does not own either shell directly.

@@ -20,7 +20,7 @@ This document defines the public-facing annotation API currently reflected in `N
 | Prop | Type | Required | Description |
 |------|------|----------|-------------|
 | `annotations` | `NyxAnnotation[]` | no | Consumer-supplied annotations rendered as editor decorations |
-| `annotationStatusTheme` | `NyxAnnotationStatusTheme` | no | Maps `resolved` and `unresolved` statuses to Nyx theme tokens for annotation styling |
+| `annotationStatusTheme` | `NyxAnnotationStatusTheme` | no | Partial status-to-theme map for annotation styling; missing or custom statuses fall back to `NyxTheme.Primary` |
 
 ### Emits
 
@@ -36,7 +36,7 @@ This document defines the public-facing annotation API currently reflected in `N
 | Enum | Values | Notes |
 |------|--------|-------|
 | `NyxAnnotationInteraction` | `default`, `hover`, `focus` | Consumer-supplied interaction state exposed on rendered annotations |
-| `NyxAnnotationStatus` | `resolved`, `unresolved` | Consumer-supplied status state exposed on rendered annotations |
+| `NyxAnnotationStatus` | `unresolved`, `draft`, `in-review`, `approved`, `resolved`, `archived` plus consumer-defined strings | Consumer-supplied status state exposed on rendered annotations |
 | `NyxAnnotationAttachment` | `attached`, `detached` | Consumer-supplied attachment state exposed on rendered annotations |
 
 ### Annotation rendering behavior
@@ -54,7 +54,7 @@ This document defines the public-facing annotation API currently reflected in `N
 |---------|----------|
 | Highlight appearance | Driven by NyxEditor theme/token styling plus annotation classes and data attributes |
 | State differentiation | Consumers can style by `interaction`, `status`, and `attachment` hooks |
-| Theme helper type | `annotationStatusTheme` applies `NyxAnnotationStatusTheme` to rendered annotations |
+| Theme helper type | `annotationStatusTheme` applies `NyxAnnotationStatusTheme` to rendered annotations, with `primary` fallback for missing keys |
 | Consumer responsibility | Consumers must not replace editor annotation mapping logic to brand highlights |
 
 ### Scope boundaries

@@ -6,17 +6,24 @@ export enum NyxAnnotationInteraction {
   Focus = 'focus',
 }
 
-export enum NyxAnnotationStatus {
-  Unresolved = 'unresolved',
-  Resolved = 'resolved',
-}
+export const NyxAnnotationStatus = {
+  Unresolved: 'unresolved',
+  Draft: 'draft',
+  InReview: 'in-review',
+  Approved: 'approved',
+  Resolved: 'resolved',
+  Archived: 'archived',
+} as const
+
+export type NyxAnnotationStatus = typeof NyxAnnotationStatus[keyof typeof NyxAnnotationStatus]
+export type NyxAnnotationStatusLike = NyxAnnotationStatus | (string & {})
 
 export enum NyxAnnotationAttachment {
   Attached = 'attached',
   Detached = 'detached',
 }
 
-export type NyxAnnotationStatusTheme = Record<NyxAnnotationStatus, NyxTheme>
+export type NyxAnnotationStatusTheme = Partial<Record<NyxAnnotationStatusLike, NyxTheme>>
 
 export interface NyxAnnotationAnchor {
   text: string
@@ -34,7 +41,7 @@ export interface NyxAnnotation {
   id: string
   anchor: NyxAnnotationAnchor
   interaction: NyxAnnotationInteraction
-  status: NyxAnnotationStatus
+  status: NyxAnnotationStatusLike
   attachment: NyxAnnotationAttachment
   tone?: string
 }

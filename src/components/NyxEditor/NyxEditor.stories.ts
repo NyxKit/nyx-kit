@@ -120,6 +120,10 @@ export const SelectionAndAnnotationEvents = () => defineComponent({
     const annotationStatusTheme = {
       [NyxAnnotationStatus.Unresolved]: NyxTheme.Warning,
       [NyxAnnotationStatus.Resolved]: NyxTheme.Success,
+      [NyxAnnotationStatus.Draft]: NyxTheme.Primary,
+      [NyxAnnotationStatus.InReview]: NyxTheme.Warning,
+      [NyxAnnotationStatus.Approved]: NyxTheme.Success,
+      [NyxAnnotationStatus.Archived]: NyxTheme.Secondary,
     }
 
     const handleSelection = (value: NyxAnnotationAnchor) => {
@@ -250,6 +254,10 @@ export const AnnotationStates = () => defineComponent({
     const annotationStatusTheme = {
       [NyxAnnotationStatus.Unresolved]: NyxTheme.Warning,
       [NyxAnnotationStatus.Resolved]: NyxTheme.Success,
+      [NyxAnnotationStatus.Draft]: NyxTheme.Primary,
+      [NyxAnnotationStatus.InReview]: NyxTheme.Warning,
+      [NyxAnnotationStatus.Approved]: NyxTheme.Success,
+      [NyxAnnotationStatus.Archived]: NyxTheme.Secondary,
     }
 
     return { content, annotations, annotationStatusTheme }

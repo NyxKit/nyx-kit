@@ -29,7 +29,7 @@ function addComment(anchor: NyxAnnotationAnchor) {
     id,
     anchor,
     interaction: NyxAnnotationInteraction.Default,
-    status: NyxAnnotationStatus.Resolved,
+    status: NyxAnnotationStatus.Draft,
     attachment: NyxAnnotationAttachment.Attached,
   })
 }
@@ -94,7 +94,7 @@ const annotations = ref<NyxAnnotation[]>([
       },
     },
     interaction: NyxAnnotationInteraction.Focus,
-    status: NyxAnnotationStatus.Unresolved,
+    status: NyxAnnotationStatus.InReview,
     attachment: NyxAnnotationAttachment.Attached,
   },
 ])
@@ -137,6 +137,7 @@ const annotations = ref<NyxAnnotation[]>([
 
 ## Initial limitations
 
-- `annotationStatusTheme` lets consumers map `resolved` and `unresolved` to different Nyx themes.
+- `annotationStatusTheme` is partial; any missing or custom status falls back to `NyxTheme.Primary`.
+- Consumers can extend the built-in status set by creating their own const object and union on top of `NyxAnnotationStatus` values.
 - Comment-thread storage and author metadata remain fully consumer-owned.
 - Annotation hover events are not part of the current public emit surface.

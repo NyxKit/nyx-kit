@@ -211,13 +211,53 @@ describe('NyxEditor', () => {
 
   it('accepts annotation status theme mapping', () => {
     const annotationStatusTheme = {
-      [NyxAnnotationStatus.Unresolved]: NyxTheme.Warning,
-      [NyxAnnotationStatus.Resolved]: NyxTheme.Success,
+      [NyxAnnotationStatus.Draft]: NyxTheme.Warning,
+      legal: NyxTheme.Danger,
     }
 
     const wrapper = mount(NyxEditor, { props: { annotationStatusTheme } })
 
     expect(wrapper.props('annotationStatusTheme')).toEqual(annotationStatusTheme)
+  })
+
+  it('supports custom statuses that are not present in the theme map', async () => {
+    const wrapper = mount(NyxEditor, {
+      props: {
+        annotations: [{
+          id: 'annotation-1',
+          anchor: {
+            text: 'picked',
+            context: { prefix: '', suffix: '' },
+            range: { from: 2, to: 8 },
+          },
+          interaction: NyxAnnotationInteraction.Default,
+          status: 'legal',
+          attachment: NyxAnnotationAttachment.Attached,
+        }],
+        annotationStatusTheme: {
+          [NyxAnnotationStatus.Resolved]: NyxTheme.Success,
+        },
+      },
+    })
+
+    await wrapper.setProps({
+      annotations: [{
+        id: 'annotation-1',
+        anchor: {
+          text: 'picked',
+          context: { prefix: 'a', suffix: 'b' },
+          range: { from: 3, to: 9 },
+        },
+        interaction: NyxAnnotationInteraction.Default,
+        status: 'legal',
+        attachment: NyxAnnotationAttachment.Attached,
+      }],
+    })
+
+    expect(mockEditor.view.dispatch).toHaveBeenCalled()
+    expect(wrapper.props('annotationStatusTheme')).toEqual({
+      [NyxAnnotationStatus.Resolved]: NyxTheme.Success,
+    })
   })
 
   it('emits annotation:create with text, context, and range fields', async () => {

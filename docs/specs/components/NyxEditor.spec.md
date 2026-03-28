@@ -40,7 +40,7 @@ NyxEditor provides an opinionated but flexible rich-text editing experience. It 
 | `pixel` | `boolean` | `false` | Pixel-art mode |
 | `disabled` | `boolean` | `false` | Makes the editor read-only |
 | `placeholder` | `string` | `''` | Placeholder shown when editor is empty |
-| `annotationStatusTheme` | `NyxAnnotationStatusTheme` | `{ unresolved: NyxTheme.Primary, resolved: NyxTheme.Success }` | Maps annotation status values to the theme tokens used for highlight styling |
+| `annotationStatusTheme` | `NyxAnnotationStatusTheme` | partial map with built-in defaults | Maps annotation status values to the theme tokens used for highlight styling; missing keys fall back to `NyxTheme.Primary` |
 
 ## Emits
 
@@ -87,9 +87,9 @@ No custom key bindings added at the NyxEditor level.
 Shared editor types currently define the annotation contract:
 
 - `NyxAnnotationInteraction`: `default | hover | focus`
-- `NyxAnnotationStatus`: `resolved | unresolved`
+- `NyxAnnotationStatus`: built-in values `Unresolved`, `Draft`, `InReview`, `Approved`, `Resolved`, `Archived`, while still allowing consumer-defined string derivatives
 - `NyxAnnotationAttachment`: `attached | detached`
-- `NyxAnnotationStatusTheme`: `Record<NyxAnnotationStatus, NyxTheme>`
+- `NyxAnnotationStatusTheme`: partial status-to-theme map; missing keys fall back to `NyxTheme.Primary`
 - `NyxAnnotationAnchor`: `{ text, context: { prefix, suffix }, range: { from, to } }`
 - `NyxAnnotation`: `{ id, anchor, interaction, status, attachment, tone? }`
 

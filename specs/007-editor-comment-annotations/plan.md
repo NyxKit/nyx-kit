@@ -92,7 +92,7 @@ docs/specs/components/
 
 **What changes:**
 - Keep `annotations?: NyxAnnotation[]` as the current additive prop surface
-- Add `annotationStatusTheme?: NyxAnnotationStatusTheme` so status styling can be themed independently of attachment state
+- Add `annotationStatusTheme?: NyxAnnotationStatusTheme` as a partial map so status styling can be themed independently of attachment state while unknown statuses fall back safely
 - Keep `selection` and `annotation:create` aligned on the same `NyxAnnotationAnchor` payload
 - Remove the obsolete `comment` emit in favor of `annotation:create`
 - Keep `annotation:create`, `annotation:focus`, and `annotation:blur` as the annotation-specific emit surface

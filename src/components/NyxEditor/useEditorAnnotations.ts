@@ -29,7 +29,7 @@ export default function useEditorAnnotations(options: UseEditorAnnotationsOption
   const getThemeRgbVariable = (theme: NyxTheme) => `var(--nyx-rgb-${theme})`
 
   const getAnnotationStyles = (annotation: NyxAnnotation) => {
-    const statusTheme = options.annotationStatusTheme.value[annotation.status]
+    const statusTheme = options.annotationStatusTheme.value[annotation.status] ?? NyxTheme.Primary
 
     return [
       `--nyx-annotation-rgb: ${getThemeRgbVariable(statusTheme)}`,

@@ -34,7 +34,11 @@ const props = withDefaults(defineProps<NyxEditorProps>(), {
   hasSourceToggle: false,
   annotationStatusTheme: (): NyxAnnotationStatusTheme => ({
     [NyxAnnotationStatus.Unresolved]: NyxTheme.Primary,
+    [NyxAnnotationStatus.Draft]: NyxTheme.Primary,
+    [NyxAnnotationStatus.InReview]: NyxTheme.Warning,
+    [NyxAnnotationStatus.Approved]: NyxTheme.Success,
     [NyxAnnotationStatus.Resolved]: NyxTheme.Success,
+    [NyxAnnotationStatus.Archived]: NyxTheme.Secondary,
   }),
 })
 
