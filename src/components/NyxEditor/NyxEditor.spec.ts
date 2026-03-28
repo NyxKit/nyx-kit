@@ -282,6 +282,73 @@ describe('NyxEditor', () => {
     expect(mockEditor.view.dispatch).toHaveBeenCalled()
   })
 
+  it('emits updated annotations when document edits remap annotation ranges', async () => {
+    const wrapper = mount(NyxEditor, {
+      props: {
+        annotations: [{
+          id: 'annotation-1',
+          anchor: {
+            text: 'picked',
+            context: {
+              prefix: 'before',
+              suffix: 'after',
+            },
+            range: {
+              from: 2,
+              to: 8,
+            },
+          },
+          interaction: NyxAnnotationInteraction.Default,
+          status: NyxAnnotationStatus.Resolved,
+          attachment: NyxAnnotationAttachment.Attached,
+          tone: 'info',
+        }],
+      },
+    })
+
+    editorOptions.onTransaction?.({
+      transaction: {
+        docChanged: true,
+        mapping: {
+          map: (value: number) => value + 1,
+        },
+        doc: {
+          content: { size: 40 },
+          textBetween: (from: number, to: number) => {
+            if (from === 1 && to === 3) return 'be'
+            if (from === 9 && to === 41) return 'after'
+            return ''
+          },
+        },
+      },
+    })
+
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.emitted('update:annotations')).toEqual([[
+      [
+      {
+        id: 'annotation-1',
+        anchor: {
+          text: 'picked',
+          context: {
+            prefix: 'be',
+            suffix: 'after',
+          },
+          range: {
+            from: 3,
+            to: 9,
+          },
+        },
+        interaction: NyxAnnotationInteraction.Default,
+        status: NyxAnnotationStatus.Resolved,
+        attachment: NyxAnnotationAttachment.Attached,
+        tone: 'info',
+      },
+      ],
+    ]])
+  })
+
   it('exposes annotation focus handling through the annotation plugin', () => {
     const wrapper = mount(NyxEditor)
     const annotationExtension = editorOptions.extensions.find((extension: { name?: string }) => extension.name === 'nyxAnnotations')
@@ -300,10 +367,12 @@ describe('NyxEditor', () => {
     const annotationExtension = editorOptions.extensions.find((extension: { name?: string }) => extension.name === 'nyxAnnotations')
     const [plugin] = annotationExtension.config.addProseMirrorPlugins()
     const target = document.createElement('span')
+    const outsideTarget = document.createElement('div')
 
     target.dataset.nyxAnnotationId = 'annotation-1'
 
-    plugin.props.handleDOMEvents.focusout(null, { target })
+    plugin.props.handleClick(null, 0, { target })
+    plugin.props.handleDOMEvents.mousedown(null, { target: outsideTarget })
 
     expect(wrapper.emitted('annotation:blur')).toEqual([['annotation-1']])
   })

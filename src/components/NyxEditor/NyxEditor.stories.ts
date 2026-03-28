@@ -169,9 +169,9 @@ export const SelectionAndAnnotationEvents = () => defineComponent({
     <div style="display: grid; gap: 1rem;">
       <nyx-editor
         v-model="content"
+        v-model:annotations="annotations"
         :mode="'${NyxEditorMode.Zen}'"
         :toolbar="'${NyxEditorToolbar.Full}'"
-        :annotations="annotations"
         :annotation-status-theme="annotationStatusTheme"
         @selection="handleSelection"
         @annotation:create="handleAnnotationCreate"
@@ -257,9 +257,9 @@ export const AnnotationStates = () => defineComponent({
   template: `
     <nyx-editor
       v-model="content"
+      v-model:annotations="annotations"
       :mode="'${NyxEditorMode.Zen}'"
       :toolbar="'${NyxEditorToolbar.Full}'"
-      :annotations="annotations"
       :annotation-status-theme="annotationStatusTheme"
     />
   `,

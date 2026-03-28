@@ -38,7 +38,7 @@ function addComment(anchor: NyxAnnotationAnchor) {
 <template>
   <NyxEditor
     v-model="content"
-    :annotations="annotations"
+    v-model:annotations="annotations"
     :annotation-status-theme="{ unresolved: NyxTheme.Warning, resolved: NyxTheme.Success }"
     @annotation:create="addComment"
   />
@@ -103,7 +103,7 @@ const annotations = ref<NyxAnnotation[]>([
 <template>
   <NyxEditor
     v-model="content"
-    :annotations="annotations"
+    v-model:annotations="annotations"
   />
 </template>
 ```
@@ -115,7 +115,7 @@ const annotations = ref<NyxAnnotation[]>([
 ```vue
 <NyxEditor
   v-model="content"
-  :annotations="annotations"
+  v-model:annotations="annotations"
   @annotation:focus="(id) => console.log('Focused annotation:', id)"
   @annotation:blur="(id) => console.log('Blurred annotation:', id)"
 />

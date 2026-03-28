@@ -23,7 +23,6 @@ export interface NyxEditorProps {
   disabled?: boolean
   placeholder?: string
   hasSourceToggle?: boolean
-  annotations?: NyxAnnotation[]
   annotationStatusTheme?: NyxAnnotationStatusTheme
 }
 

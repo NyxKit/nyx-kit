@@ -9,6 +9,7 @@ import TaskItem from '@tiptap/extension-task-item'
 import { Markdown, type MarkdownStorage } from 'tiptap-markdown'
 import type { NyxEditorProps, NyxEditorEmits } from './NyxEditor.types'
 import type {
+  NyxAnnotation,
   NyxAnnotationStatusTheme,
 } from '@/types/editor'
 import {
@@ -31,7 +32,6 @@ const props = withDefaults(defineProps<NyxEditorProps>(), {
   disabled: false,
   placeholder: '',
   hasSourceToggle: false,
-  annotations: () => [],
   annotationStatusTheme: (): NyxAnnotationStatusTheme => ({
     [NyxAnnotationStatus.Unresolved]: NyxTheme.Primary,
     [NyxAnnotationStatus.Resolved]: NyxTheme.Success,
@@ -42,22 +42,26 @@ const emit = defineEmits<NyxEditorEmits>()
 
 const model = defineModel<string>({ default: '' })
 const sourceModel = defineModel<boolean>('source', { default: false })
+const annotationsModel = defineModel<NyxAnnotation[]>('annotations', { default: () => [] })
 const editorRef = shallowRef<Editor | null | undefined>(undefined)
 
 const { classList } = useNyxProps(props, { origin: 'NyxEditor' })
-const annotations = computed(() => props.annotations)
+const annotations = computed(() => annotationsModel.value)
 const annotationStatusTheme = computed(() => props.annotationStatusTheme)
 
 const {
   annotationExtension,
+  clearFocusedAnnotation,
   getCurrentSelectionAnchor,
   onCreateAnnotation,
+  remapAnnotations,
   syncAnnotationDecorations,
   syncAnnotations,
 } = useEditorAnnotations({
   editor: editorRef,
   annotations,
   annotationStatusTheme,
+  updateAnnotations: (nextAnnotations) => { annotationsModel.value = nextAnnotations },
   emitCreate: (anchor) => emit('annotation:create', anchor),
   emitFocus: (id) => emit('annotation:focus', id),
   emitBlur: (id) => emit('annotation:blur', id),
@@ -136,6 +140,11 @@ const editor = useEditor({
     model.value = content
     emit('change', content)
   },
+  onTransaction: ({ transaction }) => {
+    if (transaction.docChanged) {
+      remapAnnotations(transaction)
+    }
+  },
   onSelectionUpdate: () => {
     updateBubble()
 
@@ -145,6 +154,7 @@ const editor = useEditor({
   onFocus: ({ event }) => emit('focus', event as FocusEvent),
   onBlur: ({ event }) => {
     bubbleVisible.value = false
+    clearFocusedAnnotation()
     emit('blur', event as FocusEvent)
   },
 })
@@ -165,9 +175,9 @@ watch(() => props.disabled, (val) => {
   editor.value?.setEditable(!val)
 })
 
-watch(() => props.annotations, () => {
+watch(() => annotationsModel.value, () => {
   syncAnnotations()
-}, { deep: true })
+}, { deep: true, flush: 'post' })
 </script>
 
 <template>

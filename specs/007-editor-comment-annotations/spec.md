@@ -44,6 +44,7 @@ As a consuming project, I can pass existing annotations back into `NyxEditor` so
 2. **Given** multiple comment annotations overlap or touch adjacent content, **When** the editor renders them, **Then** each annotation remains individually addressable to the consuming project.
 3. **Given** a consuming project needs brand-specific presentation, **When** annotation highlights are rendered, **Then** the project can customize the highlight appearance through supported theme-driven styling without reimplementing editor-internal selection mapping.
 4. **Given** a user focuses or blurs a rendered annotation, **When** the editor detects that interaction, **Then** it emits the annotation id back to the consuming project through the matching focus or blur event.
+5. **Given** the user edits content inside or adjacent to an annotated range, **When** the editor remaps annotation positions, **Then** it emits the updated annotation model back through two-way binding so the consuming project can persist the new positions.
 
 ---
 
@@ -53,13 +54,14 @@ As a consuming project, I can pass annotation metadata into the editor and recei
 
 **Why this priority**: Annotation rendering only stays useful if the editor preserves the consumer-supplied state model rather than replacing it with hidden internal business logic.
 
-**Independent Test**: Can be fully tested by passing annotations with different `status`, `attachment`, and `interaction` values, then verifying that the editor renders those values as classes/data attributes and emits annotation focus events with the expected ids.
+**Independent Test**: Can be fully tested by passing annotations through a two-way annotations model, editing the document, and verifying that the editor emits updated annotation data while preserving consumer-owned fields.
 
 **Acceptance Scenarios**:
 
 1. **Given** an annotation is marked `resolved`, **When** the editor renders it, **Then** the rendered highlight exposes that status through its styling hooks.
 2. **Given** an annotation is marked `unresolved`, **When** the editor renders it, **Then** it is still rendered and styled as an unresolved annotation rather than being hidden automatically.
 3. **Given** an annotation is marked `detached`, **When** the editor renders it, **Then** the rendered highlight exposes that attachment state through its styling hooks.
+4. **Given** an annotation range changes because the user edits the document, **When** the editor emits the updated annotations model, **Then** consumer-owned fields such as `id` and `tone` remain intact.
 
 ---
 
@@ -71,6 +73,7 @@ As a consuming project, I can pass annotation metadata into the editor and recei
 - A consuming project loads comments before editor content is available, or content before comments are available.
 - A user edits inside an already-commented range while another comment in the same document remains active.
 - Consumer-supplied annotations may use the same visual theme for multiple statuses unless a separate theme-mapping surface is introduced later.
+- A user places the caret inside an annotated range and types inline text. Example: document content is `lorem ipsum dolor sit amet`, an annotation covers `lorem ipsum`, the caret is placed between `lorem ` and `ipsum`, and the user types `test`. The expected result is stable inline insertion at the caret position; the currently observed broken result is `lorem tipsum dolor sit ametest`, which indicates annotation rendering is interfering with cursor mapping.
 
 ## Requirements *(mandatory)*
 
@@ -81,16 +84,20 @@ As a consuming project, I can pass annotation metadata into the editor and recei
 - **FR-002a**: `NyxEditor` MUST emit `annotation:create` with a `NyxAnnotationAnchor` payload derived from the current selection.
 - **FR-003**: The annotation anchor MUST include `text`, `context: { prefix, suffix }`, and `range: { from, to }`.
 - **FR-004**: `NyxEditor` MUST allow consuming projects to pass `annotations?: NyxAnnotation[]` for rendering.
+- **FR-004**: `NyxEditor` MUST expose annotations as a two-way model so consuming projects can bind persisted annotations with `v-model:annotations`.
 - **FR-004a**: Each `NyxAnnotation` MUST include `id`, `anchor`, `interaction`, `status`, and `attachment`, with optional `tone`.
 - **FR-004b**: `NyxEditor` MUST allow consuming projects to provide `annotationStatusTheme?: NyxAnnotationStatusTheme` so `resolved` and `unresolved` annotations can map to different theme tokens even when both are attached.
 - **FR-005**: `NyxEditor` MUST render all supplied annotations as inline decorations using their consumer-provided metadata.
 - **FR-006**: Rendered annotations MUST expose styling hooks for `interaction`, `status`, and `attachment`.
 - **FR-007**: Rendered annotations MUST remain individually addressable by annotation id through DOM metadata and focus interaction.
+- **FR-007a**: Rendering annotations MUST NOT break normal caret behavior or inline text insertion when the user edits inside or adjacent to an annotated range.
 - **FR-008**: `NyxEditor` MUST emit `annotation:focus` with the focused annotation id as a string when a rendered annotation is clicked or keyboard-focused through the supported interaction path.
 - **FR-008a**: `NyxEditor` MUST emit `annotation:blur` with the blurred annotation id as a string when a rendered annotation loses focus after having been focused.
 - **FR-009**: `NyxEditor` MUST preserve consumer-supplied `NyxAnnotationStatus` values of `resolved` and `unresolved`.
 - **FR-010**: `NyxEditor` MUST preserve consumer-supplied `NyxAnnotationAttachment` values of `attached` and `detached`.
 - **FR-011**: `NyxEditor` MUST preserve consumer-supplied `NyxAnnotationInteraction` values of `default`, `hover`, and `focus` for rendering hooks.
+- **FR-011a**: `NyxEditor` MUST be allowed to update annotation positioning data when document edits change annotated ranges.
+- **FR-011b**: `NyxEditor` MUST emit updated annotation data back to the consuming project through the annotations model whenever in-editor annotation mapping changes.
 - **FR-012**: The exported type surface MUST include `NyxAnnotationInteraction`, `NyxAnnotationStatus`, `NyxAnnotationAttachment`, `NyxAnnotationAnchor`, and `NyxAnnotation`.
 - **FR-013**: The feature MUST remain scoped to annotation creation, annotation rendering, and annotation focus/blur emission; it MUST NOT require `NyxEditor` to own thread bodies, author metadata, moderation workflows, or external comment storage.
 
@@ -105,12 +112,21 @@ As a consuming project, I can pass annotation metadata into the editor and recei
 - The document-location data is used to remap or reject persisted annotations as the document changes.
 - The text snapshot is used for preview and mismatch detection, but it is not sufficient on its own to restore the annotation location.
 
+### Annotation Ownership
+
+- `NyxEditor` owns in-editor annotation remapping and may update annotation positioning data as the document changes.
+- The annotations model is two-way: consuming projects bind annotations in and receive updated annotations back through `v-model:annotations`.
+- Consumer-owned fields include at minimum `id` and `tone`.
+- Editor-managed fields include live annotation position and surrounding context inside `anchor.range` and `anchor.context`.
+- `anchor.text` remains the original selected text unless a later design change explicitly makes it editor-managed.
+- Consuming projects remain responsible for persisting updated annotations into their own store, backend, or comment-thread state.
+
 ### Annotation Rendering State
 
 - `NyxAnnotationStatus` is currently `resolved | unresolved`.
 - `NyxAnnotationAttachment` is currently `attached | detached`.
 - `NyxAnnotationInteraction` is currently `default | hover | focus`.
-- The editor renders annotations using the consumer-provided values rather than inventing its own higher-level business states.
+- The editor renders annotations using the bound annotations model rather than inventing separate hidden business state.
 
 ### Highlight Styling Surface
 
@@ -137,6 +153,7 @@ As a consuming project, I can pass annotation metadata into the editor and recei
 
 - Consuming projects remain responsible for storing comment threads, author data, permissions, and comment lifecycle rules.
 - `NyxEditor` is responsible for turning consumer-supplied annotations into inline decorations and focus events.
+- `NyxEditor` is responsible for remapping bound annotations as the document changes and emitting those updates back to the consumer.
 - Theme mapping between statuses and colors is represented by `annotationStatusTheme`.
 - Mixed-content selections are treated as one continuous annotation target when the user creates a single continuous selection.
 - The current annotation model keeps `resolved` and `unresolved` as consumer-owned status values rather than editor-derived remapping outcomes.
@@ -149,5 +166,8 @@ As a consuming project, I can pass annotation metadata into the editor and recei
 
 - **SC-001**: In usability review, consuming teams can create and persist a comment from a selection in three steps or fewer without inspecting editor-internal markup.
 - **SC-002**: In acceptance testing, 100% of annotations passed through the `annotations` prop render with their annotation id and state metadata exposed on the decoration.
+- **SC-002**: In acceptance testing, 100% of annotations bound through `v-model:annotations` render with their annotation id and state metadata exposed on the decoration.
 - **SC-003**: In mixed-content selection tests, 95% of comment creation attempts across multi-block selections result in a single emitted `NyxAnnotationAnchor` rather than fragmented or ambiguous targets.
 - **SC-004**: In integration testing, consuming projects can distinguish rendered annotations by `interaction`, `status`, and `attachment` without replacing the editor's decoration logic.
+- **SC-005**: In editing regression tests, typing inside or immediately adjacent to an annotated range preserves the caret location and inserts text exactly where the user typed, with no end-of-line jump or duplicated suffix movement.
+- **SC-006**: In editing regression tests, when annotation positions change because of typing, the emitted annotations model preserves consumer-owned fields like `id` and `tone` while updating editor-managed anchor fields.

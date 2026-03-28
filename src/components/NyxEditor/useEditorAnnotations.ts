@@ -8,12 +8,13 @@ import type {
   NyxAnnotationAnchor,
   NyxAnnotationStatusTheme,
 } from '@/types/editor'
-import { NyxTheme } from '@/types'
+import { NyxAnnotationAttachment, NyxTheme } from '@/types'
 
 interface UseEditorAnnotationsOptions {
   editor: Ref<Editor | null | undefined>
   annotations: Ref<NyxAnnotation[]> | ComputedRef<NyxAnnotation[]>
   annotationStatusTheme: Ref<NyxAnnotationStatusTheme> | ComputedRef<NyxAnnotationStatusTheme>
+  updateAnnotations: (annotations: NyxAnnotation[]) => void
   emitCreate: (anchor: NyxAnnotationAnchor) => void
   emitFocus: (id: string) => void
   emitBlur: (id: string) => void
@@ -23,6 +24,7 @@ const ANNOTATION_CONTEXT_WINDOW = 32
 
 export default function useEditorAnnotations(options: UseEditorAnnotationsOptions) {
   const annotationPluginKey = new PluginKey('nyx-editor-annotations')
+  let focusedAnnotationId: string | null = null
 
   const getThemeRgbVariable = (theme: NyxTheme) => `var(--nyx-rgb-${theme})`
 
@@ -53,6 +55,72 @@ export default function useEditorAnnotations(options: UseEditorAnnotationsOption
     ].join(' ')
   }
 
+  const buildAnchorFromRange = (doc: { textBetween: (from: number, to: number) => string }, from: number, to: number, text: string) => {
+    const prefixStart = Math.max(1, from - ANNOTATION_CONTEXT_WINDOW)
+    const suffixEnd = to + ANNOTATION_CONTEXT_WINDOW
+
+    return {
+      text,
+      context: {
+        prefix: doc.textBetween(prefixStart, from),
+        suffix: doc.textBetween(to, suffixEnd),
+      },
+      range: { from, to },
+    }
+  }
+
+  const remapAnnotations = (transaction: Transaction) => {
+    if (!options.annotations.value.length) return
+
+    const maxOffset = Math.max(transaction.doc.content.size, 1)
+    let changed = false
+
+    const nextAnnotations: NyxAnnotation[] = options.annotations.value.map((annotation) => {
+      const mappedFrom = Math.max(1, Math.min(transaction.mapping.map(annotation.anchor.range.from, -1), maxOffset))
+      const mappedTo = Math.max(1, Math.min(transaction.mapping.map(annotation.anchor.range.to, 1), maxOffset))
+      const isAttached = mappedFrom < mappedTo
+      const nextAttachment = isAttached ? NyxAnnotationAttachment.Attached : NyxAnnotationAttachment.Detached
+
+      if (!isAttached) {
+        if (annotation.attachment !== 'detached' || annotation.anchor.range.from !== mappedFrom || annotation.anchor.range.to !== mappedTo) {
+          changed = true
+        }
+
+        return {
+          ...annotation,
+          attachment: NyxAnnotationAttachment.Detached,
+          anchor: {
+            ...annotation.anchor,
+            range: {
+              from: mappedFrom,
+              to: mappedTo,
+            },
+          },
+        }
+      }
+
+      const nextAnchor = buildAnchorFromRange(transaction.doc, mappedFrom, mappedTo, annotation.anchor.text)
+
+      if (
+        annotation.anchor.range.from !== nextAnchor.range.from ||
+        annotation.anchor.range.to !== nextAnchor.range.to ||
+        annotation.anchor.context.prefix !== nextAnchor.context.prefix ||
+        annotation.anchor.context.suffix !== nextAnchor.context.suffix ||
+        annotation.attachment !== nextAttachment
+      ) {
+        changed = true
+      }
+
+      return {
+        ...annotation,
+        attachment: nextAttachment,
+        anchor: nextAnchor,
+      }
+    })
+
+    if (changed) options.updateAnnotations(nextAnnotations)
+  }
+
   const createAnnotationDecorations = (doc: { content: { size: number } }, annotations: NyxAnnotation[]) => {
     const maxOffset = Math.max(doc.content.size, 1)
     const decorations = annotations.flatMap((annotation) => {
@@ -66,9 +134,6 @@ export default function useEditorAnnotations(options: UseEditorAnnotationsOption
         'data-nyx-annotation-interaction': annotation.interaction,
         'data-nyx-annotation-status': annotation.status,
         'data-nyx-annotation-attachment': annotation.attachment,
-        tabindex: '0',
-        role: 'button',
-        'aria-label': `Annotation ${annotation.id}`,
       })
     })
 
@@ -85,16 +150,29 @@ export default function useEditorAnnotations(options: UseEditorAnnotationsOption
     const id = getAnnotationIdFromTarget(target)
     if (!id) return false
 
+    if (focusedAnnotationId && focusedAnnotationId !== id) {
+      options.emitBlur(focusedAnnotationId)
+    }
+
+    focusedAnnotationId = id
+
     options.emitFocus(id)
+    return true
+  }
+
+  const clearFocusedAnnotation = () => {
+    if (!focusedAnnotationId) return false
+
+    options.emitBlur(focusedAnnotationId)
+    focusedAnnotationId = null
     return true
   }
 
   const emitAnnotationBlur = (target: EventTarget | null) => {
     const id = getAnnotationIdFromTarget(target)
-    if (!id) return false
+    if (!id || focusedAnnotationId !== id) return false
 
-    options.emitBlur(id)
-    return true
+    return clearFocusedAnnotation()
   }
 
   const annotationExtension = Extension.create({
@@ -106,28 +184,37 @@ export default function useEditorAnnotations(options: UseEditorAnnotationsOption
           key: annotationPluginKey,
           state: {
             init: (_: unknown, state: EditorState) => createAnnotationDecorations(state.doc, options.annotations.value),
-            apply: (transaction: Transaction, _oldState: DecorationSet, _oldEditorState: EditorState, newState: EditorState) => {
-              if (transaction.docChanged || transaction.getMeta(annotationPluginKey)) {
+            apply: (transaction: Transaction, oldDecorationState: DecorationSet, _oldEditorState: EditorState, newState: EditorState) => {
+              if (transaction.getMeta(annotationPluginKey)) {
                 return createAnnotationDecorations(newState.doc, options.annotations.value)
               }
 
-              return createAnnotationDecorations(newState.doc, options.annotations.value)
+              if (transaction.docChanged) {
+                return oldDecorationState.map(transaction.mapping, newState.doc)
+              }
+
+              return oldDecorationState
             },
           },
           props: {
             decorations(state: EditorState) {
               return annotationPluginKey.getState(state) as DecorationSet | null
             },
-            handleClick: (_view: EditorView, _pos: number, event: MouseEvent) => emitAnnotationFocus(event.target),
-            handleDOMEvents: {
-              focusin: (_view: EditorView, event: FocusEvent) => emitAnnotationFocus(event.target),
-              focusout: (_view: EditorView, event: FocusEvent) => emitAnnotationBlur(event.target),
-              keydown: (_view: EditorView, event: KeyboardEvent) => {
-                if (event.key !== 'Enter' && event.key !== ' ') return false
+            handleClick: (_view: EditorView, _pos: number, event: MouseEvent) => {
+              const didFocus = emitAnnotationFocus(event.target)
+              if (!didFocus) {
+                clearFocusedAnnotation()
+              }
 
-                const didEmit = emitAnnotationFocus(event.target)
-                if (didEmit) event.preventDefault()
-                return didEmit
+              return didFocus
+            },
+            handleDOMEvents: {
+              mousedown: (_view: EditorView, event: MouseEvent) => {
+                if (!getAnnotationIdFromTarget(event.target)) {
+                  clearFocusedAnnotation()
+                }
+
+                return false
               },
             },
           },
@@ -147,20 +234,7 @@ export default function useEditorAnnotations(options: UseEditorAnnotationsOption
     if (!text.trim()) return null
     if (startOffset >= endOffset) return null
 
-    const prefixStart = Math.max(1, startOffset - ANNOTATION_CONTEXT_WINDOW)
-    const suffixEnd = endOffset + ANNOTATION_CONTEXT_WINDOW
-
-    return {
-      text,
-      context: {
-        prefix: editor.state.doc.textBetween(prefixStart, startOffset),
-        suffix: editor.state.doc.textBetween(endOffset, suffixEnd),
-      },
-      range: {
-        from: startOffset,
-        to: endOffset,
-      },
-    }
+    return buildAnchorFromRange(editor.state.doc, startOffset, endOffset, text)
   }
 
   const syncAnnotationDecorations = () => {
@@ -185,6 +259,8 @@ export default function useEditorAnnotations(options: UseEditorAnnotationsOption
     annotationExtension,
     getCurrentSelectionAnchor,
     onCreateAnnotation,
+    clearFocusedAnnotation,
+    remapAnnotations,
     syncAnnotationDecorations,
     syncAnnotations,
   }
