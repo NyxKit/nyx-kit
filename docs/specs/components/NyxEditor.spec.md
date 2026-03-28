@@ -20,11 +20,14 @@ NyxEditor provides an opinionated but flexible rich-text editing experience. It 
 - Uses `useEditor` and `EditorContent` from `@tiptap/vue-3`
 - Extensions loaded: `StarterKit`, `Underline`, `TaskList`, `TaskItem` always; `Markdown` (from `tiptap-markdown`) when `format` is `markdown`
 - Annotation-specific logic is extracted into the internal `useEditorAnnotations` composition so anchor generation, decoration mapping, and annotation focus/blur events do not live directly in the component body.
+- Footer-specific logic is extracted into the internal `useEditorMeta` composition so caret-aware structure and word-count calculation stay derived from editor state.
 - Formatting controls are centralized in an internal `NyxEditorToolbarContent` sub-component that renders the shared button groups for both toolbar mode and the zen bubble menu.
 - **Toolbar mode** uses an internal `NyxEditorToolbar` wrapper component so `NyxEditor` does not own the toolbar shell markup directly.
 - **Zen mode**: custom bubble menu — listens to `onSelectionUpdate`, reads `window.getSelection().getRangeAt(0).getBoundingClientRect()` to position a `<Teleport>`-ed `div` above the selection, and renders `NyxEditorToolbarContent` inside the teleported shell. It emits `selection` as a `NyxAnnotationAnchor` whenever a non-empty selection exists. The annotation action emits the same anchor shape through `annotation:create`. `@mousedown` on the bubble sets a `suppressNextHide` flag (cleared with `requestAnimationFrame`) so that clicking a formatting button does not collapse the bubble before the command fires.
 - Annotation rendering is implemented as a Tiptap/ProseMirror decoration plugin that reads the two-way `annotations` model and decorates matching ranges with annotation classes and `data-nyx-annotation-*` attributes.
 - **Toolbar mode**: renders an internal `NyxEditorToolbar` wrapper above the editor content; that wrapper hosts the shared `NyxEditorToolbarContent` controls. _(See Known Limitations — not yet rendering in Storybook.)_
+- A default footer renders structural path information on the left and word count on the right when `hasFooter` is `true`; the footer also becomes visible automatically when a scoped `footer` slot is present.
+- The editor root is capped at `100dvh`; editor content/source areas scroll internally so the footer remains pinned to the bottom edge of the component.
 - v-model syncs bi-directionally via `onUpdate` (editor → model) and a `watch` (model → editor)
 - `useNyxProps` is used for visual prop integration (theme, size, variant, pixel)
 
@@ -40,6 +43,7 @@ NyxEditor provides an opinionated but flexible rich-text editing experience. It 
 | `pixel` | `boolean` | `false` | Pixel-art mode |
 | `disabled` | `boolean` | `false` | Makes the editor read-only |
 | `placeholder` | `string` | `''` | Placeholder shown when editor is empty |
+| `hasFooter` | `boolean` | `false` | Requests the default footer region; the footer also becomes visible automatically when a scoped `footer` slot is provided |
 | `annotationStatusTheme` | `NyxAnnotationStatusTheme` | partial map with built-in defaults | Maps annotation status values to the theme tokens used for highlight styling; missing keys fall back to `NyxTheme.Primary` |
 
 ## Emits
@@ -63,6 +67,12 @@ NyxEditor provides an opinionated but flexible rich-text editing experience. It 
 | `v-model:annotations` | `NyxAnnotation[]` | `[]` | Two-way annotation model; `NyxEditor` may remap annotation positions and emit updated annotations as the document changes |
 
 The source toggle button (top-right corner of the editor) also drives `v-model:source`.
+
+## Slots
+
+| Slot | Scope | Purpose |
+|---|---|---|
+| `footer` | `{ meta: NyxEditorMeta }` | Custom footer presentation using editor-computed meta data |
 
 ## Keyboard behaviour
 
@@ -100,6 +110,30 @@ Ownership split:
 - Consumer-owned: `id`, `tone`, and external comment/thread metadata stored outside the editor
 - Editor-managed: live `anchor.range` and `anchor.context` values when document edits remap annotation positions
 - Preserved as original selection text: `anchor.text` unless the contract is intentionally revised later
+
+## Footer model
+
+Shared editor types define the footer contract:
+
+- `NyxEditorMeta`: `{ segments, pathText, wordCount, selection }`
+- `NyxEditorMetaPathSegment`: structured path segment for heading titles, paragraphs, lists, and list items
+- `NyxEditorMetaSelection`: `{ from, to, empty }`
+
+The default footer shows:
+
+- left side: `meta.pathText`
+- right side: `${meta.wordCount} words`
+
+Display conventions:
+
+- heading segments render only the heading title text, without literal tag names such as `h1`
+- list segments render as `list`
+- list-item segments render as `item N`
+- paragraph segments render as `paragraph N`
+- paragraph numbering resets within the current heading section instead of counting across the full document
+- default footer separators render as chevron icons rather than literal `>` text
+
+The scoped `footer` slot receives the same `NyxEditorMeta` payload used by the default footer under the `meta` slot prop.
 
 ## Mode names
 

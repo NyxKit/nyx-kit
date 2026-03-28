@@ -216,6 +216,7 @@ export const Showcase = (args: NyxEditorProps & { modelValue?: string, annotatio
       v-bind="args"
       v-model="content"
       v-model:annotations="annotations"
+      style="max-height: 42dvh;"
     />
   `,
 })
@@ -224,6 +225,7 @@ Showcase.args = {
   modelValue: showcaseContent,
   annotations: showcaseAnnotations,
   annotationStatusTheme: showcaseStatusTheme,
+  hasFooter: true,
   mode: NyxEditorMode.Zen,
   format: NyxEditorFormat.Markdown,
   toolbar: NyxEditorToolbar.Full,
@@ -349,6 +351,39 @@ export const SelectionAndAnnotationEvents = () => defineComponent({
         placeholder="Annotation blur event payload"
       />
     </div>
+  `,
+})
+
+export const FooterSlot = () => defineComponent({
+  components: { NyxEditor },
+  setup() {
+    const content = ref(showcaseContent)
+    const annotations = ref(showcaseAnnotations.map((annotation) => ({
+      ...annotation,
+      anchor: {
+        ...annotation.anchor,
+        context: { ...annotation.anchor.context },
+        range: { ...annotation.anchor.range },
+      },
+    })))
+
+    return { content, annotations, showcaseStatusTheme }
+  },
+  template: `
+    <nyx-editor
+      v-model="content"
+      v-model:annotations="annotations"
+      :mode="'${NyxEditorMode.Zen}'"
+      :toolbar="'${NyxEditorToolbar.Full}'"
+      :annotation-status-theme="showcaseStatusTheme"
+    >
+      <template #footer="{ meta }">
+        <div style="display: flex; width: 100%; justify-content: space-between; gap: 1rem; font-size: 0.875rem; opacity: 0.9;">
+          <span>{{ meta.pathText }}</span>
+          <strong>{{ meta.wordCount }} words</strong>
+        </div>
+      </template>
+    </nyx-editor>
   `,
 })
 

@@ -14,7 +14,7 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div
+  <header
     class="nyx-editor__toolbar"
     role="toolbar"
     aria-label="Text formatting"
@@ -27,5 +27,5 @@ const emit = defineEmits<{
       :show-undo-redo="true"
       @annotation:create="emit('annotation:create')"
     />
-  </div>
+  </header>
 </template>

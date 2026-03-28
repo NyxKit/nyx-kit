@@ -1,6 +1,6 @@
 import { beforeEach, describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
-import { shallowRef } from 'vue'
+import { h, shallowRef } from 'vue'
 import {
   NyxAnnotationAttachment,
   NyxAnnotationInteraction,
@@ -12,13 +12,16 @@ import {
   NyxSize,
 } from '@/types'
 import NyxEditor from './NyxEditor.vue'
+import { createEditorMeta } from './useEditorMeta'
+
+const createMockEditorDoc = () => ({
+  textBetween: vi.fn(() => ''),
+})
 
 const mockEditor = {
   state: {
     selection: { empty: true, from: 1, to: 1 },
-    doc: {
-      textBetween: vi.fn(() => ''),
-    },
+    doc: createMockEditorDoc(),
     tr: {
       setMeta: vi.fn(() => ({ type: 'annotation-meta-transaction' })),
     },
@@ -58,6 +61,45 @@ const mockEditor = {
 
 let editorOptions: Record<string, any> = {}
 
+const createTestNode = (typeName: string, options: { text?: string, attrs?: Record<string, unknown>, children?: any[] } = {}) => {
+  const children = options.children ?? []
+  const textContent = options.text ?? children.map((child) => child.textContent).join(' ')
+
+  return {
+    type: { name: typeName },
+    attrs: options.attrs ?? {},
+    textContent,
+    childCount: children.length,
+    child: (index: number) => children[index],
+    nodeSize: Math.max(textContent.length + 2, 2 + children.reduce((sum, child) => sum + child.nodeSize, 0)),
+    children,
+  }
+}
+
+const createTestDoc = (children: any[]) => {
+  const doc = createTestNode('doc', { children, text: children.map((child) => child.textContent).join(' ') })
+
+  return {
+    ...doc,
+    content: { size: doc.nodeSize },
+    textBetween: (from: number, to: number) => doc.textContent.slice(Math.max(0, from), Math.max(from, to)),
+    descendants: (callback: (node: any, pos: number, parent: any, index: number) => void) => {
+      const walk = (nodes: any[], parent: any, startPos: number) => {
+        let pos = startPos
+        nodes.forEach((node, index) => {
+          callback(node, pos, parent, index)
+          if (node.children?.length) {
+            walk(node.children, node, pos + 1)
+          }
+          pos += node.nodeSize
+        })
+      }
+
+      walk(children, doc, 0)
+    },
+  }
+}
+
 // Tiptap relies on browser APIs not available in jsdom; mock the integration layer
 vi.mock('@tiptap/vue-3', () => ({
   useEditor: (options: Record<string, any>) => {
@@ -72,8 +114,8 @@ vi.mock('tiptap-markdown', () => ({ Markdown: {} }))
 vi.mock('./NyxEditorBubbleMenu/NyxEditorBubbleMenu.vue', () => ({
   default: {
     name: 'NyxEditorBubbleMenu',
-    emits: ['mousedown', 'create'],
-    template: '<button class="nyx-editor__bubble-comment" @click="$emit(\'create\')" />',
+    emits: ['mousedown', 'annotation:create'],
+    template: '<button class="nyx-editor__bubble-comment" @click="$emit(\'annotation:create\')" />',
   },
 }))
 
@@ -81,10 +123,84 @@ describe('NyxEditor', () => {
   beforeEach(() => {
     editorOptions = {}
     mockEditor.state.selection = { empty: true, from: 1, to: 1 }
-    mockEditor.state.doc.textBetween.mockReset()
+    mockEditor.state.doc = createMockEditorDoc()
     mockEditor.state.doc.textBetween.mockReturnValue('')
     mockEditor.state.tr.setMeta.mockClear()
     mockEditor.view.dispatch.mockClear()
+  })
+
+  it('builds meta for paragraphs beneath nested headings', () => {
+    const doc = createTestDoc([
+      createTestNode('heading', { text: 'Main Title', attrs: { level: 1 } }),
+      createTestNode('heading', { text: 'Section Title', attrs: { level: 2 } }),
+      createTestNode('paragraph', { text: 'First paragraph body' }),
+      createTestNode('paragraph', { text: 'Second paragraph body' }),
+    ])
+
+    const meta = createEditorMeta({
+      doc,
+      selection: { from: 35, to: 35, empty: true },
+    } as never)
+
+    expect(meta.pathText).toBe('Main Title / Section Title / paragraph 1')
+    expect(meta.wordCount).toBe(10)
+  })
+
+  it('resets paragraph numbering per heading section', () => {
+    const doc = createTestDoc([
+      createTestNode('heading', { text: 'Main Title', attrs: { level: 1 } }),
+      createTestNode('heading', { text: 'Section One', attrs: { level: 2 } }),
+      createTestNode('paragraph', { text: 'First section paragraph one' }),
+      createTestNode('paragraph', { text: 'First section paragraph two' }),
+      createTestNode('heading', { text: 'Section Two', attrs: { level: 2 } }),
+      createTestNode('paragraph', { text: 'Second section paragraph one' }),
+    ])
+
+    const meta = createEditorMeta({
+      doc,
+      selection: { from: 105, to: 105, empty: true },
+    } as never)
+
+    expect(meta.pathText).toBe('Main Title / Section Two / paragraph 1')
+  })
+
+  it('builds meta for list items beneath nested headings', () => {
+    const doc = createTestDoc([
+      createTestNode('heading', { text: 'Main Title', attrs: { level: 1 } }),
+      createTestNode('heading', { text: 'Section Title', attrs: { level: 2 } }),
+      createTestNode('bulletList', {
+        children: [
+          createTestNode('listItem', { text: 'First item' }),
+          createTestNode('listItem', { text: 'Second item' }),
+        ],
+      }),
+    ])
+
+    const meta = createEditorMeta({
+      doc,
+      selection: { from: 42, to: 42, empty: true },
+    } as never)
+
+    expect(meta.pathText).toBe('Main Title / Section Title / list / item 2')
+  })
+
+  it('treats task items as list entries in meta', () => {
+    const doc = createTestDoc([
+      createTestNode('heading', { text: 'Main Title', attrs: { level: 1 } }),
+      createTestNode('taskList', {
+        children: [
+          createTestNode('taskItem', { text: 'First task' }),
+          createTestNode('taskItem', { text: 'Second task' }),
+        ],
+      }),
+    ])
+
+    const meta = createEditorMeta({
+      doc,
+      selection: { from: 25, to: 25, empty: true },
+    } as never)
+
+    expect(meta.pathText).toBe('Main Title / list / item 2')
   })
 
   it('emits selection when the editor selection changes', () => {
@@ -183,6 +299,28 @@ describe('NyxEditor', () => {
   it('renders EditorContent', () => {
     const wrapper = mount(NyxEditor)
     expect(wrapper.find('.nyx-editor__content').exists()).toBe(true)
+  })
+
+  it('passes meta through the footer slot', async () => {
+    mockEditor.state.doc = createTestDoc([
+      createTestNode('heading', { text: 'Main Title', attrs: { level: 1 } }),
+      createTestNode('paragraph', { text: 'Paragraph body words' }),
+    ]) as any
+    mockEditor.state.selection = { empty: true, from: 18, to: 18 }
+
+    const wrapper = mount(NyxEditor, {
+      props: {
+        hasFooter: true,
+      },
+      slots: {
+        footer: ({ meta }: any) => h('div', { class: 'custom-footer' }, `${meta.pathText} :: ${meta.wordCount}`),
+      },
+    })
+
+    editorOptions.onCreate?.()
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.find('.custom-footer').text()).toBe('Main Title / paragraph 1 :: 5')
   })
 
   it('accepts consumer-provided annotations', () => {

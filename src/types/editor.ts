@@ -45,3 +45,27 @@ export interface NyxAnnotation {
   attachment: NyxAnnotationAttachment
   tone?: string
 }
+
+export type NyxEditorMetaPathSegmentType = 'heading' | 'paragraph' | 'list' | 'list-item'
+export type NyxEditorMetaListType = 'bullet' | 'ordered' | 'task'
+
+export interface NyxEditorMetaPathSegment {
+  type: NyxEditorMetaPathSegmentType
+  label: string
+  index?: number
+  level?: number
+  listType?: NyxEditorMetaListType
+}
+
+export interface NyxEditorMetaSelection {
+  from: number
+  to: number
+  empty: boolean
+}
+
+export interface NyxEditorMeta {
+  segments: NyxEditorMetaPathSegment[]
+  pathText: string
+  wordCount: number
+  selection: NyxEditorMetaSelection
+}
