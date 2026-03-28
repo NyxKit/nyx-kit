@@ -1,4 +1,4 @@
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, watch } from 'vue'
 import NyxEditor from './NyxEditor.vue'
 import NyxTextarea from '../NyxTextarea/NyxTextarea.vue'
 import {
@@ -14,8 +14,109 @@ import {
 } from '@/types'
 import type { NyxEditorProps } from './NyxEditor.types'
 import type {
+  NyxAnnotation,
   NyxAnnotationAnchor,
 } from '@/types/editor'
+
+const showcaseContent = `# NyxEditor annotation showcase
+
+Intro paragraph with **bold emphasis**, *italic nuance*, and \`inline code\` so the default Storybook example demonstrates the most common inline formatting patterns in one place.
+
+## Editorial overview
+
+This section introduces the document structure and explains how annotations should feel while reading and editing longer rich-text content.
+
+- Bullet point one introduces the topic
+- Bullet point two reinforces the visual hierarchy
+- Bullet point three keeps the example grounded
+
+## Review workflow
+
+This section demonstrates a nested structure with two h3 subsections so the editor showcases deeper document outlines as well.
+
+### Open questions
+
+The team uses an ordered list here to capture follow-up questions before the content moves to final approval.
+
+1. Who owns the final review?
+2. Which comments block release?
+3. When should unresolved notes expire?
+
+### Approval checklist
+
+The task list below highlights the last mile before publication.
+
+- [ ] Confirm annotation remapping works
+- [x] Verify toolbar actions in Storybook
+- [ ] Review accessibility notes with design
+
+## Implementation notes
+
+This closing section keeps a final paragraph near a separate section heading so the story looks realistic for day-to-day editorial work inside NyxEditor.
+`
+
+const showcaseAnnotations: NyxAnnotation[] = [
+  {
+    id: 'annotation-draft',
+    anchor: {
+      text: 'bold emphasis',
+      context: {
+        prefix: 'ro paragraph with **',
+        suffix: '**, *italic nuance*, and `inli',
+      },
+      range: {
+        from: 57,
+        to: 70,
+      },
+    },
+    interaction: NyxAnnotationInteraction.Default,
+    status: NyxAnnotationStatus.Draft,
+    attachment: NyxAnnotationAttachment.Attached,
+  },
+  {
+    id: 'annotation-unresolved',
+    anchor: {
+      text: 'visual hierarchy',
+      context: {
+        prefix: ' two reinforces the ',
+        suffix: '\n- Bullet point three keeps th',
+      },
+      range: {
+        from: 451,
+        to: 467,
+      },
+    },
+    interaction: NyxAnnotationInteraction.Default,
+    status: NyxAnnotationStatus.Unresolved,
+    attachment: NyxAnnotationAttachment.Attached,
+  },
+  {
+    id: 'annotation-resolved',
+    anchor: {
+      text: 'toolbar actions in Storybook',
+      context: {
+        prefix: ' works\n- [x] Verify ',
+        suffix: '\n- [ ] Review accessibility no',
+      },
+      range: {
+        from: 1044,
+        to: 1072,
+      },
+    },
+    interaction: NyxAnnotationInteraction.Default,
+    status: NyxAnnotationStatus.Resolved,
+    attachment: NyxAnnotationAttachment.Attached,
+  },
+]
+
+const showcaseStatusTheme = {
+  [NyxAnnotationStatus.Draft]: NyxTheme.Info,
+  [NyxAnnotationStatus.Unresolved]: NyxTheme.Warning,
+  [NyxAnnotationStatus.InReview]: NyxTheme.Warning,
+  [NyxAnnotationStatus.Approved]: NyxTheme.Success,
+  [NyxAnnotationStatus.Resolved]: NyxTheme.Success,
+  [NyxAnnotationStatus.Archived]: NyxTheme.Secondary,
+}
 
 export default {
   title: 'Components/NyxEditor',
@@ -85,47 +186,51 @@ export default {
   },
 }
 
-const Template = (args: NyxEditorProps) => defineComponent({
+export const Showcase = (args: NyxEditorProps & { modelValue?: string, annotations?: NyxAnnotation[] }) => defineComponent({
   components: { NyxEditor },
   setup() {
-    const content = ref('')
-    return { args, content }
+    const cloneAnnotations = (value: NyxAnnotation[] = showcaseAnnotations) => value.map((annotation) => ({
+      ...annotation,
+      anchor: {
+        ...annotation.anchor,
+        context: { ...annotation.anchor.context },
+        range: { ...annotation.anchor.range },
+      },
+    }))
+
+    const content = ref(args.modelValue ?? showcaseContent)
+    const annotations = ref(cloneAnnotations(args.annotations))
+
+    watch(() => args.modelValue, (value) => {
+      content.value = value ?? showcaseContent
+    })
+
+    watch(() => args.annotations, (value) => {
+      annotations.value = cloneAnnotations(value)
+    }, { deep: true })
+
+    return { args, content, annotations }
   },
-  template: `<nyx-editor v-bind="args" v-model="content" />`,
+  template: `
+    <nyx-editor
+      v-bind="args"
+      v-model="content"
+      v-model:annotations="annotations"
+    />
+  `,
 })
 
-const TemplateWithContent = (args: NyxEditorProps, initialContent: string) => defineComponent({
-  components: { NyxEditor },
-  setup() {
-    const content = ref(initialContent)
-    return { args, content }
-  },
-  template: `<nyx-editor v-bind="args" v-model="content" />`,
-})
-
-export const Zen = Template({ mode: NyxEditorMode.Zen })
-
-export const Toolbar = Template({ mode: NyxEditorMode.Toolbar })
-
-export const ZenWithContent = TemplateWithContent(
-  { mode: NyxEditorMode.Zen },
-  '# Hello\n\nThis is a **rich text** editor in *zen* mode.\n\n- Item one\n- Item two',
-)
-
-export const ToolbarWithContent = TemplateWithContent(
-  { mode: NyxEditorMode.Toolbar },
-  '# Hello\n\nThis is a **rich text** editor in *toolbar* mode.',
-)
-
-export const HtmlFormat = TemplateWithContent(
-  { mode: NyxEditorMode.Toolbar, format: NyxEditorFormat.Html },
-  '<h1>Hello</h1><p>This editor outputs <strong>HTML</strong>.</p>',
-)
-
-export const Disabled = TemplateWithContent(
-  { mode: NyxEditorMode.Toolbar, disabled: true },
-  '# Read-only\n\nThis editor is disabled.',
-)
+Showcase.args = {
+  modelValue: showcaseContent,
+  annotations: showcaseAnnotations,
+  annotationStatusTheme: showcaseStatusTheme,
+  mode: NyxEditorMode.Zen,
+  format: NyxEditorFormat.Markdown,
+  toolbar: NyxEditorToolbar.Full,
+  theme: NyxTheme.Info,
+  variant: NyxVariant.Text,
+  size: NyxSize.Medium,
+}
 
 export const SelectionAndAnnotationEvents = () => defineComponent({
   components: { NyxEditor, NyxTextarea },
