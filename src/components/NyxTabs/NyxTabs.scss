@@ -29,7 +29,6 @@
     flex: 1 1 auto;
     flex-wrap: nowrap;
     min-height: 100%;
-    overflow: hidden;
     transform: translateX(calc(0px - (var(--nyx-tab-index)) * 100%));
   }
 
