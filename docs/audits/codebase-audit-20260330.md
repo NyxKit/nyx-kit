@@ -42,55 +42,13 @@ Nyx-kit has made significant progress since the March 23 audit. The most critica
 
 ### [Medium] NyxSelect keyboard navigation not implemented
 
-**Category:** Accessibility / Edge-case resilience
-
-**Time horizon:** 1–3 months
-
-**Blast radius:** Local (NyxSelect component)
-
-**What's annoying:** The spec file (`docs/specs/components/NyxSelect.spec.md:89`) explicitly states "Keyboard navigation (arrow keys, Enter to select) is not yet implemented." The component has ARIA roles but lacks keyboard handling. Users cannot navigate options with arrow keys or select with Enter.
-
-**Why it matters later:** A select component without keyboard navigation is only partially usable. Power users and accessibility-dependent users expect arrow key browsing. This gap will draw complaints and force consumers to implement workarounds.
-
-**Evidence:** 
-- `NyxSelect.vue` has no keyboard event handlers on the dropdown options
-- Spec file explicitly defers this feature
-- `NyxSelect.types.ts` has no keyboard-related props
-
-**What’s really going on:** ARIA roles were added (combobox, listbox, option) but the keyboard behavior that makes those roles functional was deferred. The component has the skeleton but not the nervous system.
-
-**Suggested fix:** Add `@keydown` handler to options or the container that:
-- Arrow Up/Down: move focus between options
-- Enter: select the focused option
-- Home/End: jump to first/last option
-- Consider `aria-activedescendant` for focus management
-
-**Roast line:** The component got the ARIA clothes but forgot to teach it how to walk.
+**Status:** Fixed — Keyboard navigation (ArrowUp, ArrowDown, Enter, Home, End) is now implemented with proper aria-activedescendant support. Tests added.
 
 ---
 
 ### [Medium] `KeyboardKey` enum is a false promise
 
-**Category:** Type safety / AI smells
-
-**Time horizon:** 1–3 months
-
-**Blast radius:** Local (useKeyPress composable)
-
-**What's annoying:** `src/types/keyboard.ts` defines `enum KeyboardKey { Esc = 'Escape' }`. The `useKeyPress` composable accepts this type. Consumers who want to listen for Arrow keys, Enter, Space — anything other than Escape — must pass raw strings, bypassing the type system entirely.
-
-**Why it matters later:** The enum creates false confidence. Someone reading `useKeyPress(KeyboardKey.ArrowDown)` will get a compile error. The "type safety" is an illusion that misleads callers about what's supported.
-
-**Evidence:** 
-- `src/types/keyboard.ts:1-3` — single-value enum
-- `useKeyPress.ts` signature accepts `KeyboardKey` but implementation accepts any string
-- Previous audit flagged this; still not fixed
-
-**What’s really going on:** The enum was added as a minimal viable type but never expanded. It's now technical debt that suggests completeness where none exists.
-
-**Suggested fix:** Either expand the enum to 10-15 common keys (ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Enter, Space, Tab, Escape, Home, End, PageUp, PageDown) OR remove the enum entirely and accept `string`. The latter is cleaner and matches how `useKeyboardShortcuts` already works.
-
-**Roast line:** This enum is like a restaurant with a single item on the menu called "Food."
+**Status:** Already addressed — `KeyboardKey` enum now includes 12 keys (Esc, Enter, Space, Tab, Backspace, Delete, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Home, End). See `src/types/keyboard.ts`.
 
 ---
 
@@ -112,9 +70,7 @@ Nyx-kit has made significant progress since the March 23 audit. The most critica
 
 **What’s really going on:** The naming was never updated after the initial implementation. Low priority but worth fixing in a breaking-change window.
 
-**Suggested fix:** Add new props `includeColumns` / `excludeColumns` as aliases, deprecate the old ones, remove in next major.
-
-**Roast line:** These prop names were named by someone who thought "allowlist" was too modern.
+**Status:** Already addressed — component now uses `colInclude`/`colExclude` (see `NyxTable.types.ts:14-15`).
 
 ---
 
@@ -147,21 +103,7 @@ Nyx-kit has made significant progress since the March 23 audit. The most critica
 
 ### [Low] `isObject` still in `keydict.ts`
 
-**Category:** Maintainability / Consistency
-
-**Time horizon:** Longer-term
-
-**Blast radius:** Local (file location)
-
-**What's annoying:** `src/utils/keydict.ts` exports both `KeyDict<T>` type and `isObject` runtime function. These have no thematic relationship. `isObject` should live in `object.ts`.
-
-**Evidence:**
-- `keydict.ts` line 5+ has `isObject` function
-- Previous audit noted this; still not moved
-
-**Suggested fix:** Move `isObject` to `src/utils/object.ts` (create if needed) and update imports.
-
-**Roast line:** Finding `isObject` in `keydict.ts` is like finding a spatula in the cutlery drawer — not wrong, just surprising.
+**Status:** Already addressed — `isObject` is now in `src/utils/object.ts`. No changes needed.
 
 ---
 
@@ -192,16 +134,14 @@ Despite the previous audit flagging zero component tests, the situation hasn't s
 
 ## 5. Fix Order
 
-### Fix Now (This Sprint)
-1. Complete NyxSelect keyboard navigation — biggest user-facing gap
-2. Either expand `KeyboardKey` enum or remove it — it's actively misleading
-
-### Fix Next (Next 2 Sprints)
-3. Add component render smoke tests for 5 core components
+### Completed
+1. ✅ Complete NyxSelect keyboard navigation — biggest user-facing gap
+2. ✅ `KeyboardKey` enum expanded to 12 keys
+3. ✅ Component tests exist for NyxButton, NyxInput, NyxModal, NyxSlider
+4. ✅ NyxTable uses colInclude/colExclude (not whitelist/blacklist)
+5. ✅ `isObject` moved to object.ts
 
 ### Fix Opportunistically
-4. Rename NyxTable whitelist/blacklist props (when doing other NyxTable work)
-5. Move `isObject` to object.ts
 6. Consider using `crypto.getRandomValues()` for ID generation (low priority)
 
 ### Monitor Only
