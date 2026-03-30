@@ -76,7 +76,14 @@ Options may be passed as a flat array (`NyxSelectOption[]`) or a grouped array (
 | Key | Behaviour |
 |---|---|
 | `Esc` | Closes the dropdown |
+| `ArrowDown` | Opens dropdown (if closed) and moves focus to next enabled option |
+| `ArrowUp` | Opens dropdown (if closed) and moves focus to previous enabled option |
+| `Enter` | Selects the currently focused option |
+| `Home` | Moves focus to the first enabled option |
+| `End` | Moves focus to the last enabled option |
 | Type in input | Filters visible options in real time |
+
+Disabled options are skipped during arrow key navigation.
 
 ## Accessibility
 
@@ -86,6 +93,5 @@ Options may be passed as a flat array (`NyxSelectOption[]`) or a grouped array (
 
 ## Known limitations
 
-- Keyboard navigation (arrow keys, Enter to select) is not yet implemented
 - Async option loading is not supported
 - Mixing flat and grouped options in the same array is not supported and results in undefined behaviour

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, useId, useTemplateRef, watch } from 'vue'
+import { ref, computed, useId, useTemplateRef, watch, nextTick } from 'vue'
 import { NyxSelectType, type NyxSelectOption, type NyxSelectOptionGroup } from '@/types'
 import './NyxSelect.scss'
 import type { NyxSelectProps } from './NyxSelect.types'
@@ -21,6 +21,7 @@ const model = computed({
 
 const elInput = useTemplateRef<HTMLInputElement>('elInput')
 const searchQuery = ref('')
+const focusedValue = ref<string | null>(null)
 
 const elControl = useTemplateRef<HTMLDivElement>('elControl')
 const elDropdown = useTemplateRef<HTMLDivElement>('elDropdown')
@@ -68,6 +69,13 @@ const filteredOptions = computed(() => {
   )
 })
 
+const flatFilteredOptions = computed((): NyxSelectOption[] => {
+  if (isGrouped.value) {
+    return (filteredOptions.value as NyxSelectOptionGroup[]).flatMap((group) => group.options)
+  }
+  return filteredOptions.value as NyxSelectOption[]
+})
+
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value
 }
@@ -109,9 +117,113 @@ const isSelected = (value: string): boolean => {
   return value === model.value
 }
 
+const isOptionDisabled = (option: NyxSelectOption): boolean => {
+  return !!option.disabled
+}
+
+const getOptionId = (value: string): string => {
+  return `${dropdownId}-option-${value}`
+}
+
+const focusedIndex = computed(() => {
+  if (!focusedValue.value) return -1
+  return flatFilteredOptions.value.findIndex((opt) => opt.value === focusedValue.value)
+})
+
+const getNextEnabledIndex = (startIdx: number, direction: 1 | -1): number => {
+  const options = flatFilteredOptions.value
+  let idx = startIdx
+  for (let i = 0; i < options.length; i++) {
+    idx = (startIdx + direction * i + options.length) % options.length
+    if (!isOptionDisabled(options[idx])) {
+      return idx
+    }
+  }
+  return -1
+}
+
+const onInputKeydown = (e: KeyboardEvent) => {
+  const options = flatFilteredOptions.value
+  if (options.length === 0) return
+
+  const currentIdx = focusedIndex.value
+
+  switch (e.key) {
+    case 'ArrowDown': {
+      e.preventDefault()
+      isOpen.value = true
+      const startIdx = currentIdx < 0 ? 0 : currentIdx + 1
+      const nextIdx = getNextEnabledIndex(startIdx, 1)
+      if (nextIdx >= 0) {
+        focusedValue.value = options[nextIdx].value
+        scrollToFocusedOption(options[nextIdx].value)
+      }
+      break
+    }
+    case 'ArrowUp': {
+      e.preventDefault()
+      isOpen.value = true
+      const startIdx = currentIdx < 0 ? options.length - 1 : currentIdx - 1
+      const nextIdx = getNextEnabledIndex(startIdx, -1)
+      if (nextIdx >= 0) {
+        focusedValue.value = options[nextIdx].value
+        scrollToFocusedOption(options[nextIdx].value)
+      }
+      break
+    }
+    case 'Enter': {
+      if (focusedValue.value) {
+        e.preventDefault()
+        const option = options.find((opt) => opt.value === focusedValue.value)
+        if (option && !isOptionDisabled(option)) {
+          onSelectOption(option)
+        }
+      }
+      break
+    }
+    case 'Home': {
+      e.preventDefault()
+      isOpen.value = true
+      const firstIdx = getNextEnabledIndex(0, 1)
+      if (firstIdx >= 0) {
+        focusedValue.value = options[firstIdx].value
+        scrollToFocusedOption(options[firstIdx].value)
+      }
+      break
+    }
+    case 'End': {
+      e.preventDefault()
+      isOpen.value = true
+      const lastIdx = getNextEnabledIndex(options.length - 1, -1)
+      if (lastIdx >= 0) {
+        focusedValue.value = options[lastIdx].value
+        scrollToFocusedOption(options[lastIdx].value)
+      }
+      break
+    }
+  }
+}
+
+const scrollToFocusedOption = (value: string) => {
+  nextTick(() => {
+    const el = elDropdown.value?.querySelector(`[data-option-value="${value}"]`) as HTMLElement
+    el?.scrollIntoView({ block: 'nearest' })
+  })
+}
+
 watch(isOpen, (newVal) => {
-  if (!newVal) setSearchQuery()
-  else setSearchQuery('')
+  if (!newVal) {
+    setSearchQuery()
+    focusedValue.value = null
+  } else {
+    setSearchQuery('')
+    const selectedValue = isMultiple.value 
+      ? ((model.value as string[])[0] ?? '')
+      : (model.value as string)
+    if (selectedValue) {
+      focusedValue.value = selectedValue
+    }
+  }
 })
 </script>
 
@@ -142,6 +254,8 @@ watch(isOpen, (newVal) => {
         aria-haspopup="listbox"
         aria-autocomplete="list"
         :aria-controls="dropdownId"
+        :aria-activedescendant="focusedValue ? getOptionId(focusedValue) : undefined"
+        @keydown="onInputKeydown"
       />
       <span class="nyx-select__arrow" @click="toggleDropdown">▼</span>
     </div>
@@ -169,9 +283,12 @@ watch(isOpen, (newVal) => {
                 class="nyx-select__option nyx-select__option--group"
                 :class="{
                   'nyx-select__option--selected': isSelected(option.value),
+                  'nyx-select__option--focused': focusedValue === option.value,
                   'nyx-select__option--disabled': !!option.disabled
                 }"
                 role="option"
+                :id="getOptionId(option.value)"
+                :data-option-value="option.value"
                 :aria-selected="isSelected(option.value)"
                 :aria-disabled="!!option.disabled || undefined"
                 @click="onSelectOption(option)"
@@ -190,9 +307,12 @@ watch(isOpen, (newVal) => {
               class="nyx-select__option"
               :class="{
                 'nyx-select__option--selected': isSelected(option.value),
+                'nyx-select__option--focused': focusedValue === option.value,
                 'nyx-select__option--disabled': !!option.disabled
               }"
               role="option"
+              :id="getOptionId(option.value)"
+              :data-option-value="option.value"
               :aria-selected="isSelected(option.value)"
               :aria-disabled="!!option.disabled || undefined"
               @click="onSelectOption(option)"
@@ -207,7 +327,7 @@ watch(isOpen, (newVal) => {
       </div>
     </Teleport>
 
-    <select v-model="model" class="sr-only" :id="props.id" :multiple="isMultiple">
+    <select v-model="model" class="sr-only" :id="props.id" :multiple="isMultiple" tabindex="-1">
       <template v-if="isGrouped">
         <optgroup v-for="group in (props.options as NyxSelectOptionGroup[])" :key="group.label" :label="group.label">
           <option v-for="option in group.options" :value="option.value" :key="option.value">{{ option.label }}</option>

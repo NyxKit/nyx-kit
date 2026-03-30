@@ -162,6 +162,7 @@ const { classList } = useNyxProps(props, { origin: 'NyxSlider' })
       :aria-valuemin="props.min"
       :aria-valuemax="props.max"
       class="sr-only"
+      tabindex="-1"
     />
     <div
       class="nyx-slider__thumb"
@@ -192,6 +193,7 @@ const { classList } = useNyxProps(props, { origin: 'NyxSlider' })
         :aria-valuemin="props.min"
         :aria-valuemax="props.max"
         class="sr-only"
+        tabindex="-1"
       />
       <div
         class="nyx-slider__thumb"
