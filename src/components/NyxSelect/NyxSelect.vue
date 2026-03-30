@@ -206,8 +206,10 @@ const onInputKeydown = (e: KeyboardEvent) => {
 
 const scrollToFocusedOption = (value: string) => {
   nextTick(() => {
-    const el = elDropdown.value?.querySelector(`[data-option-value="${value}"]`) as HTMLElement
-    el?.scrollIntoView({ block: 'nearest' })
+    const el = elDropdown.value?.querySelector(`[data-option-value="${value}"]`) as HTMLElement | null
+    if (el?.scrollIntoView) {
+      el.scrollIntoView({ block: 'nearest' })
+    }
   })
 }
 
