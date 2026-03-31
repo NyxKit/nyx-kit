@@ -18,11 +18,12 @@ import {
   NyxEditorFormat,
   NyxEditorToolbar as NyxEditorToolbarMode,
   NyxTheme,
+  NyxSize,
 } from '@/types'
 import { useNyxProps, useEditorAnnotations, useEditorMeta } from '@/composables'
 import NyxEditorBubbleMenu from './NyxEditorBubbleMenu/NyxEditorBubbleMenu.vue'
 import NyxEditorToolbar from './NyxEditorToolbar/NyxEditorToolbar.vue'
-import { ChevronRight, FileCode } from 'lucide-vue-next'
+import NyxIcon from '../NyxIcon/NyxIcon.vue'
 
 const props = withDefaults(defineProps<NyxEditorProps>(), {
   mode: NyxEditorMode.Zen,
@@ -211,7 +212,7 @@ watch(() => annotationsModel.value, () => {
       :class="{ active: sourceModel }"
       @click="sourceModel = !sourceModel"
       aria-label="Toggle source"
-    ><FileCode :size="14" /></button>
+          ><NyxIcon name="file-code" :size="NyxSize.Small" /></button>
 
     <!-- Source view -->
     <textarea
@@ -242,7 +243,7 @@ watch(() => annotationsModel.value, () => {
         <span class="nyx-editor__footer-path" aria-label="Document structure">
           <template v-if="meta.segments.length">
             <template v-for="(segment, index) in meta.segments" :key="`${segment.type}-${segment.label}-${index}`">
-              <ChevronRight v-if="index > 0" :size="12" class="nyx-editor__footer-separator" aria-hidden="true" />
+              <NyxIcon v-if="index > 0" name="chevron-right" :size="NyxSize.XSmall" class="nyx-editor__footer-separator" aria-hidden="true" />
               <span class="nyx-editor__footer-segment">{{ segment.label }}</span>
             </template>
           </template>

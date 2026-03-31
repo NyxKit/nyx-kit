@@ -20,6 +20,7 @@ const GAP_REM_MAP: Record<NyxSize, number> = {
   [NyxSize.Medium]: 0.75,
   [NyxSize.Large]: 1,
   [NyxSize.XLarge]: 1.25,
+  [NyxSize.XXLarge]: 1.5
 }
 
 const props = withDefaults(defineProps<NyxGridProps>(), {
