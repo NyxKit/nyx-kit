@@ -111,8 +111,8 @@ docs/
 
 1. Check `README.md` and `docs/architecture/component-model.md` for the intended API and conventions.
 2. Create `docs/specs/components/Nyx<Name>.spec.md` — see **Component Spec Files** below. (This is also the output of `/speckit.specify` — keep both in sync.)
-3. Create a folder under `src/components/Nyx<Name>/` with the component file, an `index.ts` re-export, and a `.stories.ts` file.
-4. Register the export in `src/components/index.ts` and `src/index.ts`.
+3. Create a folder under `src/components/Nyx<Name>/` with the component file (e.g. `Nyx<Name>.vue`) and a `.stories.ts` file.
+4. Register the export in `src/components/index.ts` and `src/index.ts` using direct imports: `import Nyx<Name> from './Nyx<Name>/Nyx<Name>.vue'` — never use the `{}` syntax or funnel through an index.ts file.
 5. Add unit tests (`.spec.ts`) for non-trivial logic.
 
 ### For changes to existing components

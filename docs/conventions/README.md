@@ -16,10 +16,14 @@
 | CSS/SCSS file | kebab-case | `design-system.scss` |
 | Docs file | kebab-case | `component-model.md` |
 
-Every component folder must have an `index.ts` that re-exports the component:
+## Import conventions
+
+Export components from `src/components/index.ts` using direct imports:
 ```typescript
-export { default as NyxFoo } from './NyxFoo.vue'
+import NyxFoo from './NyxFoo/NyxFoo.vue'
+export { NyxFoo }
 ```
+Never use the `{}` syntax or funnel through an index.ts file unless in a subdomain folder (components, composables, classes, ...).
 
 ## Naming
 

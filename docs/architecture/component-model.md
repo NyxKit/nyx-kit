@@ -185,10 +185,16 @@ src/components/NyxFoo/
   NyxFoo.vue          # component implementation
   NyxFoo.stories.ts   # Storybook stories
   NyxFoo.spec.ts      # unit tests (if applicable)
-  index.ts            # re-export: export { default as NyxFoo } from './NyxFoo.vue'
 ```
 
-Sub-components (e.g. `NyxTableCell`, `NyxTreeNode`) live in the parent's folder and are exported from the same `index.ts`.
+Export from `src/components/index.ts` using direct imports:
+
+```typescript
+import NyxFoo from './NyxFoo/NyxFoo.vue'
+export { NyxFoo }
+```
+
+Never use the `{}` syntax or funnel through an index.ts file unless in a subdomain folder (components, composables, classes, ...).
 
 ## Generic Components
 
