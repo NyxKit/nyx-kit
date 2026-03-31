@@ -10,6 +10,5 @@ export const generateRandomString = (length: number = 16): string => {
   return result
 }
 
-export const toPascalCase = (str: string): string => {
-  return str.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join('')
-}
+export const toPascalCase = (str: string): string => str.split(/[-_]/)
+  .map(s => s.charAt(0).toUpperCase() + s.slice(1)).join('')

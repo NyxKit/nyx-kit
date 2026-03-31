@@ -12,12 +12,12 @@ import './NyxIcon.scss'
 import { computed } from 'vue'
 import * as LucideIcons from 'lucide-vue-next'
 import { type NyxIconProps } from './NyxIcon.types'
-import { NyxTheme, NyxSize } from '@/types'
+import { NyxSize } from '@/types'
 import { toPascalCase } from '@/utils/string'
 
-const props = withDefaults(defineProps<NyxIconProps>(), {
-  name: ''
-})
+const ICON_LIBRARY = LucideIcons as Record<string, unknown>
+const FALLBACK_NAME = 'help-circle'
+const props = defineProps<NyxIconProps>()
 
 const SIZE_REM_MAP: Record<NyxSize, number> = {
   [NyxSize.XSmall]: 12,
@@ -37,13 +37,10 @@ const STROKE_REM_MAP: Record<NyxSize, number> = {
   [NyxSize.XXLarge]: 2,
 }
 
-const FALLBACK_ICON = 'HelpCircle'
-
 const resolvedIcon = computed(() => {
-  const normalisedName = props.name ?? FALLBACK_ICON
-  const baseName = toPascalCase(normalisedName)
-  const icon = (LucideIcons as Record<string, unknown>)[baseName] as unknown as { name: string } | undefined
-  return icon ?? (LucideIcons as Record<string, unknown>)[FALLBACK_ICON] as unknown as { name: string }
+  const normalisedName = (props.name ?? '').trim() || FALLBACK_NAME
+  const icon = ICON_LIBRARY[toPascalCase(normalisedName)]
+  return icon ?? ICON_LIBRARY[toPascalCase(FALLBACK_NAME)]
 })
 
 const themeClass = computed(() => {
