@@ -1,5 +1,7 @@
+import { defineComponent } from 'vue'
 import NyxIcon from './NyxIcon.vue'
-import { NyxTheme, NyxSize } from '@/types'
+import { NyxTheme, NyxSize, type KeyDict } from '@/types'
+import { getKeyDictKeyByValue } from '@/utils'
 
 const ICONS = ['arrow-right', 'arrow-left', 'chevron-down', 'chevron-up', 'menu', 'x', 'plus', 'minus', 'edit', 'trash']
 
@@ -19,6 +21,10 @@ export default {
     size: {
       control: { type: 'select' },
       options: Object.values(NyxSize)
+    },
+    stroke: {
+      control: { type: 'select' },
+      options: Object.values(NyxSize)
     }
   },
   parameters: {
@@ -30,62 +36,41 @@ export default {
   }
 }
 
-export const Default = (args: Record<string, unknown>) => ({
+const Template = (args: Record<string, unknown>) => defineComponent({
   components: { NyxIcon },
-  setup() {
+  setup () {
     return { args }
   },
-  template: `<nyx-icon v-bind="args" />`
+  template: `<nyx-icon v-bind="args" />`,
 })
 
-Default.args = {
-  name: 'arrow-right'
-}
+export const Default = Template({ name: 'arrow-right' })
 
-export const WithTheme = () => ({
+const TemplateAllProp = (prop: string, dict: KeyDict<string>) => () => defineComponent({
   components: { NyxIcon },
-  template: `
-    <div>
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-        <span style="min-width:80px">Primary:</span>
-        <nyx-icon name="arrow-right" theme="Primary" />
-        <nyx-icon name="check-circle" theme="Primary" />
-        <nyx-icon name="star" theme="Primary" />
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-        <span style="min-width:80px">Success:</span>
-        <nyx-icon name="arrow-right" theme="Success" />
-        <nyx-icon name="check-circle" theme="Success" />
-        <nyx-icon name="star" theme="Success" />
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-        <span style="min-width:80px">Danger:</span>
-        <nyx-icon name="arrow-right" theme="Danger" />
-        <nyx-icon name="check-circle" theme="Danger" />
-        <nyx-icon name="star" theme="Danger" />
-      </div>
-    </div>
-  `
-})
-
-export const Sizes = () => ({
-  components: { NyxIcon },
-  setup() {
-    return { NyxSize, ICONS }
+  setup () {
+    const values = Object.values(dict)
+    const getLabel = (value: string) => getKeyDictKeyByValue(dict, value)
+    return { prop, values, getLabel }
   },
   template: `
-    <div>
-      <div v-for="size in Object.values(NyxSize)" :key="size" style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-        <span style="min-width:60px">{{ size }}:</span>
-        <nyx-icon v-for="icon in ICONS" :key="icon" :name="icon" :size="size" />
-      </div>
+    <div class="flex">
+      <nyx-icon
+        v-for="value of values"
+        :key="value"
+        v-bind="{ [prop]: value }"
+      >{{ getLabel(value) }}</nyx-icon>
     </div>
-  `
+  `,
 })
 
-export const CustomSizes = () => ({
+export const Themes = TemplateAllProp('theme', NyxTheme as KeyDict<string>)
+export const Sizes = TemplateAllProp('size', NyxSize as KeyDict<string>)
+export const Strokes = TemplateAllProp('stroke', NyxSize as KeyDict<string>)
+
+export const CustomSizes = () => defineComponent({
   components: { NyxIcon },
-  setup() {
+  setup () {
     const sizes = [10, 20, 32, 48, 64]
     return { sizes, ICONS }
   },
@@ -99,7 +84,7 @@ export const CustomSizes = () => ({
   `
 })
 
-export const IconGallery = () => ({
+export const IconGallery = () => defineComponent({
   components: { NyxIcon },
   template: `
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px">

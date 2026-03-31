@@ -1,0 +1,31 @@
+.nyx-icon {
+  --nyx-icon-color: var(--nyx-c-text);
+  color: var(--nyx-icon-color);
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+
+  &.theme-primary {
+    --nyx-icon-color: var(--nyx-c-primary);
+  }
+
+  &.theme-secondary {
+    --nyx-icon-color: var(--nyx-c-secondary);
+  }
+
+  &.theme-success {
+    --nyx-icon-color: var(--nyx-c-success);
+  }
+
+  &.theme-warning {
+    --nyx-icon-color: var(--nyx-c-warning);
+  }
+
+  &.theme-danger {
+    --nyx-icon-color: var(--nyx-c-danger);
+  }
+
+  &.theme-info {
+    --nyx-icon-color: var(--nyx-c-info);
+  }
+}

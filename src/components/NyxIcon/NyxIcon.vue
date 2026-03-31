@@ -2,11 +2,13 @@
   <component
     :is="resolvedIcon"
     class="nyx-icon"
+    :class="themeClass"
     v-bind="lucideArgs"
   />
 </template>
 
 <script setup lang="ts">
+import './NyxIcon.scss'
 import { computed } from 'vue'
 import * as LucideIcons from 'lucide-vue-next'
 import { type NyxIconProps } from './NyxIcon.types'
@@ -35,15 +37,6 @@ const STROKE_REM_MAP: Record<NyxSize, number> = {
   [NyxSize.XXLarge]: 2,
 }
 
-const THEME_COLOR_MAP: Record<NyxTheme, string> = {
-  [NyxTheme.Primary]: 'rgb(var(--nyx-rgb-primary))',
-  [NyxTheme.Secondary]: 'rgb(var(--nyx-rgb-secondary))',
-  [NyxTheme.Success]: 'rgb(var(--nyx-rgb-success))',
-  [NyxTheme.Warning]: 'rgb(var(--nyx-rgb-warning))',
-  [NyxTheme.Danger]: 'rgb(var(--nyx-rgb-danger))',
-  [NyxTheme.Info]: 'rgb(var(--nyx-rgb-info))',
-}
-
 const FALLBACK_ICON = 'HelpCircle'
 
 const resolvedIcon = computed(() => {
@@ -51,6 +44,11 @@ const resolvedIcon = computed(() => {
   const baseName = toPascalCase(normalisedName)
   const icon = (LucideIcons as Record<string, unknown>)[baseName] as unknown as { name: string } | undefined
   return icon ?? (LucideIcons as Record<string, unknown>)[FALLBACK_ICON] as unknown as { name: string }
+})
+
+const themeClass = computed(() => {
+  if (!props.theme) return undefined
+  return `theme-${props.theme.toLowerCase()}`
 })
 
 const lucideArgs = computed(() => {
@@ -62,17 +60,10 @@ const lucideArgs = computed(() => {
   const strokeWidth = getSize(props.stroke, STROKE_REM_MAP)
   if (strokeWidth) args.strokeWidth = strokeWidth
 
-  const color = getColor(props.theme, props.color)
-  if (color) args.color = color
+  if (props.color) args.color = props.color
 
   return args
 })
-
-function getColor (theme: NyxTheme | undefined, color: string | undefined): string | undefined {
-  if (theme) return THEME_COLOR_MAP[theme]
-  if (color) return color
-  return undefined
-}
 
 function getSize (size: NyxSize | number | undefined, map: Record<NyxSize, number>): number | undefined {
   if (size === undefined) return undefined
