@@ -36,12 +36,12 @@ const STROKE_REM_MAP: Record<NyxSize, number> = {
 }
 
 const THEME_COLOR_MAP: Record<NyxTheme, string> = {
-  [NyxTheme.Primary]: 'var(--nyx-c-primary)',
-  [NyxTheme.Secondary]: 'var(--nyx-c-secondary)',
-  [NyxTheme.Success]: 'var(--nyx-c-success)',
-  [NyxTheme.Warning]: 'var(--nyx-c-warning)',
-  [NyxTheme.Danger]: 'var(--nyx-c-danger)',
-  [NyxTheme.Info]: 'var(--nyx-c-info)',
+  [NyxTheme.Primary]: 'rgb(var(--nyx-rgb-primary))',
+  [NyxTheme.Secondary]: 'rgb(var(--nyx-rgb-secondary))',
+  [NyxTheme.Success]: 'rgb(var(--nyx-rgb-success))',
+  [NyxTheme.Warning]: 'rgb(var(--nyx-rgb-warning))',
+  [NyxTheme.Danger]: 'rgb(var(--nyx-rgb-danger))',
+  [NyxTheme.Info]: 'rgb(var(--nyx-rgb-info))',
 }
 
 const FALLBACK_ICON = 'HelpCircle'
