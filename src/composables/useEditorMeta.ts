@@ -47,7 +47,7 @@ export const createEmptyMeta = (): NyxEditorMeta => ({
 
 const normalizeWhitespace = (value: string) => value.replace(/\s+/g, ' ').trim()
 
-const countIndexedSiblings = (parent: MetaNodeLike | null, typeName: string, currentIndex: number) => {
+const _countIndexedSiblings = (parent: MetaNodeLike | null, typeName: string, currentIndex: number) => {
   if (!parent?.child || typeof parent.childCount !== 'number') return currentIndex + 1
 
   let count = 0
@@ -161,7 +161,7 @@ export const createEditorMeta = (state: MetaStateLike | null | undefined): NyxEd
   }
 }
 
-export default function useEditorMeta(editor: Ref<Editor | null | undefined>) {
+const useEditorMeta = (editor: Ref<Editor | null | undefined>) => {
   const meta = ref<NyxEditorMeta>(createEmptyMeta())
 
   const refreshMeta = () => {
@@ -173,3 +173,5 @@ export default function useEditorMeta(editor: Ref<Editor | null | undefined>) {
     refreshMeta,
   }
 }
+
+export default useEditorMeta

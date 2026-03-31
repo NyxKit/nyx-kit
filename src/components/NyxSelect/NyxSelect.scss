@@ -104,6 +104,11 @@
     transition: background-color 0.2s, border-color 0.2s, color 0.2s, transform 0.2s, border-radius 0.2s;
     cursor: pointer;
 
+    &:focus-within {
+      outline: 2px solid var(--nyx-c-select-highlight);
+      outline-offset: -1px;
+    }
+
     &--open {
       border-top-right-radius: var(--nyx-radius-select);
       border-top-left-radius: var(--nyx-radius-select);
@@ -138,7 +143,6 @@
     top: var(--top, 0);
     left: var(--left, 0);
     width: var(--width, auto);
-    background-color: var(--nyx-c-select);
     border: var(--nyx-border-size-select) solid (--nyx-c-select);
     color: var(--nyx-c-select-text);
     list-style: none;
@@ -170,6 +174,26 @@
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
     }
+
+    & > ul {
+      position: relative;
+      background-color: rgba(var(--nyx-rgb-select), 0.12);
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--nyx-c-bg-soft);
+        z-index: -1;
+      }
+    }
+
+    &.variant-filled > ul {
+      background-color: var(--nyx-c-select);
+    }
   }
 
   &__group-label {
@@ -197,7 +221,8 @@
   }
 
   &__option:hover,
-  &__option--selected {
+  &__option--selected,
+  &__option--focused {
     background-color: var(--nyx-c-select-highlight);
   }
 

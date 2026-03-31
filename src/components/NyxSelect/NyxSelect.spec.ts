@@ -11,6 +11,7 @@ const globalConfig = {
 
 beforeEach(() => {
   vi.spyOn(console, 'warn').mockImplementation(() => {})
+  vi.stubGlobal('scrollIntoView', vi.fn())
 })
 
 let wrapper: ReturnType<typeof mount>
@@ -193,5 +194,141 @@ describe('NyxSelect', () => {
     const optionEls = document.body.querySelectorAll('[role="option"]')
     expect(optionEls[1].getAttribute('aria-selected')).toBe('true')
     expect(optionEls[0].getAttribute('aria-selected')).toBe('false')
+  })
+
+  describe('keyboard navigation', () => {
+    const optionsWithDisabled = [
+      { label: 'Option A', value: 'a' },
+      { label: 'Option B', value: 'b', disabled: true },
+      { label: 'Option C', value: 'c' },
+    ]
+
+    it('ArrowDown moves focus to next option', async () => {
+      wrapper = mount(NyxSelect, {
+        attachTo: document.body,
+        props: { options: sampleOptions },
+        global: globalConfig
+      })
+      const input = wrapper.find('input')
+      await input.trigger('keydown', { key: 'ArrowDown' })
+      await nextTick()
+      const options = document.body.querySelectorAll('.nyx-select__option')
+      expect(options[0].classList.contains('nyx-select__option--focused')).toBe(true)
+    })
+
+    it('ArrowDown skips disabled options', async () => {
+      wrapper = mount(NyxSelect, {
+        attachTo: document.body,
+        props: { options: optionsWithDisabled },
+        global: globalConfig
+      })
+      const input = wrapper.find('input')
+      await input.trigger('keydown', { key: 'ArrowDown' })
+      await nextTick()
+      const options = document.body.querySelectorAll('.nyx-select__option')
+      expect(options[0].classList.contains('nyx-select__option--focused')).toBe(true)
+      await input.trigger('keydown', { key: 'ArrowDown' })
+      await nextTick()
+      expect(options[2].classList.contains('nyx-select__option--focused')).toBe(true)
+    })
+
+    it('ArrowUp moves focus to previous option', async () => {
+      wrapper = mount(NyxSelect, {
+        attachTo: document.body,
+        props: { options: sampleOptions, modelValue: 'c' },
+        global: globalConfig
+      })
+      await wrapper.find('.nyx-select__control').trigger('click')
+      await nextTick()
+      const input = wrapper.find('input')
+      await input.trigger('keydown', { key: 'ArrowUp' })
+      await nextTick()
+      const options = document.body.querySelectorAll('.nyx-select__option')
+      expect(options[1].classList.contains('nyx-select__option--focused')).toBe(true)
+    })
+
+    it('ArrowUp skips disabled options', async () => {
+      wrapper = mount(NyxSelect, {
+        attachTo: document.body,
+        props: { options: optionsWithDisabled, modelValue: 'c' },
+        global: globalConfig
+      })
+      await wrapper.find('.nyx-select__control').trigger('click')
+      await nextTick()
+      const input = wrapper.find('input')
+      await input.trigger('keydown', { key: 'ArrowUp' })
+      await nextTick()
+      const options = document.body.querySelectorAll('.nyx-select__option')
+      expect(options[0].classList.contains('nyx-select__option--focused')).toBe(true)
+    })
+
+    it('Home moves focus to first option', async () => {
+      wrapper = mount(NyxSelect, {
+        attachTo: document.body,
+        props: { options: sampleOptions, modelValue: 'c' },
+        global: globalConfig
+      })
+      await wrapper.find('.nyx-select__control').trigger('click')
+      await nextTick()
+      const input = wrapper.find('input')
+      await input.trigger('keydown', { key: 'Home' })
+      await nextTick()
+      const options = document.body.querySelectorAll('.nyx-select__option')
+      expect(options[0].classList.contains('nyx-select__option--focused')).toBe(true)
+    })
+
+    it('End moves focus to last option', async () => {
+      wrapper = mount(NyxSelect, {
+        attachTo: document.body,
+        props: { options: sampleOptions },
+        global: globalConfig
+      })
+      const input = wrapper.find('input')
+      await input.trigger('keydown', { key: 'End' })
+      await nextTick()
+      const options = document.body.querySelectorAll('.nyx-select__option')
+      expect(options[2].classList.contains('nyx-select__option--focused')).toBe(true)
+    })
+
+    it('Enter selects focused option', async () => {
+      wrapper = mount(NyxSelect, {
+        attachTo: document.body,
+        props: { options: sampleOptions, modelValue: '' },
+        global: globalConfig
+      })
+      const input = wrapper.find('input')
+      await input.trigger('keydown', { key: 'ArrowDown' })
+      await nextTick()
+      await input.trigger('keydown', { key: 'Enter' })
+      await nextTick()
+      expect(wrapper.emitted('update:modelValue')).toBeTruthy()
+      expect(wrapper.emitted('update:modelValue')![0][0]).toBe('a')
+    })
+
+
+
+    it('opens dropdown when ArrowDown is pressed', async () => {
+      wrapper = mount(NyxSelect, {
+        attachTo: document.body,
+        props: { options: sampleOptions },
+        global: globalConfig
+      })
+      const input = wrapper.find('input')
+      await input.trigger('keydown', { key: 'ArrowDown' })
+      expect(wrapper.find('.nyx-select__control').classes()).toContain('nyx-select__control--open')
+    })
+
+    it('input has aria-activedescendant when option is focused', async () => {
+      wrapper = mount(NyxSelect, {
+        attachTo: document.body,
+        props: { options: sampleOptions },
+        global: globalConfig
+      })
+      const input = wrapper.find('input')
+      await input.trigger('keydown', { key: 'ArrowDown' })
+      await nextTick()
+      const inputEl = input.element as HTMLInputElement
+      expect(inputEl.getAttribute('aria-activedescendant')).toBeTruthy()
+    })
   })
 })

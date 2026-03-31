@@ -22,7 +22,7 @@ interface UseEditorAnnotationsOptions {
 
 const ANNOTATION_CONTEXT_WINDOW = 32
 
-export default function useEditorAnnotations(options: UseEditorAnnotationsOptions) {
+const useEditorAnnotations = (options: UseEditorAnnotationsOptions) => {
   const annotationPluginKey = new PluginKey('nyx-editor-annotations')
   let focusedAnnotationId: string | null = null
 
@@ -168,7 +168,7 @@ export default function useEditorAnnotations(options: UseEditorAnnotationsOption
     return true
   }
 
-  const emitAnnotationBlur = (target: EventTarget | null) => {
+  const _emitAnnotationBlur = (target: EventTarget | null) => {
     const id = getAnnotationIdFromTarget(target)
     if (!id || focusedAnnotationId !== id) return false
 
@@ -265,3 +265,5 @@ export default function useEditorAnnotations(options: UseEditorAnnotationsOption
     syncAnnotations,
   }
 }
+
+export default useEditorAnnotations

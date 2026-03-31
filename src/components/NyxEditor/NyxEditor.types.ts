@@ -7,7 +7,6 @@ import type {
   NyxEditorToolbar,
 } from '@/types'
 import type {
-  NyxAnnotation,
   NyxAnnotationAnchor,
   NyxEditorMeta,
   NyxAnnotationStatusTheme,
@@ -39,5 +38,5 @@ export interface NyxEditorEmits {
 }
 
 export interface NyxEditorSlots {
-  footer(props: { meta: NyxEditorMeta }): any
+  footer(props: { meta: NyxEditorMeta }): unknown
 }

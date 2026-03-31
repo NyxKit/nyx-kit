@@ -12,7 +12,7 @@ import {
   NyxSize,
 } from '@/types'
 import NyxEditor from './NyxEditor.vue'
-import { createEditorMeta } from './useEditorMeta'
+import { createEditorMeta } from '@/composables/useEditorMeta'
 
 const createMockEditorDoc = () => ({
   textBetween: vi.fn(() => ''),
@@ -59,23 +59,31 @@ const mockEditor = {
   can: vi.fn(() => ({ undo: () => true, redo: () => true })),
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let editorOptions: Record<string, any> = {}
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const createTestNode = (typeName: string, options: { text?: string, attrs?: Record<string, unknown>, children?: any[] } = {}) => {
+ 
   const children = options.children ?? []
-  const textContent = options.text ?? children.map((child) => child.textContent).join(' ')
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const textContent = options.text ?? children.map((child: any) => child.textContent).join(' ')
 
   return {
     type: { name: typeName },
     attrs: options.attrs ?? {},
     textContent,
+ 
     childCount: children.length,
+ 
     child: (index: number) => children[index],
-    nodeSize: Math.max(textContent.length + 2, 2 + children.reduce((sum, child) => sum + child.nodeSize, 0)),
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+    nodeSize: Math.max(textContent.length + 2, 2 + children.reduce((sum: number, child: any) => sum + child.nodeSize, 0)),
     children,
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const createTestDoc = (children: any[]) => {
   const doc = createTestNode('doc', { children, text: children.map((child) => child.textContent).join(' ') })
 
@@ -83,7 +91,9 @@ const createTestDoc = (children: any[]) => {
     ...doc,
     content: { size: doc.nodeSize },
     textBetween: (from: number, to: number) => doc.textContent.slice(Math.max(0, from), Math.max(from, to)),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     descendants: (callback: (node: any, pos: number, parent: any, index: number) => void) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const walk = (nodes: any[], parent: any, startPos: number) => {
         let pos = startPos
         nodes.forEach((node, index) => {
@@ -101,6 +111,7 @@ const createTestDoc = (children: any[]) => {
 }
 
 // Tiptap relies on browser APIs not available in jsdom; mock the integration layer
+/* eslint-disable @typescript-eslint/no-explicit-any */
 vi.mock('@tiptap/vue-3', () => ({
   useEditor: (options: Record<string, any>) => {
     editorOptions = options
@@ -302,10 +313,12 @@ describe('NyxEditor', () => {
   })
 
   it('passes meta through the footer slot', async () => {
+    /* eslint-disable @typescript-eslint/no-explicit-any */
     mockEditor.state.doc = createTestDoc([
       createTestNode('heading', { text: 'Main Title', attrs: { level: 1 } }),
       createTestNode('paragraph', { text: 'Paragraph body words' }),
     ]) as any
+    /* eslint-enable @typescript-eslint/no-explicit-any */
     mockEditor.state.selection = { empty: true, from: 18, to: 18 }
 
     const wrapper = mount(NyxEditor, {
@@ -313,6 +326,7 @@ describe('NyxEditor', () => {
         hasFooter: true,
       },
       slots: {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         footer: ({ meta }: any) => h('div', { class: 'custom-footer' }, `${meta.pathText} :: ${meta.wordCount}`),
       },
     })

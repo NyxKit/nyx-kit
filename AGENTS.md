@@ -111,8 +111,8 @@ docs/
 
 1. Check `README.md` and `docs/architecture/component-model.md` for the intended API and conventions.
 2. Create `docs/specs/components/Nyx<Name>.spec.md` — see **Component Spec Files** below. (This is also the output of `/speckit.specify` — keep both in sync.)
-3. Create a folder under `src/components/Nyx<Name>/` with the component file, an `index.ts` re-export, and a `.stories.ts` file.
-4. Register the export in `src/components/index.ts` and `src/index.ts`.
+3. Create a folder under `src/components/Nyx<Name>/` with the component file (e.g. `Nyx<Name>.vue`) and a `.stories.ts` file.
+4. Register the export in `src/components/index.ts` and `src/index.ts` using direct imports: `import Nyx<Name> from './Nyx<Name>/Nyx<Name>.vue'` — never use the `{}` syntax or funnel through an index.ts file.
 5. Add unit tests (`.spec.ts`) for non-trivial logic.
 
 ### For changes to existing components
@@ -124,11 +124,13 @@ docs/
 
 ### Components that mutate nested model data
 
-When a component accepts an array or tree model (`T[]`) and needs to mutate a nested property (e.g. setting `status: Active` on a selected node inside a deeply nested structure), two things must happen:
+When a component accepts an array or tree model (`T[]`) and needs to mutate a nested property (e.g. setting `status: Active` on a selected node inside a deeply nested structure), three things must happen:
 
-1. **Reassign the model after mutating.** Vue 3's `defineModel` only emits `update:modelValue` when the model reference itself changes — not when a nested property is mutated. The component must return a new array reference to fire the emit.
+1. **Mutate the internal node.** Components may mutate nodes directly for performance and simplicity.
 
-2. **Also emit a semantic event** (e.g. `select`) carrying the affected node, so consumers can react to the specific interaction.
+2. **Reassign the model to fire `update:modelValue`.** Vue 3's `defineModel` only emits when the model reference changes — not when a nested property is mutated. The component must return a new array reference to fire the emit.
+
+3. **Emit a semantic event** (e.g. `select`) carrying the affected node, so consumers can react to the specific interaction either via v-model or the event.
 
 ```ts
 // Pattern for tree/list components mutating nested model data
@@ -141,15 +143,40 @@ function updateNodeInTree(nodes: MyNode[], id: string, updater: (n: MyNode) => v
 }
 
 function handleSelect(node: MyNode) {
+  // 1. mutate the internal node (optional - some components skip this and only use reassignment)
+  node.status = NodeStatus.Active
+
+  // 2. reassign to fire update:modelValue
   const updated = updateNodeInTree(model.value, node.id, target => {
     target.status = NodeStatus.Active
   })
-  model.value = updated       // fires update:modelValue
-  emit('select', node)        // semantic notification
+  model.value = updated
+
+  // 3. emit semantic event for consumers who prefer event-based handling
+  emit('select', node)
 }
 ```
 
-Update stories and tests accordingly — consumers should not need manual mutation in `@select` handlers.
+Components may choose to skip step 1 if they only rely on step 2 (reassignment), but steps 2 and 3 are required for full consumer flexibility.
+
+### v-model naming
+
+Always use `const model = defineModel<MyType>({ ...args })` — never `const modelValue = defineModel<MyType>()`.
+
+If you need to normalise the model value (e.g. handle differences between single and multiple modes), use a computed with get/set:
+
+```ts
+const model = defineModel<string | string[]>()
+
+const normalisedModel = computed({
+  get: () => model.value ?? (isMultiple.value ? [] : ''),
+  set: (value) => { model.value = value }
+})
+```
+
+### Component size
+
+Maximum 300 lines per `.vue` file. Extract logic into composables when component grows beyond this.
 
 ### For changes to types, utils, or composables
 

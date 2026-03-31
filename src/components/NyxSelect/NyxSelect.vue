@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, computed, useId, useTemplateRef, watch } from 'vue'
+import { ref, computed, useId, useTemplateRef, watch, nextTick } from 'vue'
 import { NyxSelectType, type NyxSelectOption, type NyxSelectOptionGroup } from '@/types'
 import './NyxSelect.scss'
 import type { NyxSelectProps } from './NyxSelect.types'
-import { useTeleportPosition, useNyxProps } from '@/composables'
+import { useTeleportPosition, useNyxProps, useSelectKeyboardControls } from '@/composables'
 
 const props = withDefaults(defineProps<NyxSelectProps>(), {
   type: NyxSelectType.Single
@@ -11,16 +11,16 @@ const props = withDefaults(defineProps<NyxSelectProps>(), {
 
 const isMultiple = computed(() => props.type === NyxSelectType.Multiple)
 
-const modelValue = defineModel<string | string[]>()
-const model = computed({
-  get: () => modelValue.value ?? (isMultiple.value ? [] : ''),
-  set: (value) => {
-    modelValue.value = value
-  }
+const model = defineModel<string | string[]>()
+
+const normalisedModel = computed({
+  get: () => model.value ?? (isMultiple.value ? [] : ''),
+  set: (value) => { model.value = value }
 })
 
 const elInput = useTemplateRef<HTMLInputElement>('elInput')
 const searchQuery = ref('')
+const focusedValue = ref<string | null>(null)
 
 const elControl = useTemplateRef<HTMLDivElement>('elControl')
 const elDropdown = useTemplateRef<HTMLDivElement>('elDropdown')
@@ -44,10 +44,10 @@ const flatOptions = computed((): NyxSelectOption[] => {
 
 const selectedLabels = computed(() => {
   if (!isMultiple.value) {
-    const option = flatOptions.value.find((opt) => opt.value === model.value)
+    const option = flatOptions.value.find((opt) => opt.value === normalisedModel.value)
     return option?.label ?? ''
   }
-  return (model.value as string[])
+  return (normalisedModel.value as string[])
     .map((value) => flatOptions.value.find((opt) => opt.value === value)?.label ?? '')
     .join(', ')
 })
@@ -68,6 +68,13 @@ const filteredOptions = computed(() => {
   )
 })
 
+const flatFilteredOptions = computed((): NyxSelectOption[] => {
+  if (isGrouped.value) {
+    return (filteredOptions.value as NyxSelectOptionGroup[]).flatMap((group) => group.options)
+  }
+  return filteredOptions.value as NyxSelectOption[]
+})
+
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value
 }
@@ -76,19 +83,19 @@ const closeDropdown = () => {
   isOpen.value = false
 }
 
-const onSelectOption = ({ value, label }: NyxSelectOption) => {
+const onSelectOption = ({ value }: NyxSelectOption) => {
   if (isMultiple.value) {
-    const values = model.value as string[]
+    const values = normalisedModel.value as string[]
     const index = values.indexOf(value)
     if (index === -1) {
-      model.value = [...values, value]
+      normalisedModel.value = [...values, value]
     } else {
-      model.value = values.filter((v) => v !== value)
+      normalisedModel.value = values.filter((v) => v !== value)
     }
     searchQuery.value = ''
   } else {
-    model.value = value
-    searchQuery.value = label
+    normalisedModel.value = value
+    searchQuery.value = ''
     isOpen.value = false
   }
 }
@@ -104,14 +111,50 @@ const onControlClick = () => {
 
 const isSelected = (value: string): boolean => {
   if (isMultiple.value) {
-    return (model.value as string[]).includes(value)
+    return (normalisedModel.value as string[]).includes(value)
   }
-  return value === model.value
+  return value === normalisedModel.value
 }
 
+const isOptionDisabled = (option: NyxSelectOption): boolean => {
+  return !!option.disabled
+}
+
+const getOptionId = (value: string): string => {
+  return `${dropdownId}-option-${value}`
+}
+
+const scrollToFocusedOption = (value: string) => {
+  nextTick(() => {
+    const el = elDropdown.value?.querySelector(`[data-option-value="${value}"]`) as HTMLElement | null
+    if (el?.scrollIntoView) {
+      el.scrollIntoView({ block: 'nearest' })
+    }
+  })
+}
+
+const { onInputKeydown } = useSelectKeyboardControls({
+  options: flatFilteredOptions,
+  focusedValue,
+  isOpen,
+  onSelect: onSelectOption,
+  isOptionDisabled,
+  scrollToOption: scrollToFocusedOption
+})
+
 watch(isOpen, (newVal) => {
-  if (!newVal) setSearchQuery()
-  else setSearchQuery('')
+  if (!newVal) {
+    setSearchQuery()
+    focusedValue.value = null
+  } else {
+    setSearchQuery('')
+    const selectedValue = isMultiple.value 
+      ? ((normalisedModel.value as string[])[0] ?? '')
+      : (normalisedModel.value as string)
+    if (selectedValue) {
+      focusedValue.value = selectedValue
+    }
+  }
 })
 </script>
 
@@ -142,6 +185,8 @@ watch(isOpen, (newVal) => {
         aria-haspopup="listbox"
         aria-autocomplete="list"
         :aria-controls="dropdownId"
+        :aria-activedescendant="focusedValue ? getOptionId(focusedValue) : undefined"
+        @keydown="onInputKeydown"
       />
       <span class="nyx-select__arrow" @click="toggleDropdown">▼</span>
     </div>
@@ -169,9 +214,12 @@ watch(isOpen, (newVal) => {
                 class="nyx-select__option nyx-select__option--group"
                 :class="{
                   'nyx-select__option--selected': isSelected(option.value),
+                  'nyx-select__option--focused': focusedValue === option.value,
                   'nyx-select__option--disabled': !!option.disabled
                 }"
                 role="option"
+                :id="getOptionId(option.value)"
+                :data-option-value="option.value"
                 :aria-selected="isSelected(option.value)"
                 :aria-disabled="!!option.disabled || undefined"
                 @click="onSelectOption(option)"
@@ -190,9 +238,12 @@ watch(isOpen, (newVal) => {
               class="nyx-select__option"
               :class="{
                 'nyx-select__option--selected': isSelected(option.value),
+                'nyx-select__option--focused': focusedValue === option.value,
                 'nyx-select__option--disabled': !!option.disabled
               }"
               role="option"
+              :id="getOptionId(option.value)"
+              :data-option-value="option.value"
               :aria-selected="isSelected(option.value)"
               :aria-disabled="!!option.disabled || undefined"
               @click="onSelectOption(option)"
@@ -207,7 +258,7 @@ watch(isOpen, (newVal) => {
       </div>
     </Teleport>
 
-    <select v-model="model" class="sr-only" :id="props.id" :multiple="isMultiple">
+    <select v-model="normalisedModel" class="sr-only" :id="props.id" :multiple="isMultiple" tabindex="-1">
       <template v-if="isGrouped">
         <optgroup v-for="group in (props.options as NyxSelectOptionGroup[])" :key="group.label" :label="group.label">
           <option v-for="option in group.options" :value="option.value" :key="option.value">{{ option.label }}</option>
