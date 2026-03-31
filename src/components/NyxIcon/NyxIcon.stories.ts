@@ -2,7 +2,7 @@ import { defineComponent } from 'vue'
 import NyxIcon from './NyxIcon.vue'
 import { NyxTheme, NyxSize } from '@/types'
 
-const ICONS = ['arrow-right', 'check-circle', 'x-circle', 'alert-circle', 'star', 'heart', 'user', 'settings', 'home', 'search']
+const ICONS = ['arrow-right', 'arrow-left', 'chevron-down', 'chevron-up', 'menu', 'x', 'plus', 'minus', 'edit', 'trash']
 
 export default {
   title: 'Components/NyxIcon',
@@ -96,39 +96,13 @@ export const WithTheme = () => ({
 export const Sizes = () => ({
   components: { NyxIcon },
   setup() {
-    return { NyxSize }
+    return { NyxSize, ICONS }
   },
   template: `
     <div>
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-        <span style="min-width:60px">XS:</span>
-        <nyx-icon name="arrow-right" :size="NyxSize.XSmall" />
-        <nyx-icon name="check-circle" :size="NyxSize.XSmall" />
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-        <span style="min-width:60px">SM:</span>
-        <nyx-icon name="arrow-right" :size="NyxSize.Small" />
-        <nyx-icon name="check-circle" :size="NyxSize.Small" />
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-        <span style="min-width:60px">MD:</span>
-        <nyx-icon name="arrow-right" :size="NyxSize.Medium" />
-        <nyx-icon name="check-circle" :size="NyxSize.Medium" />
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-        <span style="min-width:60px">LG:</span>
-        <nyx-icon name="arrow-right" :size="NyxSize.Large" />
-        <nyx-icon name="check-circle" :size="NyxSize.Large" />
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-        <span style="min-width:60px">XL:</span>
-        <nyx-icon name="arrow-right" :size="NyxSize.XLarge" />
-        <nyx-icon name="check-circle" :size="NyxSize.XLarge" />
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-        <span style="min-width:60px">2XL:</span>
-        <nyx-icon name="arrow-right" :size="NyxSize.XXLarge" />
-        <nyx-icon name="check-circle" :size="NyxSize.XXLarge" />
+      <div v-for="size in Object.values(NyxSize)" :key="size" style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <span style="min-width:60px">{{ size }}:</span>
+        <nyx-icon v-for="icon in ICONS" :key="icon" :name="icon" :size="size" />
       </div>
     </div>
   `
@@ -136,17 +110,15 @@ export const Sizes = () => ({
 
 export const CustomSizes = () => ({
   components: { NyxIcon },
+  setup() {
+    const sizes = [10, 20, 32, 48, 64]
+    return { sizes, ICONS }
+  },
   template: `
     <div>
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-        <span style="min-width:60px">10px:</span>
-        <nyx-icon name="arrow-right" :size="10" />
-        <nyx-icon name="check-circle" :size="10" />
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-        <span style="min-width:60px">48px:</span>
-        <nyx-icon name="arrow-right" :size="48" />
-        <nyx-icon name="check-circle" :size="48" />
+      <div v-for="size in sizes" :key="size" style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <span style="min-width:60px">{{ size }}px:</span>
+        <nyx-icon v-for="icon in ICONS" :key="icon" :name="icon" :size="size" />
       </div>
     </div>
   `
