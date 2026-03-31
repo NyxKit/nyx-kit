@@ -2,9 +2,7 @@
   <component
     :is="resolvedIcon"
     class="nyx-icon"
-    :class="classList"
-    :style="iconStyles"
-    :size="iconSize"
+    v-bind="lucideArgs"
   />
 </template>
 
@@ -12,84 +10,73 @@
 import { computed } from 'vue'
 import * as LucideIcons from 'lucide-vue-next'
 import { type NyxIconProps } from './NyxIcon.types'
-import { NyxIconVariant, NyxTheme, NyxSize } from '@/types'
+import { NyxTheme, NyxSize } from '@/types'
+import { toPascalCase } from '@/utils/string'
 
 const props = withDefaults(defineProps<NyxIconProps>(), {
-  name: '',
-  variant: NyxIconVariant.Line
+  name: ''
 })
 
-const SIZE_MAP: Record<NyxSize, number> = {
-  [NyxSize.XSmall]: 16,
-  [NyxSize.Small]: 20,
-  [NyxSize.Medium]: 24,
-  [NyxSize.Large]: 32,
-  [NyxSize.XLarge]: 40,
-  [NyxSize.XXLarge]: 48
+const SIZE_REM_MAP: Record<NyxSize, number> = {
+  [NyxSize.XSmall]: 12,
+  [NyxSize.Small]: 16,
+  [NyxSize.Medium]: 20,
+  [NyxSize.Large]: 24,
+  [NyxSize.XLarge]: 32,
+  [NyxSize.XXLarge]: 48,
 }
 
-const DEFAULT_SIZE = 24
+const STROKE_REM_MAP: Record<NyxSize, number> = {
+  [NyxSize.XSmall]: 0.5,
+  [NyxSize.Small]: 0.75,
+  [NyxSize.Medium]: 1,
+  [NyxSize.Large]: 1.25,
+  [NyxSize.XLarge]: 1.5,
+  [NyxSize.XXLarge]: 2,
+}
 
-function toPascalCase(str: string): string {
-  return str.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join('')
+const THEME_COLOR_MAP: Record<NyxTheme, string> = {
+  [NyxTheme.Primary]: 'var(--nyx-c-primary)',
+  [NyxTheme.Secondary]: 'var(--nyx-c-secondary)',
+  [NyxTheme.Success]: 'var(--nyx-c-success)',
+  [NyxTheme.Warning]: 'var(--nyx-c-warning)',
+  [NyxTheme.Danger]: 'var(--nyx-c-danger)',
+  [NyxTheme.Info]: 'var(--nyx-c-info)',
 }
 
 const FALLBACK_ICON = 'HelpCircle'
 
 const resolvedIcon = computed(() => {
-  if (!props.name) return (LucideIcons as Record<string, unknown>)[FALLBACK_ICON] as unknown as { name: string }
-  const baseName = toPascalCase(props.name)
-  let iconName = baseName
-  if (props.variant === NyxIconVariant.Filled) {
-    iconName = `${baseName}Filled`
-    const filledIcon = (LucideIcons as Record<string, unknown>)[iconName] as unknown as { name: string } | undefined
-    if (!filledIcon) {
-      iconName = baseName
-    }
-  }
-  const icon = (LucideIcons as Record<string, unknown>)[iconName] as unknown as { name: string } | undefined
+  const normalisedName = props.name ?? FALLBACK_ICON
+  const baseName = toPascalCase(normalisedName)
+  const icon = (LucideIcons as Record<string, unknown>)[baseName] as unknown as { name: string } | undefined
   return icon ?? (LucideIcons as Record<string, unknown>)[FALLBACK_ICON] as unknown as { name: string }
 })
 
-const iconSize = computed(() => {
-  if (typeof props.size === 'number') {
-    return props.size
-  }
-  if (typeof props.size === 'string') {
-    const parsed = parseInt(props.size, 10)
-    if (!Number.isNaN(parsed)) {
-      return parsed
-    }
-  }
-  if (props.size) {
-    return SIZE_MAP[props.size]
-  }
-  return DEFAULT_SIZE
+const lucideArgs = computed(() => {
+  const args: Record<string, unknown> = {}
+
+  const size = getSize(props.size, SIZE_REM_MAP)
+  if (size) args.size = size
+
+  const strokeWidth = getSize(props.stroke, STROKE_REM_MAP)
+  if (strokeWidth) args.strokeWidth = strokeWidth
+
+  const color = getColor(props.theme, props.color)
+  if (color) args.color = color
+
+  return args
 })
 
-const iconStyles = computed(() => {
-  const styles: Record<string, string> = {}
-  
-  if (props.theme) {
-    styles.color = `rgb(var(--nyx-rgb-${props.theme}))`
-  } else {
-    styles.color = 'var(--nyx-text)'
-  }
-  
-  return styles
-})
-
-const classList = computed(() => {
-  const list = ['nyx-icon']
-  if (props.variant) list.push(`variant-${props.variant}`)
-  return list
-})
-</script>
-
-<style scoped>
-.nyx-icon {
-  display: inline-block;
-  vertical-align: middle;
-  flex-shrink: 0;
+function getColor (theme: NyxTheme | undefined, color: string | undefined): string | undefined {
+  if (theme) return THEME_COLOR_MAP[theme]
+  if (color) return color
+  return undefined
 }
-</style>
+
+function getSize (size: NyxSize | number | undefined, map: Record<NyxSize, number>): number | undefined {
+  if (size === undefined) return undefined
+  if (typeof size === 'number') return size
+  return map[size]
+}
+</script>

@@ -1,4 +1,3 @@
-import { defineComponent } from 'vue'
 import NyxIcon from './NyxIcon.vue'
 import { NyxTheme, NyxSize } from '@/types'
 
@@ -13,10 +12,6 @@ export default {
       control: { type: 'select' },
       options: ICONS
     },
-    variant: {
-      control: { type: 'select' },
-      options: ['line', 'filled']
-    },
     theme: {
       control: { type: 'select' },
       options: Object.values(NyxTheme)
@@ -29,7 +24,7 @@ export default {
   parameters: {
     docs: {
       description: {
-        component: 'A wrapper component for Lucide Vue icons. Supports string-based icon names, variant switching (line/filled), optional theme coloring, and size control.\n\n[View all Lucide icons](https://lucide.dev/icons/)'
+        component: 'A wrapper component for Lucide Vue icons. Supports string-based icon names, optional theme coloring, and size control.\n\n[View all Lucide icons](https://lucide.dev/icons/)'
       }
     }
   }
@@ -43,29 +38,9 @@ export const Default = (args: Record<string, unknown>) => ({
   template: `<nyx-icon v-bind="args" />`
 })
 
-export const Variants = () => ({
-  components: { NyxIcon },
-  template: `
-    <div>
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-        <span style="min-width:60px">Line:</span>
-        <nyx-icon name="arrow-right" variant="line" />
-        <nyx-icon name="check-circle" variant="line" />
-        <nyx-icon name="x-circle" variant="line" />
-        <nyx-icon name="alert-circle" variant="line" />
-        <nyx-icon name="star" variant="line" />
-      </div>
-      <div style="display:flex;align-items:center;gap:8px">
-        <span style="min-width:60px">Filled:</span>
-        <nyx-icon name="arrow-right" variant="filled" />
-        <nyx-icon name="check-circle" variant="filled" />
-        <nyx-icon name="x-circle" variant="filled" />
-        <nyx-icon name="alert-circle" variant="filled" />
-        <nyx-icon name="star" variant="filled" />
-      </div>
-    </div>
-  `
-})
+Default.args = {
+  name: 'arrow-right'
+}
 
 export const WithTheme = () => ({
   components: { NyxIcon },

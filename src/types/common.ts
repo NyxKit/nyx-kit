@@ -84,7 +84,3 @@ export enum NyxGridMode {
   Masonry = 'masonry',
 }
 
-export enum NyxIconVariant {
-  Line = 'line',
-  Filled = 'filled',
-}
