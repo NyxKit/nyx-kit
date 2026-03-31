@@ -3,7 +3,7 @@ import { ref, computed, useId, useTemplateRef, watch, nextTick } from 'vue'
 import { NyxSelectType, type NyxSelectOption, type NyxSelectOptionGroup } from '@/types'
 import './NyxSelect.scss'
 import type { NyxSelectProps } from './NyxSelect.types'
-import { useTeleportPosition, useNyxProps } from '@/composables'
+import { useTeleportPosition, useNyxProps, useSelectKeyboardControls } from '@/composables'
 
 const props = withDefaults(defineProps<NyxSelectProps>(), {
   type: NyxSelectType.Single
@@ -11,12 +11,11 @@ const props = withDefaults(defineProps<NyxSelectProps>(), {
 
 const isMultiple = computed(() => props.type === NyxSelectType.Multiple)
 
-const modelValue = defineModel<string | string[]>()
-const model = computed({
-  get: () => modelValue.value ?? (isMultiple.value ? [] : ''),
-  set: (value) => {
-    modelValue.value = value
-  }
+const model = defineModel<string | string[]>()
+
+const normalisedModel = computed({
+  get: () => model.value ?? (isMultiple.value ? [] : ''),
+  set: (value) => { model.value = value }
 })
 
 const elInput = useTemplateRef<HTMLInputElement>('elInput')
@@ -45,10 +44,10 @@ const flatOptions = computed((): NyxSelectOption[] => {
 
 const selectedLabels = computed(() => {
   if (!isMultiple.value) {
-    const option = flatOptions.value.find((opt) => opt.value === model.value)
+    const option = flatOptions.value.find((opt) => opt.value === normalisedModel.value)
     return option?.label ?? ''
   }
-  return (model.value as string[])
+  return (normalisedModel.value as string[])
     .map((value) => flatOptions.value.find((opt) => opt.value === value)?.label ?? '')
     .join(', ')
 })
@@ -84,19 +83,19 @@ const closeDropdown = () => {
   isOpen.value = false
 }
 
-const onSelectOption = ({ value, label }: NyxSelectOption) => {
+const onSelectOption = ({ value }: NyxSelectOption) => {
   if (isMultiple.value) {
-    const values = model.value as string[]
+    const values = normalisedModel.value as string[]
     const index = values.indexOf(value)
     if (index === -1) {
-      model.value = [...values, value]
+      normalisedModel.value = [...values, value]
     } else {
-      model.value = values.filter((v) => v !== value)
+      normalisedModel.value = values.filter((v) => v !== value)
     }
     searchQuery.value = ''
   } else {
-    model.value = value
-    searchQuery.value = label
+    normalisedModel.value = value
+    searchQuery.value = ''
     isOpen.value = false
   }
 }
@@ -112,9 +111,9 @@ const onControlClick = () => {
 
 const isSelected = (value: string): boolean => {
   if (isMultiple.value) {
-    return (model.value as string[]).includes(value)
+    return (normalisedModel.value as string[]).includes(value)
   }
-  return value === model.value
+  return value === normalisedModel.value
 }
 
 const isOptionDisabled = (option: NyxSelectOption): boolean => {
@@ -123,85 +122,6 @@ const isOptionDisabled = (option: NyxSelectOption): boolean => {
 
 const getOptionId = (value: string): string => {
   return `${dropdownId}-option-${value}`
-}
-
-const focusedIndex = computed(() => {
-  if (!focusedValue.value) return -1
-  return flatFilteredOptions.value.findIndex((opt) => opt.value === focusedValue.value)
-})
-
-const getNextEnabledIndex = (startIdx: number, direction: 1 | -1): number => {
-  const options = flatFilteredOptions.value
-  let idx = startIdx
-  for (let i = 0; i < options.length; i++) {
-    idx = (startIdx + direction * i + options.length) % options.length
-    if (!isOptionDisabled(options[idx])) {
-      return idx
-    }
-  }
-  return -1
-}
-
-const onInputKeydown = (e: KeyboardEvent) => {
-  const options = flatFilteredOptions.value
-  if (options.length === 0) return
-
-  const currentIdx = focusedIndex.value
-
-  switch (e.key) {
-    case 'ArrowDown': {
-      e.preventDefault()
-      isOpen.value = true
-      const startIdx = currentIdx < 0 ? 0 : currentIdx + 1
-      const nextIdx = getNextEnabledIndex(startIdx, 1)
-      if (nextIdx >= 0) {
-        focusedValue.value = options[nextIdx].value
-        scrollToFocusedOption(options[nextIdx].value)
-      }
-      break
-    }
-    case 'ArrowUp': {
-      e.preventDefault()
-      isOpen.value = true
-      const startIdx = currentIdx < 0 ? options.length - 1 : currentIdx - 1
-      const nextIdx = getNextEnabledIndex(startIdx, -1)
-      if (nextIdx >= 0) {
-        focusedValue.value = options[nextIdx].value
-        scrollToFocusedOption(options[nextIdx].value)
-      }
-      break
-    }
-    case 'Enter': {
-      if (focusedValue.value) {
-        e.preventDefault()
-        const option = options.find((opt) => opt.value === focusedValue.value)
-        if (option && !isOptionDisabled(option)) {
-          onSelectOption(option)
-        }
-      }
-      break
-    }
-    case 'Home': {
-      e.preventDefault()
-      isOpen.value = true
-      const firstIdx = getNextEnabledIndex(0, 1)
-      if (firstIdx >= 0) {
-        focusedValue.value = options[firstIdx].value
-        scrollToFocusedOption(options[firstIdx].value)
-      }
-      break
-    }
-    case 'End': {
-      e.preventDefault()
-      isOpen.value = true
-      const lastIdx = getNextEnabledIndex(options.length - 1, -1)
-      if (lastIdx >= 0) {
-        focusedValue.value = options[lastIdx].value
-        scrollToFocusedOption(options[lastIdx].value)
-      }
-      break
-    }
-  }
 }
 
 const scrollToFocusedOption = (value: string) => {
@@ -213,6 +133,15 @@ const scrollToFocusedOption = (value: string) => {
   })
 }
 
+const { onInputKeydown } = useSelectKeyboardControls({
+  options: flatFilteredOptions,
+  focusedValue,
+  isOpen,
+  onSelect: onSelectOption,
+  isOptionDisabled,
+  scrollToOption: scrollToFocusedOption
+})
+
 watch(isOpen, (newVal) => {
   if (!newVal) {
     setSearchQuery()
@@ -220,8 +149,8 @@ watch(isOpen, (newVal) => {
   } else {
     setSearchQuery('')
     const selectedValue = isMultiple.value 
-      ? ((model.value as string[])[0] ?? '')
-      : (model.value as string)
+      ? ((normalisedModel.value as string[])[0] ?? '')
+      : (normalisedModel.value as string)
     if (selectedValue) {
       focusedValue.value = selectedValue
     }
@@ -329,7 +258,7 @@ watch(isOpen, (newVal) => {
       </div>
     </Teleport>
 
-    <select v-model="model" class="sr-only" :id="props.id" :multiple="isMultiple" tabindex="-1">
+    <select v-model="normalisedModel" class="sr-only" :id="props.id" :multiple="isMultiple" tabindex="-1">
       <template v-if="isGrouped">
         <optgroup v-for="group in (props.options as NyxSelectOptionGroup[])" :key="group.label" :label="group.label">
           <option v-for="option in group.options" :value="option.value" :key="option.value">{{ option.label }}</option>

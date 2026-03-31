@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import './NyxEditor.scss'
-import { computed, ref, shallowRef, watch, nextTick, useSlots } from 'vue'
+import { computed, ref, shallowRef, watch, nextTick } from 'vue'
 import { useEditor, EditorContent, type Editor } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import UnderlineExtension from '@tiptap/extension-underline'
@@ -19,11 +19,9 @@ import {
   NyxEditorToolbar as NyxEditorToolbarMode,
   NyxTheme,
 } from '@/types'
-import { useNyxProps } from '@/composables'
+import { useNyxProps, useEditorAnnotations, useEditorMeta } from '@/composables'
 import NyxEditorBubbleMenu from './NyxEditorBubbleMenu/NyxEditorBubbleMenu.vue'
 import NyxEditorToolbar from './NyxEditorToolbar/NyxEditorToolbar.vue'
-import useEditorAnnotations from './useEditorAnnotations'
-import useEditorMeta from './useEditorMeta'
 import { ChevronRight, FileCode } from 'lucide-vue-next'
 
 const props = withDefaults(defineProps<NyxEditorProps>(), {

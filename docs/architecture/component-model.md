@@ -48,11 +48,24 @@ Never manually construct class lists from `theme`, `size`, `variant`, etc. — a
 
 ## v-model
 
+Always use `const model = defineModel<MyType>({ ...args })` — never `const modelValue = defineModel<MyType>()`.
+
+If you need to normalise the model value (e.g. handle differences between single and multiple modes), use a computed with get/set:
+
+```ts
+const model = defineModel<string | string[]>()
+
+const normalisedModel = computed({
+  get: () => model.value ?? (isMultiple.value ? [] : ''),
+  set: (value) => { model.value = value }
+})
+```
+
 | Pattern | Use when |
 |---|---|
 | `defineModel<T>()` | Single value (string, number, boolean) |
 | `defineModel<T[]>()` | Multi-select or array values |
-| `defineModel<boolean>('modelValue')` | Open/close state (modals, dropdowns) |
+| `defineModel<boolean>({ default: false })` | Open/close state (modals, dropdowns) |
 
 Prefer `defineModel` (Vue 3.4+) over manual `modelValue` prop + `update:modelValue` emit.
 
@@ -60,26 +73,30 @@ Prefer `defineModel` (Vue 3.4+) over manual `modelValue` prop + `update:modelVal
 
 When a component accepts an array or tree of objects (`T[]`) and must mutate a nested property (e.g. a `status` field inside a deeply nested object), `defineModel` alone does not emit `update:modelValue` when a **nested property** is mutated — only when the array itself is reassigned.
 
-**Rule**: Components that mutate nested properties in an array/tree model must reassign the model after mutating, to ensure `update:modelValue` fires:
+**Rule**: Components that mutate nested properties in an array/tree model must do all three:
+
+1. **Mutate the internal node** — components may mutate nodes directly for performance
+2. **Reassign the model** — return a new array reference to fire `update:modelValue`
+3. **Emit a semantic event** — e.g. `select` with the affected node for event-based consumers
 
 ```ts
-// WRONG: mutation without reassignment — update:modelValue does not fire
+// Pattern: mutate, reassign, emit
 function handleSelect(node: MyNode) {
-  node.status = NodeStatus.Active  // defineModel sees no change
-}
+  // 1. mutate internal node (optional)
+  node.status = NodeStatus.Active
 
-// CORRECT: mutate then reassign to trigger update:modelValue
-function handleSelect(node: MyNode) {
+  // 2. reassign to fire update:modelValue
   const updated = updateNodeInTree(model.value, node.id, target => {
     target.status = NodeStatus.Active
   })
-  model.value = updated  // reassignment fires update:modelValue
+  model.value = updated
+
+  // 3. emit semantic event
+  emit('select', node)
 }
 ```
 
 Use a recursive `updateNodeInTree` helper that traverses the structure, applies the mutation, and returns a new shallow-copy of the affected nodes and their ancestors to preserve reactivity.
-
-Also emit a semantic event (e.g. `select`) with the affected node so consumers can react to the specific interaction beyond the model update.
 
 ## Emits
 
