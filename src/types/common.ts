@@ -22,7 +22,8 @@ export enum NyxSize {
   Small = 'sm',
   Medium = 'md',
   Large = 'lg',
-  XLarge = 'xl'
+  XLarge = 'xl',
+  XXLarge = '2xl'
 }
 
 export enum NyxVariant {
@@ -82,3 +83,4 @@ export enum NyxGridMode {
   Grid = 'grid',
   Masonry = 'masonry',
 }
+

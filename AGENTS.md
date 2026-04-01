@@ -1,5 +1,12 @@
 # AGENTS.md — Working Guide for AI Agents
 
+## Git Workflow
+
+- **Never auto-commit or auto-push** — only commit and push when explicitly prompted by the user.
+- When changes are complete, describe what was done and ask if the user wants to push.
+
+---
+
 ## The Docs Are the Source of Truth
 
 The `docs/` folder is the **authoritative specification** for this project. It is a living document.
