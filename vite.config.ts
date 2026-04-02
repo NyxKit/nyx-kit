@@ -43,7 +43,7 @@ export default defineConfig({
           globals: { vue: 'vue' }
         }
       ],
-      external: ['vue'], // Ensure Vue is externalized
+      external: ['vue', 'vue-router'], // Ensure Vue and Vue Router are externalized
       treeshake: {
         moduleSideEffects: 'no-external',
       }
