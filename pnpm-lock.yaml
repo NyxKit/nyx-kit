@@ -157,6 +157,9 @@ importers:
       vitest:
         specifier: ^3.0.5
         version: 3.2.4(@types/node@22.19.15)(jiti@2.6.1)(jsdom@26.1.0)(lightningcss@1.32.0)(sass@1.98.0)
+      vue-router:
+        specifier: ^4.6.4
+        version: 4.6.4(vue@3.5.30(typescript@5.7.3))
       vue-tsc:
         specifier: ^2.2.0
         version: 2.2.12(typescript@5.7.3)
@@ -1911,6 +1914,9 @@ packages:
 
   '@vue/compiler-vue2@2.7.16':
     resolution: {integrity: sha512-qYC3Psj9S/mfu9uVi5WvNZIzq+xnXMhOwbTFKKDD7b1lhpnn71jXSFdTQ+WsIEk0ONCd7VV2IMm7ONl6tbQ86A==}
+
+  '@vue/devtools-api@6.6.4':
+    resolution: {integrity: sha512-sGhTPMuXqZ1rVOk32RylztWkfXTRhuS7vgAKv0zjqk8gbsHkJ7xfFf+jbySxt7tWObEJwyKaHMikV/WGDiQm8g==}
 
   '@vue/devtools-core@8.1.0':
     resolution: {integrity: sha512-LvD1VgDpoHmYL00IgKRLKktF6SsPAb0yaV8wB8q2jRwsAWvqhS8+vsMLEGKNs7uoKyymXhT92dhxgf/wir6YGQ==}
@@ -4007,6 +4013,11 @@ packages:
     peerDependencies:
       vue: '>=2'
 
+  vue-router@4.6.4:
+    resolution: {integrity: sha512-Hz9q5sa33Yhduglwz6g9skT8OBPii+4bFn88w6J+J4MfEo4KRRpmiNG/hHHkdbRFlLBOqxN8y8gf2Fb0MTUgVg==}
+    peerDependencies:
+      vue: ^3.5.0
+
   vue-tsc@2.2.12:
     resolution: {integrity: sha512-P7OP77b2h/Pmk+lZdJ0YWs+5tJ6J2+uOQPo7tlBnY44QqQSPYvS0qVT4wqDJgwrZaLe47etJLLQRFia71GYITw==}
     hasBin: true
@@ -6084,6 +6095,8 @@ snapshots:
     dependencies:
       de-indent: 1.0.2
       he: 1.2.0
+
+  '@vue/devtools-api@6.6.4': {}
 
   '@vue/devtools-core@8.1.0(vue@3.5.30(typescript@5.7.3))':
     dependencies:
@@ -8270,6 +8283,11 @@ snapshots:
 
   vue-inbrowser-compiler-independent-utils@4.71.1(vue@3.5.30(typescript@5.7.3)):
     dependencies:
+      vue: 3.5.30(typescript@5.7.3)
+
+  vue-router@4.6.4(vue@3.5.30(typescript@5.7.3)):
+    dependencies:
+      '@vue/devtools-api': 6.6.4
       vue: 3.5.30(typescript@5.7.3)
 
   vue-tsc@2.2.12(typescript@5.7.3):

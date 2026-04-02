@@ -174,6 +174,7 @@ Both attach on `onMounted` and clean up on `onUnmounted`. Do not add `window.add
 ## Accessible Markup
 
 - Interactive elements must use semantic HTML (`<button>`, `<input>`, `<select>`, `<a>`).
+- Components may type against peer dependencies when the integration is an explicit part of the public API. When they do, the dependency expectation must be documented in the component living spec and package contract.
 - Sliders and range inputs must include `aria-valuenow`, `aria-valuemin`, `aria-valuemax`.
 - Disabled states must set both the CSS class and the native `disabled` / `aria-disabled` attribute.
 - Buttons that render as `<a>` (when `href` is provided) must open in `_blank` for external URLs; `isCurrentDomain` from `src/utils/url.ts` makes this determination.
