@@ -22,6 +22,7 @@ NyxSelect is a custom select control that replaces the native `<select>` element
 - `isGrouped` detects at runtime whether `options` is `NyxSelectOption[]` or `NyxSelectOptionGroup[]` by checking for an `options` key on the first element
 - `flatOptions` flattens grouped options for value-to-label lookups (used in `selectedLabels` and `isSelected`)
 - `filteredOptions` returns the same shape as the input (`NyxSelectOption[]` or `NyxSelectOptionGroup[]`), filtering by `searchQuery` and pruning empty groups
+- The externally bound `v-model` value remains the source of truth for both the closed-control text and the selected option state shown in the dropdown
 - Group labels are rendered as non-interactive `<li class="nyx-select__group-label">` — they cannot be selected and have `pointer-events: none`
 - `v-click-outside` directive closes the dropdown when clicking outside
 - `useTeleportPosition` determines whether the dropdown opens below (`bottom`) or above (`top`) the control
@@ -53,6 +54,11 @@ None — selection is communicated exclusively through `v-model`.
 ## v-model
 
 Binds to `string` (single mode) or `string[]` (multiple mode). The value corresponds to `NyxSelectOption.value`.
+
+When the bound value changes externally after mount, `NyxSelect` must immediately update:
+- the text shown in the closed control
+- the selected option state shown in the dropdown
+- the unselected display state when the bound value is cleared
 
 ## Types
 

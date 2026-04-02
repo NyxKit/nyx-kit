@@ -196,6 +196,118 @@ describe('NyxSelect', () => {
     expect(optionEls[0].getAttribute('aria-selected')).toBe('false')
   })
 
+  it('updates the displayed label when the single-select model changes externally', async () => {
+    wrapper = mount(NyxSelect, {
+      attachTo: document.body,
+      props: { options: sampleOptions, modelValue: 'a' },
+      global: globalConfig
+    })
+
+    expect((wrapper.find('input').element as HTMLInputElement).value).toBe('Option A')
+
+    await wrapper.setProps({ modelValue: 'c' })
+    await nextTick()
+
+    expect((wrapper.find('input').element as HTMLInputElement).value).toBe('Option C')
+  })
+
+  it('updates the selected option marker when the single-select model changes externally', async () => {
+    wrapper = mount(NyxSelect, {
+      attachTo: document.body,
+      props: { options: sampleOptions, modelValue: 'a' },
+      global: globalConfig
+    })
+
+    await wrapper.setProps({ modelValue: 'c' })
+    await wrapper.find('.nyx-select__control').trigger('click')
+    await nextTick()
+
+    const options = document.body.querySelectorAll('.nyx-select__option')
+    expect(options[2].classList.contains('nyx-select__option--selected')).toBe(true)
+    expect(options[0].classList.contains('nyx-select__option--selected')).toBe(false)
+  })
+
+  it('updates displayed labels when the multi-select model changes externally', async () => {
+    wrapper = mount(NyxSelect, {
+      attachTo: document.body,
+      props: { options: sampleOptions, modelValue: ['a'], type: NyxSelectType.Multiple },
+      global: globalConfig
+    })
+
+    expect((wrapper.find('input').element as HTMLInputElement).value).toBe('Option A')
+
+    await wrapper.setProps({ modelValue: ['b', 'c'] })
+    await nextTick()
+
+    expect((wrapper.find('input').element as HTMLInputElement).value).toBe('Option B, Option C')
+  })
+
+  it('updates selected markers when the multi-select model changes externally', async () => {
+    wrapper = mount(NyxSelect, {
+      attachTo: document.body,
+      props: { options: sampleOptions, modelValue: ['a'], type: NyxSelectType.Multiple },
+      global: globalConfig
+    })
+
+    await wrapper.setProps({ modelValue: ['b', 'c'] })
+    await wrapper.find('.nyx-select__control').trigger('click')
+    await nextTick()
+
+    const options = document.body.querySelectorAll('.nyx-select__option')
+    expect(options[0].classList.contains('nyx-select__option--selected')).toBe(false)
+    expect(options[1].classList.contains('nyx-select__option--selected')).toBe(true)
+    expect(options[2].classList.contains('nyx-select__option--selected')).toBe(true)
+  })
+
+  it('clears stale displayed labels when the external value is invalid or cleared', async () => {
+    wrapper = mount(NyxSelect, {
+      attachTo: document.body,
+      props: { options: sampleOptions, modelValue: 'b' },
+      global: globalConfig
+    })
+
+    await wrapper.setProps({ modelValue: 'missing' })
+    await nextTick()
+    expect((wrapper.find('input').element as HTMLInputElement).value).toBe('')
+
+    await wrapper.setProps({ modelValue: '' })
+    await nextTick()
+    expect((wrapper.find('input').element as HTMLInputElement).value).toBe('')
+  })
+
+  it('updates grouped-option selection when the external value changes', async () => {
+    const groupedOptions = [
+      {
+        label: 'Group 1',
+        options: [
+          { label: 'Option A', value: 'a' },
+          { label: 'Option B', value: 'b' },
+        ]
+      },
+      {
+        label: 'Group 2',
+        options: [
+          { label: 'Option C', value: 'c' },
+        ]
+      }
+    ]
+
+    wrapper = mount(NyxSelect, {
+      attachTo: document.body,
+      props: { options: groupedOptions, modelValue: 'a' },
+      global: globalConfig
+    })
+
+    await wrapper.setProps({ modelValue: 'c' })
+    await nextTick()
+    expect((wrapper.find('input').element as HTMLInputElement).value).toBe('Option C')
+
+    await wrapper.find('.nyx-select__control').trigger('click')
+    await nextTick()
+    const options = document.body.querySelectorAll('.nyx-select__option')
+    expect(options[2].classList.contains('nyx-select__option--selected')).toBe(true)
+  })
+
   describe('keyboard navigation', () => {
     const optionsWithDisabled = [
       { label: 'Option A', value: 'a' },
