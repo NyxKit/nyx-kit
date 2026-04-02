@@ -3,6 +3,7 @@
   --nyx-c-breadcrumbs-separator: var(--nyx-c-default);
   --nyx-font-size-breadcrumbs: var(--nyx-font-size-md);
   --nyx-pad-breadcrumbs: var(--nyx-pad-md);
+  --nyx-gap-breadcrumbs: var(--nyx-gap-md);
 
   color: var(--nyx-c-breadcrumbs-text);
   font-size: var(--nyx-font-size-breadcrumbs);
@@ -16,19 +17,38 @@
     fill: var(--nyx-c-breadcrumbs-separator);
     user-select: none;
     opacity: 0.5;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-inline: calc(var(--nyx-pad-breadcrumbs) * 0.25);
   }
 
-  a {
+  &__item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--nyx-gap-breadcrumbs);
     padding: calc(var(--nyx-pad-breadcrumbs) * 0.5) var(--nyx-pad-breadcrumbs);
     transition: opacity 0.2s;
+    color: inherit;
+    text-decoration: none;
+  }
 
-    &:not([href]) {
-      pointer-events: none;
-    }
+  &__item-content {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--nyx-gap-breadcrumbs);
+  }
 
-    &:hover {
-      opacity: 0.8;
-    }
+  &__icon {
+    color: inherit;
+  }
+
+  &__item--link:hover {
+    opacity: 0.8;
+  }
+
+  &__item--static {
+    cursor: default;
   }
 
   &.variant-filled {

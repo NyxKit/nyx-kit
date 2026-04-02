@@ -1,3 +1,5 @@
+import type { RouteLocationRaw } from 'vue-router'
+
 export type KeyDict<T> = { [key: string]: T }
 
 export interface NyxComponentProps {
@@ -49,6 +51,8 @@ export enum NyxMediaType {
 
 export interface NyxBreadcrumb {
   label: string,
+  icon?: string,
+  route?: RouteLocationRaw,
   href?: string
 }
 
@@ -83,4 +87,3 @@ export enum NyxGridMode {
   Grid = 'grid',
   Masonry = 'masonry',
 }
-
