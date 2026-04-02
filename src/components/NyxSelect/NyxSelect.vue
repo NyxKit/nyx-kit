@@ -156,6 +156,12 @@ watch(isOpen, (newVal) => {
     }
   }
 })
+
+watch([normalisedModel, flatOptions], () => {
+  if (!isOpen.value) {
+    setSearchQuery()
+  }
+}, { immediate: true })
 </script>
 
 <template>

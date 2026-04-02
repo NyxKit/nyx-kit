@@ -1,4 +1,4 @@
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import NyxSelect from './NyxSelect.vue'
 import { NyxTheme, NyxVariant, NyxSize, NyxSelectType, type KeyDict } from '@/types'
 import type { NyxSelectProps } from './NyxSelect.types'
@@ -94,6 +94,29 @@ export const WithGroups = () => defineComponent({
     return { options: groupedOptions }
   },
   template: `<nyx-select :options="options" placeholder="NyxSelect" />`,
+})
+export const ExternalModelSync = () => defineComponent({
+  components: { NyxSelect },
+  setup () {
+    const modelValue = ref<string>(NyxTheme.Primary)
+    const cycleValue = () => {
+      modelValue.value = modelValue.value === NyxTheme.Primary ? NyxTheme.Danger : NyxTheme.Primary
+    }
+    const clearValue = () => {
+      modelValue.value = ''
+    }
+    return { modelValue, options, cycleValue, clearValue }
+  },
+  template: `
+    <div style="display:grid;gap:1rem;max-width:24rem;">
+      <div style="display:flex;gap:0.5rem;">
+        <button type="button" @click="cycleValue">Toggle value</button>
+        <button type="button" @click="clearValue">Clear</button>
+      </div>
+      <nyx-select v-model="modelValue" :options="options" placeholder="NyxSelect" />
+      <p>External value: {{ modelValue }}</p>
+    </div>
+  `,
 })
 export const Types = TemplateAll('type', NyxSelectType)
 export const Themes = TemplateAll('theme', NyxTheme)
