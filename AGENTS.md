@@ -1,5 +1,11 @@
 # AGENTS.md — Working Guide for AI Agents
 
+## Design System
+
+See [`DESIGN.md`](DESIGN.md) for the full style guide: colour palette, semantic tokens, typography, spacing, shadows, animation, and pixel-style variables. Read it before touching any style-related code.
+
+---
+
 ## Git Workflow
 
 - **Never auto-commit or auto-push** — only commit and push when explicitly prompted by the user.
