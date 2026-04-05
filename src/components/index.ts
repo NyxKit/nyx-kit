@@ -24,6 +24,7 @@ import NyxTabs from './NyxTabs/NyxTabs.vue'
 import NyxTextarea from './NyxTextarea/NyxTextarea.vue'
 import NyxTooltip from './NyxTooltip/NyxTooltip.vue'
 import NyxTree from './NyxTree/index'
+import NyxActionItem from './NyxActionItem/NyxActionItem.vue'
 
 export {
   NyxEditor,
@@ -51,5 +52,6 @@ export {
   NyxTabs,
   NyxTextarea,
   NyxTooltip,
-  NyxTree
+  NyxTree,
+  NyxActionItem
 }

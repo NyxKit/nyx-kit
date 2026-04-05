@@ -127,13 +127,88 @@
     --nyx-rgb-table: var(--nyx-rgb-danger);
   }
 
+  &.variant-filled {
+    --nyx-c-table-header: var(--nyx-c-table);
+  }
+
+  &.variant-soft {
+    border-color: rgba(var(--nyx-rgb-table), 0.3);
+    th {
+      background-color: rgba(var(--nyx-rgb-table), 0.08);
+    }
+    td {
+      background-color: transparent;
+      border-bottom-color: rgba(var(--nyx-rgb-table), 0.2);
+    }
+    tr:hover td {
+      background-color: rgba(var(--nyx-rgb-table), 0.08);
+    }
+    &__actions > span {
+      opacity: 1;
+    }
+  }
+
+  &.variant-subtle {
+    th {
+      background-color: rgba(var(--nyx-rgb-table), 0.08);
+    }
+    border-color: rgba(var(--nyx-rgb-table), 0.3);
+    td {
+      background-color: transparent;
+      border-bottom-color: rgba(var(--nyx-rgb-table), 0.2);
+    }
+    tr:hover td {
+      background-color: rgba(var(--nyx-rgb-table), 0.08);
+    }
+  }
+
   &.variant-outline {
+    --nyx-c-table: var(--nyx-c-text-2);
+    --nyx-rgb-table: var(--nyx-rgb-default);
+    background-color: transparent;
+    th {
+      background-color: transparent;
+      border-bottom: 1px solid var(--nyx-c-table);
+    }
+    td {
+      background-color: transparent;
+      border-bottom-color: rgba(var(--nyx-rgb-table), 0.3);
+    }
+    tr:hover td {
+      background-color: rgba(var(--nyx-rgb-table), 0.05);
+    }
   }
 
   &.variant-ghost {
+    border-color: transparent;
+    th {
+      background-color: transparent;
+      border-bottom: 1px solid rgba(var(--nyx-rgb-table), 0.2);
+    }
+    td {
+      background-color: transparent;
+      border-bottom-color: transparent;
+    }
+    tr:hover td {
+      background-color: rgba(var(--nyx-rgb-table), 0.08);
+    }
   }
 
   &.variant-text {
+    border: 0;
+    th {
+      background-color: transparent;
+      color: var(--nyx-c-table);
+      font-weight: 600;
+    }
+    td {
+      background-color: transparent;
+      border-bottom-color: transparent;
+      color: var(--nyx-c-text-2);
+    }
+    tr:hover td {
+      background-color: rgba(var(--nyx-rgb-table), 0.05);
+    }
   }
 
   &.size-xs {

@@ -392,4 +392,19 @@ html[data-nyx-mode="light"] {
 :root {
   --nyx-backlight-intensity: 0.75;
   --nyx-backlight-size: 1rem;
+
+  /**
+   * Z-index thresholds for layered components
+   * 
+   * Base layer (0): Normal content, model cells
+   * Overlay layer (1000): Teleported dropdowns, tooltips, popovers
+   * Overlay in Modal layer (2500): Teleported components inside a modal (auto-inherited via CSS var override)
+   * Modal layer (2000): High-priority overlays, modals themselves
+   * 
+   * Usage: var(--nyx-z-index-overlay)
+   */
+  --nyx-z-index-base: 0;
+  --nyx-z-index-overlay: 1000;
+  --nyx-z-index-overlay-in-modal: 2500;
+  --nyx-z-index-modal: 2000;
 }

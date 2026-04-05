@@ -152,7 +152,7 @@
     font-size: var(--nyx-font-size-select);
     max-height: 200px;
     overflow-y: auto;
-    z-index: 10;
+    z-index: var(--nyx-z-index-overlay);
     opacity: 0;
     transform: translate(0, -2rem);
     transition: opacity 0.2s, transform 0.2s;
