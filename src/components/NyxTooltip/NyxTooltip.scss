@@ -26,7 +26,7 @@
   background-color: var(--nyx-c-tooltip-bg);
   color: var(--nyx-c-tooltip-text);
   border-radius: var(--nyx-radius-tooltip);
-  z-index: 1;
+  z-index: var(--nyx-z-index-overlay);
   font-size: var(--nyx-font-size-tooltip);
   box-shadow: var(--nyx-shadow-md);
   user-select: none;

@@ -439,7 +439,7 @@
   position: fixed;
   top: var(--top);
   left: var(--left);
-  z-index: 9999;
+  z-index: var(--nyx-z-index-modal);
   display: flex;
   align-items: center;
   gap: 2px;
