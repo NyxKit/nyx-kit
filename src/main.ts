@@ -19,7 +19,7 @@ export const NyxKit = {
       initColourMode(options)
     }
 
-    const { confirm } = useNyxConfirm()
+    const { confirm } = useNyxConfirm(app)
     confirmFn = confirm
 
     app.config.globalProperties.$confirm = confirm

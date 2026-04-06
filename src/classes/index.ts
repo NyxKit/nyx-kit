@@ -5,3 +5,5 @@ export {
   NyxLog,
   NyxLoader
 }
+
+export * from './NyxResult'

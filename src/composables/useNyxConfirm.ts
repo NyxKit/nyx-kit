@@ -1,4 +1,4 @@
-import { ref, h, render, type VNode, onUnmounted } from 'vue'
+import { ref, h, render, type VNode, type App, type AppContext } from 'vue'
 import type { ConfirmOptions } from '../types/confirm'
 import { NyxResult, type NyxResultVoid } from '../classes/NyxResult'
 import { NyxTheme, NyxVariant } from '../types'
@@ -7,6 +7,7 @@ import NyxModal from '../components/NyxModal/NyxModal.vue'
 const container = ref<HTMLElement | null>(null)
 let currentResolve: ((result: NyxResultVoid<'cancelled'>) => void) | null = null
 let isDialogOpen = false
+let storedAppContext: AppContext | null = null
 
 function createContainer(): HTMLElement {
   if (!container.value) {
@@ -26,7 +27,11 @@ function destroyContainer() {
   }
 }
 
-function useNyxConfirm() {
+function useNyxConfirm(app?: App) {
+  if (app) {
+    storedAppContext = app._context
+  }
+
   const confirm = (options: ConfirmOptions): Promise<NyxResultVoid<'cancelled'>> => {
     if (isDialogOpen) {
       return Promise.reject(new Error('A confirmation dialog is already open'))
@@ -60,6 +65,7 @@ function useNyxConfirm() {
         onClose: handleCancel
       }, () => options.message)
 
+      vnode.appContext = storedAppContext
       render(vnode, el)
     })
   }
@@ -72,9 +78,5 @@ function useNyxConfirm() {
 
   return { confirm }
 }
-
-onUnmounted(() => {
-  destroyContainer()
-})
 
 export { useNyxConfirm }

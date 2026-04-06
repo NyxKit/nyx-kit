@@ -4,7 +4,7 @@ import type { NyxModalEmits, NyxModalProps } from './NyxModal.types'
 import NyxButton from '../NyxButton/NyxButton.vue'
 import { KeyboardKey, NyxVariant, NyxTheme } from '@/types'
 import { useKeyPress, useNyxProps } from '@/composables'
-import { computed, nextTick, useSlots, useTemplateRef, watch, type Slots } from 'vue'
+import { computed, nextTick, onMounted, useSlots, useTemplateRef, watch, type Slots } from 'vue'
 import { generateRandomString } from '@/utils/string'
 
 const props = withDefaults(defineProps<NyxModalProps>(), {
@@ -36,13 +36,21 @@ const FOCUSABLE_SELECTOR = [
   '[tabindex]:not([tabindex="-1"])',
 ].join(', ')
 
+const openDialog = () => {
+  if (elDialog.value?.showModal) elDialog.value.showModal()
+  nextTick(() => {
+    const first = elDialog.value?.querySelector<HTMLElement>(FOCUSABLE_SELECTOR)
+    first?.focus()
+  })
+}
+
+onMounted(() => {
+  if (isOpen.value) openDialog()
+})
+
 watch(isOpen, (open) => {
   if (open) {
-    if (elDialog.value?.showModal) elDialog.value.showModal()
-    nextTick(() => {
-      const first = elDialog.value?.querySelector<HTMLElement>(FOCUSABLE_SELECTOR)
-      first?.focus()
-    })
+    openDialog()
   } else {
     if (elDialog.value?.close) elDialog.value.close()
   }
@@ -105,6 +113,7 @@ const { classList, nyxTheme } = useNyxProps(props, { origin: 'NyxModal' })
         >{{ textCancelButton }}</NyxButton>
         <NyxButton
           :theme="nyxTheme"
+          :variant="NyxVariant.Soft"
           @click="confirm"
         >{{ textSubmitButton }}</NyxButton>
       </slot>
