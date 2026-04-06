@@ -387,3 +387,10 @@ When you notice that something in the codebase or stories is out of sync, record
 |---|---|---|---|
 | 2026-03-26 | `README.md` vs `specs/006-add-nyx-grid/spec.md` | Planned feature naming diverged (`NyxLayout` in README, `NyxGrid` in spec). | Fixed |
 | 2026-03-29 | `src/components/NyxTabs/NyxTabs.vue` vs `docs/specs/components/` | `NyxTabs` implementation existed without a living component spec file in `docs/specs/components/`. | Fixed |
+
+## Active Technologies
+- TypeScript (Vue 3) + Vue 3, NyxModal component, NyxResult class (013-programmatic-confirm)
+- N/A (in-memory state) (013-programmatic-confirm)
+
+## Recent Changes
+- 013-programmatic-confirm: Added TypeScript (Vue 3) + Vue 3, NyxModal component, NyxResult class

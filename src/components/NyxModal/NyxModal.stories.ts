@@ -1,6 +1,6 @@
 import { defineComponent, ref } from 'vue'
 import NyxModal from './NyxModal.vue'
-import { NyxSize, type KeyDict } from '@/types'
+import { NyxSize, NyxTheme, type KeyDict } from '@/types'
 import type { NyxModalProps } from './NyxModal.types'
 import { getKeyDictKeyByValue } from '@/utils'
 import NyxButton from '../NyxButton/NyxButton.vue'
@@ -89,3 +89,61 @@ const TemplatePixel = () => () => defineComponent({
 export const Default = Template({})
 export const Sizes = TemplateAllProp('size', NyxSize)
 export const Pixel = TemplatePixel()
+
+const TemplateThemes = () => () => defineComponent({
+  components: { NyxModal, NyxButton },
+  setup () {
+    const isOpen = ref(false)
+    const currentTheme = ref(NyxTheme.Primary)
+    const themes = Object.values(NyxTheme)
+
+    const openWithTheme = (theme: NyxTheme) => {
+      currentTheme.value = theme
+      isOpen.value = true
+    }
+
+    return { isOpen, currentTheme, themes, openWithTheme, lipsum }
+  },
+  template: `
+    <div class="flex">
+      <nyx-button
+        v-for="theme in themes"
+        :key="theme"
+        :theme="theme"
+        @click="openWithTheme(theme)"
+      >{{ theme }}</nyx-button>
+      <nyx-modal
+        theme="danger"
+        title="Confirm"
+        confirm-text="Yes"
+        cancel-text="No"
+        v-model="isOpen"
+      ><p>{{ lipsum }}</p></nyx-modal>
+    </div>
+  `
+})
+
+const TemplateProgrammatic = () => () => defineComponent({
+  components: { NyxButton },
+  setup () {
+    const lastResult = ref<string>('')
+    const showResult = (result: string) => {
+      lastResult.value = result
+    }
+
+    return { lastResult, showResult }
+  },
+  template: `
+    <div>
+      <p class="mb-4">Click the button to trigger a programmatic confirmation via NyxKit.confirm()</p>
+      <nyx-button @click="(async () => {
+        // In Storybook, we simulate the result since NyxKit needs a Vue app
+        showResult('Simulated: User would see modal with title, message, and confirm/cancel buttons')
+      })()">Open Confirm Dialog</nyx-button>
+      <p v-if="lastResult" class="mt-4 text-sm">Result: {{ lastResult }}</p>
+    </div>
+  `
+})
+
+export const Themes = TemplateThemes()
+export const Programmatic = TemplateProgrammatic()

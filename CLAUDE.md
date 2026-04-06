@@ -64,6 +64,8 @@ The project constitution is at `.specify/memory/constitution.md`.
 - TypeScript + Vue 3.5+ + `lucide-vue-next` (already installed), Vue 3 (009-add-lucide-icon)
 - TypeScript with Vue 3.5+ single-file components + Vue 3, `lucide-vue-next`, existing `NyxIcon`, existing `useNyxProps` pipeline (010-breadcrumbs-router-icons)
 - TypeScript with Vue 3.5+ single-file components + Vue 3, existing `defineModel` usage, `useNyxProps`, `useTeleportPosition`, `useSelectKeyboardControls`, `v-click-outside` (011-fix-select-model-sync)
+- TypeScript (Vue 3) + Vue 3, NyxModal component, NyxResult class (013-programmatic-confirm)
+- N/A (in-memory state) (013-programmatic-confirm)
 
 ## Recent Changes
 - 003-testing-improvements: Added TypeScript 5.x / Vue 3 + `@vue/test-utils`, `vitest`, `@playwright/test`, `jsdom`

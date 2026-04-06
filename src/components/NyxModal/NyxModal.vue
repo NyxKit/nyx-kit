@@ -103,7 +103,7 @@ const { classList } = useNyxProps(props, { origin: 'NyxModal' })
         >{{ props.cancelText }}</NyxButton>
         <NyxButton
           v-if="props.confirmText"
-          :theme="NyxTheme.Primary"
+          :theme="props.theme ?? NyxTheme.Primary"
           @click="confirm"
         >{{ props.confirmText }}</NyxButton>
       </slot>

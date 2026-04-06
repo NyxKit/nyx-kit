@@ -51,6 +51,42 @@ setMode(NyxColourMode.Adaptive) // hand control back to the clock
 
 The chosen mode is persisted to `localStorage` and restored on next load. The composable works without the plugin — `NyxKit.install()` is optional.
 
+### Programmatic confirmation dialog
+
+Use `NyxKit.confirm()` to display a confirmation dialog and await the user's response:
+
+```ts
+import { NyxKit, NyxTheme } from 'nyx-kit'
+
+const result = await NyxKit.confirm({
+  theme: NyxTheme.Danger,
+  title: 'Delete Item',
+  message: 'Are you sure you want to delete this item? This action cannot be undone.',
+  confirmText: 'Delete',
+  cancelText: 'Cancel'
+})
+
+if (result.isSuccess) {
+  // User clicked Confirm
+  console.log('Confirmed!')
+} else {
+  // User clicked Cancel, pressed Escape, or clicked the backdrop
+  console.log('Cancelled')
+}
+```
+
+**Options**:
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `theme` | `NyxTheme` | `Primary` | Theme for the confirm button |
+| `title` | `string` | `''` | Modal header text |
+| `message` | `string` | *(required)* | Modal body content |
+| `confirmText` | `string` | `'Confirm'` | Confirm button label |
+| `cancelText` | `string` | `'Cancel'` | Cancel button label |
+
+The method returns a `NyxResult` — use `.isSuccess` to check the outcome.
+
 ## ESLint
 
 Nyx Kit ships a shareable ESLint flat config. To adopt the same rules in your project:

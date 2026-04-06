@@ -1,4 +1,4 @@
-import type { NyxSize } from "@/types"
+import type { NyxSize, NyxTheme } from "@/types"
 
 export interface NyxModalProps {
   title?: string,
@@ -9,6 +9,7 @@ export interface NyxModalProps {
   backdrop?: boolean
   customClass?: string
   pixel?: boolean
+  theme?: NyxTheme
 }
 
 export interface NyxModalEmits {
