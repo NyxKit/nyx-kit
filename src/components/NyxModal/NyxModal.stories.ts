@@ -114,10 +114,10 @@ const TemplateThemes = () => () => defineComponent({
         @click="openWithTheme(theme)"
       >{{ theme }}</nyx-button>
       <nyx-modal
-        theme="danger"
+        :theme="currentTheme"
         title="Confirm"
-        confirm-text="Yes"
-        cancel-text="No"
+        confirm-text="Confirm"
+        cancel-text="Cancel"
         v-model="isOpen"
       ><p>{{ lipsum }}</p></nyx-modal>
     </div>

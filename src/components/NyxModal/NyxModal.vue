@@ -24,6 +24,8 @@ const modalTitleId = `nyx-modal-title-${generateRandomString(8)}`
 const isOpen = computed(() => model.value || props.static)
 const isHeaderVisible = computed(() => !!slots.header || !!props.title)
 const isFooterVisible = computed(() => !!slots.footer || !!props.confirmText)
+const textSubmitButton = computed(() => props.confirmText ?? 'Confirm')
+const textCancelButton = computed(() => props.cancelText ?? 'Cancel')
 
 const FOCUSABLE_SELECTOR = [
   'a[href]',
@@ -66,7 +68,7 @@ const confirm = () => {
   close()
 }
 
-const { classList } = useNyxProps(props, { origin: 'NyxModal' })
+const { classList, nyxTheme } = useNyxProps(props, { origin: 'NyxModal' })
 </script>
 
 <template>
@@ -97,15 +99,14 @@ const { classList } = useNyxProps(props, { origin: 'NyxModal' })
     <footer class="nyx-modal__footer" v-if="isFooterVisible">
       <slot name="footer">
         <NyxButton
-          v-if="!props.static"
-          :variant="NyxVariant.Outline"
+          :variant="NyxVariant.Subtle"
+          :theme="NyxTheme.Info"
           @click="cancel"
-        >{{ props.cancelText }}</NyxButton>
+        >{{ textCancelButton }}</NyxButton>
         <NyxButton
-          v-if="props.confirmText"
-          :theme="props.theme ?? NyxTheme.Primary"
+          :theme="nyxTheme"
           @click="confirm"
-        >{{ props.confirmText }}</NyxButton>
+        >{{ textSubmitButton }}</NyxButton>
       </slot>
     </footer>
   </dialog>

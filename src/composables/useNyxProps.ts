@@ -64,7 +64,10 @@ const useNyxProps = (props: KeyDict<unknown>, args?: { origin?: string, primitiv
   return {
     classList,
     gradient,
-    backlight
+    backlight,
+    nyxTheme,
+    nyxSize,
+    nyxVariant,
   }
 }
 
