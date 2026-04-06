@@ -4,7 +4,6 @@ import { NyxSize, NyxTheme, type KeyDict } from '@/types'
 import type { NyxModalProps } from './NyxModal.types'
 import { getKeyDictKeyByValue } from '@/utils'
 import NyxButton from '../NyxButton/NyxButton.vue'
-import { useNyxConfirm } from '@/composables/useNyxConfirm'
 
 const lipsum = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque justo enim, ultrices ac enim ut, placerat facilisis mauris. Cras luctus ante ante, viverra interdum mauris bibendum et. '
 
@@ -125,29 +124,37 @@ const TemplateThemes = () => () => defineComponent({
 })
 
 const TemplateProgrammatic = () => () => defineComponent({
-  components: { NyxButton },
+  components: { NyxButton, NyxModal },
   setup () {
-    const { confirm } = useNyxConfirm()
+    const isOpen = ref(false)
     const lastResult = ref<string>('')
 
-    const handleClick = async () => {
-      const result = await confirm({
-        theme: NyxTheme.Danger,
-        title: 'Delete Item',
-        message: 'Are you sure you want to delete this item? This action cannot be undone.',
-        confirmText: 'Delete',
-        cancelText: 'Cancel'
-      })
-      lastResult.value = result.isSuccess ? 'Confirmed!' : 'Cancelled'
+    const handleConfirm = () => {
+      lastResult.value = 'Confirmed!'
+      isOpen.value = false
     }
 
-    return { lastResult, handleClick }
+    const handleCancel = () => {
+      lastResult.value = 'Cancelled'
+      isOpen.value = false
+    }
+
+    return { isOpen, lastResult, handleConfirm, handleCancel, NyxTheme }
   },
   template: `
     <div>
-      <p class="mb-4">Click the button to trigger a programmatic confirmation via useNyxConfirm()</p>
-      <nyx-button @click="handleClick">Open Confirm Dialog</nyx-button>
+      <p class="mb-4">Programmatic confirmation via NyxKit.confirm() in a real app</p>
+      <nyx-button @click="isOpen = true">Open Confirm Dialog</nyx-button>
       <p v-if="lastResult" class="mt-4 text-sm">Result: {{ lastResult }}</p>
+      <nyx-modal
+        theme="danger"
+        title="Delete Item"
+        confirm-text="Delete"
+        cancel-text="Cancel"
+        v-model="isOpen"
+        @confirm="handleConfirm"
+        @cancel="handleCancel"
+      >Are you sure you want to delete this item? This action cannot be undone.</nyx-modal>
     </div>
   `
 })
