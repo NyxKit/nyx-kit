@@ -4,6 +4,7 @@ import { NyxSize, NyxTheme, type KeyDict } from '@/types'
 import type { NyxModalProps } from './NyxModal.types'
 import { getKeyDictKeyByValue } from '@/utils'
 import NyxButton from '../NyxButton/NyxButton.vue'
+import { useNyxConfirm } from '@/composables/useNyxConfirm'
 
 const lipsum = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque justo enim, ultrices ac enim ut, placerat facilisis mauris. Cras luctus ante ante, viverra interdum mauris bibendum et. '
 
@@ -126,20 +127,26 @@ const TemplateThemes = () => () => defineComponent({
 const TemplateProgrammatic = () => () => defineComponent({
   components: { NyxButton },
   setup () {
+    const { confirm } = useNyxConfirm()
     const lastResult = ref<string>('')
-    const showResult = (result: string) => {
-      lastResult.value = result
+
+    const handleClick = async () => {
+      const result = await confirm({
+        theme: NyxTheme.Danger,
+        title: 'Delete Item',
+        message: 'Are you sure you want to delete this item? This action cannot be undone.',
+        confirmText: 'Delete',
+        cancelText: 'Cancel'
+      })
+      lastResult.value = result.isSuccess ? 'Confirmed!' : 'Cancelled'
     }
 
-    return { lastResult, showResult }
+    return { lastResult, handleClick }
   },
   template: `
     <div>
-      <p class="mb-4">Click the button to trigger a programmatic confirmation via NyxKit.confirm()</p>
-      <nyx-button @click="(async () => {
-        // In Storybook, we simulate the result since NyxKit needs a Vue app
-        showResult('Simulated: User would see modal with title, message, and confirm/cancel buttons')
-      })()">Open Confirm Dialog</nyx-button>
+      <p class="mb-4">Click the button to trigger a programmatic confirmation via useNyxConfirm()</p>
+      <nyx-button @click="handleClick">Open Confirm Dialog</nyx-button>
       <p v-if="lastResult" class="mt-4 text-sm">Result: {{ lastResult }}</p>
     </div>
   `
