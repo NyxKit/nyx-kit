@@ -1,5 +1,7 @@
 # AGENTS.md — Working Guide for AI Agents
 
+> **Important**: Wait for explicit user prompts before committing or pushing. Never auto-commit or auto-push changes.
+
 ## Design System
 
 See [`DESIGN.md`](DESIGN.md) for the full style guide: colour palette, semantic tokens, typography, spacing, shadows, animation, and pixel-style variables. Read it before touching any style-related code.

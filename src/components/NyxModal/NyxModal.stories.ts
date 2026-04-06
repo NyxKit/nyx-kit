@@ -124,37 +124,32 @@ const TemplateThemes = () => () => defineComponent({
 })
 
 const TemplateProgrammatic = () => () => defineComponent({
-  components: { NyxButton, NyxModal },
+  components: { NyxButton },
   setup () {
-    const isOpen = ref(false)
-    const lastResult = ref<string>('')
-
-    const handleConfirm = () => {
-      lastResult.value = 'Confirmed!'
-      isOpen.value = false
-    }
-
-    const handleCancel = () => {
-      lastResult.value = 'Cancelled'
-      isOpen.value = false
-    }
-
-    return { isOpen, lastResult, handleConfirm, handleCancel, NyxTheme }
+    return {}
   },
   template: `
     <div>
-      <p class="mb-4">Programmatic confirmation via NyxKit.confirm() in a real app</p>
-      <nyx-button @click="isOpen = true">Open Confirm Dialog</nyx-button>
-      <p v-if="lastResult" class="mt-4 text-sm">Result: {{ lastResult }}</p>
-      <nyx-modal
-        theme="danger"
-        title="Delete Item"
-        confirm-text="Delete"
-        cancel-text="Cancel"
-        v-model="isOpen"
-        @confirm="handleConfirm"
-        @cancel="handleCancel"
-      >Are you sure you want to delete this item? This action cannot be undone.</nyx-modal>
+      <p class="mb-4">Programmatically spawn a modal dialog from anywhere in your app:</p>
+      <pre class="bg-gray-100 p-4 rounded text-sm font-mono text-gray-800">
+const result = await NyxKit.confirm({
+  theme: NyxTheme.Danger,
+  title: 'Delete Item',
+  message: 'Are you sure you want to delete this item? This action cannot be undone.',
+  confirmText: 'Delete',
+  cancelText: 'Cancel'
+})
+
+if (result.isSuccess) {
+  // User clicked Confirm → result.value is void
+} else {
+  // User clicked Cancel / pressed Escape / clicked backdrop
+  // result.error = 'cancelled', result.message = 'User cancelled'
+}</pre>
+      <p class="mt-4 text-sm text-gray-600">
+        The modal is rendered programmatically via Vue's render function. 
+        No template required — just call NyxKit.confirm() from any component.
+      </p>
     </div>
   `
 })
