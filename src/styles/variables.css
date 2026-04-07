@@ -27,10 +27,17 @@
   --nyx-c-white-soft: #f9f9f9;
   --nyx-c-white-mute: #f1f1f1;
 
+  /*
   --nyx-c-black: #1a1a1a;
   --nyx-c-black-pure: #000000;
   --nyx-c-black-soft: #242424;
   --nyx-c-black-mute: #2f2f2f;
+  */
+
+  --nyx-c-black: #0f1419;
+  --nyx-c-black-pure: #000000;
+  --nyx-c-black-soft: #171c22;
+  --nyx-c-black-mute: #252a2f;
 
   --nyx-c-gray: #8E8E8E;
   --nyx-c-gray-light-1: #A4A4A4;
