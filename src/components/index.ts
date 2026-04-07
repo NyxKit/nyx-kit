@@ -25,6 +25,7 @@ import NyxTextarea from './NyxTextarea/NyxTextarea.vue'
 import NyxTooltip from './NyxTooltip/NyxTooltip.vue'
 import NyxTree from './NyxTree/index'
 import NyxActionItem from './NyxActionItem/NyxActionItem.vue'
+import NyxMetricCard from './NyxMetricCard/NyxMetricCard.vue'
 
 export {
   NyxEditor,
@@ -53,5 +54,6 @@ export {
   NyxTextarea,
   NyxTooltip,
   NyxTree,
-  NyxActionItem
+  NyxActionItem,
+  NyxMetricCard
 }
