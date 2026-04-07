@@ -1,3 +1,4 @@
+import NyxActionItem from './NyxActionItem/NyxActionItem.vue'
 import NyxAvatar from './NyxAvatar/NyxAvatar.vue'
 import NyxBadge from './NyxBadge/NyxBadge.vue'
 import NyxBreadcrumbs from './NyxBreadcrumbs/NyxBreadcrumbs.vue'
@@ -11,7 +12,9 @@ import NyxFormField from './NyxForm/NyxFormField.vue'
 import NyxGrid from './NyxGrid/NyxGrid.vue'
 import NyxIcon from './NyxIcon/NyxIcon.vue'
 import NyxInput from './NyxInput/NyxInput.vue'
+import NyxLogViewer from './NyxLogViewer/NyxLogViewer.vue'
 import NyxMedia from './NyxMedia/NyxMedia.vue'
+import NyxMetricCard from './NyxMetricCard/NyxMetricCard.vue'
 import NyxModal from './NyxModal/NyxModal.vue'
 import NyxProgress from './NyxProgress/NyxProgress.vue'
 import NyxSelect from './NyxSelect/NyxSelect.vue'
@@ -24,11 +27,9 @@ import NyxTabs from './NyxTabs/NyxTabs.vue'
 import NyxTextarea from './NyxTextarea/NyxTextarea.vue'
 import NyxTooltip from './NyxTooltip/NyxTooltip.vue'
 import NyxTree from './NyxTree/index'
-import NyxActionItem from './NyxActionItem/NyxActionItem.vue'
-import NyxMetricCard from './NyxMetricCard/NyxMetricCard.vue'
 
 export {
-  NyxEditor,
+  NyxActionItem,
   NyxAvatar,
   NyxBadge,
   NyxBreadcrumbs,
@@ -36,12 +37,15 @@ export {
   NyxCard,
   NyxCarousel,
   NyxCheckbox,
+  NyxEditor,
   NyxForm,
   NyxFormField,
   NyxGrid,
   NyxIcon,
   NyxInput,
+  NyxLogViewer,
   NyxMedia,
+  NyxMetricCard,
   NyxModal,
   NyxProgress,
   NyxSelect,
@@ -54,6 +58,4 @@ export {
   NyxTextarea,
   NyxTooltip,
   NyxTree,
-  NyxActionItem,
-  NyxMetricCard
 }

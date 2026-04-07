@@ -1,0 +1,39 @@
+.nyx-log-viewer {
+  font-family: var(--nyx-font-mono, monospace);
+  font-size: var(--nyx-font-size-sm);
+
+  td {
+    vertical-align: middle;
+  }
+
+  &__timestamp {
+    color: var(--nyx-c-text-2);
+    white-space: nowrap;
+    padding-right: var(--nyx-pad-md);
+
+    &.theme-primary   { color: var(--nyx-c-primary); }
+    &.theme-secondary { color: var(--nyx-c-secondary); }
+    &.theme-success   { color: var(--nyx-c-success); }
+    &.theme-warning   { color: var(--nyx-c-warning); }
+    &.theme-danger    { color: var(--nyx-c-danger); }
+    &.theme-info      { color: var(--nyx-c-info); }
+  }
+
+  &__origin {
+    color: var(--nyx-c-text-2);
+    white-space: nowrap;
+    padding-right: var(--nyx-pad-md);
+    text-transform: uppercase;
+  }
+
+  &__value {
+    color: var(--nyx-c-text-1);
+
+    &.theme-primary   { color: var(--nyx-c-primary); }
+    &.theme-secondary { color: var(--nyx-c-secondary); }
+    &.theme-success   { color: var(--nyx-c-success); }
+    &.theme-warning   { color: var(--nyx-c-warning); }
+    &.theme-danger    { color: var(--nyx-c-danger); }
+    &.theme-info      { color: var(--nyx-c-info); }
+  }
+}
