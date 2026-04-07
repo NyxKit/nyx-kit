@@ -1,0 +1,139 @@
+.nyx-metric-card {
+  --nyx-c-metric-card-indicator: var(--nyx-c-default);
+  --nyx-rgb-metric-card: var(--nyx-rgb-default);
+  --nyx-font-size-metric-value: 1.8rem;
+
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  border-radius: var(--nyx-radius-md);
+  border: 1px solid var(--nyx-c-divider);
+  border-left: 3px solid transparent;
+  background: var(--nyx-c-bg-mute);
+  padding: var(--nyx-pad-md);
+  overflow: hidden;
+  transition: border-left-color var(--nyx-speed-fast) ease;
+
+  &__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--nyx-gap-sm);
+  }
+
+  &__title {
+    color: var(--nyx-c-text-2);
+    font-size: var(--nyx-font-size-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  &__row {
+    display: flex;
+    align-items: baseline;
+    gap: var(--nyx-gap-md);
+    flex-wrap: wrap;
+  }
+
+  &__value {
+    color: var(--nyx-c-text-1);
+    font-size: var(--nyx-font-size-metric-value);
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  &__unit {
+    color: var(--nyx-c-text-2);
+    font-size: var(--nyx-font-size-sm);
+    line-height: 1;
+    margin-left: calc(var(--nyx-gap-sm) * -1);
+  }
+
+  &__suffix {
+    color: var(--nyx-c-metric-card-indicator);
+    font-size: var(--nyx-font-size-sm);
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  &__icon {
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+  }
+
+  // ── Theme overrides ───────────────────────────────────────────────────────
+  &.theme-primary {
+    --nyx-c-metric-card-indicator: var(--nyx-c-primary);
+    --nyx-rgb-metric-card: var(--nyx-rgb-primary);
+  }
+
+  &.theme-secondary {
+    --nyx-c-metric-card-indicator: var(--nyx-c-secondary);
+    --nyx-rgb-metric-card: var(--nyx-rgb-secondary);
+  }
+
+  &.theme-success {
+    --nyx-c-metric-card-indicator: var(--nyx-c-success);
+    --nyx-rgb-metric-card: var(--nyx-rgb-success);
+  }
+
+  &.theme-warning {
+    --nyx-c-metric-card-indicator: var(--nyx-c-warning);
+    --nyx-rgb-metric-card: var(--nyx-rgb-warning);
+  }
+
+  &.theme-danger {
+    --nyx-c-metric-card-indicator: var(--nyx-c-danger);
+    --nyx-rgb-metric-card: var(--nyx-rgb-danger);
+  }
+
+  &.theme-info {
+    --nyx-c-metric-card-indicator: var(--nyx-c-info);
+    --nyx-rgb-metric-card: var(--nyx-rgb-info);
+  }
+
+  // ── Variant: Soft / Subtle — indicator always visible ─────────────────────
+  &.variant-soft,
+  &.variant-subtle {
+    border-left-color: var(--nyx-c-metric-card-indicator);
+  }
+
+  // ── Variant: Ghost / Outline — indicator on hover ─────────────────────────
+  &.variant-ghost,
+  &.variant-outline {
+    &:hover {
+      border-left-color: var(--nyx-c-metric-card-indicator);
+    }
+  }
+
+  // ── Variant: Filled — full background, default text for icon + suffix ──────
+  &.variant-filled {
+    background: var(--nyx-c-metric-card-indicator);
+    border-color: transparent;
+
+    .nyx-metric-card__title {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .nyx-metric-card__value {
+      color: var(--nyx-c-white-pure);
+    }
+
+    .nyx-metric-card__unit {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .nyx-metric-card__suffix {
+      color: var(--nyx-c-text-1);
+    }
+
+    .nyx-metric-card__icon {
+      --nyx-icon-color: var(--nyx-c-text-1);
+    }
+  }
+
+  // ── Variant: Text (default) — no indicator, no fill ───────────────────────
+  // Base styles already handle this; no additional rules needed.
+}
