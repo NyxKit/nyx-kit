@@ -4,7 +4,6 @@ import type { NyxKitOptions } from './types'
 import type { ConfirmOptions, ConfirmResult } from './types/confirm'
 import { initColourMode } from './composables/useNyxColourMode'
 import { useNyxConfirm } from './composables/useNyxConfirm'
-export { NyxGrid } from './components'
 
 export type { NyxKitPrimitive, NyxKitDefaults, NyxKitOptions, NyxColourModeOptions } from './types'
 export type { ConfirmOptions, ConfirmResult } from './types/confirm'

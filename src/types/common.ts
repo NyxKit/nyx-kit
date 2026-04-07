@@ -87,3 +87,9 @@ export enum NyxGridMode {
   Grid = 'grid',
   Masonry = 'masonry',
 }
+
+export enum NyxSort {
+  None = 'none',
+  Asc = 'asc',
+  Desc = 'desc',
+}
