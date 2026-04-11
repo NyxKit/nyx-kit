@@ -1,7 +1,7 @@
 import type { NyxSize, NyxTheme, NyxVariant } from './common'
 import type { NyxColourMode } from './colour-mode'
 
-export type NyxKitPrimitive = 'all'|'button'|'input'|'select'|'textarea'|'checkbox'|'radio'|'switch'|'icon'
+export type NyxKitPrimitive = 'all'|'badge'|'button'|'input'|'select'|'textarea'|'checkbox'|'radio'|'switch'|'icon'
 
 export interface NyxKitDefaults {
   theme?: NyxTheme
