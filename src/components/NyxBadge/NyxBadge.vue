@@ -12,7 +12,7 @@ const props = withDefaults(defineProps<NyxBadgeProps>(), {
 
 const emit = defineEmits<NyxBadgeEmits>()
 
-const { classList } = useNyxProps(props, { origin: 'NyxBadge' })
+const { classList } = useNyxProps(props, { origin: 'NyxBadge', primitive: 'badge' })
 
 </script>
 
