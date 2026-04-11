@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import './NyxLogViewer.scss'
 import { computed } from 'vue'
-import { NyxVariant, NyxSort, type NyxLogEntry } from '@/types'
+import { NyxVariant, NyxSort, type NyxLogEntry, NyxSize } from '@/types'
 import type { NyxLogViewerProps } from './NyxLogViewer.types'
 import NyxTable from '../NyxTable/NyxTable.vue'
 import NyxTableCell from '../NyxTable/NyxTableCell.vue'
@@ -12,11 +12,12 @@ const LOG_ENTRY_KEYS: (keyof NyxLogEntry)[] = ['timestamp', 'value', 'origin', '
 const props = withDefaults(defineProps<NyxLogViewerProps>(), {
   timestampFormat: 'HH:mm:ss',
   sort: NyxSort.None,
+  size: NyxSize.XSmall,
 })
 
 const model = defineModel<NyxLogEntry[]>({ default: () => [] })
 
-const { nyxTheme } = useNyxProps(props, { origin: 'NyxLogViewer' })
+const { nyxTheme, nyxSize } = useNyxProps(props, { origin: 'NyxLogViewer' })
 
 const hasOrigin = computed(() => model.value.some(e => !!e.origin))
 
@@ -59,6 +60,7 @@ function formatTimestamp(ts: Date | number | string, fmt: string): string {
     :variant="NyxVariant.Ghost"
     :gridTemplateColumns
     :col-include="LOG_ENTRY_KEYS"
+    :size="nyxSize"
     class="nyx-log-viewer"
   >
     <template #default="{ item }">

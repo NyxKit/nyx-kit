@@ -263,11 +263,11 @@
  * -------------------------------------------------------------------------- */
 
  :root {
-  --nyx-radius-xs: 0.1rem;
+  --nyx-radius-xs: 0.125rem;
   --nyx-radius-sm: 0.25rem;
-  --nyx-radius-md: 0.5rem;
-  --nyx-radius-lg: 0.75rem;
-  --nyx-radius-xl: 1rem;
+  --nyx-radius-md: 0.375rem;
+  --nyx-radius-lg: 0.5rem;
+  --nyx-radius-xl: 0.75rem;
   --nyx-radius-max: 100%;
 }
 
