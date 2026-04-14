@@ -7,6 +7,8 @@ export interface NyxInputProps {
   variant?: NyxVariant
   size?: NyxSize
   pixel?: boolean
+  prefix?: string
+  suffix?: string
 
   // native
   id?: string

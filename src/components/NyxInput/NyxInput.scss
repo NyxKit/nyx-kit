@@ -8,8 +8,14 @@
   --nyx-rgb-input: var(--nyx-rgb-default);
   --nyx-gap-input: var(--nyx-gap-md);
   --nyx-pad-input: var(--nyx-pad-md);
+  --nyx-pad-input-x: var(--nyx-pad-input);
+  --nyx-pad-input-y: calc(var(--nyx-pad-input) * 0.75);
+  --nyx-pad-input-left: calc(var(--nyx-pad-input-x) + var(--nyx-input-pad-prefix, 0px));
+  --nyx-pad-input-right: calc(var(--nyx-pad-input-x) + var(--nyx-input-pad-suffix, 0px));
   --nyx-font-size-input: var(--nyx-font-size-md);
   --nyx-border-size-input: 1px;
+
+  position: relative;
 
   input {
     display: flex;
@@ -23,7 +29,7 @@
     border: var(--nyx-border-size-input) solid var(--nyx-c-input);
     color: var(--nyx-c-input-text);
     border-radius: var(--nyx-radius-md);
-    padding: calc(var(--nyx-pad-input) * 0.75) var(--nyx-pad-input);
+    padding: var(--nyx-pad-input-y) var(--nyx-pad-input-right) var(--nyx-pad-input-y) var(--nyx-pad-input-left);
     transition: background-color 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
 
     &::placeholder {
@@ -42,6 +48,26 @@
       transform: scale(1);
       opacity: 0.75;
     }
+  }
+
+  &__prefix,
+  &__suffix {
+    position: absolute;
+    top: 0;
+    display: flex;
+    height: 100%;
+    align-items: center;
+    z-index: 1;
+    pointer-events: none;
+    padding: var(--nyx-pad-input-y) var(--nyx-pad-input-x);
+  }
+
+  &__prefix {
+    left: 0;
+  }
+
+  &__suffix {
+    right: 0;
   }
 
   &.theme-primary {

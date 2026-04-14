@@ -1,4 +1,5 @@
 import { defineComponent } from 'vue'
+import type { Meta, StoryObj } from '@storybook/vue3'
 import NyxInput from './NyxInput.vue'
 import { NyxTheme, NyxVariant, NyxSize, NyxInputType, type KeyDict } from '@/types'
 import type { NyxInputProps } from './NyxInput.types'
@@ -6,10 +7,12 @@ import { getKeyDictKeyByValue } from '@/utils'
 import NyxForm from '../NyxForm/NyxForm.vue'
 import NyxFormField from '../NyxForm/NyxFormField.vue'
 
-export default {
+const meta = {
   title: 'Components/NyxInput',
   component: NyxInput,
   argTypes: {
+    prefix: { control: 'text' },
+    suffix: { control: 'text' },
     type: {
       control: { type: 'select' },
       options: Object.values(NyxInputType),
@@ -27,7 +30,11 @@ export default {
       options: Object.values(NyxSize),
     }
   },
-}
+} satisfies Meta<typeof NyxInput>
+
+export default meta
+
+type Story = StoryObj<typeof meta>
 
 const Template = (args: NyxInputProps) => defineComponent({
   components: { NyxInput },
@@ -61,8 +68,34 @@ const TemplateAll = (prop: string, dict: KeyDict<string>) => () => defineCompone
   `,
 })
 
-export const Default = Template({})
-export const Types = TemplateAll('type', NyxInputType)
-export const Themes = TemplateAll('theme', NyxTheme)
-export const Variants = TemplateAll('variant', NyxVariant)
-export const Sizes = TemplateAll('size', NyxSize)
+export const Default: Story = {
+  render: () => Template({}),
+}
+
+export const WithPrefix: Story = {
+  render: () => Template({ prefix: '$', placeholder: 'Amount' }),
+}
+
+export const WithSuffix: Story = {
+  render: () => Template({ suffix: 'kg', placeholder: 'Weight' }),
+}
+
+export const WithPrefixAndSuffix: Story = {
+  render: () => Template({ prefix: '$', suffix: 'USD', placeholder: 'Total' }),
+}
+
+export const Types: Story = {
+  render: () => TemplateAll('type', NyxInputType)(),
+}
+
+export const Themes: Story = {
+  render: () => TemplateAll('theme', NyxTheme)(),
+}
+
+export const Variants: Story = {
+  render: () => TemplateAll('variant', NyxVariant)(),
+}
+
+export const Sizes: Story = {
+  render: () => TemplateAll('size', NyxSize)(),
+}

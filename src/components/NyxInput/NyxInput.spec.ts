@@ -50,6 +50,32 @@ describe('NyxInput', () => {
     expect(wrapper.find('input').attributes('placeholder')).toBe('Enter text...')
   })
 
+  it('renders prefix content from props', () => {
+    const wrapper = mount(NyxInput, { props: { prefix: '$' } })
+    expect(wrapper.find('.nyx-input__prefix').text()).toBe('$')
+  })
+
+  it('renders suffix content from props', () => {
+    const wrapper = mount(NyxInput, { props: { suffix: 'kg' } })
+    expect(wrapper.find('.nyx-input__suffix').text()).toBe('kg')
+  })
+
+  it('renders prefix and suffix slots when provided', () => {
+    const wrapper = mount(NyxInput, {
+      props: {
+        prefix: '$',
+        suffix: 'kg',
+      },
+      slots: {
+        prefix: '<strong>€</strong>',
+        suffix: '<em>lb</em>',
+      },
+    })
+
+    expect(wrapper.find('.nyx-input__prefix').html()).toContain('€')
+    expect(wrapper.find('.nyx-input__suffix').html()).toContain('lb')
+  })
+
   it('emits focus event', async () => {
     const wrapper = mount(NyxInput)
     await wrapper.find('input').trigger('focus')

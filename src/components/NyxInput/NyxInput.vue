@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import './NyxInput.scss'
-import { computed } from 'vue'
+import { computed, useTemplateRef } from 'vue'
 import { useNyxProps } from '@/composables'
 import type { NyxInputProps, NyxInputEmits } from './NyxInput.types'
 import { NyxInputType } from '@/types'
@@ -14,9 +14,21 @@ const emit = defineEmits<NyxInputEmits>()
 
 const model = defineModel<string>()
 
+const prefixRef = useTemplateRef<HTMLSpanElement>('prefixRef')
+const suffixRef = useTemplateRef<HTMLSpanElement>('suffixRef')
+
 const { classList } = useNyxProps(props, { origin: 'NyxInput', primitive: 'input' })
 
 const normalizedId = computed(() => props.id ?? `nyx-input-${generateRandomString(16)}`)
+
+const computedPaddingVars = computed(() => {
+  const prefixWidth = prefixRef.value?.offsetWidth ?? 0
+  const suffixWidth = suffixRef.value?.offsetWidth ?? 0
+  return {
+    '--nyx-input-pad-prefix': `${prefixWidth}px`,
+    '--nyx-input-pad-suffix': `${suffixWidth}px`,
+  }
+})
 
 </script>
 
@@ -24,7 +36,13 @@ const normalizedId = computed(() => props.id ?? `nyx-input-${generateRandomStrin
   <div
     class="nyx-input"
     :class="classList"
+    :style="computedPaddingVars"
   >
+    <span class="nyx-input__prefix" v-if="props.prefix || $slots.prefix" ref="prefixRef">
+      <slot name="prefix">
+        {{ props.prefix }}
+      </slot>
+    </span>
     <input
       :type="props.type"
       :placeholder="props.placeholder"
@@ -46,6 +64,11 @@ const normalizedId = computed(() => props.id ?? `nyx-input-${generateRandomStrin
       @focus="emit('focus')"
       @blur="emit('blur')"
     />
+    <span class="nyx-input__suffix" v-if="props.suffix || $slots.suffix" ref="suffixRef">
+      <slot name="suffix">
+        {{ props.suffix }}
+      </slot>
+    </span>
   </div>
 
 </template>
