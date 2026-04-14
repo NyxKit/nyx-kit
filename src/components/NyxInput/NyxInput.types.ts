@@ -20,6 +20,9 @@ export interface NyxInputProps {
   maxlength?: number
   pattern?: string
   tabindex?: number
+  min?: number
+  max?: number
+  step?: number
 }
 
 export interface NyxInputEmits {
