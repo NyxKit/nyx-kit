@@ -1,4 +1,4 @@
-import type { NyxInputType, NyxSize, NyxVariant, NyxTheme } from '@/types'
+import type { NyxInputType, NyxSize, NyxVariant, NyxTheme, NyxInputNumberControls } from '@/types'
 
 export interface NyxInputProps {
   // props
@@ -9,6 +9,7 @@ export interface NyxInputProps {
   pixel?: boolean
   prefix?: string
   suffix?: string
+  numberControls?: NyxInputNumberControls
 
   // native
   id?: string

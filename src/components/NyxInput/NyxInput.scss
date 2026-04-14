@@ -70,6 +70,13 @@
     right: 0;
   }
 
+  &__number-controls {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+  }
+
   &.theme-primary {
     --nyx-c-input: var(--nyx-c-primary);
     --nyx-c-input-highlight: var(--nyx-c-primary-highlight);

@@ -93,3 +93,8 @@ export enum NyxSort {
   Asc = 'asc',
   Desc = 'desc',
 }
+
+export enum NyxDirection {
+  Horizontal = 'horizontal',
+  Vertical = 'vertical',
+}

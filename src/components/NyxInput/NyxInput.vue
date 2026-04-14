@@ -1,13 +1,17 @@
 <script setup lang="ts">
 import './NyxInput.scss'
 import { computed, useTemplateRef } from 'vue'
-import { useNyxProps } from '@/composables'
+import { useNyxInputNumber, useNyxProps } from '@/composables'
 import type { NyxInputProps, NyxInputEmits } from './NyxInput.types'
-import { NyxInputType } from '@/types'
+import { NyxDirection, NyxInputNumberControls, NyxInputType, NyxShape, NyxSize } from '@/types'
 import { generateRandomString } from '@/utils/string'
+import NyxButton from '../NyxButton/NyxButton.vue'
+import NyxIcon from '../NyxIcon/NyxIcon.vue'
+import NyxButtonGroup from '../NyxButtonGroup/NyxButtonGroup.vue'
 
 const props = withDefaults(defineProps<NyxInputProps>(), {
   type: NyxInputType.Text,
+  step: 1
 })
 
 const emit = defineEmits<NyxInputEmits>()
@@ -17,8 +21,7 @@ const model = defineModel<string>()
 const prefixRef = useTemplateRef<HTMLSpanElement>('prefixRef')
 const suffixRef = useTemplateRef<HTMLSpanElement>('suffixRef')
 
-const { classList } = useNyxProps(props, { origin: 'NyxInput', primitive: 'input' })
-
+const { classList, nyxVariant } = useNyxProps(props, { origin: 'NyxInput', primitive: 'input' })
 const normalizedId = computed(() => props.id ?? `nyx-input-${generateRandomString(16)}`)
 
 const computedPaddingVars = computed(() => {
@@ -29,6 +32,15 @@ const computedPaddingVars = computed(() => {
     '--nyx-input-pad-suffix': `${suffixWidth}px`,
   }
 })
+
+const {
+  normalizedNumberControls,
+  numberButtonVariant,
+  onNumberButtonClick,
+  onNumberButtonPointerCancel,
+  onNumberButtonPointerDown,
+  onNumberButtonPointerUp,
+} = useNyxInputNumber(props, model, nyxVariant)
 
 </script>
 
@@ -43,6 +55,17 @@ const computedPaddingVars = computed(() => {
         {{ props.prefix }}
       </slot>
     </span>
+    <NyxButton
+      v-if="normalizedNumberControls === NyxInputNumberControls.Separated"
+      class="nyx-input__number-control"
+      :size="props.size"
+      :shape="NyxShape.Square"
+      :variant="numberButtonVariant"
+      @pointerdown="onNumberButtonPointerDown(-1, $event)"
+      @pointerup="onNumberButtonPointerUp"
+      @pointercancel="onNumberButtonPointerCancel"
+      @click="onNumberButtonClick(-1, $event)"
+    ><span>-</span></NyxButton>
     <input
       :type="props.type"
       :placeholder="props.placeholder"
@@ -55,15 +78,52 @@ const computedPaddingVars = computed(() => {
       :autocomplete="props.autocomplete"
       :autofocus="props.autofocus"
       :tabindex="props.tabindex"
-      :min="props.min"
-      :max="props.max"
-      :step="props.step"
+      :min="props.type === NyxInputType.Number ? props.min : undefined"
+      :max="props.type === NyxInputType.Number ? props.max : undefined"
+      :step="props.type === NyxInputType.Number ? props.step : undefined"
       :id="normalizedId"
       v-model="model"
       @click="emit('click')"
       @focus="emit('focus')"
       @blur="emit('blur')"
     />
+    <NyxButton
+      v-if="normalizedNumberControls === NyxInputNumberControls.Separated"
+      class="nyx-input__number-control"
+      :size="props.size"
+      :shape="NyxShape.Square"
+      :variant="numberButtonVariant"
+      @pointerdown="onNumberButtonPointerDown(1, $event)"
+      @pointerup="onNumberButtonPointerUp"
+      @pointercancel="onNumberButtonPointerCancel"
+      @click="onNumberButtonClick(1, $event)"
+    ><NyxIcon name="plus" /></NyxButton>
+    <NyxButtonGroup
+      v-if="normalizedNumberControls === NyxInputNumberControls.Stacked"
+      class="nyx-input__number-controls"
+      :direction="NyxDirection.Vertical"
+    >
+      <NyxButton
+        class="nyx-input__number-control"
+        :size="props.size"
+        :shape="NyxShape.Square"
+        :variant="numberButtonVariant"
+        @pointerdown="onNumberButtonPointerDown(1, $event)"
+        @pointerup="onNumberButtonPointerUp"
+        @pointercancel="onNumberButtonPointerCancel"
+        @click="onNumberButtonClick(1, $event)"
+      ><NyxIcon name="chevron-up" :size="NyxSize.XSmall" /></NyxButton>
+      <NyxButton
+        class="nyx-input__number-control"
+        :size="props.size"
+        :shape="NyxShape.Square"
+        :variant="numberButtonVariant"
+        @pointerdown="onNumberButtonPointerDown(-1, $event)"
+        @pointerup="onNumberButtonPointerUp"
+        @pointercancel="onNumberButtonPointerCancel"
+        @click="onNumberButtonClick(-1, $event)"
+      ><NyxIcon name="chevron-down" :size="NyxSize.XSmall" /></NyxButton>
+    </NyxButtonGroup>
     <span class="nyx-input__suffix" v-if="props.suffix || $slots.suffix" ref="suffixRef">
       <slot name="suffix">
         {{ props.suffix }}

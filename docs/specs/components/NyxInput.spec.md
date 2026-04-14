@@ -1,10 +1,10 @@
 # NyxInput
 
-> Text input with Nyx theming plus optional prefix and suffix content.
+> Text and number input with Nyx theming plus optional prefix and suffix content.
 
 ## Purpose and scope
 
-Use this for standard text inputs when the library styling, sizing, and visual variants are needed. Prefix and suffix content can be supplied either as plain string props or via named slots for richer markup.
+Use this for standard text inputs and numeric inputs when the library styling, sizing, and visual variants are needed. Prefix and suffix content can be supplied either as plain string props or via named slots for richer markup.
 
 ## Internal architecture
 
@@ -12,6 +12,7 @@ Use this for standard text inputs when the library styling, sizing, and visual v
 - A native `<input>` is rendered with `v-model` bound to `defineModel<string>()`.
 - Prefix and suffix content are rendered in absolutely positioned wrapper spans around the input.
 - Slot content overrides the prop fallback for `prefix` and `suffix`.
+- When `type === NyxInputType.Number`, number control state and handlers come from `useNyxInputNumber`.
 
 ## Props
 
@@ -38,6 +39,7 @@ Use this for standard text inputs when the library styling, sizing, and visual v
 | `min` | `number` | `undefined` | Native min |
 | `max` | `number` | `undefined` | Native max |
 | `step` | `number` | `undefined` | Native step |
+| `numberControls` | `NyxInputNumberControls` | `Stacked` for number inputs, otherwise `None` | Layout for numeric increment/decrement controls |
 
 ## Emits
 
@@ -62,9 +64,11 @@ Use this for standard text inputs when the library styling, sizing, and visual v
 
 - Uses a native `<input>` element for built-in keyboard and form behaviour.
 - Prefix and suffix wrappers are presentation-only and use `pointer-events: none`.
+- Number control buttons remain native `<button>` elements, so keyboard activation still works.
 - Consumers should provide a label via surrounding form markup or `aria-label`/`aria-labelledby`.
 
 ## Known limitations
 
 - Prefix and suffix content are visual only; they do not alter the input value.
 - The component generates an id when one is not supplied, but it does not render a label itself.
+- The hold-repeat timing is implementation-defined; only the progression of step multipliers is part of the contract.

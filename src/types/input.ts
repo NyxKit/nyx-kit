@@ -13,3 +13,9 @@ export enum NyxInputType {
   Week = 'week',
   Color = 'color',
 }
+
+export enum NyxInputNumberControls {
+  None = 'none',
+  Stacked = 'stacked',
+  Separated = 'separated',
+}
