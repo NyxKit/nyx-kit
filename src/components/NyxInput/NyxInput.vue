@@ -20,16 +20,19 @@ const model = defineModel<string>()
 
 const prefixRef = useTemplateRef<HTMLSpanElement>('prefixRef')
 const suffixRef = useTemplateRef<HTMLSpanElement>('suffixRef')
+const numberControlsRef = useTemplateRef<HTMLDivElement>('numberControlsRef')
 
-const { classList, nyxVariant } = useNyxProps(props, { origin: 'NyxInput', primitive: 'input' })
+const { classList, nyxTheme, nyxVariant } = useNyxProps(props, { origin: 'NyxInput', primitive: 'input' })
 const normalizedId = computed(() => props.id ?? `nyx-input-${generateRandomString(16)}`)
 
 const computedPaddingVars = computed(() => {
   const prefixWidth = prefixRef.value?.offsetWidth ?? 0
   const suffixWidth = suffixRef.value?.offsetWidth ?? 0
+  const numberControlsWidth = numberControlsRef.value?.offsetWidth ?? 0
   return {
     '--nyx-input-pad-prefix': `${prefixWidth}px`,
-    '--nyx-input-pad-suffix': `${suffixWidth}px`,
+    '--nyx-input-pad-suffix': `${suffixWidth + numberControlsWidth}px`,
+    '--nyx-input-offset-suffix': `${numberControlsWidth}px`,
   }
 })
 
@@ -58,6 +61,7 @@ const {
     <NyxButton
       v-if="normalizedNumberControls === NyxInputNumberControls.Separated"
       class="nyx-input__number-control"
+      :theme="nyxTheme"
       :size="props.size"
       :shape="NyxShape.Square"
       :variant="numberButtonVariant"
@@ -65,7 +69,7 @@ const {
       @pointerup="onNumberButtonPointerUp"
       @pointercancel="onNumberButtonPointerCancel"
       @click="onNumberButtonClick(-1, $event)"
-    ><span>-</span></NyxButton>
+    ><NyxIcon name="minus" /></NyxButton>
     <input
       :type="props.type"
       :placeholder="props.placeholder"
@@ -90,6 +94,7 @@ const {
     <NyxButton
       v-if="normalizedNumberControls === NyxInputNumberControls.Separated"
       class="nyx-input__number-control"
+      :theme="nyxTheme"
       :size="props.size"
       :shape="NyxShape.Square"
       :variant="numberButtonVariant"
@@ -102,9 +107,11 @@ const {
       v-if="normalizedNumberControls === NyxInputNumberControls.Stacked"
       class="nyx-input__number-controls"
       :direction="NyxDirection.Vertical"
+      ref="numberControlsRef"
     >
       <NyxButton
         class="nyx-input__number-control"
+        :theme="nyxTheme"
         :size="props.size"
         :shape="NyxShape.Square"
         :variant="numberButtonVariant"
@@ -115,6 +122,7 @@ const {
       ><NyxIcon name="chevron-up" :size="NyxSize.XSmall" /></NyxButton>
       <NyxButton
         class="nyx-input__number-control"
+        :theme="nyxTheme"
         :size="props.size"
         :shape="NyxShape.Square"
         :variant="numberButtonVariant"

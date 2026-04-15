@@ -67,7 +67,7 @@
   }
 
   &__suffix {
-    right: 0;
+    right: var(--nyx-input-offset-suffix, 0px);
   }
 
   &__number-controls {
