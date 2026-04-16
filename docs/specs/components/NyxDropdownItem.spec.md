@@ -19,12 +19,13 @@ NyxDropdownItem renders one option as an interactive row in a dropdown menu. It 
 - Renders one option value as an interactive element.
 - Reflects disabled state visually and functionally.
 - Emits activation data to the parent menu or wrapper.
+- Shows an optional icon before the label when one is provided.
 
 ## Props
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `option` | `NyxSelectOption` | Required | Option data for the item |
+| `option` | `NyxSelectOption` | Required | Option data for the item, including optional icon |
 
 ## Emits
 

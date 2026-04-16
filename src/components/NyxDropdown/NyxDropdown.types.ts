@@ -26,6 +26,7 @@ export interface NyxDropdownMenuEmits {
 
 export interface NyxDropdownItemProps {
   option: NyxSelectOption
+  size?: NyxSize
 }
 
 export interface NyxDropdownItemEmits {

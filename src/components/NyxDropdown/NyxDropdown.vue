@@ -7,7 +7,7 @@ import NyxDropdownMenu from './NyxDropdownMenu.vue'
 import type { NyxDropdownEmits, NyxDropdownProps } from './NyxDropdown.types'
 
 const props = withDefaults(defineProps<NyxDropdownProps>(), {
-  trigger: NyxTrigger.Hover,
+  trigger: NyxTrigger.Click,
   position: NyxPosition.BottomRight,
   options: () => []
 })
@@ -48,7 +48,7 @@ const clearCloseTimer = () => {
 const scheduleClose = () => {
   clearCloseTimer()
   closeTimer = window.setTimeout(() => {
-    void closeDropdown()
+    void closeDropdown({ blurTrigger: true })
   }, 120)
 }
 
@@ -76,32 +76,40 @@ const openDropdown = async (focusIndex?: number) => {
   }
 }
 
-const closeDropdown = async () => {
+const closeDropdown = async (options?: { focusTrigger?: boolean, blurTrigger?: boolean }) => {
   clearCloseTimer()
   if (!isOpen.value) return
   isOpen.value = false
   await nextTick()
-  elTrigger.value?.focus()
+  if (options?.focusTrigger) {
+    elTrigger.value?.focus()
+  } else if (options?.blurTrigger) {
+    elTrigger.value?.blur()
+  }
 }
 
-const toggleDropdown = async () => {
+const toggleDropdown = async (options?: { focusTrigger?: boolean, blurTrigger?: boolean }) => {
   if (isOpen.value) {
-    await closeDropdown()
+    await closeDropdown(options)
     return
   }
   await openDropdown()
 }
 
+const onTriggerClick = async () => {
+  await toggleDropdown({ blurTrigger: true })
+}
+
 const onTriggerKeydown = async (event: KeyboardEvent) => {
   if (event.key === 'Escape') {
     event.preventDefault()
-    await closeDropdown()
+    await closeDropdown({ focusTrigger: true })
     return
   }
 
   if (event.key === 'Enter' || event.key === ' ') {
     event.preventDefault()
-    await toggleDropdown()
+    await toggleDropdown({ focusTrigger: true })
     return
   }
 
@@ -152,7 +160,7 @@ const onPanelKeydown = async (event: KeyboardEvent) => {
 
   if (event.key === 'Escape') {
     event.preventDefault()
-    await closeDropdown()
+    await closeDropdown({ focusTrigger: true })
     return
   }
 
@@ -169,7 +177,7 @@ const onPanelKeydown = async (event: KeyboardEvent) => {
 
 const onSelectOption = async (option: NonNullable<NyxDropdownProps['options']>[number]) => {
   emit('select', option)
-  await closeDropdown()
+  await closeDropdown({ blurTrigger: true })
 }
 
 const getOwnerDocument = () => elTrigger.value?.ownerDocument ?? document
@@ -179,7 +187,7 @@ const onDocumentClick = (event: MouseEvent) => {
   const target = event.target as Node | null
   if (!target) return
   if (elTrigger.value?.contains(target) || elDropdown.value?.contains(target)) return
-  void closeDropdown()
+  void closeDropdown({ blurTrigger: true })
 }
 
 onMounted(() => {
@@ -209,7 +217,7 @@ onBeforeUnmount(() => {
       aria-haspopup="menu"
       :aria-expanded="isOpen"
       :aria-controls="dropdownId"
-      @click="toggleDropdown"
+      @click="onTriggerClick"
       @keydown="onTriggerKeydown"
       @pointerenter="onTriggerPointerEnter"
       @pointerleave="onTriggerPointerLeave"

@@ -25,6 +25,7 @@ NyxDropdown provides a compact way to pair any trigger content with a floating p
 - The wrapper forwards its visual theme, size, and variant to the default menu so the panel matches the trigger styling.
 - When a `dropdown` slot is provided, it replaces the default option-rendered panel.
 - The panel is dismissed through outside interaction and keyboard escape handling.
+- Menu options may include an optional icon that is shown alongside the label.
 
 ## Props
 
@@ -34,8 +35,8 @@ NyxDropdown provides a compact way to pair any trigger content with a floating p
 | `size` | `NyxSize` | inherited from library defaults | Size token applied to the trigger and default menu |
 | `variant` | `NyxVariant` | inherited from library defaults | Visual variant applied to the trigger and default menu |
 | `position` | `NyxPosition` | `bottom` | Preferred initial position for the floating panel |
-| `trigger` | `NyxTrigger` | `hover` | Interaction mode used to open the dropdown |
-| `options` | `NyxSelectOption[]` | `[]` | Option list used by the default dropdown menu |
+| `trigger` | `NyxTrigger` | `click` | Interaction mode used to open the dropdown |
+| `options` | `NyxSelectOption[]` | `[]` | Option list used by the default dropdown menu; options may include an optional icon |
 
 ## Emits
 

@@ -1,13 +1,14 @@
-import { defineComponent, onMounted, ref } from 'vue'
+import { defineComponent } from 'vue'
 import NyxDropdown from './NyxDropdown.vue'
 import { NyxTheme, NyxVariant, NyxSize, NyxTrigger, NyxPosition, type KeyDict } from '@/types'
 import { getKeyDictKeyByValue } from '@/utils'
 import type { NyxDropdownProps } from './NyxDropdown.types'
+import NyxIcon from '../NyxIcon/NyxIcon.vue'
 
 const sampleOptions = [
-  { label: 'Edit', value: 'edit' },
-  { label: 'Duplicate', value: 'duplicate' },
-  { label: 'Delete', value: 'delete', disabled: true },
+  { label: 'Edit', value: 'edit', icon: 'edit' },
+  { label: 'Duplicate', value: 'duplicate', icon: 'plus' },
+  { label: 'Delete', value: 'delete', disabled: true, icon: 'trash' },
 ]
 
 export default {
@@ -38,13 +39,16 @@ export default {
 }
 
 const Template = (args: NyxDropdownProps) => defineComponent({
-  components: { NyxDropdown },
+  components: { NyxDropdown, NyxIcon },
   setup () {
     return { args }
   },
   template: `
     <nyx-dropdown v-bind="args">
-      <button type="button">Actions</button>
+      <button type="button" style="display:inline-flex;align-items:center;gap:0.5rem;">
+        <nyx-icon name="menu" />
+        <span>Actions</span>
+      </button>
     </nyx-dropdown>
   `,
 })
@@ -55,32 +59,35 @@ export const Default = Template({
   size: NyxSize.Medium,
   variant: NyxVariant.Filled,
   position: NyxPosition.Bottom,
-  trigger: NyxTrigger.Hover,
+  trigger: NyxTrigger.Click,
 })
 
 export const InteractivePreview = () => defineComponent({
-  components: { NyxDropdown },
+  components: { NyxDropdown, NyxIcon },
   setup () {
-    const triggerRef = ref<HTMLButtonElement | null>(null)
-    onMounted(() => {
-      window.setTimeout(() => triggerRef.value?.click(), 0)
-    })
-    return { sampleOptions, triggerRef }
+    return { sampleOptions }
   },
   template: `
-    <nyx-dropdown :options="sampleOptions" trigger="click">
-      <button ref="triggerRef" type="button">Open menu</button>
+    <nyx-dropdown :options="sampleOptions" trigger="hover">
+      <button type="button" style="display:inline-flex;align-items:center;gap:0.5rem;">
+        <nyx-icon name="chevron-down" />
+        <span>Open menu</span>
+      </button>
     </nyx-dropdown>
   `,
 })
 
 export const CustomDropdown = () => defineComponent({
-  components: { NyxDropdown },
+  components: { NyxDropdown, NyxIcon },
   template: `
     <nyx-dropdown>
-      <button type="button">Open menu</button>
+      <button type="button" style="display:inline-flex;align-items:center;gap:0.5rem;">
+        <nyx-icon name="settings" />
+        <span>Open menu</span>
+      </button>
       <template #dropdown>
-        <div style="padding: 1rem; min-width: 14rem; background: var(--nyx-c-bg-soft); border: 1px solid var(--nyx-c-divider); border-radius: var(--nyx-radius-md);">
+        <div style="padding: 1rem; min-width: 14rem; display:flex;align-items:center;gap:0.5rem; background: var(--nyx-c-bg-soft); border: 1px solid var(--nyx-c-divider); border-radius: var(--nyx-radius-md);">
+          <nyx-icon name="settings" />
           Custom dropdown content
         </div>
       </template>
@@ -89,7 +96,7 @@ export const CustomDropdown = () => defineComponent({
 })
 
 const TemplateAll = (prop: string, dict: KeyDict<string>) => () => defineComponent({
-  components: { NyxDropdown },
+  components: { NyxDropdown, NyxIcon },
   setup () {
     const values = Object.values(dict)
     const getLabel = (value: string) => getKeyDictKeyByValue(dict, value)
@@ -102,7 +109,10 @@ const TemplateAll = (prop: string, dict: KeyDict<string>) => () => defineCompone
         :key="value"
         v-bind="{ [prop]: value, options: sampleOptions }"
       >
-        <button type="button">{{ getLabel(value) }}</button>
+        <button type="button" style="display:inline-flex;align-items:center;gap:0.5rem;">
+          <nyx-icon name="arrow-right" />
+          <span>{{ getLabel(value) }}</span>
+        </button>
       </nyx-dropdown>
     </div>
   `,

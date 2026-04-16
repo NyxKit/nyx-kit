@@ -5,9 +5,9 @@ import { getKeyDictKeyByValue } from '@/utils'
 import type { NyxDropdownMenuProps } from './NyxDropdown.types'
 
 const sampleOptions = [
-  { label: 'View', value: 'view' },
-  { label: 'Rename', value: 'rename' },
-  { label: 'Archive', value: 'archive', disabled: true },
+  { label: 'View', value: 'view', icon: 'search' },
+  { label: 'Rename', value: 'rename', icon: 'edit' },
+  { label: 'Archive', value: 'archive', disabled: true, icon: 'alert-circle' },
 ]
 
 export default {

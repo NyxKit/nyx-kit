@@ -27,6 +27,7 @@ const onItemClick = (option: NonNullable<NyxDropdownMenuProps['options']>[number
       v-for="option in props.options"
       :key="option.value"
       :option="option"
+      :size="props.size"
       @click="onItemClick"
     />
   </div>

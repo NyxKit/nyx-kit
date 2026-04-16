@@ -18,6 +18,7 @@ NyxDropdownMenu renders a list of selectable items from a simple option array. I
 - Renders one `NyxDropdownItem` per provided option.
 - Preserves option order and disabled state.
 - Forwards item activation as a menu-level selection event.
+- Passes through optional option icons so items can show a visual marker next to the label.
 
 ## Props
 
@@ -26,7 +27,7 @@ NyxDropdownMenu renders a list of selectable items from a simple option array. I
 | `theme` | `NyxTheme` | inherited from library defaults | Visual theme for the menu |
 | `size` | `NyxSize` | inherited from library defaults | Size token for the menu |
 | `variant` | `NyxVariant` | inherited from library defaults | Visual variant for the menu |
-| `options` | `NyxSelectOption[]` | `[]` | Options rendered as menu items |
+| `options` | `NyxSelectOption[]` | `[]` | Options rendered as menu items; each option may include an optional icon |
 
 ## Emits
 
