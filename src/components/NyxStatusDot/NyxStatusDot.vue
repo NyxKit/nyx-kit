@@ -8,7 +8,7 @@ import './NyxStatusDot.scss'
 
 const props = withDefaults(defineProps<NyxStatusDotProps>(), {
   theme: NyxTheme.Success,
-  size: NyxSize.XSmall,
+  size: NyxSize.Medium,
   variant: NyxVariant.Filled,
   backlight: false,
   animation: NyxAnimationState.Paused,
