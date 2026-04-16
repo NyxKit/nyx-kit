@@ -11,6 +11,7 @@ export interface NyxButtonProps {
   gradient?: boolean|NyxTheme,
   backlight?: boolean|NyxTheme,
   pixel?: boolean
+  loading?: boolean
 }
 
 export interface NyxButtonEmits {

@@ -53,6 +53,14 @@
     filter: drop-shadow(0 0 var(--nyx-backlight-size) rgba(var(--nyx-rgb-button), var(--nyx-backlight-intensity)));
   }
 
+  .nyx-spinner,
+  .nyx-icon {
+    flex-shrink: 0;
+    height: 100%;
+    margin: -0.25em 0;
+    padding: 0;
+  }
+
   &.theme-primary {
     --nyx-c-button: var(--nyx-c-primary);
     --nyx-c-button-highlight: var(--nyx-c-primary-highlight);
