@@ -3,6 +3,7 @@ import NyxAvatar from './NyxAvatar/NyxAvatar.vue'
 import NyxBadge from './NyxBadge/NyxBadge.vue'
 import NyxBreadcrumbs from './NyxBreadcrumbs/NyxBreadcrumbs.vue'
 import NyxButton from './NyxButton/NyxButton.vue'
+import NyxButtonGroup from './NyxButtonGroup/NyxButtonGroup.vue'
 import NyxCard from './NyxCard/NyxCard.vue'
 import NyxCarousel from './NyxCarousel/NyxCarousel.vue'
 import NyxCheckbox from './NyxCheckbox/NyxCheckbox.vue'
@@ -38,6 +39,7 @@ export {
   NyxBadge,
   NyxBreadcrumbs,
   NyxButton,
+  NyxButtonGroup,
   NyxCard,
   NyxCarousel,
   NyxCheckbox,
