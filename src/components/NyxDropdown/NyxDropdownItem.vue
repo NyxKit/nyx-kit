@@ -1,0 +1,33 @@
+<script setup lang="ts">
+import './NyxDropdown.scss'
+import { useNyxProps } from '@/composables'
+import type { NyxDropdownItemEmits, NyxDropdownItemProps } from './NyxDropdown.types'
+
+const props = defineProps<NyxDropdownItemProps>()
+const emit = defineEmits<NyxDropdownItemEmits>()
+
+const { classList } = useNyxProps(props, { origin: 'NyxDropdownItem' })
+
+const onClick = () => {
+  if (props.option.disabled) return
+  emit('click', props.option)
+}
+</script>
+
+<template>
+  <button
+    type="button"
+    class="nyx-dropdown-item"
+    data-nyx-dropdown-item
+    :class="[
+      ...classList,
+      { 'nyx-dropdown-item--disabled': props.option.disabled }
+    ]"
+    :disabled="props.option.disabled"
+    :aria-disabled="props.option.disabled || undefined"
+    role="menuitem"
+    @click="onClick"
+  >
+    <span>{{ props.option.label }}</span>
+  </button>
+</template>
