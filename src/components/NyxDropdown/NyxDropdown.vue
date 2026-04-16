@@ -218,36 +218,33 @@ onBeforeUnmount(() => {
     </div>
 
     <Teleport to="body">
-      <Transition name="nyx-dropdown__panel-transition">
-        <div
-          v-if="isOpen"
-          ref="elDropdown"
-          class="nyx-dropdown__panel"
-          :class="[
-            ...classList,
-            `nyx-dropdown__panel--${computedPosition}`,
-            { 'nyx-dropdown__panel--open': isOpen }
-          ]"
-          :data-position="computedPosition"
-          :id="dropdownId"
-          :style="cssVariables"
-          role="menu"
-          :aria-labelledby="triggerId"
-          @keydown="onPanelKeydown"
-          @pointerenter="onPanelPointerEnter"
-          @pointerleave="onPanelPointerLeave"
-        >
-          <slot name="dropdown">
-            <NyxDropdownMenu
-              :theme="props.theme"
-              :size="props.size"
-              :variant="props.variant"
-              :options="props.options"
-              @select="onSelectOption"
-            />
-          </slot>
-        </div>
-      </Transition>
+      <div
+        ref="elDropdown"
+        class="nyx-dropdown__panel"
+        :class="[
+          ...classList,
+          `nyx-dropdown__panel--${computedPosition}`,
+          { 'nyx-dropdown__panel--open': isOpen }
+        ]"
+        :data-position="computedPosition"
+        :id="dropdownId"
+        :style="cssVariables"
+        role="menu"
+        :aria-labelledby="triggerId"
+        @keydown="onPanelKeydown"
+        @pointerenter="onPanelPointerEnter"
+        @pointerleave="onPanelPointerLeave"
+      >
+        <slot name="dropdown">
+          <NyxDropdownMenu
+            :theme="props.theme"
+            :size="props.size"
+            :variant="props.variant"
+            :options="props.options"
+            @select="onSelectOption"
+          />
+        </slot>
+      </div>
     </Teleport>
   </div>
 </template>

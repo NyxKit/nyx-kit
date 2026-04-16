@@ -40,11 +40,14 @@ describe('NyxDropdown', () => {
     })
 
     await wrapper.get('.nyx-dropdown__trigger').trigger('click')
-    expect(document.body.querySelector('.nyx-dropdown__panel')).not.toBeNull()
+    const panel = document.body.querySelector('.nyx-dropdown__panel')
+    expect(panel).not.toBeNull()
+    expect(panel?.className).toContain('nyx-dropdown__panel--open')
 
     await wrapper.get('.nyx-dropdown__trigger').trigger('click')
     await nextTick()
-    expect(document.body.querySelector('.nyx-dropdown__panel')).toBeNull()
+    expect(document.body.querySelector('.nyx-dropdown__panel')).not.toBeNull()
+    expect(document.body.querySelector('.nyx-dropdown__panel')?.className).not.toContain('nyx-dropdown__panel--open')
   })
 
   it('renders the default option menu when no custom dropdown slot is provided', async () => {
@@ -112,7 +115,7 @@ describe('NyxDropdown', () => {
     document.body.dispatchEvent(new MouseEvent('click', { bubbles: true }))
     await nextTick()
 
-    expect(document.body.querySelector('.nyx-dropdown__panel')).toBeNull()
+    expect(document.body.querySelector('.nyx-dropdown__panel')?.className).not.toContain('nyx-dropdown__panel--open')
   })
 
   it('forwards theme, size, and variant props to the default menu', async () => {
@@ -168,7 +171,7 @@ describe('NyxDropdown', () => {
     await nextTick()
 
     expect(wrapper.emitted('select')?.[0]?.[0]).toEqual(sampleOptions[0])
-    expect(document.body.querySelector('.nyx-dropdown__panel')).toBeNull()
+    expect(document.body.querySelector('.nyx-dropdown__panel')?.className).not.toContain('nyx-dropdown__panel--open')
   })
 
   it('renders custom dropdown content when the dropdown slot is provided', async () => {
