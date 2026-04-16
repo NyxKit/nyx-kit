@@ -6,6 +6,7 @@ export interface NyxComponentProps {
   theme?: NyxTheme
   size?: NyxSize
   variant?: NyxVariant
+  trigger?: NyxTrigger
   shape?: NyxShape
   pixel?: boolean
 }
@@ -35,6 +36,16 @@ export enum NyxVariant {
   Outline = 'outline',
   Ghost = 'ghost',
   Text = 'text',
+}
+
+export enum NyxAnimationState {
+  Playing = 'playing',
+  Paused = 'paused',
+}
+
+export enum NyxTrigger {
+  Hover = 'hover',
+  Click = 'click',
 }
 
 export enum NyxShape {

@@ -70,6 +70,7 @@ The project constitution is at `.specify/memory/constitution.md`.
 - N/A — display-only, no state (014-nyx-metric-card)
 - TypeScript 5.7 / Vue 3.5 + Vue 3, `NyxTable`, `NyxTableCell`, `NyxTheme` — all already in scope (015-nyx-log-viewer)
 - N/A — display only, no state (015-nyx-log-viewer)
+- TypeScript + Vue 3 + Vue 3, SCSS, shared Nyx Kit composables and types (016-dropdown-components)
 
 ## Recent Changes
 - 003-testing-improvements: Added TypeScript 5.x / Vue 3 + `@vue/test-utils`, `vitest`, `@playwright/test`, `jsdom`
