@@ -23,6 +23,7 @@ import NyxProgress from './NyxProgress/NyxProgress.vue'
 import NyxSelect from './NyxSelect/NyxSelect.vue'
 import NyxSlider from './NyxSlider/NyxSlider.vue'
 import NyxSpinner from './NyxSpinner/NyxSpinner.vue'
+import NyxStatusDot from './NyxStatusDot/NyxStatusDot.vue'
 import NyxSwitch from './NyxSwitch/NyxSwitch.vue'
 import NyxTable from './NyxTable/NyxTable.vue'
 import NyxTableCell from './NyxTable/NyxTableCell.vue'
@@ -57,6 +58,7 @@ export {
   NyxSelect,
   NyxSlider,
   NyxSpinner,
+  NyxStatusDot,
   NyxSwitch,
   NyxTable,
   NyxTableCell,

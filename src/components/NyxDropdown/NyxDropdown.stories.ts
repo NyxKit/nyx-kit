@@ -1,4 +1,5 @@
 import { defineComponent } from 'vue'
+import type { Meta, StoryObj } from '@storybook/vue3'
 import NyxDropdown from './NyxDropdown.vue'
 import { NyxTheme, NyxVariant, NyxSize, NyxTrigger, NyxPosition, type KeyDict } from '@/types'
 import { getKeyDictKeyByValue } from '@/utils'
@@ -11,7 +12,7 @@ const sampleOptions = [
   { label: 'Delete', value: 'delete', disabled: true, icon: 'trash' },
 ]
 
-export default {
+const meta = {
   title: 'Components/NyxDropdown',
   component: NyxDropdown,
   argTypes: {
@@ -36,7 +37,11 @@ export default {
       options: Object.values(NyxTrigger),
     },
   },
-}
+} satisfies Meta<typeof NyxDropdown>
+
+export default meta
+
+type Story = StoryObj<typeof meta>
 
 const Template = (args: NyxDropdownProps) => defineComponent({
   components: { NyxDropdown, NyxIcon },
@@ -53,16 +58,19 @@ const Template = (args: NyxDropdownProps) => defineComponent({
   `,
 })
 
-export const Default = Template({
-  options: sampleOptions,
-  theme: NyxTheme.Primary,
-  size: NyxSize.Medium,
-  variant: NyxVariant.Filled,
-  position: NyxPosition.Bottom,
-  trigger: NyxTrigger.Click,
-})
+export const Default: Story = {
+  render: () => Template({
+    options: sampleOptions,
+    theme: NyxTheme.Primary,
+    size: NyxSize.Medium,
+    variant: NyxVariant.Filled,
+    position: NyxPosition.Bottom,
+    trigger: NyxTrigger.Click,
+  }),
+}
 
-export const InteractivePreview = () => defineComponent({
+export const InteractivePreview: Story = {
+  render: () => defineComponent({
   components: { NyxDropdown, NyxIcon },
   setup () {
     return { sampleOptions }
@@ -75,9 +83,11 @@ export const InteractivePreview = () => defineComponent({
       </button>
     </nyx-dropdown>
   `,
-})
+  }),
+}
 
-export const CustomDropdown = () => defineComponent({
+export const CustomDropdown: Story = {
+  render: () => defineComponent({
   components: { NyxDropdown, NyxIcon },
   template: `
     <nyx-dropdown>
@@ -93,7 +103,8 @@ export const CustomDropdown = () => defineComponent({
       </template>
     </nyx-dropdown>
   `,
-})
+  }),
+}
 
 const TemplateAll = (prop: string, dict: KeyDict<string>) => () => defineComponent({
   components: { NyxDropdown, NyxIcon },
@@ -118,6 +129,6 @@ const TemplateAll = (prop: string, dict: KeyDict<string>) => () => defineCompone
   `,
 })
 
-export const Themes = TemplateAll('theme', NyxTheme)
-export const Variants = TemplateAll('variant', NyxVariant)
-export const Sizes = TemplateAll('size', NyxSize)
+export const Themes: Story = { render: TemplateAll('theme', NyxTheme) }
+export const Variants: Story = { render: TemplateAll('variant', NyxVariant) }
+export const Sizes: Story = { render: TemplateAll('size', NyxSize) }

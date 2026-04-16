@@ -38,6 +38,11 @@ export enum NyxVariant {
   Text = 'text',
 }
 
+export enum NyxAnimationState {
+  Playing = 'playing',
+  Paused = 'paused',
+}
+
 export enum NyxTrigger {
   Hover = 'hover',
   Click = 'click',
