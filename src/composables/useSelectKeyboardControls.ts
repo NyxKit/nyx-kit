@@ -1,23 +1,23 @@
 import { computed, type Ref } from 'vue'
 import type { NyxSelectOption } from '@/types'
 
-export interface UseSelectKeyboardControlsOptions {
-  options: Ref<NyxSelectOption[]>
-  focusedValue: Ref<string | null>
+export interface UseSelectKeyboardControlsOptions<T = string> {
+  options: Ref<NyxSelectOption<T>[]>
+  focusedValue: Ref<T | null>
   isOpen: Ref<boolean>
-  onSelect: (option: NyxSelectOption) => void
-  isOptionDisabled: (option: NyxSelectOption) => boolean
-  scrollToOption: (value: string) => void
+  onSelect: (option: NyxSelectOption<T>) => void
+  isOptionDisabled: (option: NyxSelectOption<T>) => boolean
+  scrollToOption: (value: T) => void
 }
 
-export const useSelectKeyboardControls = ({
+export const useSelectKeyboardControls = <T = string>({
   options,
   focusedValue,
   isOpen,
   onSelect,
   isOptionDisabled,
   scrollToOption
-}: UseSelectKeyboardControlsOptions) => {
+}: UseSelectKeyboardControlsOptions<T>) => {
   const focusedIndex = computed(() => {
     if (!focusedValue.value) return -1
     return options.value.findIndex((opt) => opt.value === focusedValue.value)

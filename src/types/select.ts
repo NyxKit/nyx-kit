@@ -3,14 +3,14 @@ export enum NyxSelectType {
   Multiple = 'multiple'
 }
 
-export interface NyxSelectOptionGroup {
+export interface NyxSelectOptionGroup<T = string> {
   label: string,
-  options: NyxSelectOption[]
+  options: NyxSelectOption<T>[]
 }
 
-export interface NyxSelectOption {
+export interface NyxSelectOption<T = string> {
   label: string,
-  value: string,
+  value: T,
   disabled?: boolean
   icon?: string
 }

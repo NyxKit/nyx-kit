@@ -1,6 +1,6 @@
 import { defineComponent, ref } from 'vue'
 import NyxSelect from './NyxSelect.vue'
-import { NyxTheme, NyxVariant, NyxSize, NyxSelectType, type KeyDict } from '@/types'
+import { NyxTheme, NyxVariant, NyxSize, NyxSelectType, type KeyDict, type NyxSelectOption } from '@/types'
 import type { NyxSelectProps } from './NyxSelect.types'
 import { getKeyDictKeyByValue } from '@/utils'
 import NyxForm from '../NyxForm/NyxForm.vue'
@@ -118,6 +118,65 @@ export const ExternalModelSync = () => defineComponent({
     </div>
   `,
 })
+
+// v-model is number; use NyxSelectOption<number>[] (templates cannot use <NyxSelect<number> — breaks HTML parse)
+export const NumericValues = () => defineComponent({
+  components: { NyxSelect },
+  setup () {
+    const modelValue = ref<number>(42)
+    const numericOptions: NyxSelectOption<number>[] = [
+      { label: 'Ten', value: 10 },
+      { label: 'Forty-two', value: 42 },
+      { label: 'One hundred', value: 100 },
+    ]
+    return { modelValue, numericOptions }
+  },
+  template: `
+    <div style="display:grid;gap:1rem;max-width:24rem;">
+      <nyx-select
+        v-model="modelValue"
+        :options="numericOptions"
+        placeholder="Pick a number"
+      />
+      <p style="margin:0;font-family:monospace;font-size:0.875rem;">
+        v-model: {{ modelValue }} — typeof: {{ typeof modelValue }}
+      </p>
+    </div>
+  `,
+})
+
+enum IssueState {
+  Open = 'open',
+  InProgress = 'in_progress',
+  Done = 'done',
+}
+
+// v-model is a string enum; same template rule — use nyx-select, not <NyxSelect<Enum>>
+export const EnumValues = () => defineComponent({
+  components: { NyxSelect },
+  setup () {
+    const modelValue = ref<IssueState>(IssueState.Open)
+    const enumOptions: NyxSelectOption<IssueState>[] = [
+      { label: 'Open', value: IssueState.Open },
+      { label: 'In progress', value: IssueState.InProgress },
+      { label: 'Done', value: IssueState.Done },
+    ]
+    return { modelValue, enumOptions }
+  },
+  template: `
+    <div style="display:grid;gap:1rem;max-width:24rem;">
+      <nyx-select
+        v-model="modelValue"
+        :options="enumOptions"
+        placeholder="Issue state"
+      />
+      <p style="margin:0;font-family:monospace;font-size:0.875rem;">
+        v-model: {{ modelValue }}
+      </p>
+    </div>
+  `,
+})
+
 export const Types = TemplateAll('type', NyxSelectType)
 export const Themes = TemplateAll('theme', NyxTheme)
 export const Variants = TemplateAll('variant', NyxVariant)

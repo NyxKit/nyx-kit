@@ -19,9 +19,10 @@ NyxSelect is a custom select control that replaces the native `<select>` element
 
 - Custom control div + teleported dropdown; position managed by `useTeleportPosition`
 - A hidden native `<select>` (`.sr-only`) stays in sync with `v-model` for accessibility and form submission
-- `isGrouped` detects at runtime whether `options` is `NyxSelectOption[]` or `NyxSelectOptionGroup[]` by checking for an `options` key on the first element
+- `isGrouped` detects at runtime whether `options` is `NyxSelectOption<T>[]` or `NyxSelectOptionGroup<T>[]` by checking for an `options` key on the first element
 - `flatOptions` flattens grouped options for value-to-label lookups (used in `selectedLabels` and `isSelected`)
-- `filteredOptions` returns the same shape as the input (`NyxSelectOption[]` or `NyxSelectOptionGroup[]`), filtering by `searchQuery` and pruning empty groups
+- `filteredOptions` returns the same shape as the input (`NyxSelectOption<T>[]` or `NyxSelectOptionGroup<T>[]`), filtering by `searchQuery` and pruning empty groups
+- Generic value type `T` defaults to `string`; keyboard focus uses `shallowRef<T | null>` so option values that are objects are not deep-unwrapped by Vue
 - The externally bound `v-model` value remains the source of truth for both the closed-control text and the selected option state shown in the dropdown
 - Group labels are rendered as non-interactive `<li class="nyx-select__group-label">` — they cannot be selected and have `pointer-events: none`
 - `v-click-outside` directive closes the dropdown when clicking outside
@@ -31,16 +32,14 @@ NyxSelect is a custom select control that replaces the native `<select>` element
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `options` | `NyxSelectOption[] \| NyxSelectOptionGroup[]` | — | Flat or grouped option list |
-| `type` | `NyxSelectType` | `'single'` | Reserved for future single/multiple type distinction |
+| `options` | `NyxSelectOption<T>[] \| NyxSelectOptionGroup<T>[]` | — | Flat or grouped option list (same `T` as `v-model`) |
+| `type` | `NyxSelectType` | `'single'` | Single vs multiple selection |
 | `theme` | `NyxTheme` | `'default'` | Colour theme |
 | `variant` | `NyxVariant` | `'outline'` | Visual variant (outline, ghost, text) |
 | `size` | `NyxSize` | `'md'` | Size token |
 | `disabled` | `boolean` | `false` | Disables the entire control |
 | `placeholder` | `string` | — | Placeholder shown in the input when nothing is selected |
 | `id` | `string` | — | Forwarded to the hidden `<select>` for label association |
-| `multiple` | `boolean` | `false` | Enables multi-select mode |
-
 ## Emits
 
 None — selection is communicated exclusively through `v-model`.
@@ -53,7 +52,7 @@ None — selection is communicated exclusively through `v-model`.
 
 ## v-model
 
-Binds to `string` (single mode) or `string[]` (multiple mode). The value corresponds to `NyxSelectOption.value`.
+Binds to `T` (single mode) or `T[]` (multiple mode), where `T` defaults to `string`. The value corresponds to `NyxSelectOption<T>.value`. When the model is unset in single mode, the component normalises to an internal empty placeholder compatible with the default `T` (`string` uses `''`).
 
 When the bound value changes externally after mount, `NyxSelect` must immediately update:
 - the text shown in the closed control
@@ -63,19 +62,22 @@ When the bound value changes externally after mount, `NyxSelect` must immediatel
 ## Types
 
 ```ts
-interface NyxSelectOption {
+interface NyxSelectOption<T = string> {
   label: string
-  value: string
+  value: T
   disabled?: boolean
+  icon?: string
 }
 
-interface NyxSelectOptionGroup {
+interface NyxSelectOptionGroup<T = string> {
   label: string
-  options: NyxSelectOption[]
+  options: NyxSelectOption<T>[]
 }
 ```
 
-Options may be passed as a flat array (`NyxSelectOption[]`) or a grouped array (`NyxSelectOptionGroup[]`). Mixing flat options and groups in the same array is not supported.
+Options may be passed as a flat array (`NyxSelectOption<T>[]`) or a grouped array (`NyxSelectOptionGroup<T>[]`). Mixing flat options and groups in the same array is not supported.
+
+List keys, `data-option-value`, and scroll syncing use `String(option.value)` so non-primitive values should stringify uniquely; object values are only as reliable as `String(obj)` (typically `[object Object]` unless you use primitives or custom `toString`).
 
 ## Keyboard behaviour
 

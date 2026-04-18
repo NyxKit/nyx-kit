@@ -1,26 +1,28 @@
-<script setup lang="ts">
-import { ref, computed, useId, useTemplateRef, watch, nextTick } from 'vue'
+<script setup lang="ts" generic="T = string">
+import { ref, computed, useId, useTemplateRef, watch, nextTick, shallowRef } from 'vue'
 import { NyxSelectType, type NyxSelectOption, type NyxSelectOptionGroup } from '@/types'
 import './NyxSelect.scss'
 import type { NyxSelectProps } from './NyxSelect.types'
 import { useTeleportPosition, useNyxProps, useSelectKeyboardControls } from '@/composables'
 
-const props = withDefaults(defineProps<NyxSelectProps>(), {
+const props = withDefaults(defineProps<NyxSelectProps<T>>(), {
   type: NyxSelectType.Single
 })
 
 const isMultiple = computed(() => props.type === NyxSelectType.Multiple)
 
-const model = defineModel<string | string[]>()
+const model = defineModel<T | T[]>()
+
+const emptySingle = '' as unknown as T
 
 const normalisedModel = computed({
-  get: () => model.value ?? (isMultiple.value ? [] : ''),
-  set: (value) => { model.value = value }
+  get: (): T | T[] => model.value ?? (isMultiple.value ? [] : emptySingle),
+  set: (value: T | T[]) => { model.value = value }
 })
 
 const elInput = useTemplateRef<HTMLInputElement>('elInput')
 const searchQuery = ref('')
-const focusedValue = ref<string | null>(null)
+const focusedValue = shallowRef<T | null>(null)
 
 const elControl = useTemplateRef<HTMLDivElement>('elControl')
 const elDropdown = useTemplateRef<HTMLDivElement>('elDropdown')
@@ -37,9 +39,9 @@ const { cssVariables, computedPosition } = useTeleportPosition(elControl, elDrop
 
 const isGrouped = computed(() => props.options.length > 0 && 'options' in props.options[0])
 
-const flatOptions = computed((): NyxSelectOption[] => {
-  if (!isGrouped.value) return props.options as NyxSelectOption[]
-  return (props.options as NyxSelectOptionGroup[]).flatMap((group) => group.options)
+const flatOptions = computed((): NyxSelectOption<T>[] => {
+  if (!isGrouped.value) return props.options as NyxSelectOption<T>[]
+  return (props.options as NyxSelectOptionGroup<T>[]).flatMap((group) => group.options)
 })
 
 const selectedLabels = computed(() => {
@@ -47,7 +49,7 @@ const selectedLabels = computed(() => {
     const option = flatOptions.value.find((opt) => opt.value === normalisedModel.value)
     return option?.label ?? ''
   }
-  return (normalisedModel.value as string[])
+  return (normalisedModel.value as T[])
     .map((value) => flatOptions.value.find((opt) => opt.value === value)?.label ?? '')
     .join(', ')
 })
@@ -56,23 +58,23 @@ const filteredOptions = computed(() => {
   const query = searchQuery.value.toLowerCase()
   if (!query) return props.options
   if (isGrouped.value) {
-    return (props.options as NyxSelectOptionGroup[])
+    return (props.options as NyxSelectOptionGroup<T>[])
       .map((group) => ({
         ...group,
         options: group.options.filter((opt) => opt.label.toLowerCase().includes(query))
       }))
       .filter((group) => group.options.length > 0)
   }
-  return (props.options as NyxSelectOption[]).filter((opt) =>
+  return (props.options as NyxSelectOption<T>[]).filter((opt) =>
     opt.label.toLowerCase().includes(query)
   )
 })
 
-const flatFilteredOptions = computed((): NyxSelectOption[] => {
+const flatFilteredOptions = computed((): NyxSelectOption<T>[] => {
   if (isGrouped.value) {
-    return (filteredOptions.value as NyxSelectOptionGroup[]).flatMap((group) => group.options)
+    return (filteredOptions.value as NyxSelectOptionGroup<T>[]).flatMap((group) => group.options)
   }
-  return filteredOptions.value as NyxSelectOption[]
+  return filteredOptions.value as NyxSelectOption<T>[]
 })
 
 const toggleDropdown = () => {
@@ -83,9 +85,9 @@ const closeDropdown = () => {
   isOpen.value = false
 }
 
-const onSelectOption = ({ value }: NyxSelectOption) => {
+const onSelectOption = ({ value }: NyxSelectOption<T>) => {
   if (isMultiple.value) {
-    const values = normalisedModel.value as string[]
+    const values = normalisedModel.value as T[]
     const index = values.indexOf(value)
     if (index === -1) {
       normalisedModel.value = [...values, value]
@@ -109,31 +111,35 @@ const onControlClick = () => {
   elInput.value?.focus()
 }
 
-const isSelected = (value: string): boolean => {
+const isSelected = (value: T): boolean => {
   if (isMultiple.value) {
-    return (normalisedModel.value as string[]).includes(value)
+    return (normalisedModel.value as T[]).includes(value)
   }
   return value === normalisedModel.value
 }
 
-const isOptionDisabled = (option: NyxSelectOption): boolean => {
+const isOptionDisabled = (option: NyxSelectOption<T>): boolean => {
   return !!option.disabled
 }
 
-const getOptionId = (value: string): string => {
-  return `${dropdownId}-option-${value}`
+const getOptionId = (value: T): string => {
+  return `${dropdownId}-option-${String(value)}`
 }
 
-const scrollToFocusedOption = (value: string) => {
+const activeDescendantId = computed(() =>
+  focusedValue.value != null ? getOptionId(focusedValue.value) : undefined
+)
+
+const scrollToFocusedOption = (value: T) => {
   nextTick(() => {
-    const el = elDropdown.value?.querySelector(`[data-option-value="${value}"]`) as HTMLElement | null
+    const el = elDropdown.value?.querySelector(`[data-option-value="${String(value)}"]`) as HTMLElement | null
     if (el?.scrollIntoView) {
       el.scrollIntoView({ block: 'nearest' })
     }
   })
 }
 
-const { onInputKeydown } = useSelectKeyboardControls({
+const { onInputKeydown } = useSelectKeyboardControls<T>({
   options: flatFilteredOptions,
   focusedValue,
   isOpen,
@@ -148,11 +154,14 @@ watch(isOpen, (newVal) => {
     focusedValue.value = null
   } else {
     setSearchQuery('')
-    const selectedValue = isMultiple.value 
-      ? ((normalisedModel.value as string[])[0] ?? '')
-      : (normalisedModel.value as string)
-    if (selectedValue) {
-      focusedValue.value = selectedValue
+    if (isMultiple.value) {
+      const first = (normalisedModel.value as T[])[0]
+      if (first !== undefined) focusedValue.value = first
+    } else {
+      const selectedValue = normalisedModel.value as T
+      if (selectedValue) {
+        focusedValue.value = selectedValue
+      }
     }
   }
 })
@@ -191,7 +200,7 @@ watch([normalisedModel, flatOptions], () => {
         aria-haspopup="listbox"
         aria-autocomplete="list"
         :aria-controls="dropdownId"
-        :aria-activedescendant="focusedValue ? getOptionId(focusedValue) : undefined"
+        :aria-activedescendant="activeDescendantId"
         @keydown="onInputKeydown"
       />
       <span class="nyx-select__arrow" @click="toggleDropdown">▼</span>
@@ -212,11 +221,11 @@ watch([normalisedModel, flatOptions], () => {
       >
         <ul>
           <template v-if="isGrouped">
-            <template v-for="group in (filteredOptions as NyxSelectOptionGroup[])" :key="group.label">
+            <template v-for="group in (filteredOptions as NyxSelectOptionGroup<T>[])" :key="group.label">
               <li class="nyx-select__group-label"><span>{{ group.label }}</span></li>
               <li
                 v-for="option in group.options"
-                :key="option.value"
+                :key="String(option.value)"
                 class="nyx-select__option nyx-select__option--group"
                 :class="{
                   'nyx-select__option--selected': isSelected(option.value),
@@ -225,22 +234,22 @@ watch([normalisedModel, flatOptions], () => {
                 }"
                 role="option"
                 :id="getOptionId(option.value)"
-                :data-option-value="option.value"
+                :data-option-value="String(option.value)"
                 :aria-selected="isSelected(option.value)"
                 :aria-disabled="!!option.disabled || undefined"
                 @click="onSelectOption(option)"
               ><span>{{ option.label }}</span></li>
             </template>
             <li
-              v-if="(filteredOptions as NyxSelectOptionGroup[]).length === 0"
+              v-if="(filteredOptions as NyxSelectOptionGroup<T>[]).length === 0"
               class="nyx-select__option nyx-select__option--empty"
               @click.prevent.stop="elInput?.focus()"
             ><slot name="empty"><span>No results found</span></slot></li>
           </template>
           <template v-else>
             <li
-              v-for="option in (filteredOptions as NyxSelectOption[])"
-              :key="option.value"
+              v-for="option in (filteredOptions as NyxSelectOption<T>[])"
+              :key="String(option.value)"
               class="nyx-select__option"
               :class="{
                 'nyx-select__option--selected': isSelected(option.value),
@@ -249,13 +258,13 @@ watch([normalisedModel, flatOptions], () => {
               }"
               role="option"
               :id="getOptionId(option.value)"
-              :data-option-value="option.value"
+              :data-option-value="String(option.value)"
               :aria-selected="isSelected(option.value)"
               :aria-disabled="!!option.disabled || undefined"
               @click="onSelectOption(option)"
             ><span>{{ option.label }}</span></li>
             <li
-              v-if="(filteredOptions as NyxSelectOption[]).length === 0"
+              v-if="(filteredOptions as NyxSelectOption<T>[]).length === 0"
               class="nyx-select__option nyx-select__option--empty"
               @click.prevent.stop="elInput?.focus()"
             ><slot name="empty"><span>No results found</span></slot></li>
@@ -266,12 +275,12 @@ watch([normalisedModel, flatOptions], () => {
 
     <select v-model="normalisedModel" class="sr-only" :id="props.id" :multiple="isMultiple" tabindex="-1">
       <template v-if="isGrouped">
-        <optgroup v-for="group in (props.options as NyxSelectOptionGroup[])" :key="group.label" :label="group.label">
-          <option v-for="option in group.options" :value="option.value" :key="option.value">{{ option.label }}</option>
+        <optgroup v-for="group in (props.options as NyxSelectOptionGroup<T>[])" :key="group.label" :label="group.label">
+          <option v-for="option in group.options" :value="option.value" :key="String(option.value)">{{ option.label }}</option>
         </optgroup>
       </template>
       <template v-else>
-        <option v-for="option in (props.options as NyxSelectOption[])" :value="option.value" :key="option.value">{{ option.label }}</option>
+        <option v-for="option in (props.options as NyxSelectOption<T>[])" :value="option.value" :key="String(option.value)">{{ option.label }}</option>
       </template>
     </select>
   </div>
