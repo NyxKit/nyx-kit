@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="T = string">
 import './NyxDropdown.scss'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, useId, useSlots, useTemplateRef } from 'vue'
 import { NyxPosition, NyxSize, NyxTrigger } from '@/types'
@@ -6,13 +6,13 @@ import { useNyxProps, useTeleportPosition } from '@/composables'
 import NyxDropdownMenu from './NyxDropdownMenu.vue'
 import type { NyxDropdownEmits, NyxDropdownProps } from './NyxDropdown.types'
 
-const props = withDefaults(defineProps<NyxDropdownProps>(), {
+const props = withDefaults(defineProps<NyxDropdownProps<T>>(), {
   trigger: NyxTrigger.Click,
   position: NyxPosition.BottomRight,
   options: () => []
 })
 
-const emit = defineEmits<NyxDropdownEmits>()
+const emit = defineEmits<NyxDropdownEmits<T>>()
 const slots = useSlots()
 
 const { classList } = useNyxProps(props, { origin: 'NyxDropdown' })
@@ -175,7 +175,7 @@ const onPanelKeydown = async (event: KeyboardEvent) => {
   }
 }
 
-const onSelectOption = async (option: NonNullable<NyxDropdownProps['options']>[number]) => {
+const onSelectOption = async (option: NonNullable<NyxDropdownProps<T>['options']>[number]) => {
   emit('select', option)
   await closeDropdown({ blurTrigger: true })
 }

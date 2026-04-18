@@ -12,5 +12,5 @@ export interface NyxSelectProps<T = string> {
 }
 
 export interface NyxSelectEmits<T = string> {
-  'select': [option: NyxSelectOption<T>]
+  (event: 'select', option: NyxSelectOption<T>): void
 }

@@ -25,13 +25,13 @@ NyxDropdownItem renders one option as an interactive row in a dropdown menu. It 
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `option` | `NyxSelectOption` | Required | Option data for the item, including optional icon |
+| `option` | `NyxSelectOption<T>` | Required | Option data for the item; `T` defaults to `string`. May include optional icon |
 
 ## Emits
 
 | Event | Payload | When |
 |---|---|---|
-| `click` | `NyxSelectOption` | The item is activated |
+| `click` | `NyxSelectOption<T>` | The item is activated |
 
 ## Slots
 

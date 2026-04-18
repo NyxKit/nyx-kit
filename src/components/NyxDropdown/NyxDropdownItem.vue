@@ -1,11 +1,11 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="T = string">
 import './NyxDropdown.scss'
 import { useNyxProps } from '@/composables'
 import NyxIcon from '../NyxIcon/NyxIcon.vue'
 import type { NyxDropdownItemEmits, NyxDropdownItemProps } from './NyxDropdown.types'
 
-const props = defineProps<NyxDropdownItemProps>()
-const emit = defineEmits<NyxDropdownItemEmits>()
+const props = defineProps<NyxDropdownItemProps<T>>()
+const emit = defineEmits<NyxDropdownItemEmits<T>>()
 
 const { classList, nyxSize } = useNyxProps(props, { origin: 'NyxDropdownItem' })
 

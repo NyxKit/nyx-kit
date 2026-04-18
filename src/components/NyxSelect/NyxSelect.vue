@@ -1,7 +1,7 @@
 <script setup lang="ts" generic="T = string">
+import './NyxSelect.scss'
 import { ref, computed, useId, useTemplateRef, watch, nextTick, shallowRef } from 'vue'
 import { NyxSelectType, type NyxSelectOption, type NyxSelectOptionGroup } from '@/types'
-import './NyxSelect.scss'
 import type { NyxSelectEmits, NyxSelectProps } from './NyxSelect.types'
 import { useTeleportPosition, useNyxProps, useSelectKeyboardControls } from '@/composables'
 

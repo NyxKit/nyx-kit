@@ -36,13 +36,13 @@ NyxDropdown provides a compact way to pair any trigger content with a floating p
 | `variant` | `NyxVariant` | inherited from library defaults | Visual variant applied to the trigger and default menu |
 | `position` | `NyxPosition` | `bottom` | Preferred initial position for the floating panel |
 | `trigger` | `NyxTrigger` | `click` | Interaction mode used to open the dropdown |
-| `options` | `NyxSelectOption[]` | `[]` | Option list used by the default dropdown menu; options may include an optional icon |
+| `options` | `NyxSelectOption<T>[]` | `[]` | Option list used by the default dropdown menu; `T` defaults to `string`. Options may include an optional icon |
 
 ## Emits
 
 | Event | Payload | When |
 |---|---|---|
-| `select` | `NyxSelectOption` | A default menu item is chosen |
+| `select` | `NyxSelectOption<T>` | A default menu item is chosen |
 
 ## Slots
 

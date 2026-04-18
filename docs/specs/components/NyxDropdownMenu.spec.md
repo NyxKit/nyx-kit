@@ -27,13 +27,13 @@ NyxDropdownMenu renders a list of selectable items from a simple option array. I
 | `theme` | `NyxTheme` | inherited from library defaults | Visual theme for the menu |
 | `size` | `NyxSize` | inherited from library defaults | Size token for the menu |
 | `variant` | `NyxVariant` | inherited from library defaults | Visual variant for the menu |
-| `options` | `NyxSelectOption[]` | `[]` | Options rendered as menu items; each option may include an optional icon |
+| `options` | `NyxSelectOption<T>[]` | `[]` | Options rendered as menu items; `T` defaults to `string`. Each option may include an optional icon |
 
 ## Emits
 
 | Event | Payload | When |
 |---|---|---|
-| `select` | `NyxSelectOption` | A rendered item is activated |
+| `select` | `NyxSelectOption<T>` | A rendered item is activated |
 
 ## Slots
 
