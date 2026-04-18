@@ -2,12 +2,14 @@
 import { ref, computed, useId, useTemplateRef, watch, nextTick, shallowRef } from 'vue'
 import { NyxSelectType, type NyxSelectOption, type NyxSelectOptionGroup } from '@/types'
 import './NyxSelect.scss'
-import type { NyxSelectProps } from './NyxSelect.types'
+import type { NyxSelectEmits, NyxSelectProps } from './NyxSelect.types'
 import { useTeleportPosition, useNyxProps, useSelectKeyboardControls } from '@/composables'
 
 const props = withDefaults(defineProps<NyxSelectProps<T>>(), {
   type: NyxSelectType.Single
 })
+
+const emit = defineEmits<NyxSelectEmits<T>>()
 
 const isMultiple = computed(() => props.type === NyxSelectType.Multiple)
 
@@ -85,7 +87,8 @@ const closeDropdown = () => {
   isOpen.value = false
 }
 
-const onSelectOption = ({ value }: NyxSelectOption<T>) => {
+const onSelectOption = (option: NyxSelectOption<T>) => {
+  const { value } = option
   if (isMultiple.value) {
     const values = normalisedModel.value as T[]
     const index = values.indexOf(value)
@@ -100,6 +103,7 @@ const onSelectOption = ({ value }: NyxSelectOption<T>) => {
     searchQuery.value = ''
     isOpen.value = false
   }
+  emit('select', option)
 }
 
 const setSearchQuery = (value?: string) => {

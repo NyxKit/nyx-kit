@@ -10,3 +10,7 @@ export interface NyxSelectProps<T = string> {
   options: NyxSelectOption<T>[] | NyxSelectOptionGroup<T>[],
   id?: string
 }
+
+export interface NyxSelectEmits<T = string> {
+  'select': [option: NyxSelectOption<T>]
+}
