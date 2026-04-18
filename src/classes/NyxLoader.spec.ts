@@ -23,6 +23,57 @@ describe('NyxLoader.loadString', () => {
   })
 })
 
+describe('NyxLoader multiple keys (string[])', () => {
+  const keys = ['legacyName', 'name'] as const
+
+  it('uses the first key that has a defined value', () => {
+    const data = { legacyName: 'from legacy', name: 'from new' }
+    const value1 = NyxLoader.loadString(data, [...keys])
+    expect(value1).toBe('from legacy')
+    const value2 = NyxLoader.loadString(data, ['name', 'legacyName'])
+    expect(value2).toBe('from new')
+  })
+
+  it('falls back to a later key when earlier keys are missing', () => {
+    expect(NyxLoader.loadString({ name: 'only new' }, [...keys])).toBe('only new')
+  })
+
+  it('does not skip a defined value that is the wrong type to reach a later string key', () => {
+    expect(
+      NyxLoader.loadString({ legacyName: 99, name: 'hello' }, [...keys], 'default')
+    ).toBe('default')
+  })
+
+  it('treats null as defined for key resolution (does not fall through to the next key)', () => {
+    expect(
+      NyxLoader.loadStringOrNull({ legacyName: null, name: 'b' }, [...keys], null)
+    ).toBeNull()
+  })
+
+  it('uses false / 0 on an earlier key without falling through (defined !== undefined)', () => {
+    expect(NyxLoader.loadBoolean({ legacyName: false, active: true }, ['legacyName', 'active'])).toBe(false)
+    expect(NyxLoader.loadNumber({ legacyCount: 0, count: 5 }, ['legacyCount', 'count'])).toBe(0)
+  })
+
+  it('applies the same resolution to loadNumber, loadEnum, loadArray, loadObject, and loadDate', () => {
+    expect(NyxLoader.loadNumber({ n: 7 }, ['missing', 'n'])).toBe(7)
+    enum E { A = 'a', B = 'b' }
+    expect(NyxLoader.loadEnum<E>({ status: E.A }, ['old', 'status'], E.B, Object.values(E))).toBe(E.A)
+    expect(NyxLoader.loadArray({ items: [1] }, ['x', 'items'], [])).toEqual([1])
+    expect(NyxLoader.loadObject({ meta: { k: 1 } }, ['a', 'meta'], {})).toEqual({ k: 1 })
+    const d = new Date('2024-02-02')
+    expect(NyxLoader.loadDate({ at: d }, ['missing', 'at'], new Date(0))).toEqual(d)
+  })
+
+  it('throws when no key has a defined value and no default is provided', () => {
+    expect(() => NyxLoader.loadString({}, [...keys])).toThrow()
+  })
+
+  it('uses the default when no key has a defined value', () => {
+    expect(NyxLoader.loadString({}, [...keys], 'fallback')).toBe('fallback')
+  })
+})
+
 describe('NyxLoader.loadStringOrNull', () => {
   it('loads a string value', () => {
     expect(NyxLoader.loadStringOrNull({ name: 'Bob' }, 'name')).toBe('Bob')
@@ -90,19 +141,22 @@ describe('NyxLoader.loadNumberOrNull', () => {
 })
 
 describe('NyxLoader.loadEnum', () => {
-  const values = ['active', 'inactive', 'pending'] as const
-  type Status = typeof values[number]
+  enum TestStatus {
+    Active = 'active',
+    Inactive = 'inactive',
+    Pending = 'pending'
+  }
 
   it('loads a valid enum value', () => {
-    expect(NyxLoader.loadEnum<Status>({ status: 'active' }, 'status', 'inactive', [...values])).toBe('active')
+    expect(NyxLoader.loadEnum<TestStatus>({ status: TestStatus.Active }, 'status', TestStatus.Inactive, Object.values(TestStatus))).toBe(TestStatus.Active)
   })
 
   it('returns the default for an unrecognised value', () => {
-    expect(NyxLoader.loadEnum<Status>({ status: 'unknown' }, 'status', 'inactive', [...values])).toBe('inactive')
+    expect(NyxLoader.loadEnum<TestStatus>({ status: 'unknown' }, 'status', TestStatus.Inactive, Object.values(TestStatus))).toBe(TestStatus.Inactive)
   })
 
   it('returns the default when the key is missing', () => {
-    expect(NyxLoader.loadEnum<Status>({}, 'status', 'pending', [...values])).toBe('pending')
+    expect(NyxLoader.loadEnum<TestStatus>({}, 'status', TestStatus.Pending, Object.values(TestStatus))).toBe(TestStatus.Pending)
   })
 })
 

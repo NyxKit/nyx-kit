@@ -82,12 +82,19 @@
   &__footer {
     display: flex;
     gap: var(--nyx-gap-md);
+    align-items: center;
   }
 
   &__header {
     font-size: calc(1.5 * var(--nyx-font-size-modal));
     font-weight: 600;
     border-bottom: var(--nyx-border-size-modal) solid var(--nyx-c-divider);
+
+    & > h1 {
+      display: flex;
+      align-items: center;
+      gap: var(--nyx-gap-md);
+    }
   }
 
   &__footer {
