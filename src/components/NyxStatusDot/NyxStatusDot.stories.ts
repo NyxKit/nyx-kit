@@ -5,7 +5,7 @@ import type { NyxStatusDotProps } from './NyxStatusDot.types'
 import { getKeyDictKeyByValue } from '@/utils'
 
 export default {
-  title: 'Components/NyxStatusDot',
+  title: 'Components/Feedback/NyxStatusDot',
   component: NyxStatusDot,
   argTypes: {
     theme: {

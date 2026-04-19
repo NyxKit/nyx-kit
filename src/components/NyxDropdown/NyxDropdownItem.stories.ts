@@ -2,7 +2,7 @@ import { defineComponent } from 'vue'
 import NyxDropdownItem from './NyxDropdownItem.vue'
 
 export default {
-  title: 'Components/NyxDropdownItem',
+  title: 'Components/Navigation/NyxDropdownItem',
   component: NyxDropdownItem,
 }
 

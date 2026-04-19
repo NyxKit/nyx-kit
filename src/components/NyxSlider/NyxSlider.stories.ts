@@ -4,7 +4,7 @@ import type { NyxSliderProps } from './NyxSlider.types'
 import { NyxShape, NyxTheme } from '@/types'
 
 export default {
-  title: 'Components/NyxSlider',
+  title: 'Components/Form/NyxSlider',
   component: NyxSlider,
   argTypes: {
     theme: {

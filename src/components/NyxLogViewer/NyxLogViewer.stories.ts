@@ -5,7 +5,7 @@ import type { NyxLogEntry } from '@/types'
 import type { NyxLogViewerProps } from './NyxLogViewer.types'
 
 export default {
-  title: 'Components/NyxLogViewer',
+  title: 'Components/Data/NyxLogViewer',
   component: NyxLogViewer,
   argTypes: {
     timestampFormat: { control: 'text' },

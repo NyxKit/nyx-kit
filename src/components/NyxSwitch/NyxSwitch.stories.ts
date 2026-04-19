@@ -7,7 +7,7 @@ import NyxForm from '../NyxForm/NyxForm.vue'
 import NyxFormField from '../NyxForm/NyxFormField.vue'
 
 export default {
-  title: 'Components/NyxSwitch',
+  title: 'Components/Form/NyxSwitch',
   component: NyxSwitch,
   argTypes: {
     theme: {

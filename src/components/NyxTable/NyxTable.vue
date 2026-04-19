@@ -1,13 +1,13 @@
 <script setup lang="ts" generic="T extends object">
 import './NyxTable.scss'
 import { type CssVariablesDict } from '@/types'
-import { computed, useSlots, type Slots } from 'vue'
+import { computed, useSlots } from 'vue'
 import { isObject } from '@/utils'
 import type { NyxTableProps } from './NyxTable.types'
 import NyxTableCell from './NyxTableCell.vue'
 import { useNyxProps } from '@/composables'
 
-const slots: Slots = useSlots()
+const slots = useSlots()
 
 defineSlots<{
   default?: (props: { item: T }) => unknown

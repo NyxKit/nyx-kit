@@ -51,6 +51,9 @@ Dropdowns, tooltips, and modals are teleported to `<body>` to avoid `overflow: h
 ### Pixel mode
 A first-class alternative visual mode using the `Press Start 2P` font and `box-shadow`-based pixel borders (SCSS mixins in `src/styles/mixins.scss`). Enabled globally via `NyxKitOptions.pixel` or per-component via the `pixel` prop. Only valid with the `Solid` variant.
 
+### Storybook taxonomy
+Storybook stories are grouped by domain (`Basic`, `Form`, `Data`, `Navigation`, `Feedback`) using `Components/<Domain>/<ComponentName>` titles. See [storybook.md](./storybook.md).
+
 ## Component Inventory
 
 | Component | Description |

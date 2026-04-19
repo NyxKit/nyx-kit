@@ -5,7 +5,7 @@ import type { NyxBadgeProps } from './NyxBadge.types'
 import { getKeyDictKeyByValue } from '@/utils'
 
 export default {
-  title: 'Components/NyxBadge',
+  title: 'Components/Basic/NyxBadge',
   component: NyxBadge,
   argTypes: {
     theme: {

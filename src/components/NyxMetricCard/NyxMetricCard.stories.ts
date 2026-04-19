@@ -5,7 +5,7 @@ import type { NyxMetricCardProps } from './NyxMetricCard.types'
 import { getKeyDictKeyByValue } from '@/utils'
 
 export default {
-  title: 'Components/NyxMetricCard',
+  title: 'Components/Data/NyxMetricCard',
   component: NyxMetricCard,
   argTypes: {
     title: { control: 'text' },

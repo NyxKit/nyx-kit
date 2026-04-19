@@ -6,7 +6,7 @@ import NyxButton from '../NyxButton/NyxButton.vue'
 import type { NyxTooltipProps } from './NyxTooltip.types'
 
 export default {
-  title: 'Components/NyxTooltip',
+  title: 'Components/Feedback/NyxTooltip',
   component: NyxTooltip,
   argTypes: {
     theme: {

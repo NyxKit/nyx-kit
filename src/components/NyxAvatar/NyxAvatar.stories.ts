@@ -4,7 +4,7 @@ import { NyxShape, NyxSize } from '@/types'
 import type { NyxAvatarProps } from './NyxAvatar.types'
 
 export default {
-  title: 'Components/NyxAvatar',
+  title: 'Components/Data/NyxAvatar',
   component: NyxAvatar,
   argTypes: {
     size: {

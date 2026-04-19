@@ -89,6 +89,7 @@ Never use the `{}` syntax or funnel through an index.ts file unless in a subdoma
 
 - Every component must have a story file.
 - The default export defines component metadata (`title`, `component`, `argTypes`).
+- Story titles should use `Components/<Domain>/<ComponentName>` so the sidebar groups into `Basic`, `Form`, `Data`, `Navigation`, and `Feedback`.
 - Always include a `Default` story that renders the component with minimal props.
 - Additional stories cover key variants: sizes, themes, disabled state, pixel mode (where applicable).
 - Story args must use the actual enum values, not raw strings/numbers.

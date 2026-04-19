@@ -3,7 +3,7 @@ import NyxActionItem from './NyxActionItem.vue'
 import { NyxTheme } from '@/types'
 
 export default {
-  title: 'Components/NyxActionItem',
+  title: 'Components/Data/NyxActionItem',
   component: NyxActionItem,
   argTypes: {
     theme: {

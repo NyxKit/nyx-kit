@@ -16,7 +16,7 @@ const checklist = [
 ]
 
 const meta = {
-  title: 'Components/NyxTabs',
+  title: 'Components/Navigation/NyxTabs',
   component: NyxTabs,
   argTypes: {
     theme: {

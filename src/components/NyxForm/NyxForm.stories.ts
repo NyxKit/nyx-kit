@@ -7,7 +7,7 @@ import NyxSelect from '../NyxSelect/NyxSelect.vue'
 import { NyxTheme } from '@/types'
 
 export default {
-  title: 'Components/NyxForm',
+  title: 'Components/Form/NyxForm',
   component: NyxForm,
   argTypes: {},
 }

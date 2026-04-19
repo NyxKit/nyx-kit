@@ -9,7 +9,7 @@ const lipsum = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis fa
   consectetur nulla eget metus consequat vulputate. Nulla venenatis diam dolor, nec ultricies elit cursus a.`
 
 export default {
-  title: 'Components/NyxCard',
+  title: 'Components/Data/NyxCard',
   component: NyxCard,
   argTypes: {
     theme: {

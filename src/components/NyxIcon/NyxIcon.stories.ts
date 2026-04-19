@@ -6,7 +6,7 @@ import { getKeyDictKeyByValue } from '@/utils'
 const ICONS = ['arrow-right', 'arrow-left', 'chevron-down', 'chevron-up', 'menu', 'x', 'plus', 'minus', 'edit', 'trash']
 
 export default {
-  title: 'Components/NyxIcon',
+  title: 'Components/Basic/NyxIcon',
   component: NyxIcon,
   tags: ['autodocs'],
   argTypes: {

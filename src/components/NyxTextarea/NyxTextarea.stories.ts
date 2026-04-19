@@ -7,7 +7,7 @@ import NyxForm from '../NyxForm/NyxForm.vue'
 import NyxFormField from '../NyxForm/NyxFormField.vue'
 
 export default {
-  title: 'Components/NyxTextarea',
+  title: 'Components/Form/NyxTextarea',
   component: NyxTextarea,
   argTypes: {
     theme: {

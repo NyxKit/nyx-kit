@@ -8,7 +8,7 @@ import NyxButton from '../NyxButton/NyxButton.vue'
 const lipsum = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque justo enim, ultrices ac enim ut, placerat facilisis mauris. Cras luctus ante ante, viverra interdum mauris bibendum et. '
 
 export default {
-  title: 'Components/NyxModal',
+  title: 'Components/Feedback/NyxModal',
   component: NyxModal,
   argTypes: {
     size: {

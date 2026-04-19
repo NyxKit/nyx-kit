@@ -5,7 +5,7 @@ import type { NyxSpinnerProps } from './NyxSpinner.types'
 import { getKeyDictKeyByValue } from '@/utils'
 
 export default {
-  title: 'Components/NyxSpinner',
+  title: 'Components/Feedback/NyxSpinner',
   component: NyxSpinner,
   argTypes: {
     type: {

@@ -119,7 +119,7 @@ const showcaseStatusTheme = {
 }
 
 export default {
-  title: 'Components/NyxEditor',
+  title: 'Components/Form/NyxEditor',
   component: NyxEditor,
   parameters: {
     docs: {

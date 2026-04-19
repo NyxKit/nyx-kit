@@ -4,7 +4,7 @@ import { NyxTheme, NyxSize, NyxShape, NyxProgressVariant } from '@/types'
 import type { NyxProgressProps } from './NyxProgress.types'
 
 export default {
-  title: 'Components/NyxProgress',
+  title: 'Components/Data/NyxProgress',
   component: NyxProgress,
   argTypes: {
     theme: {

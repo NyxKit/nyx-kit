@@ -17,7 +17,7 @@ const breadcrumbRoutes: NyxBreadcrumb[] = [
   { label: 'Breadcrumbs', href: '/docs/breadcrumbs' },
 ]
 const meta = {
-  title: 'Components/NyxBreadcrumbs',
+  title: 'Components/Navigation/NyxBreadcrumbs',
   component: NyxBreadcrumbs,
   argTypes: {
     theme: {

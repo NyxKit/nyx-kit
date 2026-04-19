@@ -27,6 +27,11 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
+    options: {
+      storySort: {
+        order: ['Components', ['Basic', 'Form', 'Data', 'Navigation', 'Feedback']],
+      },
+    },
     docs: {
       theme: themes.dark
     },

@@ -11,7 +11,7 @@ const slides = [
 ]
 
 export default {
-  title: 'Components/NyxCarousel',
+  title: 'Components/Data/NyxCarousel',
   component: NyxCarousel,
   argTypes: {
     theme: {

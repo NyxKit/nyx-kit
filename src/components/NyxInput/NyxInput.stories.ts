@@ -8,7 +8,7 @@ import NyxForm from '../NyxForm/NyxForm.vue'
 import NyxFormField from '../NyxForm/NyxFormField.vue'
 
 const meta = {
-  title: 'Components/NyxInput',
+  title: 'Components/Form/NyxInput',
   component: NyxInput,
   argTypes: {
     prefix: { control: 'text' },

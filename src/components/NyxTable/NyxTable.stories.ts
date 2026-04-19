@@ -15,7 +15,7 @@ const data = [
 ]
 
 export default {
-  title: 'Components/NyxTable',
+  title: 'Components/Data/NyxTable',
   component: NyxTable,
   argTypes: {
     theme: {

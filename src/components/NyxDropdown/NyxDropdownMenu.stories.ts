@@ -11,7 +11,7 @@ const sampleOptions = [
 ]
 
 export default {
-  title: 'Components/NyxDropdownMenu',
+  title: 'Components/Navigation/NyxDropdownMenu',
   component: NyxDropdownMenu,
   argTypes: {
     theme: {

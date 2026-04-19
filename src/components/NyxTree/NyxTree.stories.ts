@@ -4,7 +4,7 @@ import { NyxTreeNodeStatus } from './NyxTree.types'
 import type { NyxTreeNodeBase } from './NyxTree.types'
 
 export default {
-  title: 'Components/NyxTree',
+  title: 'Components/Data/NyxTree',
   component: NyxTree,
   argTypes: {
     disabled: { control: { type: 'boolean' } },

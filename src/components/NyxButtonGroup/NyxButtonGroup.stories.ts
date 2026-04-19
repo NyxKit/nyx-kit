@@ -8,7 +8,7 @@ import type { NyxButtonGroupProps } from './NyxButtonGroup.types'
 const labels = ['Primary', 'Secondary', 'Tertiary']
 
 const meta = {
-  title: 'Components/NyxButtonGroup',
+  title: 'Components/Basic/NyxButtonGroup',
   component: NyxButtonGroup,
   argTypes: {
     direction: {

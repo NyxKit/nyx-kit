@@ -5,7 +5,7 @@ import type { NyxButtonProps } from './NyxButton.types'
 import { getKeyDictKeyByValue } from '@/utils'
 
 export default {
-  title: 'Components/NyxButton',
+  title: 'Components/Basic/NyxButton',
   component: NyxButton,
   argTypes: {
     type: {

@@ -13,7 +13,7 @@ const sampleOptions = [
 ]
 
 const meta = {
-  title: 'Components/NyxDropdown',
+  title: 'Components/Navigation/NyxDropdown',
   // Generic SFC is not assignable to Storybook's ConcreteComponent; cast for docs/controls only.
   component: NyxDropdown as any,
   argTypes: {

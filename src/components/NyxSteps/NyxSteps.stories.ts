@@ -6,7 +6,7 @@ import type { NyxStepsProps } from './NyxSteps.types'
 const steps = 5
 
 export default {
-  title: 'Components/NyxSteps',
+  title: 'Components/Navigation/NyxSteps',
   component: NyxSteps,
   argTypes: {
     theme: {

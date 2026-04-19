@@ -92,7 +92,7 @@ function createGridStory(options?: {
 }
 
 export default {
-  title: 'Components/NyxGrid',
+  title: 'Components/Data/NyxGrid',
   component: NyxGrid,
   argTypes: {
     mode: {

@@ -28,7 +28,7 @@ const groupedOptions = [
 ]
 
 export default {
-  title: 'Components/NyxSelect',
+  title: 'Components/Form/NyxSelect',
   component: NyxSelect,
   argTypes: {
     type: {
