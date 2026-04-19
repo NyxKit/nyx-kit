@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { h } from 'vue'
 import NyxTable from './NyxTable.vue'
 
 beforeEach(() => {
@@ -10,6 +11,11 @@ const rows = [
   { name: 'Alice', age: 30, role: 'Admin' },
   { name: 'Bob',   age: 25, role: 'User'  },
   { name: 'Carol', age: 35, role: 'Editor'},
+]
+
+const keyedRows = [
+  { id: 'row-1', name: 'Alice', role: 'Admin' },
+  { id: 'row-2', name: 'Bob', role: 'User' },
 ]
 
 describe('NyxTable', () => {
@@ -71,5 +77,16 @@ describe('NyxTable', () => {
   it('renders as a <table> element', () => {
     const wrapper = mount(NyxTable, { props: { modelValue: rows } })
     expect(wrapper.element.tagName).toBe('TABLE')
+  })
+
+  it('passes the original item to the default slot', () => {
+    const wrapper = mount(NyxTable, {
+      props: { modelValue: keyedRows, colInclude: ['name'] as unknown as (keyof object)[] },
+      slots: {
+        default: ({ item }) => h('td', { class: 'slot-id' }, (item as { id: string }).id)
+      }
+    })
+
+    expect(wrapper.findAll('.slot-id').map(node => node.text())).toEqual(['row-1', 'row-2'])
   })
 })

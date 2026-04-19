@@ -1,4 +1,4 @@
-<script setup lang="ts" generic="T extends Object">
+<script setup lang="ts" generic="T extends object">
 import './NyxTable.scss'
 import { type CssVariablesDict } from '@/types'
 import { computed, useSlots, type Slots } from 'vue'
@@ -8,6 +8,11 @@ import NyxTableCell from './NyxTableCell.vue'
 import { useNyxProps } from '@/composables'
 
 const slots: Slots = useSlots()
+
+defineSlots<{
+  default?: (props: { item: T }) => unknown
+  actions?: (props: { item: T }) => unknown
+}>()
 
 const props = withDefaults(defineProps<NyxTableProps<T>>(), {
   disabled: false,
@@ -35,16 +40,9 @@ const numColumns = computed(() => {
   return columnTitles.value.length + baseNumColumns
 })
 
-const data = computed(() => {
+const visibleKeys = computed<(keyof T)[]>(() => {
   const include = props.colInclude.length > 0 ? props.colInclude : Object.keys(model.value[0] ?? {}) as (keyof T)[]
-  const keys = include.filter((col: keyof T) => !props.colExclude.includes(col))
-  return model.value.map((item) => {
-    const data: Partial<T> = {}
-    for (const key of keys) {
-      data[key] = item[key]
-    }
-    return data
-  })
+  return include.filter((col: keyof T) => !props.colExclude.includes(col))
 })
 
 const { classList } = useNyxProps(props, { origin: 'NyxTable' })
@@ -76,17 +74,17 @@ const style = computed<CssVariablesDict>(() => {
     </thead>
     <tbody>
       <template
-        v-for="(item) of data"
+        v-for="(item) of model"
         :key="typeof item === 'object' && !!props.itemKey ? item[props.itemKey] : item"
       >
         <tr>
-          <slot :item>
-            <template v-for="cell of Object.values(item ?? {})" :key="cell">
-              <NyxTableCell>{{ cell }}</NyxTableCell>
+          <slot :item="item">
+            <template v-for="key of visibleKeys" :key="key">
+              <NyxTableCell>{{ item[key] }}</NyxTableCell>
             </template>
           </slot>
           <NyxTableCell v-if="!!slots.actions" class="nyx-table__actions">
-            <slot name="actions" :item />
+            <slot name="actions" :item="item" />
           </NyxTableCell>
         </tr>
       </template>

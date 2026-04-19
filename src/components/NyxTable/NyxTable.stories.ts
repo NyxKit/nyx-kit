@@ -84,6 +84,24 @@ const TemplateAll = (prop: string, dict: KeyDict<string>) => () => defineCompone
 
 export const Default = Template({})
 export const WithActions = TemplateActions()
+export const WithHiddenIdActions = () => defineComponent({
+  components: { NyxTable, NyxButton },
+  setup () {
+    const alertId = (id: string) => window.alert(id)
+    return { data, NyxSize, NyxTheme, alertId }
+  },
+  template: `
+    <nyx-table v-model="data" :col-exclude="['id']">
+      <template #actions="{ item }">
+        <nyx-button
+          :size="NyxSize.Xsmall"
+          :theme="NyxTheme.Danger"
+          @click="alertId(item.id)"
+        >Alert ID</nyx-button>
+      </template>
+    </nyx-table>
+  `
+})
 export const Themes = TemplateAll('theme', NyxTheme)
 export const Variants = TemplateAll('variant', NyxVariant)
 export const Sizes = TemplateAll('size', NyxSize)
