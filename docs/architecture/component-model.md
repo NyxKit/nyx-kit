@@ -136,9 +136,16 @@ Always check whether content is provided before rendering a slot's wrapper eleme
 
 ## Teleported Elements
 
-Floating elements (dropdowns, tooltips, modals) must be teleported to `<body>` using Vue's `<Teleport>`:
+Floating elements (dropdowns, tooltips, modals) are teleported with Vue's `<Teleport>`.
+By default, target `<body>` so they escape local stacking contexts. Components that can appear inside a native `<dialog>` should retarget to the dialog element so the floating UI stays in the dialog top layer:
 ```html
 <Teleport to="body">
+  <div v-if="isOpen" ref="elDropdown" class="nyx-dropdown">...</div>
+</Teleport>
+```
+
+```html
+<Teleport :to="elDialog ?? 'body'">
   <div v-if="isOpen" ref="elDropdown" class="nyx-dropdown">...</div>
 </Teleport>
 ```
@@ -152,6 +159,7 @@ useTeleportPosition(elTrigger, elDropdown, {
 ```
 
 The composable handles viewport clamping and auto-mirroring when space is insufficient.
+It also exposes a `teleportTarget` ref so consumers can retarget into the nearest `<dialog>` instead of hardcoding `body`.
 
 ## Click-Outside
 

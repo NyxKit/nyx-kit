@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import './NyxTooltip.scss'
-import { defineExpose, ref, useId, useTemplateRef } from 'vue'
+import { ref, useId, useTemplateRef } from 'vue'
 import { NyxPosition, NyxSize } from '@/types'
 import type { NyxTooltipProps } from './NyxTooltip.types'
 import { useTeleportPosition, useNyxProps } from '@/composables'
@@ -18,7 +18,7 @@ const elAbsolute = useTemplateRef<HTMLDivElement>('elTooltipContent')
 
 const { classList } = useNyxProps(props, { origin: 'NyxTooltip' })
 
-const { cssVariables, computedPosition, updateCssVariables } = useTeleportPosition(elRelative, elAbsolute, {
+const { cssVariables, computedPosition, teleportTarget, updateCssVariables } = useTeleportPosition(elRelative, elAbsolute, {
   position: ref(props.position),
   gap: ref(NyxSize.Medium), // ref(props.size)
 })
@@ -47,7 +47,7 @@ defineExpose({ updatePosition: updateCssVariables })
     v-click-outside="onClickOutside"
   >
     <slot></slot>
-    <Teleport to="body">
+    <Teleport :to="teleportTarget">
       <div
         class="nyx-tooltip__content"
         :class="[...classList, { 'nyx-tooltip__content--open': model }]"

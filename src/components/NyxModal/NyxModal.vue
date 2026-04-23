@@ -95,28 +95,30 @@ const { classList, nyxTheme } = useNyxProps(props, { origin: 'NyxModal' })
     @click.self="close"
     @cancel.prevent="close"
   >
-    <header class="nyx-modal__header" v-if="isHeaderVisible">
-      <slot name="header">
-        <h1 :id="modalTitleId">{{ props.title }}</h1>
-      </slot>
-      <button class="nyx-modal__close" @click="close" v-if="!props.static">&times;</button>
-    </header>
-    <section class="nyx-modal__body">
-      <slot>NyxModal body</slot>
-    </section>
-    <footer class="nyx-modal__footer" v-if="isFooterVisible">
-      <slot name="footer">
-        <NyxButton
-          :variant="NyxVariant.Subtle"
-          :theme="NyxTheme.Info"
-          @click="cancel"
-        >{{ textCancelButton }}</NyxButton>
-        <NyxButton
-          :theme="nyxTheme"
-          :variant="NyxVariant.Soft"
-          @click="confirm"
-        >{{ textSubmitButton }}</NyxButton>
-      </slot>
-    </footer>
+    <div class="nyx-modal__surface">
+      <header class="nyx-modal__header" v-if="isHeaderVisible">
+        <slot name="header">
+          <h1 :id="modalTitleId">{{ props.title }}</h1>
+        </slot>
+        <button class="nyx-modal__close" @click="close" v-if="!props.static">&times;</button>
+      </header>
+      <section class="nyx-modal__body">
+        <slot>NyxModal body</slot>
+      </section>
+      <footer class="nyx-modal__footer" v-if="isFooterVisible">
+        <slot name="footer">
+          <NyxButton
+            :variant="NyxVariant.Subtle"
+            :theme="NyxTheme.Info"
+            @click="cancel"
+          >{{ textCancelButton }}</NyxButton>
+          <NyxButton
+            :theme="nyxTheme"
+            :variant="NyxVariant.Soft"
+            @click="confirm"
+          >{{ textSubmitButton }}</NyxButton>
+        </slot>
+      </footer>
+    </div>
   </dialog>
 </template>

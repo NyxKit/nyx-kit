@@ -18,6 +18,7 @@ NyxSelect is a custom select control that replaces the native `<select>` element
 ## Internal architecture
 
 - Custom control div + teleported dropdown; position managed by `useTeleportPosition`
+- The teleport target is `body` by default, but switches to the nearest ancestor `<dialog>` when the select is rendered inside one so the dropdown stays above native modal chrome
 - A hidden native `<select>` (`.sr-only`) stays in sync with `v-model` for accessibility and form submission
 - `isGrouped` detects at runtime whether `options` is `NyxSelectOption<T>[]` or `NyxSelectOptionGroup<T>[]` by checking for an `options` key on the first element
 - `flatOptions` flattens grouped options for value-to-label lookups (used in `selectedLabels` and `isSelected`)

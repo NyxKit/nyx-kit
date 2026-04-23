@@ -124,6 +124,21 @@ describe('NyxTooltip', () => {
     expect(tooltipEl).not.toBeNull()
   })
 
+  it('teleports the tooltip into the nearest dialog when rendered inside one', async () => {
+    const dialog = document.createElement('dialog')
+    document.body.appendChild(dialog)
+
+    wrapper = mount(NyxTooltip, {
+      attachTo: dialog,
+      props: { text: 'Info', modelValue: true },
+      global: globalConfig
+    })
+
+    await nextTick()
+
+    expect(dialog.querySelector('.nyx-tooltip__content')).not.toBeNull()
+  })
+
   it('aria-describedby on wrapper matches id on tooltip content', () => {
     wrapper = mount(NyxTooltip, {
       attachTo: document.body,

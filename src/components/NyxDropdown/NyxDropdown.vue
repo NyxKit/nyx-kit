@@ -25,7 +25,7 @@ const triggerId = useId()
 const supportsHover = ref(false)
 let closeTimer: number | null = null
 
-const { cssVariables, computedPosition } = useTeleportPosition(elTrigger, elDropdown, {
+const { cssVariables, computedPosition, teleportTarget } = useTeleportPosition(elTrigger, elDropdown, {
   position: computed(() => props.position),
   gap: ref(NyxSize.Medium),
   isUpdateAllowed: isOpen,
@@ -225,7 +225,7 @@ onBeforeUnmount(() => {
       <slot />
     </div>
 
-    <Teleport to="body">
+    <Teleport :to="teleportTarget">
       <div
         ref="elDropdown"
         class="nyx-dropdown__panel"

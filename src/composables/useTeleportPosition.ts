@@ -1,5 +1,6 @@
-import { type DefineComponent, type Ref, watch } from 'vue'
+import { computed, type DefineComponent, type Ref, watch } from 'vue'
 import useTeleportPositionBase, { type TeleportPositionOptions } from './useTeleportPositionBase'
+import { resolveToHtmlElement } from '@/utils'
 
 const useTeleportPosition = (
   elRelative: Ref<HTMLElement | DefineComponent | null>,
@@ -7,18 +8,17 @@ const useTeleportPosition = (
   options?: TeleportPositionOptions
 ) => {
   const getAnchorRect = (): DOMRect | null => {
-    if (!elRelative.value) return null
-    return ('getBoundingClientRect' in elRelative.value)
-      ? elRelative.value.getBoundingClientRect()
-      : (elRelative.value as DefineComponent).$el.getBoundingClientRect()
+    const relativeElement = resolveToHtmlElement(elRelative.value)
+    return relativeElement?.getBoundingClientRect() ?? null
   }
 
   const result = useTeleportPositionBase(getAnchorRect, elAbsolute, options)
+  const teleportTarget = computed(() => resolveToHtmlElement(elRelative.value)?.closest('dialog') ?? 'body')
 
   // Re-position when the anchor element itself changes
   watch(elRelative, result.updateCssVariables)
 
-  return result
+  return { ...result, teleportTarget }
 }
 
 export default useTeleportPosition

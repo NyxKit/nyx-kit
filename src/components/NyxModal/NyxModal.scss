@@ -14,20 +14,26 @@
   border: none;
   padding: 0;
   margin: auto;
+  background: transparent;
+  color: inherit;
 
-  // Dialog box styling
-  border-radius: var(--nyx-radius-md);
-  background: var(--nyx-c-bg-mute);
-  color: var(--nyx-c-text);
-  overflow: hidden;
+  // Allow teleported overlays (selects, dropdowns, tooltips) to escape the shell.
+  overflow: visible;
   max-width: calc(100dvw - 2rem);
   width: var(--nyx-width-modal);
-  box-shadow: var(--nyx-shadow-md);
 
-  // Entry animation (exit is instant — no flicker on fast close)
-  opacity: 0;
-  transform: translate(0, -2rem);
-  transition: opacity 0.3s, transform 0.3s;
+  &__surface {
+    border-radius: var(--nyx-radius-md);
+    background: var(--nyx-c-bg-mute);
+    color: var(--nyx-c-text);
+    overflow: hidden;
+    box-shadow: var(--nyx-shadow-md);
+
+    // Entry animation (exit is instant — no flicker on fast close)
+    opacity: 0;
+    transform: translate(0, -2rem);
+    transition: opacity 0.3s, transform 0.3s;
+  }
 
   &.size-xs {
     --nyx-pad-modal: var(--nyx-pad-xs);
@@ -60,8 +66,10 @@
   }
 
   &--open {
-    opacity: 1;
-    transform: translate(0, 0);
+    .nyx-modal__surface {
+      opacity: 1;
+      transform: translate(0, 0);
+    }
   }
 
   &--open::backdrop {

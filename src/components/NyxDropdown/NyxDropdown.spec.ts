@@ -156,6 +156,22 @@ describe('NyxDropdown', () => {
     expect(panel?.getAttribute('data-position')).toBe('top')
   })
 
+  it('teleports the panel into the nearest dialog when rendered inside one', async () => {
+    const dialog = document.createElement('dialog')
+    document.body.appendChild(dialog)
+
+    wrapper = mount(NyxDropdown, {
+      attachTo: dialog,
+      props: { options: sampleOptions },
+      slots: { default: '<button type="button">Actions</button>' },
+    })
+
+    await wrapper.get('.nyx-dropdown__trigger').trigger('click')
+    await nextTick()
+
+    expect(dialog.querySelector('.nyx-dropdown__panel')).not.toBeNull()
+  })
+
   it('emits select and closes when a menu item is activated', async () => {
     wrapper = mount(NyxDropdown, {
       attachTo: document.body,

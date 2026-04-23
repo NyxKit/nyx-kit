@@ -34,7 +34,7 @@ const { classList } = useNyxProps(props, { origin: 'NyxSelect', primitive: 'sele
 
 const dropdownId = useId()
 
-const { cssVariables, computedPosition } = useTeleportPosition(elControl, elDropdown, {
+const { cssVariables, computedPosition, teleportTarget } = useTeleportPosition(elControl, elDropdown, {
   isEqualWidth: true,
   isUpdateAllowed: isOpen
 })
@@ -210,7 +210,7 @@ watch([normalisedModel, flatOptions], () => {
       <span class="nyx-select__arrow" @click="toggleDropdown">▼</span>
     </div>
 
-    <Teleport to="body">
+    <Teleport :to="teleportTarget">
       <div
         class="nyx-select__dropdown"
         :class="[

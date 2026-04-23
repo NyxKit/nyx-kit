@@ -4,6 +4,7 @@ import { NyxSize, NyxTheme, type KeyDict } from '@/types'
 import type { NyxModalProps } from './NyxModal.types'
 import { getKeyDictKeyByValue } from '@/utils'
 import NyxButton from '../NyxButton/NyxButton.vue'
+import NyxSelect from '../NyxSelect/NyxSelect.vue'
 
 const lipsum = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque justo enim, ultrices ac enim ut, placerat facilisis mauris. Cras luctus ante ante, viverra interdum mauris bibendum et. '
 
@@ -39,19 +40,20 @@ const Template = (args: NyxModalProps) => defineComponent({
 })
 
 const TemplateAllProp = (prop: string, dict: KeyDict<string>) => () => defineComponent({
-  components: { NyxModal, NyxButton },
+  components: { NyxModal, NyxButton, NyxSelect },
   setup () {
     const values = Object.values(dict)
     const getLabel = (value: string) => getKeyDictKeyByValue(dict, value)
     const isOpen = ref(false)
     const currentValue = ref(values[0])
+    const selectedValue = ref('first')
     const numLoops = ref(1)
     const openModal = (v: string, i: number) => {
       currentValue.value = v
       numLoops.value = i + 1
       isOpen.value = true
     }
-    return { prop, values, getLabel, isOpen, openModal, currentValue, lipsum, numLoops }
+    return { prop, values, getLabel, isOpen, openModal, currentValue, lipsum, numLoops, selectedValue }
   },
   template: `
     <div class="flex">
@@ -65,7 +67,18 @@ const TemplateAllProp = (prop: string, dict: KeyDict<string>) => () => defineCom
         v-bind="{ [prop]: currentValue }"
         :title="getLabel(currentValue)"
         v-model="isOpen"
-      ><template v-for="i in numLoops"><p>{{ lipsum }}</p></template></nyx-modal>
+      >
+        <template v-for="i in numLoops"><p>{{ lipsum }}</p></template>
+        <nyx-select
+          class="mt-4"
+          :options="[
+            { label: 'First option', value: 'first' },
+            { label: 'Second option', value: 'second' },
+            { label: 'Third option', value: 'third' }
+          ]"
+          v-model="selectedValue"
+        />
+      </nyx-modal>
     </div>
   `,
 })

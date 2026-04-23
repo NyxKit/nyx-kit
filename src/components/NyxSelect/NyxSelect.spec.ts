@@ -171,6 +171,22 @@ describe('NyxSelect', () => {
     expect(document.body.querySelector('[role="listbox"]')).not.toBeNull()
   })
 
+  it('teleports the dropdown into the nearest dialog when rendered inside one', async () => {
+    const dialog = document.createElement('dialog')
+    document.body.appendChild(dialog)
+
+    wrapper = mount(NyxSelect, {
+      attachTo: dialog,
+      props: { options: sampleOptions },
+      global: globalConfig
+    })
+
+    await wrapper.find('.nyx-select__control').trigger('click')
+    await nextTick()
+
+    expect(dialog.querySelector('.nyx-select__dropdown')).not.toBeNull()
+  })
+
   it('options have role="option"', async () => {
     wrapper = mount(NyxSelect, {
       attachTo: document.body,
