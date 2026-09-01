@@ -128,4 +128,20 @@ describe('useNyxInputNumber', () => {
     onNumberButtonClick(-1)
     expect(model.value).toBe('-1')
   })
+
+  it('keeps decimal values aligned to the configured step', () => {
+    const model = ref<string | undefined>('0.35')
+    const { onNumberButtonClick } = useSetup(() =>
+      useNyxInputNumber({ type: NyxInputType.Number, step: 0.05 }, model, ref(NyxVariant.Ghost))
+    )
+
+    onNumberButtonClick(1)
+    expect(model.value).toBe('0.4')
+
+    onNumberButtonClick(1)
+    expect(model.value).toBe('0.45')
+
+    onNumberButtonClick(1)
+    expect(model.value).toBe('0.5')
+  })
 })

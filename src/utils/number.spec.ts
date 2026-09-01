@@ -48,6 +48,10 @@ describe('roundToStep', () => {
   it('rounds up to nearest step of 5', () => {
     expect(roundToStep(8, 5)).toBe(10)
   })
+
+  it('avoids floating point errors for decimal steps', () => {
+    expect(roundToStep(0.39999999999999997, 0.05)).toBe(0.4)
+  })
 })
 
 describe('isEven', () => {

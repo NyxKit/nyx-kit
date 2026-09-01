@@ -1,10 +1,15 @@
 export const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(value, max))
 
+const getDecimalPlaces = (value: number) => {
+  const [coefficient, exponent = '0'] = value.toString().toLowerCase().split('e')
+  const decimalPlaces = coefficient.split('.')[1]?.length ?? 0
+  return Math.max(0, decimalPlaces - Number(exponent))
+}
+
 export const roundToStep = (value: number, step: number, min: number = 0): number => {
-  const remainder = (value - min) % step
-  return remainder < step / 2
-    ? value - remainder
-    : value + (step - remainder)
+  const rounded = Math.round((value - min) / step) * step + min
+  const decimalPlaces = Math.max(getDecimalPlaces(step), getDecimalPlaces(min))
+  return Number(rounded.toFixed(decimalPlaces))
 }
 
 export const isEven = (value: number) => value % 2 === 0

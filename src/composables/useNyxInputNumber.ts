@@ -1,5 +1,6 @@
 import { computed, onBeforeUnmount, ref, type Ref } from 'vue'
 import { NyxInputNumberControls, NyxInputType, NyxVariant } from '@/types'
+import { roundToStep } from '@/utils/number'
 
 export interface UseNyxInputNumberOptions {
   type?: NyxInputType
@@ -55,8 +56,9 @@ export const useNyxInputNumber = (
 
     if (Number.isNaN(currentValue)) return
 
-    const nextValue = currentValue + ((options.step ?? 1) * direction)
-    model.value = nextValue.toString()
+    const step = options.step ?? 1
+    const nextValue = currentValue + (step * direction)
+    model.value = roundToStep(nextValue, step, options.min ?? 0).toString()
   }
 
   const startHold = (direction: 1 | -1) => {

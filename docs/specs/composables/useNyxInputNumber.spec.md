@@ -45,6 +45,7 @@ Encapsulates the number-input specific logic for `NyxInput`: control visibility,
 - A pointer down performs an immediate step.
 - Hold repeat starts after a configurable delay (default `400ms`).
 - Repeat uses the same `step` value on every auto-repeat tick.
+- Custom button increments round back to the configured decimal step to avoid floating-point artifacts.
 - Mouse clicks with a non-zero `detail` do not double-step after pointer-driven activation.
 - An empty string model value is treated as unset, so cleared inputs still step from the fallback base.
 
