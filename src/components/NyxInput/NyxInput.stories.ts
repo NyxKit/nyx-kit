@@ -1,7 +1,7 @@
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import type { Meta, StoryObj } from '@storybook/vue3'
 import NyxInput from './NyxInput.vue'
-import { NyxTheme, NyxVariant, NyxSize, NyxInputType, type KeyDict } from '@/types'
+import { NyxTheme, NyxVariant, NyxSize, NyxInputType, NyxInputNumberControls, type KeyDict } from '@/types'
 import type { NyxInputProps } from './NyxInput.types'
 import { getKeyDictKeyByValue } from '@/utils'
 import NyxForm from '../NyxForm/NyxForm.vue'
@@ -86,6 +86,24 @@ export const WithPrefixAndSuffix: Story = {
 
 export const Types: Story = {
   render: () => TemplateAll('type', NyxInputType)(),
+}
+
+export const DecimalNumberStepper: Story = {
+  render: () => defineComponent({
+    components: { NyxInput },
+    setup () {
+      const value = ref('0.3')
+      return { value, NyxInputType, NyxInputNumberControls }
+    },
+    template: `
+      <nyx-input
+        v-model="value"
+        :type="NyxInputType.Number"
+        :step="0.05"
+        :number-controls="NyxInputNumberControls.Stacked"
+      />
+    `,
+  }),
 }
 
 export const Themes: Story = {
