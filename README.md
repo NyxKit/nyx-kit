@@ -144,7 +144,7 @@ Test-framework rules (`@vitest/eslint-plugin`, `eslint-plugin-playwright`) are *
 
 ### New Core Components
 - `NyxDropdown`: A menu for selecting one option from a list.
-- `NyxAccordion`: A collapsible container for displaying content in an expandable/collapsible format.
+- `NyxAccordion`: A collapsible container with optional single or multiple open-item state. [Draft spec](docs/specs/components/NyxAccordion.spec.md) (not yet implemented).
 - `NyxToast`: A temporary notification popup.
 - `NyxSkeleton`: A placeholder loading animation for components.
 - `NyxRadioGroup`: A set of radio buttons for multiple-choice selection.

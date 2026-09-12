@@ -389,6 +389,10 @@ When you notice that something in the codebase or stories is out of sync, record
 |---|---|---|---|
 | 2026-03-26 | `README.md` vs `specs/006-add-nyx-grid/spec.md` | Planned feature naming diverged (`NyxLayout` in README, `NyxGrid` in spec). | Fixed |
 | 2026-03-29 | `src/components/NyxTabs/NyxTabs.vue` vs `docs/specs/components/` | `NyxTabs` implementation existed without a living component spec file in `docs/specs/components/`. | Fixed |
+| 2026-09-12 | `docs/conventions/README.md` vs `.claude/commands/speckit.specify.md` | General branch guidance requires type prefixes; the new-feature workflow generates numbered branches. Accordion draft follows the specific Spec Kit workflow (`017-nyx-accordion`). | Open: clarify branch convention |
+| 2026-09-12 | `.specify/memory/constitution.md` vs `.specify/scripts/bash/create-new-feature.sh` | Governance places generated artifacts under `.specify/`; the generator and existing features use `specs/`. Accordion draft uses the generated path and an authoritative living spec under `docs/specs/`. | Open: align artifact-location guidance |
+| 2026-09-12 | `docs/specs/components/NyxSelect.spec.md` vs `src/components/NyxSelect/NyxSelect.vue` | Spec says there are no emits; source declares and emits `select`. Accordion does not copy this inconsistency. | Open: unrelated to accordion specification |
+| 2026-09-12 | `docs/architecture/component-model.md` and `docs/architecture/design-system.md` vs `src/types/common.ts` | Docs describe `Default` theme/size enum sentinels; current `NyxTheme` and `NyxSize` have no `Default` member. Accordion draft leaves these props optional and delegates resolution to `useNyxProps`. | Open: align shared-default documentation |
 
 ## Active Technologies
 - TypeScript (Vue 3) + Vue 3, NyxModal component, NyxResult class (013-programmatic-confirm)
