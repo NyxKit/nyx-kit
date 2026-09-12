@@ -2,7 +2,7 @@
 
 **Feature Branch**: `017-nyx-accordion`  
 **Created**: 2026-09-12  
-**Status**: Draft, specification only  
+**Status**: Implemented on feature branch, pending release
 **Input**: Add an accordion, consider sharing panel/slot logic with NyxTabs, close siblings by default, and support one open item ID or multiple IDs without requiring a bound model.
 
 **Authoritative component contract**: [NyxAccordion.spec.md](../../docs/specs/components/NyxAccordion.spec.md). API details, normalization, slots, examples, reuse boundaries, and implementation validation live there.
@@ -101,7 +101,7 @@ Keyboard and assistive-technology users can discover headers, toggle sections, a
 - Items have stable IDs, labels, and optional disabled state. Relabeling does not change identity.
 - Bodies retain mounted local state while collapsed.
 - Evaluate private panel reuse with NyxTabs during planning; no new public panel or renamed tab slots are required.
-- This step creates a branch and draft specifications. Implementation follows separately.
+- The specification was approved and committed before implementation. The implementation follows the living contract, including disjoint header/body slot names.
 
 ## Requirements
 
@@ -119,6 +119,8 @@ Keyboard and assistive-technology users can discover headers, toggle sections, a
 - **FR-010**: Integrate existing theme/size defaults and validate supported colour modes (component contract validation).
 - **FR-011**: Assess useful tab-panel/slot reuse while preserving the NyxTabs public contract (Story 4).
 - **FR-012**: Deliver documentation, stories, public type exports, and behavioral validation with implementation (component contract validation).
+
+- **FR-013**: Opening and closing MUST animate intrinsic panel space, body reveal, and indicator direction, while supporting rapid toggles, immediate accessibility-state changes, and reduced-motion preferences.
 
 ### Key Entities
 

@@ -1,3 +1,4 @@
+import NyxAccordion from './NyxAccordion/NyxAccordion.vue'
 import NyxActionItem from './NyxActionItem/NyxActionItem.vue'
 import NyxAvatar from './NyxAvatar/NyxAvatar.vue'
 import NyxBadge from './NyxBadge/NyxBadge.vue'
@@ -34,6 +35,7 @@ import NyxTooltip from './NyxTooltip/NyxTooltip.vue'
 import NyxTree from './NyxTree/index'
 
 export {
+  NyxAccordion,
   NyxActionItem,
   NyxAvatar,
   NyxBadge,

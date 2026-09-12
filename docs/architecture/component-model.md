@@ -8,9 +8,9 @@ Every visual component accepts a consistent set of props defined by `NyxComponen
 
 | Prop | Type | Default | Purpose |
 |---|---|---|---|
-| `theme` | `NyxTheme` | `Default` | Colour theme |
-| `size` | `NyxSize` | `Default` | Size scale |
-| `variant` | `NyxVariant` | `Default` | Fill style |
+| `theme` | `NyxTheme` | Omitted | Colour theme |
+| `size` | `NyxSize` | Omitted | Size scale |
+| `variant` | `NyxVariant` | Omitted | Fill style |
 | `shape` | `NyxShape` | `Rectangle` | Border-radius preset |
 | `pixel` | `boolean` | `false` | Pixel-art mode |
 
@@ -29,9 +29,11 @@ All visual props must be processed through `useNyxProps`. It:
 
 - Injects `libEnv` (global `NyxKitOptions`) to read library-level defaults
 - Resolves `theme`, `size`, and `variant` through a three-step chain:
-  1. If the prop is not `'default'`, use it as-is
-  2. Else if `NyxKitOptions.defaults.<prop>` is set, use that
-  3. Else fall back to the absolute default (`NyxTheme.Primary`, `NyxSize.Medium`, `NyxVariant.Filled`)
+  1. Use an explicit valid enum value
+  2. Otherwise use `NyxKitOptions.defaults[primitive].<prop>` when a primitive is supplied, then `defaults.all.<prop>`
+  3. Otherwise use `NyxTheme.Primary`, `NyxSize.Medium`, or `NyxVariant.Soft`
+
+`NyxTheme`, `NyxSize`, and `NyxVariant` have no `Default` member; omit these props to inherit defaults.
 - Computes `classList` — the reactive array of CSS classes to spread onto the root element
 - Computes `gradient` and `backlight` as CSS variable bindings
 
@@ -126,6 +128,7 @@ Use named slots for optional content regions. Conventions:
 | `empty` | Shown when list/data is empty |
 | `tab-${name}` | Per-tab content in NyxTabs |
 | `tab-button-${name}` | Custom tab trigger in NyxTabs |
+| `item-${id}` / `header-${id}` | Per-item accordion body/header override; shared scoped `default` / `header` slots provide fallbacks |
 
 Always check whether content is provided before rendering a slot's wrapper element:
 ```html

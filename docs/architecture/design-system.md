@@ -183,24 +183,17 @@ These are intentionally minimal. Do not expand this file without discussion — 
 
 ## Consumer-Defined Defaults
 
-`NyxKitOptions.defaults` (set at plugin install time) lets a consuming project define the resolved values for `theme`, `size`, and `variant` when a component receives the `'default'` sentinel:
+`NyxKitOptions.defaults` supplies defaults for omitted visual props. The theme, size, and variant enums have no `Default` member.
 
 ```ts
 app.use(NyxKit, {
   defaults: {
-    theme: 'primary',   // NyxTheme (excluding 'default')
-    size: 'md',         // NyxSize (excluding 'default')
-    variant: 'outline', // NyxVariant (excluding 'default')
-  }
+    all: { theme: NyxTheme.Primary, size: NyxSize.Medium, variant: NyxVariant.Outline },
+  },
 })
 ```
 
-Resolution order (handled by `useNyxProps`):
-1. Explicit prop value (anything except `'default'`) — used as-is
-2. `NyxKitOptions.defaults.<prop>` — if set
-3. Absolute library fallback: `NyxTheme.Primary`, `NyxSize.Medium`, `NyxVariant.Filled`
-
-Components that do not use `useNyxProps` (e.g. `NyxSpinner`, `NyxSteps`, `NyxForm`) are not affected by this resolution chain.
+`useNyxProps` resolves an explicit valid enum value first, then a supplied primitive's defaults, then `defaults.all`, then `NyxTheme.Primary`, `NyxSize.Medium`, or `NyxVariant.Soft`. Components that do not use this composable are unaffected. NyxAccordion uses `defaults.all` and exposes theme and size only.
 
 ## Theme Enum → CSS Class Mapping
 
@@ -208,17 +201,16 @@ Components apply a CSS class derived from `NyxTheme`:
 
 | `NyxTheme` value | Class applied |
 |---|---|
-| `Default` | `nyx--theme-default` |
-| `Primary` | `nyx--theme-primary` |
-| `Secondary` | `nyx--theme-secondary` |
-| `Success` | `nyx--theme-success` |
-| `Warning` | `nyx--theme-warning` |
-| `Danger` | `nyx--theme-danger` |
-| `Info` | `nyx--theme-info` |
+| `Primary` | `theme-primary` |
+| `Secondary` | `theme-secondary` |
+| `Success` | `theme-success` |
+| `Warning` | `theme-warning` |
+| `Danger` | `theme-danger` |
+| `Info` | `theme-info` |
 
 Component SCSS then scopes token overrides under these classes, e.g.:
 ```scss
-.nyx--theme-primary {
+.theme-primary {
   --nyx-c-component: var(--nyx-c-primary);
 }
 ```

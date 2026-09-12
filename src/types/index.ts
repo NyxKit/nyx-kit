@@ -1,3 +1,4 @@
+export type { NyxAccordionItem, NyxAccordionModel, NyxAccordionProps, NyxAccordionSlotProps } from '../components/NyxAccordion/NyxAccordion.types'
 export * from './colour-mode'
 export * from './common'
 export * from './editor'

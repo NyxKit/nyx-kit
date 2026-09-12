@@ -22,10 +22,10 @@
 - [x] Success criteria are observable and scenarios cover primary flows.
 - [x] NyxTabs reuse boundaries and compatibility requirements are explicit.
 - [x] Scope is bounded; no unresolved clarification placeholders remain.
-- [x] README links to the draft without advertising an implemented export.
+- [x] README originally linked to the draft; implementation updates it to the delivered API.
 
 ## Review Notes
 
-Ready for review and implementation planning. This is not an implementation-completion checklist. No component code, exports, or stories were added. Runtime and type checks belong to the subsequent implementation step. Relative local links and whitespace must pass documentation validation.
+This checklist records the initial specification review. Implementation progress and final validation are recorded in [tasks.md](../tasks.md) and [validation.md](../validation.md).
 
-Workflow discrepancies and the observed unrelated NyxSelect emit discrepancy are recorded in [AGENTS.md](../../../AGENTS.md). Hindsight was unavailable; repository source, stories, tests, and documentation grounded this draft.
+Workflow discrepancies and the observed unrelated NyxSelect emit discrepancy are recorded in [AGENTS.md](../../../AGENTS.md). Hindsight was unavailable during the initial specification step; repository source, stories, tests, and documentation grounded this draft.

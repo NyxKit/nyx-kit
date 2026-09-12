@@ -87,6 +87,30 @@ if (result.isSuccess) {
 
 The method returns a `NyxResult` — use `.isSuccess` to check the outcome.
 
+## Accordion
+
+`NyxAccordion` closes sibling sections by default. Set `multiple` to allow independent expansion. A v-model is optional: use a string ID in single mode or a string array in multiple mode. Panels animate open and closed with reduced-motion support.
+
+```vue
+<script setup lang="ts">
+import { NyxAccordion } from 'nyx-kit'
+
+const items = [
+  { id: 'account', label: 'Account' },
+  { id: 'privacy', label: 'Privacy' },
+]
+</script>
+
+<template>
+  <NyxAccordion :items="items">
+    <template #item-account>Account details</template>
+    <template #item-privacy>Privacy details</template>
+  </NyxAccordion>
+</template>
+```
+
+Use shared scoped `header` and `default` slots for repeated content, with `header-${id}` and `item-${id}` overrides. See the [component specification](docs/specs/components/NyxAccordion.spec.md) for model rules and accessibility.
+
 ## ESLint
 
 Nyx Kit ships a shareable ESLint flat config. To adopt the same rules in your project:
@@ -144,7 +168,6 @@ Test-framework rules (`@vitest/eslint-plugin`, `eslint-plugin-playwright`) are *
 
 ### New Core Components
 - `NyxDropdown`: A menu for selecting one option from a list.
-- `NyxAccordion`: A collapsible container with optional single or multiple open-item state. [Draft spec](docs/specs/components/NyxAccordion.spec.md) (not yet implemented).
 - `NyxToast`: A temporary notification popup.
 - `NyxSkeleton`: A placeholder loading animation for components.
 - `NyxRadioGroup`: A set of radio buttons for multiple-choice selection.
