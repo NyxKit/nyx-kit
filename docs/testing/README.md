@@ -62,7 +62,7 @@ Config: `playwright.config.ts`. Tests live in `e2e/`.
 yarn test:e2e
 ```
 
-Playwright uses the Vite dev server. Make sure nothing else occupies port `9000`.
+Playwright starts Vite explicitly on `127.0.0.1:5197` in both local runs and CI. Tests are headless and load isolated component fixtures from `e2e/fixtures/`; the regular library dev server remains on port 9000. Accordion browser tests cover native activation, focus navigation/recovery, nested instances, and collapsed-content tab exclusion.
 
 ## Storybook
 

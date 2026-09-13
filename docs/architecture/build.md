@@ -1,5 +1,9 @@
 # Build
 
+## Release version
+
+The NyxAccordion feature increments the package minor version from `2.0.40` to `2.1.0`. The version bump does not publish the package; publishing remains a separate action.
+
 ## Tool Chain
 
 | Tool | Purpose |

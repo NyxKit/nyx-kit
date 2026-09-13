@@ -24,7 +24,7 @@ components  composables directives  classes/utils/types
 | Module | Entry | Purpose |
 |---|---|---|
 | Plugin | `src/main.ts` | Vue plugin, global options, directive registration |
-| Components | `src/components/index.ts` | 23 UI components |
+| Components | `src/components/index.ts` | Reusable Vue components |
 | Composables | `src/composables/index.ts` | Reusable logic (props, keyboard, positioning) |
 | Directives | `src/directives/index.ts` | Custom Vue directives (`v-click-outside`) |
 | Types | `src/types/index.ts` | Shared enums and interfaces |
@@ -58,6 +58,7 @@ Storybook stories are grouped by domain (`Basic`, `Form`, `Data`, `Navigation`, 
 
 | Component | Description |
 |---|---|
+| NyxAccordion | Single or multiple collapsible sections with optional ID model and scoped slots |
 | NyxAvatar | Image or initials avatar with optional name display |
 | NyxBadge | Status/count badge |
 | NyxBreadcrumbs | Navigation breadcrumb trail |

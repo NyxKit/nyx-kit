@@ -1,4 +1,5 @@
 import { type App } from 'vue'
+import NyxAccordion from './components/NyxAccordion/NyxAccordion.vue'
 import { vClickOutside } from './directives'
 import type { NyxKitOptions } from './types'
 import type { ConfirmOptions, ConfirmResult } from './types/confirm'
@@ -7,6 +8,8 @@ import { useNyxConfirm } from './composables/useNyxConfirm'
 
 export type { NyxKitPrimitive, NyxKitDefaults, NyxKitOptions, NyxColourModeOptions } from './types'
 export type { ConfirmOptions, ConfirmResult } from './types/confirm'
+export { NyxAccordion }
+export type { NyxAccordionItem, NyxAccordionModel, NyxAccordionProps, NyxAccordionSlotProps } from './types'
 
 let confirmFn: ((options: ConfirmOptions) => Promise<ConfirmResult>) | null = null
 
