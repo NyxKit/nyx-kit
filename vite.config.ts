@@ -75,7 +75,7 @@ export default defineConfig({
       outDir: fileURLToPath(new URL('./dist/types', import.meta.url)),
       rollupTypes: true,
       tsconfigPath: './tsconfig.app.json',
-      include: ['./src/**/*'],
+      include: ['./env.d.ts', './src/**/*'],
       exclude: ['./node_modules/**/*', 'dist', '**/*.spec.ts', '**/*.test.ts', '**/*.svg', '**/*.stories.ts'],
       compilerOptions: {
         skipLibCheck: true,

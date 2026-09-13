@@ -4,6 +4,8 @@
 
 The NyxAccordion feature increments the package minor version from `2.0.40` to `2.1.0`. The version bump does not publish the package; publishing remains a separate action.
 
+Patch `2.1.1` fixes declaration generation by including Vite's environment types in the declaration build.
+
 ## Tool Chain
 
 | Tool | Purpose |
@@ -61,6 +63,8 @@ The `exports` map in `package.json` must stay in sync with the `lib.entry` objec
 ## Type Declarations
 
 `vite-plugin-dts` generates `.d.ts` files into `dist/types/` with `rollupTypes: true` (single rolled-up declaration file per entry). The `types` field in each `exports` entry points there.
+
+The plugin's explicit `include` list must contain both `env.d.ts` and `src/**/*`. It overrides the TypeScript configuration's include list, so omitting `env.d.ts` removes the `vite/client` types needed for `import.meta.env` during declaration generation.
 
 ## Dev Server
 

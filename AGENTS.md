@@ -397,6 +397,7 @@ When you notice that something in the codebase or stories is out of sync, record
 | 2026-09-12 | `playwright.config.ts` vs Vite and `e2e/` | Test server expected port 5173 while Vite uses 9000; E2E file contained only comments. Accordion adds a browser fixture and explicit test-server port. | Fixed during accordion implementation |
 | 2026-09-12 | Draft accordion slot contract | `item-header-a` collides between header ID `a` and body ID `header-a`. Header overrides now use `header-${id}`; bodies retain `item-${id}`. | Fixed before release |
 | 2026-09-12 | `src/components/NyxStatusDot/NyxStatusDot.spec.ts` vs `NyxStatusDot.vue` | Existing default-class test expects `size-xs`; unchanged source defaults to `NyxSize.Medium` (`size-md`). Full unit suite fails this assertion. | Open: unrelated baseline failure |
+| 2026-09-13 | `vite.config.ts` vs `tsconfig.app.json` | Declaration generation excluded root `env.d.ts` despite the application type check including it, causing TS2339 for `import.meta.env`. | Fixed in patch 2.1.1 by including environment declarations in the build |
 
 ## Active Technologies
 - TypeScript (Vue 3) + Vue 3, NyxModal component, NyxResult class (013-programmatic-confirm)
