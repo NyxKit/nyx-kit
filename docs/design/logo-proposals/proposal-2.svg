@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="p2-title p2-desc">
+  <title id="p2-title">Nyx Kit proposal 2: Open crossing</title>
+  <desc id="p2-desc">Aligned N, X and Y with a joined upper fork and mirrored gap endpoints around the N crossing. The separated rising portions remain collinear, with equal clearance on both sides. Rounded terminals and joins soften the finished mark.</desc>
+  <path d="M104 424V88L408 424V88" fill="none" stroke="#9F50F0" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M104 424L232 282.526316" fill="none" stroke="#9F50F0" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M152 88L280 229.473684L408 88" fill="none" stroke="#9F50F0" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

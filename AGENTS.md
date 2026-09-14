@@ -387,6 +387,7 @@ When you notice that something in the codebase or stories is out of sync, record
 
 | Noticed | Location | Description | Status |
 |---|---|---|---|
+| 2026-09-14 | `docs/design/logo-proposals/` | Initial SVG studies copied sketch offsets without aligning all letter continuations and interpreted proposal 4's shading as a taper. User clarified that it denotes letter overlap: triple on the upper-left arm, double on the other diagonal arms, single on verticals. | Corrected geometry and overlap-driven colour/width studies |
 | 2026-03-26 | `README.md` vs `specs/006-add-nyx-grid/spec.md` | Planned feature naming diverged (`NyxLayout` in README, `NyxGrid` in spec). | Fixed |
 | 2026-03-29 | `src/components/NyxTabs/NyxTabs.vue` vs `docs/specs/components/` | `NyxTabs` implementation existed without a living component spec file in `docs/specs/components/`. | Fixed |
 | 2026-09-12 | `docs/conventions/README.md` vs `.claude/commands/speckit.specify.md` | General branch guidance requires type prefixes; the new-feature workflow generates numbered branches. Accordion draft follows the specific Spec Kit workflow (`017-nyx-accordion`). | Open: clarify branch convention |

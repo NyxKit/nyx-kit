@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="p4a-title p4a-desc">
+  <title id="p4a-title">Nyx Kit proposal 4a: Colour by overlap</title>
+  <desc id="p4a-desc">Uniform 16-unit strokes. Three letters: equal primary-secondary blend. Two letters: primary. One letter: secondary. Rounded terminals and joins soften the finished mark.</desc>
+  <path d="M104 424V88 M408 88V424" fill="none" stroke="#0F4C75" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" id="p4a-verticals" data-letters="N" data-overlap="1"/>
+  <path d="M256 256L408 88" fill="none" stroke="#9F50F0" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" id="p4a-upper-right" data-letters="XY" data-overlap="2"/>
+  <path d="M104 424L256 256" fill="none" stroke="#9F50F0" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" id="p4a-lower-left" data-letters="XY" data-overlap="2"/>
+  <path d="M256 256L408 424" fill="none" stroke="#9F50F0" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" id="p4a-lower-right" data-letters="NX" data-overlap="2"/>
+  <path d="M104 88L256 256" fill="none" stroke="#574EB3" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" id="p4a-upper-left" data-letters="NYX" data-overlap="3"/>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="p4c-title p4c-desc">
+  <title id="p4c-title">Nyx Kit proposal 4c: Colour + width</title>
+  <desc id="p4c-desc">Three letters: blended colour at 36 units. Two letters: primary at 24 units. One letter: secondary at 12 units. Rounded terminals and joins soften the finished mark.</desc>
+  <path d="M104 424V88 M408 88V424" fill="none" stroke="#0F4C75" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" id="p4c-verticals" data-letters="N" data-overlap="1"/>
+  <path d="M256 256L408 88" fill="none" stroke="#9F50F0" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" id="p4c-upper-right" data-letters="XY" data-overlap="2"/>
+  <path d="M104 424L256 256" fill="none" stroke="#9F50F0" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" id="p4c-lower-left" data-letters="XY" data-overlap="2"/>
+  <path d="M256 256L408 424" fill="none" stroke="#9F50F0" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" id="p4c-lower-right" data-letters="NX" data-overlap="2"/>
+  <path d="M104 88L256 256" fill="none" stroke="#574EB3" stroke-width="36" stroke-linecap="round" stroke-linejoin="round" id="p4c-upper-left" data-letters="NYX" data-overlap="3"/>
+</svg>

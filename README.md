@@ -4,6 +4,8 @@ Nyx Kit is a lightweight and flexible developer kit for building Vue application
 ## Documentation
 For more detailed information, usage examples, and live demos of components, visit the [Storybook documentation](https://nyxkit.github.io/nyx-kit).
 
+Brand identity: [final logo and downloads](docs/design/logo/README.md). Archived explorations: [SVG logo proposals](docs/design/logo-proposals/README.md) and [proposal 2 moodboard](docs/design/proposal-2-studies/README.md).
+
 ## Installation
 
 ```sh

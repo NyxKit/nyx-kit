@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="S2-title S2-desc">
+<title id="S2-title">Nyx Kit / S2 / Offset print</title>
+<desc id="S2-desc">Proposal 2 study. 32 units / crisp secondary shadow. Structural stroke width 32 units. Rounded, aligned overlapping N, Y and X.</desc>
+<defs><filter id="offset-shadow" x="-96" y="-96" width="704" height="704" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feGaussianBlur in="SourceAlpha" stdDeviation="0" result="blur0"/><feOffset in="blur0" dx="18" dy="20" result="offset0"/><feFlood flood-color="#0F4C75" flood-opacity="0.78" result="colour0"/><feComposite in="colour0" in2="offset0" operator="in" result="shadow0"/><feMerge><feMergeNode in="shadow0"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+<g filter="url(#offset-shadow)"><path d="M104 424V88L408 424V88" fill="none" stroke="#9F50F0" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/><path d="M104 424L221.211579 294.450360" fill="none" stroke="#9F50F0" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/><path d="M173.576842 88L290.788421 217.549640L408 88" fill="none" stroke="#9F50F0" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/></g>
+</svg>

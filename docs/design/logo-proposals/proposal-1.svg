@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="p1-title p1-desc">
+  <title id="p1-title">Nyx Kit proposal 1: Shared strokes</title>
+  <desc id="p1-desc">Aligned N and X with an offset Y upper-left arm; the Y right arm and stem share the continuous rising X diagonal. Rounded terminals and joins soften the finished mark.</desc>
+  <path d="M104 424V88L408 424V88" fill="none" stroke="#9F50F0" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M104 424L408 88" fill="none" stroke="#9F50F0" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M152 88L280 229.473684" fill="none" stroke="#9F50F0" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

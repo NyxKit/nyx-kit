@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="p3-title p3-desc">
+  <title id="p3-title">Nyx Kit proposal 3: Separated letters</title>
+  <desc id="p3-desc">Aligned N with distinct parallel X and Y rising strokes. Each upper arm aligns with its corresponding lower continuation. Parallel strokes, crossing breaks and lower-left terminal clearance use a consistent 16-unit visible gap. All additional X and Y strokes remain detached from the N, including the upper-right terminal. Rounded terminals and joins soften the finished mark.</desc>
+  <path d="M104 424V88L408 424V88" fill="none" stroke="#9F50F0" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M136.000000 388.631579L234.423158 279.848088 M277.576842 232.151912L376.000000 123.368421" fill="none" stroke="#9F50F0" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M136.000000 340.935403L212.846317 256.000000" fill="none" stroke="#9F50F0" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M147.153683 88.000000L256.000000 208.303824L364.846317 88.000000" fill="none" stroke="#9F50F0" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
