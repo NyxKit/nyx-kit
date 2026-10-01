@@ -6,6 +6,8 @@ The NyxAccordion feature increments the package minor version from `2.0.40` to `
 
 Patch `2.1.1` fixes declaration generation by including Vite's environment types in the declaration build.
 
+NyxMarkdown increments the minor version from `2.1.1` to `2.2.0`; publishing remains a separate maintainer action.
+
 ## Tool Chain
 
 | Tool | Purpose |
@@ -59,6 +61,10 @@ CSS is a separate asset: `./style.css` → `dist/assets/nyx-kit.css`.
 ```
 
 The `exports` map in `package.json` must stay in sync with the `lib.entry` object in `vite.config.ts`. A mismatch breaks type resolution or tree-shaking for consumers.
+
+## Editor isolation
+
+The library build groups Tiptap, ProseMirror, and the editor annotation composable in an `editor` chunk. Higher-priority groups keep shared type enums and the Markdown parser outside the editor chunk. Keeping editor initialization separate lets consumer bundlers drop it when importing read-only components such as NyxMarkdown. This changes internal chunk names only; public entry points remain unchanged.
 
 ## Type Declarations
 
