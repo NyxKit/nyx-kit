@@ -387,6 +387,9 @@ When you notice that something in the codebase or stories is out of sync, record
 
 | Noticed | Location | Description | Status |
 |---|---|---|---|
+| 2026-10-01 | Shared build chunks vs NyxMarkdown resource contract | Markdown-only consumer bundles retained editor initialization from the existing composables chunk. | Isolate editor modules in a dedicated build chunk |
+| 2026-10-01 | `package.json` optional `vue-router` peer vs `dist/components.mjs` | An installed consumer importing `nyx-kit/components` fails Vite resolution without Vue Router because the existing barrel imports `RouterLink`. | Open: package-level limitation; consumer smoke test installs the peer |
+| 2026-10-01 | `docs/architecture/README.md` vs `package.json` | Architecture claimed no bundled runtime dependencies despite existing editor/icon dependencies. | Clarified while adding the Markdown parser |
 | 2026-09-14 | `docs/design/logo-proposals/` | Initial SVG studies copied sketch offsets without aligning all letter continuations and interpreted proposal 4's shading as a taper. User clarified that it denotes letter overlap: triple on the upper-left arm, double on the other diagonal arms, single on verticals. | Corrected geometry and overlap-driven colour/width studies |
 | 2026-03-26 | `README.md` vs `specs/006-add-nyx-grid/spec.md` | Planned feature naming diverged (`NyxLayout` in README, `NyxGrid` in spec). | Fixed |
 | 2026-03-29 | `src/components/NyxTabs/NyxTabs.vue` vs `docs/specs/components/` | `NyxTabs` implementation existed without a living component spec file in `docs/specs/components/`. | Fixed |

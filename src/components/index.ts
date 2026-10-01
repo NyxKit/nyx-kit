@@ -1,3 +1,5 @@
+import NyxMarkdown from './NyxMarkdown/NyxMarkdown.vue'
+export { NyxMarkdown }
 import NyxAccordion from './NyxAccordion/NyxAccordion.vue'
 import NyxActionItem from './NyxActionItem/NyxActionItem.vue'
 import NyxAvatar from './NyxAvatar/NyxAvatar.vue'

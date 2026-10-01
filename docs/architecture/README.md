@@ -45,8 +45,8 @@ All visual props (`theme`, `size`, `variant`, `shape`, `pixel`, `gradient`, `bac
 ### Teleport for floating elements
 Dropdowns, tooltips, and modals are teleported to `<body>` to avoid `overflow: hidden` clipping. Positioning is handled by `useTeleportPosition`, which tracks the trigger element and auto-mirrors when viewport space is insufficient.
 
-### No external runtime dependencies
-`vue` is the only runtime peer dependency. No icon library, animation library, or utility framework is bundled. All logic is purpose-written.
+### Runtime dependencies
+Vue and Vue Router are externalized by the library build. Components may use direct runtime dependencies: the editor uses Tiptap/ProseMirror, icons use lucide-vue-next, and NyxMarkdown uses markdown-it. NyxMarkdown imports no editor modules; its parser is bundled into shared library chunks.
 
 ### Pixel mode
 A first-class alternative visual mode using the `Press Start 2P` font and `box-shadow`-based pixel borders (SCSS mixins in `src/styles/mixins.scss`). Enabled globally via `NyxKitOptions.pixel` or per-component via the `pixel` prop. Only valid with the `Solid` variant.

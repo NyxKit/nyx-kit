@@ -113,6 +113,22 @@ const items = [
 
 Use shared scoped `header` and `default` slots for repeated content, with `header-${id}` and `item-${id}` overrides. See the [component specification](docs/specs/components/NyxAccordion.spec.md) for model rules and accessibility.
 
+## Markdown
+
+`NyxMarkdown` renders read-only Markdown with semantic HTML, Nyx typography, tables, and typed Vue inline slots for consumer-owned citations. Pass the complete accumulated string through `content` while streaming. Raw HTML stays text, images are omitted, and links allow only HTTP(S) or document fragments.
+
+```vue
+<script setup lang="ts">
+import { NyxMarkdown } from 'nyx-kit' // also available from nyx-kit/components
+</script>
+
+<template>
+  <NyxMarkdown content="**Hello** from NyxMarkdown." />
+</template>
+```
+
+Import `nyx-kit/style.css` once in your application. See the [component specification](docs/specs/components/NyxMarkdown.spec.md) and InlineExtensions story for typed recognizers and real citation buttons.
+
 ## ESLint
 
 Nyx Kit ships a shareable ESLint flat config. To adopt the same rules in your project:

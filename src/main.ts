@@ -1,3 +1,6 @@
+export type { NyxMarkdownProps, NyxMarkdownInlineRule, NyxMarkdownInlineMatch, NyxMarkdownInlineSlotProps } from './types'
+import NyxMarkdown from './components/NyxMarkdown/NyxMarkdown.vue'
+export { NyxMarkdown }
 import { type App } from 'vue'
 import NyxAccordion from './components/NyxAccordion/NyxAccordion.vue'
 import { vClickOutside } from './directives'

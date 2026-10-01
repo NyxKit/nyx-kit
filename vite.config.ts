@@ -40,6 +40,22 @@ export default defineConfig({
           chunkFileNames: (chunkInfo) => chunkFileNamesFn(chunkInfo, 'mjs'),
           assetFileNames: assetFileNamesFn,
           preserveModules: false,
+          // Keep shared enums/parser ahead of the editor group so its
+          // dependency capture cannot pull them into an editor-only chunk.
+          codeSplitting: {
+            groups: [{
+              name: 'types',
+              test: /src[\\/]types[\\/]/,
+              priority: 30,
+            }, {
+              name: 'markdown',
+              test: /node_modules[\\/]markdown-it[\\/]/,
+              priority: 20,
+            }, {
+              name: 'editor',
+              test: /(?:node_modules[\\/](?:@tiptap[\\/]|prosemirror-)|src[\\/]composables[\\/]useEditorAnnotations\.ts)/,
+            }],
+          },
           globals: { vue: 'vue' }
         }
       ],
