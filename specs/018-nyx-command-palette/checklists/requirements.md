@@ -10,7 +10,7 @@
 - [x] Feature scenarios describe user needs and observable outcomes.
 - [x] Mandatory scenarios, requirements, entities, and success criteria are complete.
 - [x] API details and implementation guidance live in the separate authoritative component contract.
-- [x] Nuxt UI reference and current Nyx conventions, primitives, stories, and Storybook configuration were inspected.
+- [x] Current Nyx conventions, primitives, stories, and Storybook configuration were inspected.
 
 ## Requirement Completeness
 
@@ -33,6 +33,6 @@
 
 ## Review Notes
 
-The standalone component, 19 Storybook examples, unit/SSR tests, browser fixture, and public generic declarations are implemented. No runtime dependency was added. See [validation results](../validation.md) for successful checks and the existing unit-test/environment limitations.
+The standalone component, 21 Storybook examples, unit/SSR tests, browser fixture, and public generic declarations are implemented. No runtime dependency was added. See [validation results](../validation.md) for successful checks and the existing unit-test/environment limitations.
 
 Existing unrelated discrepancies remain recorded in [AGENTS.md](../../../AGENTS.md).

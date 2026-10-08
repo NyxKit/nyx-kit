@@ -78,6 +78,6 @@
 
 **Decision**: All `document.documentElement` access guarded with `typeof document !== 'undefined'` or inside `onMounted`.
 
-**Rationale**: Nyx Kit targets SSR-capable Vue apps (Nuxt). The `install` hook runs on the server; `document` is not available there. The initial attribute must be applied client-side only.
+**Rationale**: Nyx Kit targets SSR-capable Vue apps. The `install` hook runs on the server; `document` is not available there. The initial attribute must be applied client-side only.
 
 **No NEEDS CLARIFICATION items remain.**

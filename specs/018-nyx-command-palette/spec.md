@@ -3,7 +3,7 @@
 **Feature Branch**: `018-nyx-command-palette`
 **Created**: 2026-10-08
 **Status**: Implemented for 2.3.0
-**Input**: Create a branch from main and specify a command palette inspired by [Nuxt UI CommandPalette](https://ui.nuxt.com/docs/components/command-palette), with proper Storybook integration. The palette must own its centered overlay and distinct styling, with no NyxModal dependency.
+**Input**: Create a branch from main and specify a command palette with grouped results, fuzzy search, and proper Storybook integration. The palette must own its centered overlay and distinct styling, with no NyxModal dependency.
 
 The authoritative API and implementation acceptance contract is [NyxCommandPalette.spec.md](../../docs/specs/components/NyxCommandPalette.spec.md). Keep both documents consistent. The implementation delivers the component, stories, tests, and minor release.
 
@@ -154,7 +154,7 @@ As a library consumer, I can find the component in Storybook, understand its API
 ## Assumptions and scope boundaries
 
 - The follow-up request authorizes implementation, a minor version bump, and creating a pull request. npm publishing remains a separate maintainer action.
-- First-version decisions: single-command activation, optional ID selection, default standalone overlay with a separate open model, optional inline rendering, no automatic dismissal on selection or query reset, and lightweight subsequence search. These are Nyx behaviors, not Nuxt API parity.
+- First-version decisions: single-command activation, optional ID selection, default standalone overlay with a separate open model, optional inline rendering, no automatic dismissal on selection or query reset, and lightweight subsequence search.
 - Edit-distance fuzzy search, nested pages, multiple selection, virtualization, persistent recents, automatic routing, and a global command registry are outside the first version.
 - Existing Nyx primitives/tokens are the baseline. No new dependency is assumed; flag one before adding it if later implementation requires it.
 - The user explicitly requires independent overlay styling and rejects NyxModal composition. Use a search-first surface with its own sizing, backdrop, and motion. Existing unrelated discrepancies remain recorded in [AGENTS.md](../../AGENTS.md).

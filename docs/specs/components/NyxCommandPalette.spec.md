@@ -10,7 +10,7 @@ Feature scenarios: [018-nyx-command-palette](../../../specs/018-nyx-command-pale
 
 Use for finding and executing commands, jumping to application destinations, or choosing a search result. By default, the palette opens as its own horizontally centered overlay with a dedicated layout and styling. It must not wrap, import, or depend on NyxModal or its styles. An optional `inline` mode embeds the same search/results surface in page content. For a persistent form choice or multiple selection, use [NyxSelect](./NyxSelect.spec.md).
 
-The reference is [Nuxt UI CommandPalette](https://ui.nuxt.com/docs/components/command-palette), consulted 2026-10-08. Adopt grouped results, fuzzy discovery, a separately controlled query, item decoration, customization slots, and consumer-supplied remote results. This is a Nyx API, not a compatibility wrapper.
+The component provides grouped results, fuzzy discovery, a separately controlled query, item decoration, customization slots, and consumer-supplied remote results.
 
 First-version scope is single-command activation and a standalone overlay. The palette owns its overlay lifecycle, backdrop, dismissal, and focus handling; the application controls visibility through `v-model:open`. An optional `shortcut` prop registers an overlay toggle; routing, network requests, debounce, and action execution belong to the consuming application. Nested command pages, multiple selection, virtualization, recents persistence, typo correction, and Fuse.js configuration are deferred. No new package is required by this contract.
 
@@ -75,7 +75,7 @@ interface NyxCommandPaletteItemSlotProps<T extends NyxCommandPaletteItem = NyxCo
 
 Group IDs must be unique and nonblank; item IDs must be unique across all accepted groups and nonblank. Item labels must contain meaningful text. Preserve valid IDs verbatim. Skip invalid descriptors; the first valid occurrence of an ID wins. Skip an entire duplicate/invalid group before validating its items. Report rejected descriptors in development. Never modify supplied groups, items, or nested arrays.
 
-`icon` uses NyxIcon names such as `search` or `settings`, not Nuxt's `i-lucide-*` namespace. `shortcuts` contains presentation strings such as `['Ctrl', 'K']`, rendered as decorative `<kbd>` hints. They do not register shortcuts. Consumers choose platform labels explicitly, avoiding platform-dependent SSR output.
+`icon` uses NyxIcon names such as `search` or `settings`. `shortcuts` contains presentation strings such as `['Ctrl', 'K']`, rendered as decorative `<kbd>` hints. They do not register shortcuts. Consumers choose platform labels explicitly, avoiding platform-dependent SSR output.
 
 Export the component via direct `.vue` imports in `src/components/index.ts` and `src/main.ts`. Export all public props, event, item, group, and slot types through `src/types/index.ts` and the root entry. Imports must work from `nyx-kit` / `nyx-kit/components` and `nyx-kit` / `nyx-kit/types`, respectively. Do not introduce a router import into the palette; navigation is handled in `select` listeners.
 
@@ -292,7 +292,7 @@ Storybook is a required implementation deliverable, not a placeholder. Use `titl
 
 The current installation is Storybook 10 with `@storybook/vue3-vite`; the older stack summary in AGENTS.md says 8. The existing `.storybook/main.ts` glob already discovers co-located stories, and `.storybook/preview.ts` supplies global autodocs, Nyx CSS, and Navigation ordering. Use this setup and the typed NyxAccordion story pattern; do not add a parallel Storybook configuration or an older addon stack. Light/dark checks must set Nyx's actual `data-nyx-mode` on the preview document rather than only switching Storybook's manager theme.
 
-Provide meaningful controls for open, inline, shortcut, viewportMode, showResultsLabel, theme, size, placeholder, label, loading, disabled, loop, autofocus, and closeable. Wire models in Vue wrappers, and log `select`, `close`, and model updates in Actions. Each example must show an observable action outcome or selected ID. Reset mutable fixture data per mount and cancel pending mock requests/timers on teardown. Use deterministic local fixtures and mock promises; no external network, router, or Nuxt setup is required. Overlay stories start closed with an explicit trigger so a Docs page containing several stories does not open competing dialogs; state-gallery stories may use inline mode.
+Provide meaningful controls for open, inline, shortcut, viewportMode, showResultsLabel, theme, size, placeholder, label, loading, disabled, loop, autofocus, and closeable. Wire models in Vue wrappers, and log `select`, `close`, and model updates in Actions. Each example must show an observable action outcome or selected ID. Reset mutable fixture data per mount and cancel pending mock requests/timers on teardown. Use deterministic local fixtures and mock promises; no external network or router setup is required. Overlay stories start closed with an explicit trigger so a Docs page containing several stories does not open competing dialogs; state-gallery stories may use inline mode.
 
 | Story | Required demonstration / interaction |
 |---|---|
@@ -325,7 +325,7 @@ Validation results: [implementation validation](../../../specs/018-nyx-command-p
 
 ## Known limitations
 
-- This is a single-selection command surface, not a Nuxt UI API clone or a form multi-select.
+- This is a single-selection command surface; form multi-select is out of scope.
 - Fuzzy matching means ordered subsequences, not typo tolerance or locale-specific collation. Consumers can supply their own ordered results with `ignoreFilter`.
 - No virtualization, nested history, persisted recents, automatic navigation, global command registry, or asynchronous action management is included.
 - Custom option content is noninteractive. Applications needing multiple independent controls per row should use another list pattern.
