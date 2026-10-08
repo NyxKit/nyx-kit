@@ -4,12 +4,13 @@ import useNyxProps from '@/composables/useNyxProps'
 import NyxIcon from '../NyxIcon/NyxIcon.vue'
 import type { NyxCommandPaletteGroup, NyxCommandPaletteItem, NyxCommandPaletteItemSlotProps, NyxCommandPaletteProps, NyxCommandPaletteSelectEvent } from './NyxCommandPalette.types'
 import { acceptGroups, filterGroups, queryKey } from './commandPalette'
+import { useCommandPaletteShortcut } from './useCommandPaletteShortcut'
 import { useCommandPaletteOverlay } from './useCommandPaletteOverlay'
 import './NyxCommandPalette.scss'
 
 defineOptions({ inheritAttrs: false })
 const props = withDefaults(defineProps<NyxCommandPaletteProps<T>>(), {
-  inline: false, placeholder: 'Search commands...', label: 'Search commands',
+  inline: false, showResultsOnEmpty: true, placeholder: 'Search commands...', label: 'Search commands',
   loading: false, loadingText: 'Loading commands...', emptyText: 'No commands found.',
   disabled: false, autofocus: false, loop: true, closeable: false, closeLabel: 'Close command palette',
 })
@@ -33,7 +34,8 @@ const root = ref<HTMLElement | null>(null)
 const input = ref<HTMLInputElement | null>(null)
 const viewport = ref<HTMLElement | null>(null)
 const overlay = useCommandPaletteOverlay(props, open, root, input, () => emit('close'))
-const { mounted } = overlay
+const { mounted, closing } = overlay
+const paletteShortcut = useCommandPaletteShortcut(props, root, overlay.toggle)
 const instance = getCurrentInstance()!
 const externallySelected = () => {
   const raw = instance.vnode.props ?? {}
@@ -42,10 +44,11 @@ const externallySelected = () => {
 const localSelection = ref(model.value)
 const selected = computed(() => externallySelected() ? model.value : localSelection.value)
 const query = computed(() => searchTerm.value ?? '')
+const resultsVisible = computed(() => props.showResultsOnEmpty || !!query.value.trim())
 const accepted = computed(() => acceptGroups(props.groups))
 const filtered = computed(() => filterGroups(accepted.value, query.value))
-const resultCount = computed(() => filtered.value.reduce((sum, group) => sum + group.items.length, 0))
-const enabled = computed(() => props.disabled || props.loading ? [] : filtered.value.flatMap(({ items }) => items.filter(item => !item.disabled)))
+const resultCount = computed(() => resultsVisible.value ? filtered.value.reduce((sum, group) => sum + group.items.length, 0) : 0)
+const enabled = computed(() => props.disabled || props.loading || !resultsVisible.value || closing.value ? [] : filtered.value.flatMap(({ items }) => items.filter(item => !item.disabled)))
 const active = ref<string>()
 watch([() => queryKey(query.value), enabled, selected], ([key, items, selection], previous) => {
   const first = items[0]?.id
@@ -60,10 +63,10 @@ const baseId = useId()
 const domId = (kind: string, id = '') => `${baseId}-${kind}-${Array.from(id, char => char.codePointAt(0)!.toString(16)).join('-')}`
 const scope = (item: T, group: NyxCommandPaletteGroup<T>, index: number): NyxCommandPaletteItemSlotProps<T> => ({
   item, group, index, active: active.value === item.id, selected: selected.value === item.id,
-  disabled: props.disabled || props.loading || !!item.disabled, searchTerm: query.value,
+  disabled: props.disabled || props.loading || closing.value || !resultsVisible.value || !!item.disabled, searchTerm: query.value,
 })
 const activate = (item: T, group: NyxCommandPaletteGroup<T>, originalEvent: MouseEvent | KeyboardEvent) => {
-  if (!enabled.value.some(candidate => candidate.id === item.id)) return
+  if ((!props.inline && !open.value) || !enabled.value.some(candidate => candidate.id === item.id)) return
   overlay.focus()
   const discardedLocal = !externallySelected() && localSelection.value !== item.id && model.value === item.id
   localSelection.value = item.id
@@ -74,7 +77,7 @@ const activate = (item: T, group: NyxCommandPaletteGroup<T>, originalEvent: Mous
 let composing = false
 const composition = (value: boolean) => { composing = value; overlay.onComposition(value) }
 const onInputKeydown = (event: KeyboardEvent) => {
-  if (composing || event.isComposing || event.keyCode === 229) return
+  if (composing || event.isComposing || event.keyCode === 229 || paletteShortcut.matches(event)) return
   const items = enabled.value
   if (event.key === 'Enter') {
     event.preventDefault()
@@ -94,17 +97,32 @@ const onInputKeydown = (event: KeyboardEvent) => {
   index = props.loop ? (index + items.length) % items.length : Math.max(0, Math.min(index, items.length - 1))
   active.value = items[index]?.id
 }
-watch([active, () => props.inline || (mounted.value && open.value)], async ([id, visible]) => {
-  if (!visible) return
-  await nextTick()
+const scrollActiveIntoView = () => {
+  if (!resultsVisible.value || (!props.inline && !open.value)) return
   const container = viewport.value
-  const element = id && container?.ownerDocument.getElementById(domId('option', id))
-  if (!container || !element) return
-  const row = element.getBoundingClientRect()
-  const bounds = container.getBoundingClientRect()
-  if (row.top < bounds.top) container.scrollTop -= bounds.top - row.top
-  else if (row.bottom > bounds.bottom) container.scrollTop += row.bottom - bounds.bottom
+  const element = active.value && container?.ownerDocument.getElementById(domId('option', active.value))
+  if (!container?.clientHeight || !element) return
+  // Layout offsets are unaffected by the surface's scale animation.
+  let top = element.offsetTop
+  let parent = element.offsetParent as HTMLElement | null
+  while (parent && parent !== container) { top += parent.offsetTop; parent = parent.offsetParent as HTMLElement | null }
+  if (top < container.scrollTop) container.scrollTop = top
+  else if (top + element.offsetHeight > container.scrollTop + container.clientHeight) {
+    container.scrollTop = top + element.offsetHeight - container.clientHeight
+  }
+}
+watch([active, resultsVisible, () => props.inline || (mounted.value && open.value)], async () => {
+  await nextTick()
+  scrollActiveIntoView()
 }, { immediate: true })
+watch(viewport, (element, _, cleanup) => {
+  if (!element || typeof ResizeObserver === 'undefined') return
+  const observer = new ResizeObserver(scrollActiveIntoView)
+  observer.observe(element)
+  cleanup(() => observer.disconnect())
+})
+const hideLeavingResult = (element: Element) => { element.setAttribute('aria-hidden', 'true'); element.setAttribute('inert', '') }
+const restoreResult = (element: Element) => { element.removeAttribute('aria-hidden'); element.removeAttribute('inert') }
 const rootAttrs = () => Object.fromEntries(Object.entries(attrs).filter(([key]) => key !== 'class' && key !== 'style'))
 defineExpose({ focus: overlay.focus })
 </script>
@@ -113,7 +131,7 @@ defineExpose({ focus: overlay.focus })
   <Teleport to="body" :disabled="inline || !mounted">
     <component
       :is="inline ? 'div' : 'dialog'" ref="root" v-bind="rootAttrs()"
-      class="nyx-command-palette" :class="[classList, attrs.class]" :style="attrs.style"
+      class="nyx-command-palette" :class="[classList, attrs.class]" :style="attrs.style" :data-closing="closing" :data-results-visible="resultsVisible"
       :aria-label="inline ? undefined : label" :aria-modal="inline ? undefined : true" tabindex="-1"
       @keydown="overlay.onKeydown" @cancel="overlay.onCancel"
       @pointerdown="overlay.onPointerDown" @pointerup="overlay.onPointerUp" @pointercancel="overlay.onPointerCancel"
@@ -123,7 +141,7 @@ defineExpose({ focus: overlay.focus })
         <input
           :id="domId('input')" ref="input" class="nyx-command-palette__input" type="text"
           role="combobox" :aria-label="label" aria-autocomplete="list" :aria-controls="domId('list')"
-          :aria-expanded="(inline || (mounted && open)) && !disabled"
+          :aria-expanded="(inline || (mounted && open)) && !disabled && resultsVisible && !closing"
           :aria-activedescendant="active ? domId('option', active) : undefined"
           :placeholder="placeholder" :value="query" :disabled="disabled" autocomplete="off"
           @input="searchTerm = ($event.target as HTMLInputElement).value" @keydown="onInputKeydown"
@@ -133,18 +151,20 @@ defineExpose({ focus: overlay.focus })
           <NyxIcon name="x" aria-hidden="true" />
         </button>
       </div>
+      <div class="nyx-command-palette__results" :data-visible="resultsVisible" :inert="!resultsVisible" :aria-hidden="!resultsVisible">
       <div ref="viewport" class="nyx-command-palette__viewport">
+        <div class="nyx-command-palette__results-content">
         <div :id="domId('list')" role="listbox" :aria-label="label" :aria-busy="loading">
-          <div v-for="{ group, items } in filtered" :key="group.id" role="group"
+          <TransitionGroup v-for="{ group, items } in filtered" :key="group.id" tag="div" role="group" appear name="nyx-command-palette-result" @before-leave="hideLeavingResult" @before-enter="restoreResult" @leave-cancelled="restoreResult"
             :aria-labelledby="group.label?.trim() || slots['group-label'] ? domId('group', group.id) : undefined"
             class="nyx-command-palette__group">
-            <div v-if="group.label?.trim() || slots['group-label']" :id="domId('group', group.id)" class="nyx-command-palette__heading">
+            <div v-if="group.label?.trim() || slots['group-label']" key="heading" :id="domId('group', group.id)" class="nyx-command-palette__heading">
               <slot name="group-label" :group="group" :search-term="query">{{ group.label }}</slot>
             </div>
-            <button v-for="(item, index) in items" :id="domId('option', item.id)" :key="item.id"
+            <button v-for="(item, index) in items" :id="domId('option', item.id)" :key="`item:${item.id}`"
               type="button" role="option" tabindex="-1" class="nyx-command-palette__option"
               :data-active="active === item.id" :aria-selected="selected === item.id"
-              :aria-disabled="disabled || loading || !!item.disabled" :aria-label="item.label"
+              :aria-disabled="scope(item, group, index).disabled" :aria-label="item.label"
               :aria-describedby="!slots.item && !slots['item-label'] && item.description ? domId('description', item.id) : undefined"
               @pointermove="!scope(item, group, index).disabled && (active = item.id)"
               @mousedown.prevent @click="activate(item, group, $event)">
@@ -166,14 +186,18 @@ defineExpose({ focus: overlay.focus })
                 </span>
               </template>
             </button>
-          </div>
+          </TransitionGroup>
         </div>
-        <div v-if="loading || !resultCount" class="nyx-command-palette__state">
+        <Transition name="nyx-command-palette-state" mode="out-in" @before-leave="hideLeavingResult">
+        <div v-if="loading || !resultCount" :key="loading ? 'loading' : 'empty'" class="nyx-command-palette__state">
           <slot v-if="loading" name="loading" :search-term="query"><NyxIcon name="loader-circle" aria-hidden="true" />{{ loadingText }}</slot>
           <slot v-else name="empty" :search-term="query">{{ emptyText }}</slot>
         </div>
+        </Transition>
+        </div>
       </div>
-      <span class="nyx-command-palette__status" role="status">{{ loading ? loadingText : !resultCount ? emptyText : '' }}</span>
+      </div>
+      <span class="nyx-command-palette__status" role="status">{{ !resultsVisible ? '' : loading ? loadingText : !resultCount ? emptyText : '' }}</span>
       <div v-if="slots.footer" class="nyx-command-palette__footer"><slot name="footer" :search-term="query" :result-count="resultCount" /></div>
     </component>
   </Teleport>

@@ -123,7 +123,7 @@ As a library consumer, I can find the component in Storybook, understand its API
 - **FR-005**: Report each successful activation exactly once, including repeated activation; never activate disabled, hidden, or loading results.
 - **FR-006**: Provide cross-group keyboard navigation, optional wrapping, native text editing, composition guards, local dismissal, normal tab order, and active-result scrolling.
 - **FR-007**: Provide accessible input/list/group/option names and states, loading/empty announcements, and no inline focus trap.
-- **FR-008**: Own a centered overlay with dedicated layout/styling, parent-controlled visibility, backdrop dismissal, focus containment/restoration, and background scroll cleanup. Do not depend on NyxModal. Keep shortcuts, command side effects, and navigation consumer-owned; support optional inline rendering without overlay behavior.
+- **FR-008**: Own a centered overlay with dedicated layout/styling, parent-controlled visibility, backdrop dismissal, focus containment/restoration, and background scroll cleanup. Do not depend on NyxModal. Support an opt-in configurable overlay toggle shortcut; keep command side effects and navigation consumer-owned; support optional inline rendering without overlay behavior.
 - **FR-009**: Support parent-managed remote results/loading; demonstrate debounce and rejection of stale responses without real network access.
 - **FR-010**: Provide result-content, group-label, loading, empty, and footer customization while retaining component-owned interaction semantics.
 - **FR-011**: Never mutate supplied data; define invalid IDs, duplicates, reordered/removed items, and dynamic disabled-state behavior.
@@ -158,3 +158,9 @@ As a library consumer, I can find the component in Storybook, understand its API
 - Edit-distance fuzzy search, nested pages, multiple selection, virtualization, persistent recents, automatic routing, and a global command registry are outside the first version.
 - Existing Nyx primitives/tokens are the baseline. No new dependency is assumed; flag one before adding it if later implementation requires it.
 - The user explicitly requires independent overlay styling and rejects NyxModal composition. Use a search-first surface with its own sizing, backdrop, and motion. Existing unrelated discrepancies remain recorded in [AGENTS.md](../../AGENTS.md).
+
+## Follow-up: shortcuts, viewport discovery, and motion
+
+- `shortcut` optionally toggles the overlay; recommend `SUPER+K` and support custom chords. Default registration remains off. Ignore repeats, IME and unrelated editable inputs; prevent duplicate instance toggles.
+- `showResultsOnEmpty` defaults true. False collapses results until a nonblank query, including parent-provided queries, and hides them again on clear. Hidden results cannot activate or announce empty/loading text.
+- Animate entry and exit, backdrop, viewport reveal/collapse, result changes, hover and press feedback. Rapid reversals, unmount, inline switching and reduced motion must preserve focus/scroll cleanup and single dismissal events.

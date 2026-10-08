@@ -33,6 +33,6 @@
 
 ## Review Notes
 
-The standalone component, 16 Storybook examples, unit/SSR tests, browser fixture, and public generic declarations are implemented. No runtime dependency was added. See [validation results](../validation.md) for successful checks and the existing unit-test/environment limitations.
+The standalone component, 19 Storybook examples, unit/SSR tests, browser fixture, and public generic declarations are implemented. No runtime dependency was added. See [validation results](../validation.md) for successful checks and the existing unit-test/environment limitations.
 
 Existing unrelated discrepancies remain recorded in [AGENTS.md](../../../AGENTS.md).

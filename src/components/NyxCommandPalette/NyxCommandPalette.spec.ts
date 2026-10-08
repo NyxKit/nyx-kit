@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { mount } from '@vue/test-utils'
-import { createSSRApp, h, nextTick, toRaw } from 'vue'
+import { mount, flushPromises } from '@vue/test-utils'
+import { matchesShortcut, parseShortcut } from './useCommandPaletteShortcut'
+import { createSSRApp, h, nextTick, toRaw, ref } from 'vue'
 import { renderToString } from 'vue/server-renderer'
 import NyxCommandPalette from './NyxCommandPalette.vue'
 import { acceptGroups, filterGroups } from './commandPalette'
@@ -212,4 +213,105 @@ it('hydrates multiple inline instances with stable relationships', async () => {
   expect(new Set(ids).size).toBe(2)
   expect(error).not.toHaveBeenCalled()
   client.unmount(); container.remove()
+})
+
+
+describe('optional shortcut and search-only viewport', () => {
+  it('normalizes real modifier flags and rejects extra modifiers or malformed chords', () => {
+    for (const shortcut of ['SUPER+K', 'mod+k', 'Control+k']) {
+      expect(matchesShortcut(parseShortcut(shortcut)!, new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }))).toBe(true)
+    }
+    expect(matchesShortcut(parseShortcut('SUPER+K')!, new KeyboardEvent('keydown', { key: 'k', metaKey: true }))).toBe(true)
+    expect(matchesShortcut(parseShortcut('Cmd+Shift+P')!, new KeyboardEvent('keydown', { key: 'P', metaKey: true, shiftKey: true }))).toBe(true)
+    expect(matchesShortcut(parseShortcut('SUPER+K')!, new KeyboardEvent('keydown', { key: 'k', ctrlKey: true, shiftKey: true }))).toBe(false)
+    for (const chord of ['', 'Ctrl+', 'Super+Ctrl+K', 'Ctrl+K+P', 'Ctrl+Ctrl+K']) expect(parseShortcut(chord)).toBeUndefined()
+  })
+  it('toggles once per eligible event, reacts to changes and removes its listener', async () => {
+    Object.defineProperty(HTMLDialogElement.prototype, 'showModal', { configurable: true, value: function (this: HTMLDialogElement) { this.setAttribute('open', '') } })
+    Object.defineProperty(HTMLDialogElement.prototype, 'close', { configurable: true, value: function (this: HTMLDialogElement) { this.removeAttribute('open') } })
+    const wrapper = render({ inline: false, shortcut: 'SUPER+K' })
+    const key = (init: KeyboardEventInit = {}) => {
+      const event = new KeyboardEvent('keydown', { key: 'k', ctrlKey: true, bubbles: true, cancelable: true, ...init })
+      document.body.dispatchEvent(event)
+      return event
+    }
+    expect(key({ repeat: true }).defaultPrevented).toBe(false)
+    expect(key({ isComposing: true }).defaultPrevented).toBe(false)
+    expect(wrapper.emitted('update:open')).toBeUndefined()
+    expect(key().defaultPrevented).toBe(true)
+    await flushPromises()
+    expect(wrapper.emitted('update:open')).toEqual([[true]])
+    key({ ctrlKey: false, metaKey: true })
+    await flushPromises()
+    expect(wrapper.emitted('close')).toHaveLength(1)
+    await wrapper.setProps({ shortcut: 'Alt+P' })
+    expect(key().defaultPrevented).toBe(false)
+    expect(key({ key: 'p', ctrlKey: false, altKey: true }).defaultPrevented).toBe(true)
+    await flushPromises()
+    wrapper.unmount()
+    expect(key({ key: 'p', ctrlKey: false, altKey: true }).defaultPrevented).toBe(false)
+  })
+  it('ignores inline, disabled, omitted shortcuts and external editable targets', async () => {
+    const wrapper = render({ shortcut: 'SUPER+K' })
+    const dispatch = (target: HTMLElement = document.body) => {
+      const event = new KeyboardEvent('keydown', { key: 'k', ctrlKey: true, bubbles: true, cancelable: true })
+      target.dispatchEvent(event)
+      return event.defaultPrevented
+    }
+    expect(dispatch()).toBe(false)
+    await wrapper.setProps({ inline: false, disabled: true })
+    expect(dispatch()).toBe(false)
+    await wrapper.setProps({ disabled: false, shortcut: undefined })
+    expect(dispatch()).toBe(false)
+    await wrapper.setProps({ shortcut: 'SUPER+K' })
+    const input = document.createElement('input')
+    document.body.append(input)
+    expect(dispatch(input)).toBe(false)
+    input.remove()
+    expect(wrapper.emitted('update:open')).toBeUndefined()
+  })
+  it('keeps hidden results inert, unannounced and non-activatable until a nonblank query', async () => {
+    const wrapper = render({ showResultsOnEmpty: false })
+    expect(wrapper.get('input').attributes('aria-expanded')).toBe('false')
+    expect(wrapper.get('.nyx-command-palette__results').attributes('inert')).toBeDefined()
+    expect(wrapper.get('[role="status"]').text()).toBe('')
+    expect(wrapper.get('input').attributes('aria-activedescendant')).toBeUndefined()
+    await wrapper.get('input').trigger('keydown', { key: 'Enter' })
+    await wrapper.get('[role="option"]').trigger('click')
+    expect(wrapper.emitted('select')).toBeUndefined()
+    await wrapper.setProps({ searchTerm: 'settings' })
+    expect(wrapper.get('input').attributes('aria-expanded')).toBe('true')
+    await wrapper.get('input').trigger('keydown', { key: 'Enter' })
+    expect(wrapper.emitted('select')).toHaveLength(1)
+    await wrapper.setProps({ searchTerm: '  ', loading: true })
+    expect(wrapper.get('input').attributes('aria-expanded')).toBe('false')
+    expect(wrapper.get('[role="status"]').text()).toBe('')
+    await wrapper.setProps({ showResultsOnEmpty: true })
+    expect(wrapper.get('input').attributes('aria-expanded')).toBe('true')
+    expect(wrapper.get('[role="status"]').text()).toBe('Loading commands...')
+  })
+})
+
+
+it('arbitrates duplicate shortcuts and releases ownership on unmount', async () => {
+  const first = ref(false)
+  const second = ref(false)
+  const showSecond = ref(true)
+  const wrapper = mount({ render: () => h('div', [
+    h(NyxCommandPalette, { groups, shortcut: 'SUPER+K', open: first.value, 'onUpdate:open': value => { first.value = value } }),
+    showSecond.value && h(NyxCommandPalette, { groups, shortcut: 'SUPER+K', open: second.value, 'onUpdate:open': value => { second.value = value } }),
+  ]) }, { global: { provide: { libEnv: {} } } })
+  wrappers.push(wrapper)
+  const toggle = () => document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true, bubbles: true, cancelable: true }))
+  toggle()
+  await flushPromises()
+  expect([first.value, second.value]).toEqual([false, true])
+  toggle()
+  await flushPromises()
+  expect([first.value, second.value]).toEqual([false, false])
+  showSecond.value = false
+  await nextTick()
+  toggle()
+  await flushPromises()
+  expect(first.value).toBe(true)
 })

@@ -115,7 +115,7 @@ Use shared scoped `header` and `default` slots for repeated content, with `heade
 
 ## Command palette
 
-`NyxCommandPalette` provides a standalone centered overlay with grouped fuzzy search, keyboard navigation, and typed result slots. Set `inline` to embed it. The consumer owns command actions, opening shortcuts, and remote requests.
+`NyxCommandPalette` provides a standalone centered overlay with grouped fuzzy search, keyboard navigation, and typed result slots. Set `inline` to embed it. The consumer owns command actions and remote requests. Pass `shortcut="SUPER+K"` to enable Ctrl/⌘K toggling, or a custom chord; no shortcut is registered by default.
 
 ```vue
 <script setup lang="ts">
@@ -128,11 +128,15 @@ const lastCommand = ref('')
 
 <template>
   <button @click="open = true">Search commands</button>
-  <NyxCommandPalette v-model:open="open" :groups="groups"
+  <NyxCommandPalette v-model:open="open" :groups="groups" shortcut="SUPER+K"
     @select="({ item }) => { lastCommand = item.id; open = false }" />
   <output>{{ lastCommand }}</output>
 </template>
 ```
+
+Set `:show-results-on-empty="false"` to reveal the viewport only while the query contains text. Overlay, viewport, and result transitions respect reduced motion.
+
+Conversation search works with the same API: include a `to` field on each item, use `ignoreFilter: true` for server results, and call `router.push(item.to)` in the `select` handler. The ConversationSearch story demonstrates this flow.
 
 Selection does not close the palette automatically. Bind `v-model` for the last activated ID and `v-model:search-term` for query control. Import `nyx-kit/style.css` once. See the [component specification](docs/specs/components/NyxCommandPalette.spec.md) and `Components/Navigation/NyxCommandPalette` in Storybook for slots, remote search, and accessibility.
 

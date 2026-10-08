@@ -7,6 +7,7 @@ import { NyxSize, NyxTheme } from '@/types/common'
 import NyxCommandPalette from './NyxCommandPalette.vue'
 import NyxCommandPaletteDemo from './NyxCommandPaletteDemo.vue'
 import NyxCommandPaletteRemoteDemo from './NyxCommandPaletteRemoteDemo.vue'
+import NyxCommandPaletteConversationsDemo from './NyxCommandPaletteConversationsDemo.vue'
 
 const groups = [
   { id: 'actions', label: 'Actions', items: [
@@ -24,8 +25,9 @@ const meta = {
   component: NyxCommandPalette as ConcreteComponent<StoryProps>,
   tags: ['autodocs'],
   args: { groups, inline: false, open: false, closeable: true },
-  parameters: { docs: { description: { component: 'Standalone native-dialog command palette, or inline with `inline`. `v-model` is the last activated ID, `v-model:search-term` controls discovery, and `v-model:open` controls the overlay. `select` supplies { item, group, originalEvent }; selection never closes automatically. `close` reports user dismissal. Item content slots retain option semantics; do not add interactive descendants. Slots: item, item-leading, item-label, item-trailing, group-label, empty, loading, footer. Public focus() focuses visible enabled search. No global shortcuts or network requests are installed by the component.' } } },
+  parameters: { docs: { description: { component: 'Standalone native-dialog command palette, or inline with `inline`. `v-model` is the last activated ID, `v-model:search-term` controls discovery, and `v-model:open` controls the overlay. `select` supplies { item, group, originalEvent }; selection never closes automatically. `close` reports user dismissal. Item content slots retain option semantics; do not add interactive descendants. Slots: item, item-leading, item-label, item-trailing, group-label, empty, loading, footer. Public focus() focuses visible enabled search. Set shortcut="SUPER+K" to opt into Ctrl/Meta+K toggling, or pass a custom chord. showResultsOnEmpty=false reveals results only for a nonblank query. Requests and navigation remain consumer-owned.' } } },
   argTypes: {
+    shortcut: { control: 'text' }, showResultsOnEmpty: { control: 'boolean' },
     open: { control: 'boolean' }, inline: { control: 'boolean' },
     theme: { control: 'select', options: [undefined, ...Object.values(NyxTheme)] },
     size: { control: 'select', options: [undefined, ...Object.values(NyxSize)] },
@@ -94,10 +96,11 @@ export const Disabled: Story = { args: { inline: true, disabled: true } }
 export const AllDisabled: Story = { args: { inline: true, groups: [{ id: 'locked', items: groups[0].items.map(item => ({ ...item, disabled: true })) }] } }
 export const RemoteSearch: Story = { render: () => ({ components: { NyxCommandPaletteRemoteDemo }, template: '<NyxCommandPaletteRemoteDemo />' }) }
 export const Overlay: Story = {
+  args: { shortcut: 'SUPER+K' },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const page = within(canvasElement.ownerDocument.body)
-    const trigger = canvas.getByRole('button', { name: 'Search commands (Ctrl / ⌘ K)' })
+    const trigger = canvas.getByRole('button', { name: 'Search commands (SUPER+K)' })
     trigger.focus()
     await userEvent.keyboard('{Control>}k{/Control}')
     await waitFor(() => expect(page.getByRole('dialog')).toBeVisible())
@@ -120,4 +123,31 @@ export const Sizes: Story = {
 export const MultipleInstances: Story = {
   args: { inline: true },
   render: args => ({ components: { NyxCommandPaletteDemo }, setup: () => ({ args }), template: '<div style="display: grid; gap: var(--nyx-gap-xl)"><NyxCommandPaletteDemo :args="args" /><NyxCommandPaletteDemo :args="args" /></div>' }),
+}
+
+export const SearchOnly: Story = {
+  args: { inline: true, showResultsOnEmpty: false },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const input = canvas.getByRole('combobox')
+    await expect(input).toHaveAttribute('aria-expanded', 'false')
+    await userEvent.type(input, 'settings')
+    await expect(input).toHaveAttribute('aria-expanded', 'true')
+    await userEvent.clear(input)
+    await expect(input).toHaveAttribute('aria-expanded', 'false')
+  },
+}
+export const CustomShortcut: Story = { args: { shortcut: 'Ctrl+Shift+P', showResultsOnEmpty: false } }
+export const ConversationSearch: Story = {
+  render: () => ({ components: { NyxCommandPaletteConversationsDemo }, template: '<NyxCommandPaletteConversationsDemo />' }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const page = within(canvasElement.ownerDocument.body)
+    await userEvent.click(canvas.getByRole('button', { name: 'Find a conversation' }))
+    await userEvent.type(page.getByRole('combobox'), 'release')
+    const result = await page.findByRole('option', { name: 'Release planning' })
+    await userEvent.click(result)
+    await waitFor(() => expect(canvas.getByRole('heading', { name: 'Release planning' })).toBeVisible())
+    await waitFor(() => expect(canvas.getByText('/conversations/release')).toBeVisible())
+  },
 }

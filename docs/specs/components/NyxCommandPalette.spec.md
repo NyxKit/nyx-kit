@@ -12,18 +12,18 @@ Use for finding and executing commands, jumping to application destinations, or 
 
 The reference is [Nuxt UI CommandPalette](https://ui.nuxt.com/docs/components/command-palette), consulted 2026-10-08. Adopt grouped results, fuzzy discovery, a separately controlled query, item decoration, customization slots, and consumer-supplied remote results. This is a Nyx API, not a compatibility wrapper.
 
-First-version scope is single-command activation and a standalone overlay. The palette owns its overlay lifecycle, backdrop, dismissal, and focus handling; the application controls visibility through `v-model:open`. Global shortcuts, routing, network requests, debounce, and action execution belong to the consuming application. Nested command pages, multiple selection, virtualization, recents persistence, typo correction, and Fuse.js configuration are deferred. No new package is required by this contract.
+First-version scope is single-command activation and a standalone overlay. The palette owns its overlay lifecycle, backdrop, dismissal, and focus handling; the application controls visibility through `v-model:open`. An optional `shortcut` prop registers an overlay toggle; routing, network requests, debounce, and action execution belong to the consuming application. Nested command pages, multiple selection, virtualization, recents persistence, typo correction, and Fuse.js configuration are deferred. No new package is required by this contract.
 
 ## Internal architecture
 
 Location: `src/components/NyxCommandPalette/`, with `NyxCommandPalette.vue`, `NyxCommandPalette.types.ts`, `NyxCommandPalette.scss`, `NyxCommandPalette.stories.ts`, and `NyxCommandPalette.spec.ts`.
 
 - Use `<script setup lang="ts" generic="T extends NyxCommandPaletteItem">`, a standalone props interface, and typed emits/slots. Preserve consumers' additional item fields in selection events and slot scopes without `any`.
-- Private `commandPalette.ts` handles descriptor validation and ranking; `useCommandPaletteOverlay.ts` owns dialog, focus, backdrop gestures, and shared scroll-lock accounting.
+- Private `commandPalette.ts` handles descriptor validation and ranking; `useCommandPaletteOverlay.ts` owns dialog, focus, backdrop gestures, and shared scroll-lock accounting, and cancellable surface motion. A private motion helper animates the surface from its current rendered state so rapid reversals do not jump.
 - Keep the `.vue` file within 300 lines. Extract filtering/navigation into private helpers or a component-local composable as needed; no new public composable is required.
 - Maintain separate states for the search term, last activated ID, and highlighted option. Highlighting alone never executes a command or writes the selection model.
 - Render a native text input, a grouped listbox, status text, and optional footer. Own the input and option semantics; slots customize content rather than replace the interactive shell.
-- In overlay mode, teleport a palette-owned native `<dialog>` to `body` after mounting and use `showModal()` / `close()` for browser top-layer behavior. Its backdrop, surface, sizing, and layout belong to this component. Inline mode renders the search/results surface in place without a dialog, teleport, backdrop, or focus trap. Local keyboard and dialog-cancel handlers affect only this instance. Application opening shortcuts may use `useKeyboardShortcuts`; the palette installs no global command handlers.
+- In overlay mode, teleport a palette-owned native `<dialog>` to `body` after mounting and use `showModal()` / `close()` for browser top-layer behavior. Its backdrop, surface, sizing, and layout belong to this component. Inline mode renders the search/results surface in place without a dialog, teleport, backdrop, or focus trap. Local keyboard and dialog-cancel handlers affect only this instance. A private `useCommandPaletteShortcut` helper registers a client-only, opt-in toggle shortcut and arbitrates multiple instances. Inline palettes never register opening shortcuts.
 - Reuse `NyxIcon` for icons. Reuse other primitives only if they preserve the required input attributes, element access, focus behavior, and listbox semantics.
 - Generate stable instance-scoped DOM IDs using `useId()`. Map item/group IDs safely without raw selector interpolation or collisions between multiple instances. Do not access browser globals during setup or server rendering.
 - Resolve theme and size through `useNyxProps`, without modifying the shared prop pipeline.
@@ -79,6 +79,8 @@ Export the component via direct `.vue` imports in `src/components/index.ts` and 
 |---|---|---|---|
 | `groups` | `readonly NyxCommandPaletteGroup<T>[]` | Required | Ordered command groups; immutable input |
 | `inline` | `boolean` | `false` | Render in place without overlay behavior; ignores the open model |
+| `shortcut` | `string` | Omitted | Opt-in overlay toggle chord, e.g. `SUPER+K` or `Ctrl+Shift+P`; blank disables registration |
+| `showResultsOnEmpty` | `boolean` | `true` | Show the viewport with an empty query; false reveals it only while `searchTerm.trim()` is nonempty |
 | `placeholder` | `string` | `'Search commands...'` | Input hint, independent of its accessible name |
 | `label` | `string` | `'Search commands'` | Accessible name for the input and results |
 | `loading` | `boolean` | `false` | Search remains editable; announce loading and block result activation |
@@ -104,7 +106,7 @@ Expose theme and size only in the first version. Omitted props inherit shared de
 
 Use `const model = defineModel<string>()` and a named `searchTerm` model. Normalize an undefined search term to `''` for display without emitting on mount. Both bindings are optional and work with local state when omitted.
 
-Use a named boolean `open` model with a false default. The default overlay starts closed; consumers open it by changing this model. User dismissal writes false and emits one `close`. Parent-driven visibility changes do not echo `update:open` or emit `close`. Inline mode is always visible and neither reads nor rewrites the open model. Closing preserves query and selection; reopening restores them and derives a valid highlight. Consumers can reset query explicitly when opening.
+Use a named boolean `open` model with a false default. The default overlay starts closed; consumers open it by changing this model. User dismissal writes false and emits one `close` immediately; native dialog and focus/scroll cleanup follow the exit animation. Shortcut opening writes true without emitting `close`. Parent-driven visibility changes do not echo `update:open` or emit `close`. Inline mode is always visible and neither reads nor rewrites the open model. Closing preserves query and selection; reopening restores them and derives a valid highlight. Consumers can reset query explicitly when opening.
 
 Activation writes the selected ID before emitting `select`. Selecting the same ID again still emits `select` exactly once, enabling repeatable commands; it does not require a duplicate model update. Model changes from the parent never execute a command. Selection does not clear the query or close anything automatically.
 
@@ -113,6 +115,8 @@ Search edits emit the exact input string, including whitespace; normalization is
 Unknown or removed selection IDs have no selected row and are not rewritten into the parent. Unbound selection discards a removed ID silently. Filtering a selected row out does not discard its selection. Disabled items may remain selected but cannot activate. External selection updates can highlight that item if it is visible and enabled, without moving DOM focus.
 
 ## Search and result state
+
+When `showResultsOnEmpty` is false, a blank or whitespace-only query collapses the viewport (including loading/empty content), suppresses its announcements and active option, and prevents result activation. Programmatic queries count too; clearing the query hides the viewport again. The input and optional footer remain visible; footer `resultCount` is zero while results are hidden. Keep the listbox mounted but hidden/inert for a stable `aria-controls` relationship.
 
 1. Validate descriptors before filtering. Preserve caller group order and hide groups with no visible results.
 2. Normalize query and searchable text using Unicode NFD, remove combining marks, and lowercase. Trim/split the query on whitespace. Search `label`, `description`, and individual `keywords`; exclude group labels and shortcut hints.
@@ -131,7 +135,7 @@ Remote requests, cancellation, debounce, and rejection of stale responses belong
 |---|---|---|
 | `update:modelValue` | `string` | Activation changes the last selected ID |
 | `update:searchTerm` | `string` | User edits the search input |
-| `update:open` | `false` | User dismisses an open overlay |
+| `update:open` | `boolean` | Shortcut opens/toggles the overlay or the user dismisses it |
 | `select` | `NyxCommandPaletteSelectEvent<T>` | A visible enabled command is activated by click or Enter |
 | `close` | None | One user dismissal via close button, Escape, or backdrop; inline Escape/button emits a request only |
 
@@ -150,7 +154,7 @@ Ignored/disabled/loading interactions emit no selection events. Each successful 
 | `loading` | `{ searchTerm }` | Busy content; defaults to an indicator and `loadingText` |
 | `footer` | `{ searchTerm, resultCount }` | Optional help/actions; no default footer |
 
-`index` is the zero-based index within the rendered group; `resultCount` counts all visible valid results, including disabled ones. `active` is highlight and `selected` is committed model state. Slot `disabled` includes item, component, and loading state.
+`index` is the zero-based index within the rendered group; `resultCount` counts all visible valid results, including disabled ones. `active` is highlight and `selected` is committed model state. Slot `disabled` includes item, component, loading, hidden-results, and exiting-overlay state.
 
 Render optional wrappers only when there is content. A supplied slot takes precedence even if it renders nothing. The component retains each option's ID, roles, selected/disabled state, and label-derived accessible name. Item slots must not contain interactive descendants. Group-label slots must provide meaningful noninteractive text; omit unnamed group headings and their `aria-labelledby` reference. A footer may contain controls and participates in normal Tab order.
 
@@ -178,7 +182,7 @@ Expose `focus(): void` to focus the input when enabled and visible; it does not 
 - Name both input and listbox from `label`; placeholder text is insufficient. Option accessible names come from the required item labels. Link default descriptions with `aria-describedby`.
 - Use a polite status region for `loadingText` and `emptyText`; custom visual slots do not suppress these announcements. Keep status content outside the listbox's option/group structure. Avoid announcing every arrow move twice.
 - The close button has `closeLabel` and remains usable while loading or disabled. Icons and shortcut hints are decorative, with no implied registered `aria-keyshortcuts`.
-- Keep input focus, active result, selected result, and disabled state visually distinguishable in both colour modes. Scrolling the active row into view must not scroll the entire page unnecessarily.
+- Keep input focus, active result, selected result, and disabled state visually distinguishable in both colour modes. Search uses one focus-within underline on the search area rather than an input outline plus underline; close/footer controls retain visible keyboard focus. Scrolling the active row into view must not scroll the entire page unnecessarily.
 
 ## Standalone overlay lifecycle
 
@@ -188,14 +192,26 @@ The overlay is a first-class part of NyxCommandPalette. Use a palette-owned dial
 - While open, keep Tab/Shift+Tab inside, make background content noninteractive using native modal semantics, and prevent background scrolling. Preserve existing scroll-lock state and restore only what this instance owns on close/unmount.
 - Escape, native dialog cancel, close-button click, and a click whose press and release both occur on the backdrop share one dismissal path. Do not dismiss for clicks inside the surface or a drag starting inside it. Handle Escape/cancel without duplicate events; only the topmost dialog dismisses. Composition keys must not dismiss the overlay.
 - User dismissal writes `open = false` before emitting one `close`. Parent-driven closure still performs dialog, scroll, and focus cleanup without emitting a user dismissal. Restore focus after closing if the remembered element is still connected and focusable; avoid focusing removed elements or stealing focus from a newer overlay.
+- While exiting, block activation and keep Tab within the still-modal surface until native closure; repeated dismissal does not emit again. Reopening cancels exit; unmount/mode changes cancel motion and clean up immediately. Reduced motion skips the delay.
 - Hidden/closed content cannot receive focus or appear as active content to assistive technology. Teardown while open cleans up native dialog and scroll state. Switching to inline mode performs the same cleanup without rewriting the ignored open model; switching back uses its current value.
 - Server rendering emits no active/open dialog or browser side effects. Activate teleport and an initially true open model only after mounting, with stable IDs and matching initial hydration markup. Verify initially open hydration as well as the closed default.
 
 Selecting a command does not automatically dismiss the palette. The parent can set `open = false` in its `select` handler, as the Default and Overlay stories demonstrate. This keeps repeated commands and asynchronous application decisions possible.
 
-Provide a Storybook example using `useKeyboardShortcuts` for `SUPER+K` (Ctrl+K and Meta+K). Its callback must ignore editable targets and composition, run only within the example's active scope, and clean up on unmount. Suppress repeated opening on a held shortcut. Palette shortcut badges themselves remain display-only. The example also registers `CONTROL+K` because the existing shortcut helper normalizes the native Control key as `CONTROL`, while its SUPER expansion uses `CTRL`. The demo uses window-level key tracking with a callback scope guard so key releases remain visible after focus moves to the teleported dialog.
+### Toggle shortcut
+
+Set `shortcut="SUPER+K"` for Ctrl+K / Meta+K. Registration is opt-in; no shortcut is captured by default. Chords are case-insensitive, with one key and optional `Ctrl`/`Control`, `Meta`/`Cmd`/`Command`, `Alt`/`Option`, and `Shift` modifiers. `Super`/`Mod` means either Ctrl or Meta, not both. Named keys such as `Space`, `Escape`, `F2`, and `Plus` are supported. A configured chord takes precedence over input result-navigation keys (for example, `Ctrl+Enter` toggles without activating a result). Extra modifiers do not match; invalid chords are ignored with a development warning.
+
+Use current event modifier flags rather than held-key history, so focus changes never leave stale keys. Ignore repeat, composition, already-handled events, and editable targets outside this palette. Inside the open palette its shortcut can close it even while search is focused. Disabled/inline palettes do not handle shortcuts. Prevent browser defaults only for a matching, eligible toggle. Changes to the shortcut take effect reactively and listeners are removed on unmount.
+
+With duplicate registrations, the focused/open palette has precedence, otherwise the most recently mounted matching eligible palette wins. A palette cannot open behind another native modal. Shortcut closing shares the dismissal path and emits one `close`; reopening during exit cancels pending cleanup without losing the original opener. Provide a Storybook example demonstrating both Ctrl+K and Meta+K and custom combinations.
+
 
 Any reuse is limited to existing unstyled behavior utilities where they meet this contract. Do not introduce a public overlay abstraction solely for this component. NyxModal remains independent; its existing implementation limitations do not define palette behavior.
+
+## Conversation search
+
+Results need not be executable commands. A conversation can extend `NyxCommandPaletteItem` with a `to` field or other domain data. Bind `searchTerm` for a remote query, supply a conversation group with `ignoreFilter: true`, pass `loading`, and handle `select` with application navigation (`router.push(item.to)`) followed by `open = false`. Use `showResultsOnEmpty: false` for a search-only viewport. Item-label/trailing slots can show snippets, participants or dates while retaining the option shell. `ConversationSearch` demonstrates consumer-owned navigation and mocked asynchronous results.
 
 ## Usage example
 
@@ -245,7 +261,7 @@ Follow [DESIGN.md](../../../DESIGN.md) and [design-system.md](../../architecture
 
 Keep the input and footer outside the scrolling result viewport. Fit the available width, preserve a visible label with long content, and avoid horizontal page overflow at 320 CSS pixels. Consumers can constrain height through root styles. Respect reduced motion and both light/dark modes; focus indication must not rely solely on hover or a subtle colour change.
 
-Use a dedicated search-first surface: search field at the top, dense grouped results immediately below, and optional compact keyboard help in the footer. Overlay width, maximum height, backdrop treatment, and opening/closing motion are palette-specific. Sharing semantic tokens with NyxModal does not imply sharing its structure or visual treatment.
+Use a dedicated search-first surface: search field at the top, dense grouped results immediately below, and optional compact keyboard help in the footer. Overlay width, maximum height, backdrop treatment, and opening/closing motion are palette-specific. Use a small scale/translation and fade on entry, a faster exit, and a matching backdrop fade. The viewport uses a bounded grid reveal with opacity/translation; grouped results animate insertion, removal, and reordering. Removed rows become inert/hidden to assistive technology immediately. Hover, active, disabled, input focus, icons, and the close button transition with restrained, slightly playful motion. Durations inherit existing Nyx speed tokens, and reduced motion disables animation/transition and delay. Sharing semantic tokens with NyxModal does not imply sharing its structure or visual treatment.
 
 ## Storybook integration and validation
 
@@ -253,7 +269,7 @@ Storybook is a required implementation deliverable, not a placeholder. Use `titl
 
 The current installation is Storybook 10 with `@storybook/vue3-vite`; the older stack summary in AGENTS.md says 8. The existing `.storybook/main.ts` glob already discovers co-located stories, and `.storybook/preview.ts` supplies global autodocs, Nyx CSS, and Navigation ordering. Use this setup and the typed NyxAccordion story pattern; do not add a parallel Storybook configuration or an older addon stack. Light/dark checks must set Nyx's actual `data-nyx-mode` on the preview document rather than only switching Storybook's manager theme.
 
-Provide meaningful controls for open, inline, theme, size, placeholder, label, loading, disabled, loop, autofocus, and closeable. Wire models in Vue wrappers, and log `select`, `close`, and model updates in Actions. Each example must show an observable action outcome or selected ID. Reset mutable fixture data per mount and cancel pending mock requests/timers on teardown. Use deterministic local fixtures and mock promises; no external network, router, or Nuxt setup is required. Overlay stories start closed with an explicit trigger so a Docs page containing several stories does not open competing dialogs; state-gallery stories may use inline mode.
+Provide meaningful controls for open, inline, shortcut, showResultsOnEmpty, theme, size, placeholder, label, loading, disabled, loop, autofocus, and closeable. Wire models in Vue wrappers, and log `select`, `close`, and model updates in Actions. Each example must show an observable action outcome or selected ID. Reset mutable fixture data per mount and cancel pending mock requests/timers on teardown. Use deterministic local fixtures and mock promises; no external network, router, or Nuxt setup is required. Overlay stories start closed with an explicit trigger so a Docs page containing several stories does not open competing dialogs; state-gallery stories may use inline mode.
 
 | Story | Required demonstration / interaction |
 |---|---|
@@ -267,6 +283,8 @@ Provide meaningful controls for open, inline, theme, size, placeholder, label, l
 | `RemoteSearch` | Controlled query, mock debounce, `ignoreFilter`, loading, no matches, and stale-response protection |
 | `Overlay` | Direct palette usage without NyxModal; trigger and Ctrl/Meta+K, centered custom surface, focus containment, dismissal, reopened state, and focus restoration |
 | `Themes` / `Sizes` | All supported enum values and inherited defaults; narrow width and long labels |
+| `SearchOnly` / `CustomShortcut` | Query-only viewport reveal/clear, custom toggle chord, and animated transitions |
+| `ConversationSearch` | Remote conversation titles/snippets, custom metadata, and consumer-owned navigation |
 | `MultipleInstances` | Independent queries, focus, IDs, and keyboard events |
 
 Add interaction assertions to the meaningful stories using the project's existing Storybook interaction tooling: searching changes results, disabled commands do not activate, Enter activates once, controlled query changes are reflected, and slot content preserves operability. Storybook rendering alone is not evidence for native dialog focus behavior: cover the standalone overlay in Playwright too.
@@ -285,6 +303,6 @@ Validation results: [implementation validation](../../../specs/018-nyx-command-p
 
 - This is a single-selection command surface, not a Nuxt UI API clone or a form multi-select.
 - Fuzzy matching means ordered subsequences, not typo tolerance or locale-specific collation. Consumers can supply their own ordered results with `ignoreFilter`.
-- No virtualization, nested history, persisted recents, automatic navigation, global registration, or asynchronous action management is included.
+- No virtualization, nested history, persisted recents, automatic navigation, global command registry, or asynchronous action management is included.
 - Custom option content is noninteractive. Applications needing multiple independent controls per row should use another list pattern.
 - Overlay opening requires the browser's native dialog support; verify inline rendering and closed/initially-open overlay hydration separately. No NyxModal dependency or fallback is part of this contract.

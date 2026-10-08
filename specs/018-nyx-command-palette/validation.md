@@ -6,20 +6,22 @@ Validated on 2026-10-08 for the `2.3.0` minor release. Commands use the reposito
 |---|---|
 | `pnpm type-check` | Passed, including generic stories and component tests |
 | `pnpm exec eslint src/components/NyxCommandPalette --no-fix` | Passed |
-| `pnpm exec vitest run` | 537 passed; one existing `NyxStatusDot` default-size assertion failed |
-| Command palette unit coverage | 19 passed: validation, ranking, models, original payloads, slots, loading/disabled, IME, dynamic data, SSR/hydration |
-| `pnpm exec playwright test --reporter=line` | Initial full run: all 40 Chromium/Firefox tests passed; 20 WebKit tests could not launch because host libraries are unavailable |
-| Focused command palette browser run | All 18 Chromium/Firefox cases passed |
+| `pnpm exec vitest run` | 542 passed; one existing `NyxStatusDot` default-size assertion failed |
+| Command palette unit coverage | 24 passed: validation, ranking, models, original payloads, slots, loading/disabled, IME, dynamic data, SSR/hydration |
+| `pnpm exec playwright test --project=chromium --project=firefox --reporter=line` | Current Chromium/Firefox run: all 50 tests passed. Initial WebKit run could not launch because host libraries are unavailable |
+| Focused command palette browser run | All 26 Chromium/Firefox cases passed |
 | `pnpm storybook:build` | Passed |
-| Live Storybook review | All 16 stories rendered at 1000px and 320px in dark and light modes (64 checks); no component runtime errors or horizontal page overflow |
-| Story interactions | Controlled search/selection, fuzzy discovery, disabled activation, keyboard activation, custom content, and Ctrl/Meta+K overlay opening/focus restoration |
+| Live Storybook review | All 19 stories rendered at 1000px and 320px in dark and light modes (76 checks); no component runtime errors or horizontal page overflow |
+| Story interactions | Controlled search/selection, fuzzy discovery, disabled activation, keyboard activation, custom content, Ctrl/Meta+K overlay toggling/focus restoration, query-only viewport reveal, and conversation navigation |
 | Docs page | Navigation entry and generated API/controls rendered successfully |
 | `pnpm build` | Passed; runtime exports and declarations generated |
 | Packed consumer smoke test | Root/component subpath exports agree; root/type subpath generic types compile in a Vue consumer; inline, closed, and initially-open overlays render in Node without DOM globals |
 
 Browser coverage includes 100 commands across five groups, disabled skipping, pointer/keyboard parity, result viewport scrolling, independent instances, initially selected result scrolling, native modal focus containment/restoration, scroll ownership, nested overlays, backdrop drags, IME, parent closure, mode switching, unmount, removed openers, narrow layouts, and out-of-order remote responses.
 
-SSR tests cover stable IDs during hydration for multiple inline palettes, closed overlays, and initially-open overlays. Native dialog behavior is tested in browsers rather than inferred from the jsdom dialog stub.
+SSR tests cover stable IDs during hydration for multiple inline palettes, closed overlays, and initially-open overlays. Shortcut tests cover real modifier flags, reactive updates, editable targets, repeat/IME guards, duplicate-instance arbitration, and teardown. Motion tests cover exit resource retention, rapid reversal, stale activation, viewport collapse, and reduced motion.
+
+Native dialog behavior is tested in browsers rather than inferred from the jsdom dialog stub.
 
 ## Existing limitations outside this feature
 

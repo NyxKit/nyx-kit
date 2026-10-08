@@ -7,6 +7,8 @@ const secondOpen = ref(false)
 const inline = ref(false)
 const mounted = ref(true)
 const disabled = ref(false)
+const shortcut = ref('SUPER+K')
+const showResultsOnEmpty = ref(true)
 const query = ref('')
 const count = ref(0)
 const closes = ref(0)
@@ -19,9 +21,12 @@ const groups = ref(Array.from({ length: 5 }, (_, group) => ({ id: `group-${group
     <button @click="disabled = !disabled">Toggle disabled</button>
     <button @click="open = false">Parent close</button>
     <button id="after">After</button>
+    <label>External editor<input id="external-editor"></label>
+    <label>Shortcut<input id="shortcut-setting" v-model="shortcut"></label>
+    <button @click="showResultsOnEmpty = !showResultsOnEmpty">Toggle initial results</button>
     <button @click="selected = '4-19'; open = true">Open with selection</button>
     <output id="result">{{ selected }} / {{ count }} / {{ closes }}</output>
-    <NyxCommandPalette v-if="mounted" v-model:open="open" v-model="selected" v-model:search-term="query" :inline="inline" :disabled="disabled" :groups="groups" closeable @select="count++" @close="closes++">
+    <NyxCommandPalette v-if="mounted" v-model:open="open" v-model="selected" v-model:search-term="query" :inline="inline" :disabled="disabled" :shortcut="shortcut" :show-results-on-empty="showResultsOnEmpty" :groups="groups" closeable @select="count++" @close="closes++">
       <template #footer>
         <button @click="inline = !inline">Switch mode</button>
         <button @click="mounted = false">Unmount</button>
@@ -30,7 +35,7 @@ const groups = ref(Array.from({ length: 5 }, (_, group) => ({ id: `group-${group
         <button @click="groups = [{ id: 'replacement', label: 'New', items: [{ id: 'new', label: 'New command', disabled: false }] }]">Replace results</button>
       </template>
     </NyxCommandPalette>
-    <NyxCommandPalette v-model:open="secondOpen" :groups="groups" label="Second overlay" closeable />
+    <NyxCommandPalette v-model:open="secondOpen" :groups="groups" label="Second overlay" :shortcut="secondOpen ? shortcut : undefined" closeable />
     <form @submit.prevent="count += 1000">
       <NyxCommandPalette inline :groups="groups" label="Inline first" @select="count++"><template #footer><button type="button">Inline footer</button></template></NyxCommandPalette>
       <NyxCommandPalette inline :groups="groups" label="Inline second" />

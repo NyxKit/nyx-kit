@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { action } from 'storybook/actions'
-import useKeyboardShortcuts from '@/composables/useKeyboardShortcuts'
 import NyxCommandPalette from './NyxCommandPalette.vue'
 import type { NyxCommandPaletteProps, NyxCommandPaletteSelectEvent } from './NyxCommandPalette.types'
 const props = defineProps<{ args: NyxCommandPaletteProps & { open?: boolean }, controlled?: boolean, custom?: boolean, fullItem?: boolean }>()
@@ -10,7 +9,6 @@ const query = ref('')
 const selected = ref<string>()
 const count = ref(0)
 const last = ref('None')
-const host = ref<HTMLElement | null>(null)
 watch(() => props.args.open, value => { open.value = !!value })
 watch(open, action('update:open'))
 watch(query, action('update:searchTerm'))
@@ -21,18 +19,10 @@ const select = (event: NyxCommandPaletteSelectEvent) => {
   last.value = event.item.label
   if (!props.args.inline) open.value = false
 }
-const openFromShortcut = (event: KeyboardEvent) => {
-  const target = event.target as HTMLElement
-  if (!host.value?.contains(target) || event.repeat || event.isComposing || target.closest('input, textarea, select, [contenteditable="true"]')) return
-  open.value = true
-}
-// Keep the helper's existing CONTROL spelling compatible with SUPER's CTRL alias.
-// Window tracking receives keyup after opening teleports focus out of the host.
-useKeyboardShortcuts({ 'SUPER+K': openFromShortcut, 'CONTROL+K': openFromShortcut })
 </script>
 <template>
-  <section ref="host" style="display: grid; gap: var(--nyx-gap-lg); max-width: 100%;">
-    <button v-if="!args.inline" type="button" @click="open = true">Search commands (Ctrl / ⌘ K)</button>
+  <section style="display: grid; gap: var(--nyx-gap-lg); max-width: 100%;">
+    <button v-if="!args.inline" type="button" @click="open = true">Search commands{{ args.shortcut ? ` (${args.shortcut})` : '' }}</button>
     <div v-if="controlled">
       <button type="button" @click="query = 'settings'; selected = 'settings'">Choose settings externally</button>
       <button type="button" @click="query = ''">Clear query</button>

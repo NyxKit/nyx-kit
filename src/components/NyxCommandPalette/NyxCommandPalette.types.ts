@@ -32,6 +32,8 @@ export interface NyxCommandPaletteItemSlotProps<T extends NyxCommandPaletteItem 
 export interface NyxCommandPaletteProps<T extends NyxCommandPaletteItem = NyxCommandPaletteItem> {
   groups: readonly NyxCommandPaletteGroup<T>[]
   inline?: boolean
+  shortcut?: string
+  showResultsOnEmpty?: boolean
   placeholder?: string
   label?: string
   loading?: boolean
