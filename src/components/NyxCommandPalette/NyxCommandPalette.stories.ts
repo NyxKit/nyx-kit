@@ -1,3 +1,4 @@
+import { NyxCommandPaletteViewportMode } from './NyxCommandPalette.types'
 import type { ConcreteComponent } from 'vue'
 import type { NyxCommandPaletteProps, NyxCommandPaletteSelectEvent } from './NyxCommandPalette.types'
 type StoryProps = NyxCommandPaletteProps & { open?: boolean, onSelect?: (event: NyxCommandPaletteSelectEvent) => void, onClose?: () => void }
@@ -24,10 +25,10 @@ const meta = {
   title: 'Components/Navigation/NyxCommandPalette',
   component: NyxCommandPalette as ConcreteComponent<StoryProps>,
   tags: ['autodocs'],
-  args: { groups, inline: false, open: false, closeable: true },
-  parameters: { docs: { description: { component: 'Standalone native-dialog command palette, or inline with `inline`. `v-model` is the last activated ID, `v-model:search-term` controls discovery, and `v-model:open` controls the overlay. `select` supplies { item, group, originalEvent }; selection never closes automatically. `close` reports user dismissal. Item content slots retain option semantics; do not add interactive descendants. Slots: item, item-leading, item-label, item-trailing, group-label, empty, loading, footer. Public focus() focuses visible enabled search. Set shortcut="SUPER+K" to opt into Ctrl/Meta+K toggling, or pass a custom chord. showResultsOnEmpty=false reveals results only for a nonblank query. Requests and navigation remain consumer-owned.' } } },
+  args: { groups, viewportMode: NyxCommandPaletteViewportMode.Always, inline: false, open: false, closeable: true },
+  parameters: { docs: { description: { component: 'Standalone native-dialog command palette, or inline with `inline`. `v-model` is the last activated ID, `v-model:search-term` controls discovery, and `v-model:open` controls the overlay. `select` supplies { item, group, originalEvent }; selection never closes automatically. `close` reports user dismissal. Item content slots retain option semantics; do not add interactive descendants. Slots: item, item-leading, item-label, item-trailing, group-label, empty, loading, footer. Public focus() focuses visible enabled search. Set shortcut="SUPER+K" to opt into Ctrl/Meta+K toggling, or pass a custom chord. viewportMode defaults to AfterInteraction: reveal on typing, footer button, or Enter and keep results visible after clearing. WhileSearching hides on clear; Always shows immediately. Requests and navigation remain consumer-owned.' } } },
   argTypes: {
-    shortcut: { control: 'text' }, showResultsOnEmpty: { control: 'boolean' },
+    shortcut: { control: 'text' }, viewportMode: { control: 'select', options: Object.values(NyxCommandPaletteViewportMode) }, showResultsLabel: { control: 'text' },
     open: { control: 'boolean' }, inline: { control: 'boolean' },
     theme: { control: 'select', options: [undefined, ...Object.values(NyxTheme)] },
     size: { control: 'select', options: [undefined, ...Object.values(NyxSize)] },
@@ -40,7 +41,8 @@ const meta = {
 } satisfies Meta<StoryProps>
 export default meta
 type Story = StoryObj<typeof meta>
-export const Default: Story = {}
+export const Default: Story = { args: { viewportMode: NyxCommandPaletteViewportMode.AfterInteraction } }
+export const AlwaysShown: Story = { args: { viewportMode: NyxCommandPaletteViewportMode.Always } }
 export const Inline: Story = { args: { inline: true } }
 export const Controlled: Story = {
   args: { inline: true },
@@ -126,7 +128,7 @@ export const MultipleInstances: Story = {
 }
 
 export const SearchOnly: Story = {
-  args: { inline: true, showResultsOnEmpty: false },
+  args: { inline: true, viewportMode: NyxCommandPaletteViewportMode.WhileSearching },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const input = canvas.getByRole('combobox')
@@ -137,7 +139,14 @@ export const SearchOnly: Story = {
     await expect(input).toHaveAttribute('aria-expanded', 'false')
   },
 }
-export const CustomShortcut: Story = { args: { shortcut: 'Ctrl+Shift+P', showResultsOnEmpty: false } }
+export const CustomShortcut: Story = {
+  args: { shortcut: 'Ctrl+Enter', viewportMode: NyxCommandPaletteViewportMode.AfterInteraction },
+  render: args => ({
+    components: { NyxCommandPaletteDemo },
+    setup: () => ({ args }),
+    template: '<p>Focus this preview before using the shortcut, or open the story in a new tab. Browser and OS shortcuts may take precedence.</p><NyxCommandPaletteDemo :args="args" />',
+  }),
+}
 export const ConversationSearch: Story = {
   render: () => ({ components: { NyxCommandPaletteConversationsDemo }, template: '<NyxCommandPaletteConversationsDemo />' }),
   play: async ({ canvasElement }) => {
@@ -149,5 +158,20 @@ export const ConversationSearch: Story = {
     await userEvent.click(result)
     await waitFor(() => expect(canvas.getByRole('heading', { name: 'Release planning' })).toBeVisible())
     await waitFor(() => expect(canvas.getByText('/conversations/release')).toBeVisible())
+  },
+}
+
+export const RevealAndKeepOpen: Story = {
+  args: { inline: true, viewportMode: NyxCommandPaletteViewportMode.AfterInteraction },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const input = canvas.getByRole('combobox')
+    await expect(input).toHaveAttribute('aria-expanded', 'false')
+    await userEvent.click(canvas.getByRole('button', { name: 'Show results' }))
+    await expect(input).toHaveFocus()
+    await expect(input).toHaveAttribute('aria-expanded', 'true')
+    await userEvent.type(input, 'settings')
+    await userEvent.clear(input)
+    await expect(input).toHaveAttribute('aria-expanded', 'true')
   },
 }

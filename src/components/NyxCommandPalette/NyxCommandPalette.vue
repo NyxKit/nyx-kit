@@ -1,8 +1,10 @@
 <script setup lang="ts" generic="T extends NyxCommandPaletteItem">
 import { computed, getCurrentInstance, nextTick, ref, useAttrs, useId, watch } from 'vue'
+import { NyxSize } from '@/types/common'
 import useNyxProps from '@/composables/useNyxProps'
 import NyxIcon from '../NyxIcon/NyxIcon.vue'
 import type { NyxCommandPaletteGroup, NyxCommandPaletteItem, NyxCommandPaletteItemSlotProps, NyxCommandPaletteProps, NyxCommandPaletteSelectEvent } from './NyxCommandPalette.types'
+import { NyxCommandPaletteViewportMode } from './NyxCommandPalette.types'
 import { acceptGroups, filterGroups, queryKey } from './commandPalette'
 import { useCommandPaletteShortcut } from './useCommandPaletteShortcut'
 import { useCommandPaletteOverlay } from './useCommandPaletteOverlay'
@@ -10,7 +12,7 @@ import './NyxCommandPalette.scss'
 
 defineOptions({ inheritAttrs: false })
 const props = withDefaults(defineProps<NyxCommandPaletteProps<T>>(), {
-  inline: false, showResultsOnEmpty: true, placeholder: 'Search commands...', label: 'Search commands',
+  inline: false, viewportMode: NyxCommandPaletteViewportMode.AfterInteraction, showResultsLabel: 'Show results', placeholder: 'Search commands...', label: 'Search commands',
   loading: false, loadingText: 'Loading commands...', emptyText: 'No commands found.',
   disabled: false, autofocus: false, loop: true, closeable: false, closeLabel: 'Close command palette',
 })
@@ -44,7 +46,28 @@ const externallySelected = () => {
 const localSelection = ref(model.value)
 const selected = computed(() => externallySelected() ? model.value : localSelection.value)
 const query = computed(() => searchTerm.value ?? '')
-const resultsVisible = computed(() => props.showResultsOnEmpty || !!query.value.trim())
+const revealed = ref(false)
+const manuallyRevealed = ref(false)
+watch([query, () => props.viewportMode], ([value, mode], previous) => {
+  if (previous && mode !== previous[1]) revealed.value = false
+  manuallyRevealed.value = false
+  if (value.trim()) revealed.value = true
+}, { immediate: true, flush: 'sync' })
+watch(open, value => {
+  if (!value && !props.inline) {
+    revealed.value = false
+    manuallyRevealed.value = false
+  } else if (value && !props.inline && query.value.trim()) revealed.value = true
+}, { flush: 'sync' })
+const resultsVisible = computed(() => props.viewportMode === NyxCommandPaletteViewportMode.Always
+  || !!query.value.trim() || manuallyRevealed.value
+  || (props.viewportMode === NyxCommandPaletteViewportMode.AfterInteraction && revealed.value))
+const revealResults = () => {
+  if (props.disabled || closing.value) return
+  overlay.focus()
+  revealed.value = true
+  manuallyRevealed.value = true
+}
 const accepted = computed(() => acceptGroups(props.groups))
 const filtered = computed(() => filterGroups(accepted.value, query.value))
 const resultCount = computed(() => resultsVisible.value ? filtered.value.reduce((sum, group) => sum + group.items.length, 0) : 0)
@@ -78,9 +101,16 @@ let composing = false
 const composition = (value: boolean) => { composing = value; overlay.onComposition(value) }
 const onInputKeydown = (event: KeyboardEvent) => {
   if (composing || event.isComposing || event.keyCode === 229 || paletteShortcut.matches(event)) return
+  if (event.key === 'ArrowDown' && !resultsVisible.value) {
+    event.preventDefault()
+    if (!event.repeat) revealResults()
+    return
+  }
   const items = enabled.value
   if (event.key === 'Enter') {
     event.preventDefault()
+    if (event.repeat) return
+    if (!resultsVisible.value) { revealResults(); return }
     const group = filtered.value.find(group => group.items.some(item => item.id === active.value))
     const item = group?.items.find(item => item.id === active.value)
     if (item && group) activate(item, group.group, event)
@@ -198,7 +228,14 @@ defineExpose({ focus: overlay.focus })
       </div>
       </div>
       <span class="nyx-command-palette__status" role="status">{{ !resultsVisible ? '' : loading ? loadingText : !resultCount ? emptyText : '' }}</span>
-      <div v-if="slots.footer" class="nyx-command-palette__footer"><slot name="footer" :search-term="query" :result-count="resultCount" /></div>
+      <div v-if="slots.footer || !resultsVisible" class="nyx-command-palette__footer">
+        <slot name="footer" :search-term="query" :result-count="resultCount" />
+        <button v-if="!resultsVisible" class="nyx-command-palette__reveal" type="button"
+          :aria-label="showResultsLabel" :title="showResultsLabel" :aria-controls="domId('list')" :aria-expanded="false"
+          :disabled="disabled || closing" @click="revealResults">
+          <NyxIcon name="chevrons-down" :size="NyxSize.XSmall" aria-hidden="true" />
+        </button>
+      </div>
     </component>
   </Teleport>
 </template>

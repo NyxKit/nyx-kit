@@ -115,7 +115,7 @@ Use shared scoped `header` and `default` slots for repeated content, with `heade
 
 ## Command palette
 
-`NyxCommandPalette` provides a standalone centered overlay with grouped fuzzy search, keyboard navigation, and typed result slots. Set `inline` to embed it. The consumer owns command actions and remote requests. Pass `shortcut="SUPER+K"` to enable Ctrl/⌘K toggling, or a custom chord; no shortcut is registered by default.
+`NyxCommandPalette` provides a standalone horizontally centered overlay with a stable search position, grouped fuzzy search, keyboard navigation, and typed result slots. Set `inline` to embed it. The consumer owns command actions and remote requests. Pass `shortcut="SUPER+K"` to enable Ctrl/⌘K toggling, or a custom chord; no shortcut is registered by default. Browser/OS-reserved shortcuts may take precedence. In Storybook, focus the preview canvas or open the story in a new tab before using a shortcut.
 
 ```vue
 <script setup lang="ts">
@@ -134,7 +134,9 @@ const lastCommand = ref('')
 </template>
 ```
 
-Set `:show-results-on-empty="false"` to reveal the viewport only while the query contains text. Overlay, viewport, and result transitions respect reduced motion.
+`viewportMode` accepts `NyxCommandPaletteViewportMode.Always`, `.WhileSearching`, or `.AfterInteraction` (default). The default reveals results on the first nonblank query and keeps them visible after clearing until the overlay closes. Reopening with an empty query starts hidden. When hidden, use the footer reveal button or press Enter or Arrow Down in search to show results without selecting. Import the enum from `nyx-kit` or `nyx-kit/types`. Overlay, viewport, and result transitions respect reduced motion.
+
+Customize footer content through the `footer` slot; result counts and reset-search actions are opt-in consumer content.
 
 Conversation search works with the same API: include a `to` field on each item, use `ignoreFilter: true` for server results, and call `router.push(item.to)` in the `select` handler. The ConversationSearch story demonstrates this flow.
 

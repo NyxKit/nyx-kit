@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { NyxCommandPaletteViewportMode } from './NyxCommandPalette.types'
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { action } from 'storybook/actions'
 import NyxCommandPalette from './NyxCommandPalette.vue'
@@ -42,7 +43,7 @@ const navigate = ({ item }: NyxCommandPaletteSelectEvent<Conversation>) => {
   <section style="display: grid; gap: var(--nyx-gap-lg)">
     <button type="button" @click="open = true">Find a conversation</button>
     <NyxCommandPalette v-model:open="open" v-model:search-term="query" :groups="groups" :loading="loading"
-      :show-results-on-empty="false" label="Find conversations" placeholder="Search conversations..." closeable @select="navigate">
+      :viewport-mode="NyxCommandPaletteViewportMode.WhileSearching" label="Find conversations" placeholder="Search conversations..." closeable @select="navigate">
       <template #item-trailing="{ item }"><small>{{ item.updated }}</small></template>
       <template #footer>Search titles and messages. Try “release” or “design”.</template>
     </NyxCommandPalette>

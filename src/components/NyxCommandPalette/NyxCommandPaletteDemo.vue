@@ -35,7 +35,7 @@ const select = (event: NyxCommandPaletteSelectEvent) => {
       <template v-if="fullItem" #item="{ item }">Custom command: {{ item.label }}</template>
       <template v-if="custom" #empty="{ searchTerm }">Try another phrase for “{{ searchTerm }}”.</template>
       <template v-if="custom" #loading>Looking up your commands…</template>
-      <template #footer="{ resultCount }">{{ resultCount }} commands · ↑ ↓ navigate · Enter run <button type="button" @click="query = ''">Reset search</button></template>
+      <template #footer>↑ ↓ navigate · Enter run</template>
     </NyxCommandPalette>
     <output aria-live="polite">Last command: {{ last }} · Selected: {{ selected || 'None' }} · Activations: {{ count }}</output>
   </section>

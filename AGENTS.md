@@ -36,6 +36,8 @@ The stack:
 
 | Layer | Technology | Location | Status |
 |---|---|---|---|
+| 2026-10-08 | Command palette overlay specification | One overlay paragraph still described vertical centering after the top-anchor change. | Corrected to horizontal centering with a stable top anchor |
+| 2026-10-08 | Command palette overlay placement | Vertical auto margins re-centered the search when result height changed, contrary to the requested stationary search. | Corrected to a top-anchored overlay that grows downward |
 | Components | Vue 3 + TypeScript | `src/components/` | ✅ in progress |
 | Composables | TypeScript | `src/composables/` | ✅ in progress |
 | Directives | TypeScript | `src/directives/` | ✅ in progress |
@@ -387,6 +389,7 @@ When you notice that something in the codebase or stories is out of sync, record
 
 | Noticed | Location | Description | Status |
 |---|---|---|---|
+| 2026-10-08 | Command palette CustomShortcut story | Ctrl+Shift+P conflicts with Firefox’s private-window shortcut; automated page keyboard tests do not establish browser-chrome override support. | Corrected example to Ctrl+Enter and documented iframe focus and reserved-shortcut limitations |
 | 2026-10-08 | `useKeyboardShortcuts` SUPER expansion vs browser keys | SUPER expands to CTRL while native Control is normalized as CONTROL; existing tests rely on CONTROL descriptors. Initial examples registered both SUPER+K and CONTROL+K. The palette now owns an opt-in shortcut using event modifier flags and no longer depends on this helper. | Open: shared shortcut normalization requires a separate compatibility decision |
 | 2026-10-08 | `docs/architecture/build.md` vs `package.json` | Build guide lists Vite 6 while the installed package uses Vite 8. Palette validation uses installed tooling. | Open: unrelated tooling documentation drift |
 | 2026-10-08 | Initial NyxCommandPalette draft vs user intent | Draft proposed NyxModal composition; user requires a separately styled, centered command overlay. | Corrected: palette owns overlay/open state, backdrop, focus and dismissal; Storybook validates it directly |

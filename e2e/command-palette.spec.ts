@@ -261,3 +261,73 @@ test('reduced motion skips surface and viewport transitions and keeps quiet focu
   await expect(page.locator('dialog[open]')).toHaveCount(0)
   await expect(page.locator('body')).not.toHaveCSS('overflow', 'hidden')
 })
+
+for (const viewport of [{ width: 1000, height: 800 }, { width: 320, height: 480 }]) {
+  test(`search stays anchored while results resize at ${viewport.width}px`, async ({ page }) => {
+    await page.setViewportSize(viewport)
+    await page.getByRole('button', { name: 'Toggle initial results' }).click()
+    await page.locator('#trigger').click()
+    const dialog = page.getByRole('dialog', { name: dialogName, exact: true })
+    const input = dialog.getByRole('combobox')
+    await dialog.evaluate(async el => { await Promise.all(el.getAnimations().map(animation => animation.finished)) })
+    const initialY = await input.evaluate(el => el.getBoundingClientRect().y)
+    // Sample every frame through reveal, filtering, empty state and collapse.
+    for (const query of ['Command', 'Command 0-19', 'no matches here', '']) {
+      const positions = input.evaluate(el => new Promise<number[]>(resolve => {
+        const samples: number[] = []
+        const start = performance.now()
+        const sample = () => {
+          samples.push(el.getBoundingClientRect().y)
+          if (performance.now() - start < 450) requestAnimationFrame(sample)
+          else resolve(samples)
+        }
+        requestAnimationFrame(sample)
+      }))
+      await input.fill(query)
+      for (const y of await positions) expect(Math.abs(y - initialY)).toBeLessThan(1)
+      const bounds = await dialog.boundingBox()
+      expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(viewport.height)
+    }
+  })
+}
+
+test('disclosure supports footer and Enter, keeps focus and resets on dismissal', async ({ page }) => {
+  await page.getByRole('button', { name: 'Use persistent results' }).click()
+  await page.locator('#trigger').click()
+  const dialog = page.getByRole('dialog', { name: dialogName, exact: true })
+  const input = dialog.getByRole('combobox')
+  const reveal = dialog.getByRole('button', { name: 'Show results' })
+  await expect(reveal).toBeVisible()
+  await reveal.click()
+  await expect(input).toBeFocused()
+  await expect(reveal).toHaveCount(0)
+  await expect(input).toHaveAttribute('aria-expanded', 'true')
+  await expect(page.locator('#result')).toHaveText('/ 0 / 0')
+  await input.fill('Command 0-19')
+  await input.clear()
+  await expect(input).toHaveAttribute('aria-expanded', 'true')
+  await input.press('Escape')
+  await expect(dialog).toBeHidden()
+  await page.locator('#trigger').click()
+  await expect(input).toHaveAttribute('aria-expanded', 'false')
+  await expect(reveal).toBeVisible()
+  await input.press('Escape')
+  await expect(dialog).toBeHidden()
+  // Reopening the same instance starts undisclosed; first Enter is only a reveal.
+  await page.locator('#trigger').click()
+  await input.press('Enter')
+  await expect(input).toHaveAttribute('aria-expanded', 'true')
+  await expect(page.locator('#result')).toHaveText('/ 0 / 2')
+  await input.press('Enter')
+  await expect(page.locator('#result')).toHaveText('0-0 / 1 / 2')
+  await dialog.getByRole('button', { name: 'Close from parent' }).click()
+  await expect(dialog).toBeHidden()
+  await page.locator('#trigger').click()
+  await expect(input).toHaveAttribute('aria-expanded', 'false')
+  await input.press('ArrowDown')
+  await expect(input).toHaveAttribute('aria-expanded', 'true')
+  await expect(dialog.locator('[data-active="true"]')).toHaveText('Command 0-0')
+  await expect(page.locator('#result')).toHaveText('0-0 / 1 / 2')
+  await input.press('ArrowDown')
+  await expect(dialog.locator('[data-active="true"]')).toHaveText('Command 0-2')
+})

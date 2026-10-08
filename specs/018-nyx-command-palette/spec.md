@@ -62,7 +62,7 @@ As an application developer, I can open a standalone centered command palette, c
 5. **Given** two inline palettes on a page, **When** one is used, **Then** the other palette's query, highlight, selection, and focus remain unchanged.
 6. **Given** the default overlay is open, **When** the user presses Tab/Shift+Tab, **Then** focus stays inside and the background remains noninteractive and does not scroll.
 7. **Given** an open overlay, **When** its parent closes it or it unmounts, **Then** background scroll state is restored and focus returns to a still-available opener without a duplicate dismissal event.
-8. **Given** a 320px viewport or a long result list, **When** the overlay opens, **Then** its dedicated surface is centered with viewport gutters, the search remains visible, and results scroll within it.
+8. **Given** a 320px viewport or a long result list, **When** the overlay opens, **Then** its dedicated surface is horizontally centered with viewport gutters and anchored at `15dvh`, the search remains visible, and results scroll within it.
 9. **Given** a closed palette with retained query and selection, **When** it reopens, **Then** those values remain and focus returns to search; inline mode ignores the overlay open state.
 10. **Given** an open overlay, **When** a pointer gesture starts inside its surface and ends outside, **Then** it stays open; only a backdrop press and release dismiss it.
 
@@ -161,6 +161,8 @@ As a library consumer, I can find the component in Storybook, understand its API
 
 ## Follow-up: shortcuts, viewport discovery, and motion
 
-- `shortcut` optionally toggles the overlay; recommend `SUPER+K` and support custom chords. Default registration remains off. Ignore repeats, IME and unrelated editable inputs; prevent duplicate instance toggles.
-- `showResultsOnEmpty` defaults true. False collapses results until a nonblank query, including parent-provided queries, and hides them again on clear. Hidden results cannot activate or announce empty/loading text.
+- `shortcut` optionally toggles the overlay; recommend `SUPER+K` and support custom chords. Default registration remains off. Shortcuts apply within the component document; Storybook requires preview focus. Browser/OS-reserved combinations are not guaranteed to be overridable; demonstrate custom chords with `Ctrl+Enter`, not Firefox’s private-window binding. Ignore repeats, IME and unrelated editable inputs; prevent duplicate instance toggles.
+- `viewportMode` uses exported `NyxCommandPaletteViewportMode`: Always, WhileSearching, AfterInteraction (default). AfterInteraction preserves reveal after clearing within the current open session; overlay closure resets reveal history; WhileSearching hides on clear. Footer reveal button and empty-search Enter/ArrowDown reveal without selecting; hide the button when results show. Place the small reveal icon at the footer’s right edge with no hover rotation. Mode changes reset disclosure history. Hidden results cannot activate or announce empty/loading text.
 - Animate entry and exit, backdrop, viewport reveal/collapse, result changes, hover and press feedback. Rapid reversals, unmount, inline switching and reduced motion must preserve focus/scroll cleanup and single dismissal events.
+
+- Keep the search stationary as results appear, disappear, or change count: anchor the overlay top at `15dvh`, grow downward, and use a top-center surface transform origin.

@@ -1,5 +1,11 @@
 import type { NyxSize, NyxTheme } from '@/types/common'
 
+export enum NyxCommandPaletteViewportMode {
+  Always = 'always',
+  WhileSearching = 'while-searching',
+  AfterInteraction = 'after-interaction',
+}
+
 export interface NyxCommandPaletteItem {
   id: string
   label: string
@@ -33,7 +39,8 @@ export interface NyxCommandPaletteProps<T extends NyxCommandPaletteItem = NyxCom
   groups: readonly NyxCommandPaletteGroup<T>[]
   inline?: boolean
   shortcut?: string
-  showResultsOnEmpty?: boolean
+  viewportMode?: NyxCommandPaletteViewportMode
+  showResultsLabel?: string
   placeholder?: string
   label?: string
   loading?: boolean

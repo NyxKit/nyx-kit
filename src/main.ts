@@ -1,3 +1,4 @@
+export { NyxCommandPaletteViewportMode } from './components/NyxCommandPalette/NyxCommandPalette.types'
 export type { NyxCommandPaletteItem, NyxCommandPaletteGroup, NyxCommandPaletteProps, NyxCommandPaletteSelectEvent, NyxCommandPaletteItemSlotProps } from './types'
 import NyxCommandPalette from './components/NyxCommandPalette/NyxCommandPalette.vue'
 export { NyxCommandPalette }

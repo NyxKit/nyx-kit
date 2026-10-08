@@ -1,3 +1,4 @@
+import { NyxCommandPaletteViewportMode } from './NyxCommandPalette.types'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import { matchesShortcut, parseShortcut } from './useCommandPaletteShortcut'
@@ -17,7 +18,7 @@ const groups = [
 ]
 const wrappers: ReturnType<typeof mount>[] = []
 const render = (props = {}, slots = {}) => {
-  const wrapper = mount(NyxCommandPalette, { props: { groups, inline: true, ...props }, slots, global: { provide: { libEnv: {} } } })
+  const wrapper = mount(NyxCommandPalette, { props: { groups, inline: true, viewportMode: NyxCommandPaletteViewportMode.Always, ...props }, slots, global: { provide: { libEnv: {} } } })
   wrappers.push(wrapper)
   return wrapper
 }
@@ -271,12 +272,11 @@ describe('optional shortcut and search-only viewport', () => {
     expect(wrapper.emitted('update:open')).toBeUndefined()
   })
   it('keeps hidden results inert, unannounced and non-activatable until a nonblank query', async () => {
-    const wrapper = render({ showResultsOnEmpty: false })
+    const wrapper = render({ viewportMode: NyxCommandPaletteViewportMode.WhileSearching })
     expect(wrapper.get('input').attributes('aria-expanded')).toBe('false')
     expect(wrapper.get('.nyx-command-palette__results').attributes('inert')).toBeDefined()
     expect(wrapper.get('[role="status"]').text()).toBe('')
     expect(wrapper.get('input').attributes('aria-activedescendant')).toBeUndefined()
-    await wrapper.get('input').trigger('keydown', { key: 'Enter' })
     await wrapper.get('[role="option"]').trigger('click')
     expect(wrapper.emitted('select')).toBeUndefined()
     await wrapper.setProps({ searchTerm: 'settings' })
@@ -286,7 +286,7 @@ describe('optional shortcut and search-only viewport', () => {
     await wrapper.setProps({ searchTerm: '  ', loading: true })
     expect(wrapper.get('input').attributes('aria-expanded')).toBe('false')
     expect(wrapper.get('[role="status"]').text()).toBe('')
-    await wrapper.setProps({ showResultsOnEmpty: true })
+    await wrapper.setProps({ viewportMode: NyxCommandPaletteViewportMode.Always })
     expect(wrapper.get('input').attributes('aria-expanded')).toBe('true')
     expect(wrapper.get('[role="status"]').text()).toBe('Loading commands...')
   })
@@ -314,4 +314,75 @@ it('arbitrates duplicate shortcuts and releases ownership on unmount', async () 
   toggle()
   await flushPromises()
   expect(first.value).toBe(true)
+})
+
+describe('viewport disclosure modes', () => {
+  it('defaults to persistent disclosure, including programmatic search and mode resets', async () => {
+    const wrapper = render({ viewportMode: undefined })
+    const input = wrapper.get('input')
+    expect(input.attributes('aria-expanded')).toBe('false')
+    await wrapper.setProps({ searchTerm: 'settings' })
+    expect(input.attributes('aria-expanded')).toBe('true')
+    await wrapper.setProps({ searchTerm: '' })
+    expect(input.attributes('aria-expanded')).toBe('true')
+    expect(wrapper.find('.nyx-command-palette__reveal').exists()).toBe(false)
+    await wrapper.setProps({ viewportMode: NyxCommandPaletteViewportMode.WhileSearching })
+    expect(input.attributes('aria-expanded')).toBe('false')
+    await wrapper.setProps({ viewportMode: NyxCommandPaletteViewportMode.AfterInteraction })
+    expect(input.attributes('aria-expanded')).toBe('false')
+  })
+  it('reveals on Enter without activating and ignores repeats and composition', async () => {
+    const wrapper = render({ viewportMode: undefined })
+    const input = wrapper.get('input')
+    await input.trigger('keydown', { key: 'Enter', isComposing: true })
+    await input.trigger('keydown', { key: 'Enter', repeat: true })
+    expect(input.attributes('aria-expanded')).toBe('false')
+    await input.trigger('keydown', { key: 'Enter' })
+    expect(input.attributes('aria-expanded')).toBe('true')
+    expect(wrapper.emitted('select')).toBeUndefined()
+    await input.trigger('keydown', { key: 'Enter', repeat: true })
+    expect(wrapper.emitted('select')).toBeUndefined()
+    await input.trigger('keydown', { key: 'Enter' })
+    expect(wrapper.emitted('select')).toHaveLength(1)
+  })
+  it('supplies a labeled footer button without a slot and supports manual search-only reveal', async () => {
+    const wrapper = render({ viewportMode: NyxCommandPaletteViewportMode.WhileSearching, showResultsLabel: 'Browse commands' })
+    const button = wrapper.get('.nyx-command-palette__reveal')
+    expect(button.attributes('aria-label')).toBe('Browse commands')
+    expect(button.attributes('aria-controls')).toBe(wrapper.get('[role="listbox"]').attributes('id'))
+    await button.trigger('click')
+    expect(wrapper.get('input').attributes('aria-expanded')).toBe('true')
+    expect(wrapper.find('.nyx-command-palette__reveal').exists()).toBe(false)
+    expect(wrapper.emitted('select')).toBeUndefined()
+    await wrapper.setProps({ searchTerm: 'settings' })
+    await wrapper.setProps({ searchTerm: '' })
+    expect(wrapper.get('input').attributes('aria-expanded')).toBe('false')
+    expect(wrapper.find('.nyx-command-palette__reveal').exists()).toBe(true)
+  })
+  it('blocks disabled reveal and permits loading disclosure', async () => {
+    const wrapper = render({ viewportMode: undefined, disabled: true })
+    expect(wrapper.get('.nyx-command-palette__reveal').attributes('disabled')).toBeDefined()
+    await wrapper.get('input').trigger('keydown', { key: 'Enter' })
+    expect(wrapper.get('input').attributes('aria-expanded')).toBe('false')
+    await wrapper.setProps({ disabled: false, loading: true })
+    await wrapper.get('.nyx-command-palette__reveal').trigger('click')
+    expect(wrapper.get('input').attributes('aria-expanded')).toBe('true')
+    expect(wrapper.get('[role="status"]').text()).toBe('Loading commands...')
+    expect(wrapper.emitted('select')).toBeUndefined()
+  })
+})
+
+it('ArrowDown reveals without skipping the first enabled result or selecting', async () => {
+  const wrapper = render({ viewportMode: undefined })
+  const input = wrapper.get('input')
+  await input.trigger('keydown', { key: 'ArrowDown', repeat: true })
+  expect(input.attributes('aria-expanded')).toBe('false')
+  await input.trigger('keydown', { key: 'ArrowDown', isComposing: true })
+  expect(input.attributes('aria-expanded')).toBe('false')
+  await input.trigger('keydown', { key: 'ArrowDown' })
+  expect(input.attributes('aria-expanded')).toBe('true')
+  expect(wrapper.get('[data-active="true"]').text()).toContain('Open settings')
+  expect(wrapper.emitted('select')).toBeUndefined()
+  await input.trigger('keydown', { key: 'ArrowDown' })
+  expect(wrapper.get('[data-active="true"]').text()).toContain('Create file')
 })
