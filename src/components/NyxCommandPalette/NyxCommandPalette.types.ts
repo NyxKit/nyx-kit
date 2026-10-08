@@ -3,7 +3,7 @@ import type { NyxSize, NyxTheme } from '@/types/common'
 export enum NyxCommandPaletteViewportMode {
   Always = 'always',
   WhileSearching = 'while-searching',
-  AfterInteraction = 'after-interaction',
+  AfterInteraction = 'after-interaction'
 }
 
 export interface NyxCommandPaletteItem {
@@ -53,4 +53,15 @@ export interface NyxCommandPaletteProps<T extends NyxCommandPaletteItem = NyxCom
   closeLabel?: string
   theme?: NyxTheme
   size?: NyxSize
+}
+
+export type NyxCommandPaletteSlots<T extends NyxCommandPaletteItem> = {
+  item?: (scope: NyxCommandPaletteItemSlotProps<T>) => unknown
+  'item-leading'?: (scope: NyxCommandPaletteItemSlotProps<T>) => unknown
+  'item-label'?: (scope: NyxCommandPaletteItemSlotProps<T>) => unknown
+  'item-trailing'?: (scope: NyxCommandPaletteItemSlotProps<T>) => unknown
+  'group-label'?: (scope: { group: NyxCommandPaletteGroup<T>; searchTerm: string }) => unknown
+  empty?: (scope: { searchTerm: string }) => unknown
+  loading?: (scope: { searchTerm: string }) => unknown
+  footer?: (scope: { searchTerm: string; resultCount: number }) => unknown
 }

@@ -3,40 +3,116 @@ import { ref, watch } from 'vue'
 import { action } from 'storybook/actions'
 import NyxCommandPalette from '../NyxCommandPalette.vue'
 import type { NyxCommandPaletteProps, NyxCommandPaletteSelectEvent } from '../NyxCommandPalette.types'
-const props = defineProps<{ args: NyxCommandPaletteProps & { open?: boolean }, controlled?: boolean, custom?: boolean, fullItem?: boolean }>()
+
+const props = defineProps<{
+  args: NyxCommandPaletteProps & { open?: boolean }
+  controlled?: boolean
+  custom?: boolean
+  fullItem?: boolean
+}>()
+
 const open = ref(false)
 const query = ref('')
 const selected = ref<string>()
 const count = ref(0)
 const last = ref('None')
-watch(() => props.args.open, value => { open.value = !!value })
+
+watch(
+  () => props.args.open,
+  (value) => {
+    open.value = !!value
+  }
+)
+
 watch(open, action('update:open'))
+
 watch(query, action('update:searchTerm'))
+
 watch(selected, action('update:modelValue'))
+
 const select = (event: NyxCommandPaletteSelectEvent) => {
   action('select')(event)
   count.value++
   last.value = event.item.label
   if (!props.args.inline) open.value = false
 }
+
+const chooseSettings = () => {
+  query.value = 'settings'
+  selected.value = 'settings'
+}
 </script>
 <template>
-  <section style="display: grid; gap: var(--nyx-gap-lg); max-width: 100%;">
-    <button v-if="!args.inline" type="button" @click="open = true">Search commands{{ args.shortcut ? ` (${args.shortcut})` : '' }}</button>
+  <section style="display: grid; gap: var(--nyx-gap-lg); max-width: 100%">
+    <button
+      v-if="!args.inline"
+      type="button"
+      @click="open = true"
+    >
+      Search commands{{ args.shortcut ? ` (${args.shortcut})` : '' }}
+    </button>
     <div v-if="controlled">
-      <button type="button" @click="query = 'settings'; selected = 'settings'">Choose settings externally</button>
-      <button type="button" @click="query = ''">Clear query</button>
+      <button
+        type="button"
+        @click="chooseSettings"
+      >
+        Choose settings externally
+      </button>
+      <button
+        type="button"
+        @click="query = ''"
+      >
+        Clear query
+      </button>
     </div>
-    <NyxCommandPalette v-bind="args" v-model:open="open" v-model:search-term="query" v-model="selected" @select="select" @close="action('close')()">
-      <template v-if="custom" #group-label="{ group }">{{ group.label || 'Commands' }} · Application</template>
-      <template v-if="custom" #item-leading="{ index }"><span aria-hidden="true">{{ index + 1 }}.</span></template>
-      <template v-if="custom" #item-label="{ item }"><strong>{{ item.label }}</strong><small style="display: block">{{ item.description }}</small></template>
-      <template v-if="custom" #item-trailing="{ selected: chosen }">{{ chosen ? 'Last used' : 'Run' }}</template>
-      <template v-if="fullItem" #item="{ item }">Custom command: {{ item.label }}</template>
-      <template v-if="custom" #empty="{ searchTerm }">Try another phrase for “{{ searchTerm }}”.</template>
-      <template v-if="custom" #loading>Looking up your commands…</template>
+    <NyxCommandPalette
+      v-bind="args"
+      v-model:open="open"
+      v-model:search-term="query"
+      v-model="selected"
+      @select="select"
+      @close="action('close')()"
+    >
+      <template
+        v-if="custom"
+        #group-label="{ group }"
+        >{{ group.label || 'Commands' }} · Application</template
+      >
+      <template
+        v-if="custom"
+        #item-leading="{ index }"
+        ><span aria-hidden="true">{{ index + 1 }}.</span></template
+      >
+      <template
+        v-if="custom"
+        #item-label="{ item }"
+        ><strong>{{ item.label }}</strong
+        ><small style="display: block">{{ item.description }}</small></template
+      >
+      <template
+        v-if="custom"
+        #item-trailing="{ selected: chosen }"
+        >{{ chosen ? 'Last used' : 'Run' }}</template
+      >
+      <template
+        v-if="fullItem"
+        #item="{ item }"
+        >Custom command: {{ item.label }}</template
+      >
+      <template
+        v-if="custom"
+        #empty="{ searchTerm }"
+        >Try another phrase for “{{ searchTerm }}”.</template
+      >
+      <template
+        v-if="custom"
+        #loading
+        >Looking up your commands…</template
+      >
       <template #footer>↑ ↓ navigate · Enter run</template>
     </NyxCommandPalette>
-    <output aria-live="polite">Last command: {{ last }} · Selected: {{ selected || 'None' }} · Activations: {{ count }}</output>
+    <output aria-live="polite"
+      >Last command: {{ last }} · Selected: {{ selected || 'None' }} · Activations: {{ count }}</output
+    >
   </section>
 </template>

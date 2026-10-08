@@ -9,21 +9,41 @@ import { acceptGroups, filterGroups } from './commandPalette'
 import type { NyxCommandPaletteGroup, NyxCommandPaletteSelectEvent } from './NyxCommandPalette.types'
 
 const groups = [
-  { id: 'actions', label: 'Actions', items: [
-    { id: 'settings', label: 'Open settings', description: 'Workspace preferences', icon: 'settings', keywords: ['config'], command: 42 },
-    { id: 'disabled', label: 'Disabled command', disabled: true, command: 0 },
-    { id: 'file', label: 'Create file', command: 1 },
-  ] },
-  { id: 'pages', items: [{ id: 'cafe', label: 'Café dashboard', command: 2 }] },
+  {
+    id: 'actions',
+    label: 'Actions',
+    items: [
+      {
+        id: 'settings',
+        label: 'Open settings',
+        description: 'Workspace preferences',
+        icon: 'settings',
+        keywords: ['config'],
+        command: 42
+      },
+      { id: 'disabled', label: 'Disabled command', disabled: true, command: 0 },
+      { id: 'file', label: 'Create file', command: 1 }
+    ]
+  },
+  { id: 'pages', items: [{ id: 'cafe', label: 'Café dashboard', command: 2 }] }
 ]
 const wrappers: ReturnType<typeof mount>[] = []
 const render = (props = {}, slots = {}) => {
-  const wrapper = mount(NyxCommandPalette, { props: { groups, inline: true, viewportMode: NyxCommandPaletteViewportMode.Always, ...props }, slots, global: { provide: { libEnv: {} } } })
+  const wrapper = mount(NyxCommandPalette, {
+    props: { groups, inline: true, viewportMode: NyxCommandPaletteViewportMode.Always, ...props },
+    slots,
+    global: { provide: { libEnv: {} } }
+  })
   wrappers.push(wrapper)
   return wrapper
 }
-afterEach(() => { wrappers.forEach(wrapper => wrapper.unmount()); wrappers.length = 0; vi.restoreAllMocks() })
-const ids = (query: string, data = groups) => filterGroups(acceptGroups(data), query).flatMap(group => group.items.map(item => item.id))
+afterEach(() => {
+  wrappers.forEach((wrapper) => wrapper.unmount())
+  wrappers.length = 0
+  vi.restoreAllMocks()
+})
+const ids = (query: string, data = groups) =>
+  filterGroups(acceptGroups(data), query).flatMap((group) => group.items.map((item) => item.id))
 
 describe('command discovery', () => {
   it('matches diacritics, subsequences, and tokens across fields without joining fields', () => {
@@ -33,28 +53,56 @@ describe('command discovery', () => {
     expect(ids('settingsworkspace')).toEqual([])
     expect(ids('Actions')).toEqual([])
     expect(ids('   ')).toEqual(['settings', 'disabled', 'file', 'cafe'])
-    expect(filterGroups(acceptGroups([{ id: 'unicode', items: [{ id: 'rocket', label: 'Launch 🚀 project' }] }]), '🚀')).toHaveLength(1)
+    expect(
+      filterGroups(acceptGroups([{ id: 'unicode', items: [{ id: 'rocket', label: 'Launch 🚀 project' }] }]), '🚀')
+    ).toHaveLength(1)
   })
   it('ranks equality, prefix, contiguous and subsequence matches with stable ties', () => {
-    const data = [{ id: 'g', items: [
-      { id: 'sub', label: 'A big cat' }, { id: 'contains', label: 'The abc' },
-      { id: 'prefix', label: 'Abc tool' }, { id: 'exact', label: 'ABC' }, { id: 'tie', label: 'Other abc' },
-    ] }]
-    expect(filterGroups(acceptGroups(data), 'abc')[0].items.map(item => item.id)).toEqual(['exact', 'prefix', 'contains', 'tie', 'sub'])
+    const data = [
+      {
+        id: 'g',
+        items: [
+          { id: 'sub', label: 'A big cat' },
+          { id: 'contains', label: 'The abc' },
+          { id: 'prefix', label: 'Abc tool' },
+          { id: 'exact', label: 'ABC' },
+          { id: 'tie', label: 'Other abc' }
+        ]
+      }
+    ]
+    expect(filterGroups(acceptGroups(data), 'abc')[0].items.map((item) => item.id)).toEqual([
+      'exact',
+      'prefix',
+      'contains',
+      'tie',
+      'sub'
+    ])
     expect(filterGroups(acceptGroups([{ ...data[0], ignoreFilter: true }]), 'absent')[0].items).toEqual(data[0].items)
   })
-  it('validates before filtering, skips entire duplicate groups, preserves original objects and never mutates input', () => {
+  it('validates groups and IDs without mutating inputs', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     const item = Object.freeze({ id: ' quote:"[] ', label: 'Kept' })
     const original = Object.freeze({ id: 'g', items: Object.freeze([item]) })
-    const accepted = acceptGroups(Object.freeze([
-      original, { id: 'g', items: [{ id: 'later', label: 'Skipped group' }] },
-      { id: 'two', items: [{ id: 'bad', label: ' ' }, { id: 'bad', label: 'Valid' }, item, { id: 'later', label: 'Accepted' }, { id: '', label: 'Blank' }] },
-      { id: ' ', items: [] },
-    ]))
+    const accepted = acceptGroups(
+      Object.freeze([
+        original,
+        { id: 'g', items: [{ id: 'later', label: 'Skipped group' }] },
+        {
+          id: 'two',
+          items: [
+            { id: 'bad', label: ' ' },
+            { id: 'bad', label: 'Valid' },
+            item,
+            { id: 'later', label: 'Accepted' },
+            { id: '', label: 'Blank' }
+          ]
+        },
+        { id: ' ', items: [] }
+      ])
+    )
     expect(accepted[0].group).toBe(original)
     expect(accepted[0].items[0]).toBe(item)
-    expect(accepted[1].items.map(item => item.id)).toEqual(['bad', 'later'])
+    expect(accepted[1].items.map((item) => item.id)).toEqual(['bad', 'later'])
     expect(warn).toHaveBeenCalledTimes(5)
   })
 })
@@ -76,7 +124,13 @@ describe('palette state and semantics', () => {
   it('emits original generic objects and event after selection update', async () => {
     let payload: NyxCommandPaletteSelectEvent<(typeof groups)[0]['items'][0]> | undefined
     const order: string[] = []
-    const wrapper = render({ onSelect: (event: typeof payload) => { payload = event; order.push('select') }, 'onUpdate:modelValue': () => order.push('model') })
+    const wrapper = render({
+      onSelect: (event: typeof payload) => {
+        payload = event
+        order.push('select')
+      },
+      'onUpdate:modelValue': () => order.push('model')
+    })
     await wrapper.get('[role="option"]').trigger('click')
     expect(toRaw(payload?.item)).toBe(groups[0].items[0])
     expect(toRaw(payload?.group)).toBe(groups[0])
@@ -94,7 +148,7 @@ describe('palette state and semantics', () => {
     expect(wrapper.emitted('select')).toBeUndefined()
     expect(wrapper.emitted('update:searchTerm')).toHaveLength(1)
   })
-  it('preserves highlight on data replacement, resets on query and recovers from removed or disabled rows', async () => {
+  it('preserves highlight on replacement and recovers from query changes or removed rows', async () => {
     const wrapper = render()
     await wrapper.get('input').trigger('keydown', { key: 'ArrowDown' })
     await wrapper.setProps({ groups: [...groups].reverse() })
@@ -125,7 +179,11 @@ describe('palette state and semantics', () => {
     expect(wrapper.get('[aria-selected="true"]').attributes('aria-label')).toBe('Create file')
     expect(wrapper.emitted('select')).toBeUndefined()
   })
-  it.each([{ loading: true }, { disabled: true }, { groups: [{ id: 'g', items: [{ id: 'd', label: 'Disabled', disabled: true }] }] }])('blocks activation for %o', async props => {
+  it.each([
+    { loading: true },
+    { disabled: true },
+    { groups: [{ id: 'g', items: [{ id: 'd', label: 'Disabled', disabled: true }] }] }
+  ])('blocks activation for %o', async (props) => {
     const wrapper = render(props)
     expect(wrapper.get('input').attributes('aria-activedescendant')).toBeUndefined()
     await wrapper.get('input').trigger('keydown', { key: 'Enter' })
@@ -168,7 +226,16 @@ describe('palette state and semantics', () => {
     expect(wrapper.emitted('update:open')).toBeUndefined()
   })
   it('keeps listbox mounted when empty and provides unique safe IDs', () => {
-    const wrapper = mount({ render: () => h('div', [h(NyxCommandPalette, { groups: [], inline: true }), h(NyxCommandPalette, { groups: [], inline: true })]) }, { global: { provide: { libEnv: {} } } })
+    const wrapper = mount(
+      {
+        render: () =>
+          h('div', [
+            h(NyxCommandPalette, { groups: [], inline: true }),
+            h(NyxCommandPalette, { groups: [], inline: true })
+          ])
+      },
+      { global: { provide: { libEnv: {} } } }
+    )
     wrappers.push(wrapper)
     const lists = wrapper.findAll('[role="listbox"]')
     expect(lists[0].attributes('id')).not.toBe(lists[1].attributes('id'))
@@ -176,11 +243,21 @@ describe('palette state and semantics', () => {
   })
 })
 
-it.each([false, true])('server renders and hydrates an overlay with initial open=%s', async open => {
+it.each([false, true])('server renders and hydrates an overlay with initial open=%s', async (open) => {
   const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
   const error = vi.spyOn(console, 'error').mockImplementation(() => {})
-  Object.defineProperty(HTMLDialogElement.prototype, 'showModal', { configurable: true, value: function (this: HTMLDialogElement) { this.setAttribute('open', '') } })
-  Object.defineProperty(HTMLDialogElement.prototype, 'close', { configurable: true, value: function (this: HTMLDialogElement) { this.removeAttribute('open') } })
+  Object.defineProperty(HTMLDialogElement.prototype, 'showModal', {
+    configurable: true,
+    value: function (this: HTMLDialogElement) {
+      this.setAttribute('open', '')
+    }
+  })
+  Object.defineProperty(HTMLDialogElement.prototype, 'close', {
+    configurable: true,
+    value: function (this: HTMLDialogElement) {
+      this.removeAttribute('open')
+    }
+  })
   const component = { render: () => h(NyxCommandPalette, { groups: groups as NyxCommandPaletteGroup[], open }) }
   const server = createSSRApp(component).provide('libEnv', {})
   const html = await renderToString(server)
@@ -191,45 +268,74 @@ it.each([false, true])('server renders and hydrates an overlay with initial open
   const before = container.querySelector('input')!.id
   const client = createSSRApp(component).provide('libEnv', {})
   client.mount(container)
-  await nextTick(); await nextTick()
+  await nextTick()
+  await nextTick()
   expect(document.getElementById(before)).not.toBeNull()
   expect(document.querySelector('dialog')?.open).toBe(open)
   expect([...warn.mock.calls, ...error.mock.calls].flat().join(' ')).not.toMatch(/hydration/i)
-  client.unmount(); container.remove()
+  client.unmount()
+  container.remove()
   expect(document.body.style.overflow).toBe('')
 })
 
-
 it('hydrates multiple inline instances with stable relationships', async () => {
   const error = vi.spyOn(console, 'error').mockImplementation(() => {})
-  const component = { render: () => h('div', [h(NyxCommandPalette, { groups, inline: true }), h(NyxCommandPalette, { groups, inline: true })]) }
+  const component = {
+    render: () =>
+      h('div', [h(NyxCommandPalette, { groups, inline: true }), h(NyxCommandPalette, { groups, inline: true })])
+  }
   const container = document.createElement('div')
   document.body.append(container)
   container.innerHTML = await renderToString(createSSRApp(component).provide('libEnv', {}))
-  const ids = Array.from(container.querySelectorAll('input')).map(el => el.getAttribute('aria-controls'))
+  const ids = Array.from(container.querySelectorAll('input')).map((el) => el.getAttribute('aria-controls'))
   const client = createSSRApp(component).provide('libEnv', {})
   client.mount(container)
   await nextTick()
-  expect(Array.from(container.querySelectorAll('input')).map(el => el.getAttribute('aria-controls'))).toEqual(ids)
+  expect(Array.from(container.querySelectorAll('input')).map((el) => el.getAttribute('aria-controls'))).toEqual(ids)
   expect(new Set(ids).size).toBe(2)
   expect(error).not.toHaveBeenCalled()
-  client.unmount(); container.remove()
+  client.unmount()
+  container.remove()
 })
-
 
 describe('optional shortcut and search-only viewport', () => {
   it('normalizes real modifier flags and rejects extra modifiers or malformed chords', () => {
     for (const shortcut of ['SUPER+K', 'mod+k', 'Control+k']) {
-      expect(matchesShortcut(parseShortcut(shortcut)!, new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }))).toBe(true)
+      expect(matchesShortcut(parseShortcut(shortcut)!, new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }))).toBe(
+        true
+      )
     }
-    expect(matchesShortcut(parseShortcut('SUPER+K')!, new KeyboardEvent('keydown', { key: 'k', metaKey: true }))).toBe(true)
-    expect(matchesShortcut(parseShortcut('Cmd+Shift+P')!, new KeyboardEvent('keydown', { key: 'P', metaKey: true, shiftKey: true }))).toBe(true)
-    expect(matchesShortcut(parseShortcut('SUPER+K')!, new KeyboardEvent('keydown', { key: 'k', ctrlKey: true, shiftKey: true }))).toBe(false)
-    for (const chord of ['', 'Ctrl+', 'Super+Ctrl+K', 'Ctrl+K+P', 'Ctrl+Ctrl+K']) expect(parseShortcut(chord)).toBeUndefined()
+    expect(matchesShortcut(parseShortcut('SUPER+K')!, new KeyboardEvent('keydown', { key: 'k', metaKey: true }))).toBe(
+      true
+    )
+    expect(
+      matchesShortcut(
+        parseShortcut('Cmd+Shift+P')!,
+        new KeyboardEvent('keydown', { key: 'P', metaKey: true, shiftKey: true })
+      )
+    ).toBe(true)
+    expect(
+      matchesShortcut(
+        parseShortcut('SUPER+K')!,
+        new KeyboardEvent('keydown', { key: 'k', ctrlKey: true, shiftKey: true })
+      )
+    ).toBe(false)
+    for (const chord of ['', 'Ctrl+', 'Super+Ctrl+K', 'Ctrl+K+P', 'Ctrl+Ctrl+K'])
+      expect(parseShortcut(chord)).toBeUndefined()
   })
   it('toggles once per eligible event, reacts to changes and removes its listener', async () => {
-    Object.defineProperty(HTMLDialogElement.prototype, 'showModal', { configurable: true, value: function (this: HTMLDialogElement) { this.setAttribute('open', '') } })
-    Object.defineProperty(HTMLDialogElement.prototype, 'close', { configurable: true, value: function (this: HTMLDialogElement) { this.removeAttribute('open') } })
+    Object.defineProperty(HTMLDialogElement.prototype, 'showModal', {
+      configurable: true,
+      value: function (this: HTMLDialogElement) {
+        this.setAttribute('open', '')
+      }
+    })
+    Object.defineProperty(HTMLDialogElement.prototype, 'close', {
+      configurable: true,
+      value: function (this: HTMLDialogElement) {
+        this.removeAttribute('open')
+      }
+    })
     const wrapper = render({ inline: false, shortcut: 'SUPER+K' })
     const key = (init: KeyboardEventInit = {}) => {
       const event = new KeyboardEvent('keydown', { key: 'k', ctrlKey: true, bubbles: true, cancelable: true, ...init })
@@ -292,17 +398,40 @@ describe('optional shortcut and search-only viewport', () => {
   })
 })
 
-
 it('arbitrates duplicate shortcuts and releases ownership on unmount', async () => {
   const first = ref(false)
   const second = ref(false)
   const showSecond = ref(true)
-  const wrapper = mount({ render: () => h('div', [
-    h(NyxCommandPalette, { groups, shortcut: 'SUPER+K', open: first.value, 'onUpdate:open': value => { first.value = value } }),
-    showSecond.value && h(NyxCommandPalette, { groups, shortcut: 'SUPER+K', open: second.value, 'onUpdate:open': value => { second.value = value } }),
-  ]) }, { global: { provide: { libEnv: {} } } })
+  const wrapper = mount(
+    {
+      render: () =>
+        h('div', [
+          h(NyxCommandPalette, {
+            groups,
+            shortcut: 'SUPER+K',
+            open: first.value,
+            'onUpdate:open': (value) => {
+              first.value = value
+            }
+          }),
+          showSecond.value &&
+            h(NyxCommandPalette, {
+              groups,
+              shortcut: 'SUPER+K',
+              open: second.value,
+              'onUpdate:open': (value) => {
+                second.value = value
+              }
+            })
+        ])
+    },
+    { global: { provide: { libEnv: {} } } }
+  )
   wrappers.push(wrapper)
-  const toggle = () => document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true, bubbles: true, cancelable: true }))
+  const toggle = () =>
+    document.body.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'k', ctrlKey: true, bubbles: true, cancelable: true })
+    )
   toggle()
   await flushPromises()
   expect([first.value, second.value]).toEqual([false, true])
@@ -346,7 +475,10 @@ describe('viewport disclosure modes', () => {
     expect(wrapper.emitted('select')).toHaveLength(1)
   })
   it('supplies a labeled footer button without a slot and supports manual search-only reveal', async () => {
-    const wrapper = render({ viewportMode: NyxCommandPaletteViewportMode.WhileSearching, showResultsLabel: 'Browse commands' })
+    const wrapper = render({
+      viewportMode: NyxCommandPaletteViewportMode.WhileSearching,
+      showResultsLabel: 'Browse commands'
+    })
     const button = wrapper.get('.nyx-command-palette__reveal')
     expect(button.attributes('aria-label')).toBe('Browse commands')
     expect(button.attributes('aria-controls')).toBe(wrapper.get('[role="listbox"]').attributes('id'))

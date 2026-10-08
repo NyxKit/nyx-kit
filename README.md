@@ -10,7 +10,11 @@ Brand identity: [final logo and downloads](docs/design/logo/README.md). Archived
 
 Keep story entries beside their components. Place extracted demo components and story fixtures in that component’s `storybook/` subfolder (for example, `src/components/NyxCommandPalette/storybook/`). These helpers are internal and must not be exported by the library. See [the contributor convention](docs/conventions/README.md#storybook-stories).
 
+GitHub Actions runs lint checks and unit tests on pull requests and pushes to `main`. See [CI commands and behavior](docs/testing/README.md#github-actions).
+
 ## Installation
+
+Available on npm: [nyx-kit](https://www.npmjs.com/package/nyx-kit).
 
 ```sh
 pnpm add nyx-kit
@@ -187,6 +191,8 @@ export default [
 ```
 
 The config includes:
+
+- 120-character maximum for code, comments, and Vue template lines (URL-containing lines are exempt)
 - `eslint-plugin-vue` — Vue 3 essential rules
 - `@vue/eslint-config-typescript` — TypeScript recommended rules
 - `eslint-plugin-oxlint` — disables ESLint rules that oxlint handles (use alongside `oxlint` for faster linting)

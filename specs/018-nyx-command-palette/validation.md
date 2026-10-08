@@ -58,3 +58,19 @@ Native dialog behavior is tested in browsers rather than inferred from the jsdom
 - Final library build (including type-check) and scoped component ESLint passed. The final Storybook build after removing the demo count/reset button passed.
 - Full unit suite: 547 passed, one known unrelated NyxStatusDot size assertion failed; all 29 palette unit tests passed.
 - Full Chromium/Firefox E2E suite: 56 passed, including all 32 palette cases. WebKit host-library limitation remains unchanged.
+
+## Readability and line-length enforcement
+
+- Matched NyxSelect's setup spacing, multiline callbacks, and template attribute layout. All palette source, styles, tests and stories fit 120 characters per line; both palette SFCs remain under 300 lines.
+- Extracted private state/navigation logic into `useCommandPaletteState.ts` and grouped result rendering into `NyxCommandPaletteResults.vue`, preserving the public component API and typed slots.
+- Repository and exported ESLint configs share a 120-character error rule: `max-len` for JS/TS and `vue/max-len` for Vue scripts/templates, with URL-containing lines exempt. No packages added.
+- Programmatic lint probes confirmed both configs reject long TypeScript, Vue script and Vue template lines. Scoped palette/config lint passes.
+- Repository-wide lint reports 107 existing length violations across 43 other source files and an existing explicit-any error in NyxDropdown's story; no repository-wide formatting rewrite was attempted.
+- All 29 palette unit tests, all 32 Chromium/Firefox palette tests, type-check, library build and Storybook build passed after extraction.
+
+## Declaration diagnostics and CI follow-up
+
+- The earlier successful build exits did not guarantee clean declaration generation: the generic results component referenced a private props interface and reported TS4082. Moved that interface into an exported internal type module, without adding a public barrel export.
+- Rebuilt the library and Storybook successfully and inspected both complete logs: neither contains TypeScript diagnostics. Scoped palette/config lint also passes.
+- Added independent GitHub Actions lint and unit-test jobs for pull requests, pushes to `main`, and manual runs. Workflow YAML, triggers, job structure, pinned action references and formatting were validated locally.
+- The same commands used by CI expose existing failures: six Oxlint errors, 108 ESLint errors (107 line-length violations and one explicit-any error), and the known NyxStatusDot assertion. The other 547 unit tests pass.

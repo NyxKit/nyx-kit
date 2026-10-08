@@ -36,6 +36,8 @@ The stack:
 
 | Layer | Technology | Location | Status |
 |---|---|---|---|
+| 2026-10-08 | Results component declaration generation | Generic SFC default export referenced a script-local props interface, producing TS4082 despite a successful bundler exit. | Exported the interface from an internal type module; validate build diagnostics as well as exit status |
+| 2026-10-08 | Testing docs vs unit-test script | Docs described `test:unit` as a one-off run, but the Vitest script defaults to watch mode locally. | Corrected to `pnpm test:unit --run`, including CI |
 | 2026-10-08 | Command palette overlay specification | One overlay paragraph still described vertical centering after the top-anchor change. | Corrected to horizontal centering with a stable top anchor |
 | 2026-10-08 | Command palette overlay placement | Vertical auto margins re-centered the search when result height changed, contrary to the requested stationary search. | Corrected to a top-anchored overlay that grows downward |
 | Components | Vue 3 + TypeScript | `src/components/` | ✅ in progress |
