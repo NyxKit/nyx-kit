@@ -62,7 +62,11 @@ export function initColourMode (options: NyxKitOptions): void {
   const dayStart = cm.adaptiveDayStart ?? 6
   const dayEnd   = cm.adaptiveDayEnd   ?? 20
   if (dayStart >= dayEnd) {
-    NyxLog.warn('NyxColourMode', `adaptiveDayStart (${dayStart}) must be less than adaptiveDayEnd (${dayEnd}). Falling back to defaults (6, 20).`)
+    NyxLog.warn(
+      'NyxColourMode',
+      `adaptiveDayStart (${dayStart}) must be less than adaptiveDayEnd (${dayEnd}). ` +
+        'Falling back to defaults (6, 20).',
+    )
     _dayStart = 6
     _dayEnd   = 20
   } else {
@@ -103,7 +107,11 @@ export function useNyxColourMode () {
     const dayStart = cm.adaptiveDayStart ?? 6
     const dayEnd   = cm.adaptiveDayEnd   ?? 20
     if (dayStart >= dayEnd) {
-      NyxLog.warn('NyxColourMode', `adaptiveDayStart (${dayStart}) must be less than adaptiveDayEnd (${dayEnd}). Falling back to defaults (6, 20).`)
+      NyxLog.warn(
+        'NyxColourMode',
+        `adaptiveDayStart (${dayStart}) must be less than adaptiveDayEnd (${dayEnd}). ` +
+          'Falling back to defaults (6, 20).',
+      )
       _dayStart = 6
       _dayEnd   = 20
     } else {

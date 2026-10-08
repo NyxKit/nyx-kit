@@ -22,7 +22,10 @@ const hasComments = computed(() => [NyxEditorToolbar.CommentOnly, NyxEditorToolb
 
 const buttonClass = computed(() => `nyx-editor__${props.surface}-btn`)
 const separatorClass = computed(() => `nyx-editor__${props.surface}-sep`)
-const trailingSeparatorClass = computed(() => [separatorClass.value, props.surface === 'toolbar' ? 'nyx-editor__toolbar-sep--grow' : ''].filter(Boolean).join(' '))
+const trailingSeparatorClass = computed(() => [
+  separatorClass.value,
+  props.surface === 'toolbar' ? 'nyx-editor__toolbar-sep--grow' : '',
+].filter(Boolean).join(' '))
 
 const onAnnotationCreate = () => emit('annotation:create')
 </script>

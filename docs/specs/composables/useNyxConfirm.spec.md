@@ -11,7 +11,7 @@ Provides a `confirm()` function that spawns a modal dialog using the existing Ny
 - Uses Vue's `h()` and `render()` to programmatically mount NyxModal
 - Maintains a singleton container element for the dialog
 - Tracks dialog state with a module-level `isDialogOpen` flag
-- Resolves the promise on confirm/cancel/close events from NyxModal
+- Resolves the promise through per-dialog event-handler closures on confirm/cancel/close events from NyxModal; no module-level resolver is retained
 
 ## API
 

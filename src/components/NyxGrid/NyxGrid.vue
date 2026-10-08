@@ -153,7 +153,10 @@ function layoutMasonry() {
     return
   }
 
-  const columnWidth = Math.max(0, (availableWidth - (gapPx * Math.max(0, resolvedColumns.value - 1))) / resolvedColumns.value)
+  const columnWidth = Math.max(
+    0,
+    (availableWidth - (gapPx * Math.max(0, resolvedColumns.value - 1))) / resolvedColumns.value,
+  )
 
   if (!columnWidth) {
     contentElement.style.removeProperty('--nyx-grid-masonry-height')

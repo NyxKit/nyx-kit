@@ -31,7 +31,9 @@ const value2 = computed<number | null>(() => {
 })
 
 const thumbPosition1 = computed(() => ((value1.value - props.min) / (props.max - props.min)) * 100)
-const thumbPosition2 = computed(() => (!isRange.value ? 0 : (((value2.value as number) - props.min) / (props.max - props.min)) * 100))
+const thumbPosition2 = computed(() => (
+  !isRange.value ? 0 : (((value2.value as number) - props.min) / (props.max - props.min)) * 100
+))
 
 const snapToStep = (value: number): number => {
   if (!props.step) return value

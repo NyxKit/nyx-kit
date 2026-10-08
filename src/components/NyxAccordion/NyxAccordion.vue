@@ -68,12 +68,17 @@ const baseId = useId()
 const getItemDomId = (id: string) => `${baseId}-${Array.from(id, char => char.codePointAt(0)!.toString(16)).join('-')}`
 const getTriggerId = (id: string) => `${getItemDomId(id)}-trigger`
 const getPanelId = (id: string) => `${getItemDomId(id)}-panel`
-const getHeaderSlotName = (id: string): `header-${string}` | 'header' => slots[`header-${id}`] ? `header-${id}` : 'header'
+const getHeaderSlotName = (id: string): `header-${string}` | 'header' =>
+  slots[`header-${id}`] ? `header-${id}` : 'header'
 const getBodySlotName = (id: string): `item-${string}` | 'default' => slots[`item-${id}`] ? `item-${id}` : 'default'
 const root = ref<HTMLElement | null>(null)
 const triggers = new Map<string, HTMLElement>()
 const panels = new Map<string, HTMLElement>()
-const setElementRef = (map: Map<string, HTMLElement>, id: string, element: Element | ComponentPublicInstance | null) => {
+const setElementRef = (
+  map: Map<string, HTMLElement>,
+  id: string,
+  element: Element | ComponentPublicInstance | null,
+) => {
   if (element instanceof HTMLElement) map.set(id, element)
   else map.delete(id)
 }

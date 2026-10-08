@@ -243,7 +243,13 @@ watch(() => annotationsModel.value, () => {
         <span class="nyx-editor__footer-path" aria-label="Document structure">
           <template v-if="meta.segments.length">
             <template v-for="(segment, index) in meta.segments" :key="`${segment.type}-${segment.label}-${index}`">
-              <NyxIcon v-if="index > 0" name="chevron-right" :size="NyxSize.XSmall" class="nyx-editor__footer-separator" aria-hidden="true" />
+              <NyxIcon
+                v-if="index > 0"
+                name="chevron-right"
+                :size="NyxSize.XSmall"
+                class="nyx-editor__footer-separator"
+                aria-hidden="true"
+              />
               <span class="nyx-editor__footer-segment">{{ segment.label }}</span>
             </template>
           </template>

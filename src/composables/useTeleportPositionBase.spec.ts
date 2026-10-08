@@ -46,10 +46,23 @@ describe('useTeleportPositionBase', () => {
   it('does not throw when elAbsolute is null', () => {
     const elAbsolute = ref<HTMLElement | null>(null)
     expect(() => {
-      useSetup(() => useTeleportPositionBase(
-        () => ({ left: 0, top: 50, right: 100, bottom: 70, width: 100, height: 20, x: 0, y: 50, toJSON: () => ({}) } as DOMRect),
-        elAbsolute
-      ))
+      useSetup(() =>
+        useTeleportPositionBase(
+          () =>
+            ({
+              left: 0,
+              top: 50,
+              right: 100,
+              bottom: 70,
+              width: 100,
+              height: 20,
+              x: 0,
+              y: 50,
+              toJSON: () => ({}),
+            }) as DOMRect,
+          elAbsolute,
+        ),
+      )
     }).not.toThrow()
   })
 

@@ -25,7 +25,11 @@ onUnmounted(() => clearInterval(timer))
     <NyxButton v-if="props.streaming" @click="stream">Replay stream</NyxButton>
     <NyxMarkdown :content="content" :inline-rules="citationRules" :heading-offset="2">
       <template #inline="{ value }">
-        <NyxButton type="button" :aria-label="value.accessibleLabel" @click="selected = value.reference">{{ value.label }}</NyxButton>
+        <NyxButton
+          type="button"
+          :aria-label="value.accessibleLabel"
+          @click="selected = value.reference"
+        >{{ value.label }}</NyxButton>
       </template>
     </NyxMarkdown>
     <p role="status">Selected reference: {{ selected }}</p>

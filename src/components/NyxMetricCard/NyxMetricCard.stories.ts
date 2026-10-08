@@ -32,17 +32,24 @@ const Template = (args: NyxMetricCardProps) => ({
 })
 
 // Multi-card showcase stories
-const TemplateAllProp = (prop: string, dict: KeyDict<string>, baseProps: NyxMetricCardProps) => () => defineComponent({
-  components: { NyxMetricCard },
-  setup () {
-    const values = Object.values(dict)
-    const getLabel = (value: string) => getKeyDictKeyByValue(dict, value)
-    return { prop, values, getLabel, baseProps }
-  },
-  template: `
+const TemplateAllProp = (prop: string, dict: KeyDict<string>, baseProps: NyxMetricCardProps) => () =>
+  defineComponent({
+    components: { NyxMetricCard },
+    setup() {
+      const values = Object.values(dict)
+      const getLabel = (value: string) => getKeyDictKeyByValue(dict, value)
+      return { prop, values, getLabel, baseProps }
+    },
+    template: `
     <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
-      <div v-for="value of values" :key="value" style="display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-start;">
-        <span style="font-size: 0.7rem; opacity: 0.5; text-transform: uppercase; letter-spacing: 0.05em;">{{ getLabel(value) }}</span>
+      <div
+        v-for="value of values"
+        :key="value"
+        style="display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-start;"
+      >
+        <span
+          style="font-size: 0.7rem; opacity: 0.5; text-transform: uppercase; letter-spacing: 0.05em;"
+        >{{ getLabel(value) }}</span>
         <nyx-metric-card
           v-bind="{ ...baseProps, [prop]: value }"
           style="width: 200px"
@@ -50,7 +57,7 @@ const TemplateAllProp = (prop: string, dict: KeyDict<string>, baseProps: NyxMetr
       </div>
     </div>
   `,
-})
+  })
 
 export const Default = Object.assign(Template.bind({}), { args: {
   title: 'ACTIVE NODES',

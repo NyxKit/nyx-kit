@@ -18,7 +18,9 @@ type MetaNodeLike = {
 type MetaDocLike = MetaNodeLike & {
   content: { size: number }
   textBetween: (from: number, to: number, blockSeparator?: string, leafText?: string) => string
-  descendants: (callback: (node: MetaNodeLike, pos: number, parent: MetaNodeLike | null, index: number) => boolean | void) => void
+  descendants: (
+    callback: (node: MetaNodeLike, pos: number, parent: MetaNodeLike | null, index: number) => boolean | void,
+  ) => void
 }
 
 type MetaSelectionLike = {
@@ -126,7 +128,11 @@ export const createEditorMeta = (state: MetaStateLike | null | undefined): NyxEd
       activeScore = 2
     }
 
-    if ((node.type.name === 'listItem' || node.type.name === 'taskItem') && containsPosition(node, pos, selectionPos) && activeScore <= 3) {
+    if (
+      (node.type.name === 'listItem' || node.type.name === 'taskItem') &&
+      containsPosition(node, pos, selectionPos) &&
+      activeScore <= 3
+    ) {
       const listTypeName = parent?.type.name ?? 'bulletList'
       const listType = getListType(listTypeName)
       const itemIndex = index + 1

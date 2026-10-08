@@ -46,22 +46,41 @@ export const Themes = () => defineComponent({
   `,
 })
 
-export const WithActionSlot = () => defineComponent({
-  components: { NyxActionItem },
-  template: `
+export const WithActionSlot = () =>
+  defineComponent({
+    components: { NyxActionItem },
+    template: `
     <div>
       <nyx-action-item title="Export Data">
         Export your data in various formats.
         <template #action>
           <div class="flex" style="gap: 0.5rem;">
-            <button style="padding: 0.5rem 1rem; background: #333; color: white; border: 1px solid #555; border-radius: 4px; cursor: pointer;">CSV</button>
-            <button style="padding: 0.5rem 1rem; background: #333; color: white; border: 1px solid #555; border-radius: 4px; cursor: pointer;">JSON</button>
+            <button
+              style="
+                padding: 0.5rem 1rem;
+                background: #333;
+                color: white;
+                border: 1px solid #555;
+                border-radius: 4px;
+                cursor: pointer;
+              "
+            >CSV</button>
+            <button
+              style="
+                padding: 0.5rem 1rem;
+                background: #333;
+                color: white;
+                border: 1px solid #555;
+                border-radius: 4px;
+                cursor: pointer;
+              "
+            >JSON</button>
           </div>
         </template>
       </nyx-action-item>
     </div>
   `,
-})
+  })
 
 export const EmptyAction = () => defineComponent({
   components: { NyxActionItem },
@@ -74,16 +93,18 @@ export const EmptyAction = () => defineComponent({
   `,
 })
 
-export const LongText = () => defineComponent({
-  components: { NyxActionItem },
-  template: `
+export const LongText = () =>
+  defineComponent({
+    components: { NyxActionItem },
+    template: `
     <div>
       <nyx-action-item 
         title="Very Long Title That Should Truncate With Ellipsis" 
         action="Action"
       >
-        This is a very long description that might wrap to multiple lines depending on the container width. It contains a lot of text to test the layout handling.
+        This is a very long description that might wrap to multiple lines depending on the container width. It
+        contains a lot of text to test the layout handling.
       </nyx-action-item>
     </div>
   `,
-})
+  })

@@ -391,6 +391,7 @@ When you notice that something in the codebase or stories is out of sync, record
 
 | Noticed | Location | Description | Status |
 |---|---|---|---|
+| 2026-10-08 | useNyxConfirm spec vs source | Spec promises cancellation on unmount, but the composable registers no unmount hook; the module-level resolver is assigned but never read. | Open: lifecycle contract requires separate work; lint cleanup removes only unused state |
 | 2026-10-08 | Command palette CustomShortcut story | Ctrl+Shift+P conflicts with Firefox’s private-window shortcut; automated page keyboard tests do not establish browser-chrome override support. | Corrected example to Ctrl+Enter and documented iframe focus and reserved-shortcut limitations |
 | 2026-10-08 | `useKeyboardShortcuts` SUPER expansion vs browser keys | SUPER expands to CTRL while native Control is normalized as CONTROL; existing tests rely on CONTROL descriptors. Initial examples registered both SUPER+K and CONTROL+K. The palette now owns an opt-in shortcut using event modifier flags and no longer depends on this helper. | Open: shared shortcut normalization requires a separate compatibility decision |
 | 2026-10-08 | `docs/architecture/build.md` vs `package.json` | Build guide lists Vite 6 while the installed package uses Vite 8. Palette validation uses installed tooling. | Open: unrelated tooling documentation drift |
@@ -410,7 +411,7 @@ When you notice that something in the codebase or stories is out of sync, record
 | 2026-09-12 | Component export instructions vs `vite.config.ts` | `src/index.ts` does not exist; the root entry is `src/main.ts`. Accordion uses the existing root and component entries. | Recorded; accordion contract corrected |
 | 2026-09-12 | `playwright.config.ts` vs Vite and `e2e/` | Test server expected port 5173 while Vite uses 9000; E2E file contained only comments. Accordion adds a browser fixture and explicit test-server port. | Fixed during accordion implementation |
 | 2026-09-12 | Draft accordion slot contract | `item-header-a` collides between header ID `a` and body ID `header-a`. Header overrides now use `header-${id}`; bodies retain `item-${id}`. | Fixed before release |
-| 2026-09-12 | `src/components/NyxStatusDot/NyxStatusDot.spec.ts` vs `NyxStatusDot.vue` | Existing default-class test expects `size-xs`; unchanged source defaults to `NyxSize.Medium` (`size-md`). Full unit suite fails this assertion. | Open: unrelated baseline failure |
+| 2026-09-12 | `src/components/NyxStatusDot/NyxStatusDot.spec.ts` vs `NyxStatusDot.vue` | Default-class test and living spec require `size-xs`; source defaulted to `NyxSize.Medium` (`size-md`). | Fixed 2026-10-08: restored documented `NyxSize.XSmall`; full unit suite passes |
 | 2026-09-13 | `vite.config.ts` vs `tsconfig.app.json` | Declaration generation excluded root `env.d.ts` despite the application type check including it, causing TS2339 for `import.meta.env`. | Fixed in patch 2.1.1 by including environment declarations in the build |
 
 ## Active Technologies

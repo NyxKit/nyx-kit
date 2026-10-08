@@ -280,11 +280,19 @@ watch([normalisedModel, flatOptions], () => {
     <select v-model="normalisedModel" class="sr-only" :id="props.id" :multiple="isMultiple" tabindex="-1">
       <template v-if="isGrouped">
         <optgroup v-for="group in (props.options as NyxSelectOptionGroup<T>[])" :key="group.label" :label="group.label">
-          <option v-for="option in group.options" :value="option.value" :key="String(option.value)">{{ option.label }}</option>
+          <option
+            v-for="option in group.options"
+            :value="option.value"
+            :key="String(option.value)"
+          >{{ option.label }}</option>
         </optgroup>
       </template>
       <template v-else>
-        <option v-for="option in (props.options as NyxSelectOption<T>[])" :value="option.value" :key="String(option.value)">{{ option.label }}</option>
+        <option
+          v-for="option in (props.options as NyxSelectOption<T>[])"
+          :value="option.value"
+          :key="String(option.value)"
+        >{{ option.label }}</option>
       </template>
     </select>
   </div>
