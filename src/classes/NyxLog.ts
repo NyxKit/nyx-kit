@@ -10,7 +10,10 @@ export default class NyxLog {
   }
 
   private static getPrefixStyle (): string {
-    return 'background: #9F50F0; color: white; padding: 4px 8px; border-radius: 2px; font-weight: bold; line-height: 1.5; margin-bottom: 4px; display: inline-flex;';
+    return (
+      'background: #9F50F0; color: white; padding: 4px 8px; border-radius: 2px; font-weight: ' +
+      'bold; line-height: 1.5; margin-bottom: 4px; display: inline-flex;'
+    )
   }
 
   private static getMessageStyle (type: string): string {

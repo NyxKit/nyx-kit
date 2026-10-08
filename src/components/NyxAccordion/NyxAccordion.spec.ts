@@ -38,9 +38,20 @@ describe('NyxAccordion', () => {
 
   it.each([false, true])('honors a two-way model and external resets (multiple=%s)', async multiple => {
     const state = ref<string | string[] | undefined>(multiple ? ['a'] : 'a')
-    const wrapper = mount(defineComponent({ setup: () => () => h(NyxAccordion, {
-      items, multiple, modelValue: state.value, 'onUpdate:modelValue': (value: string | string[] | undefined) => { state.value = value },
-    }) }), { global })
+    const wrapper = mount(
+      defineComponent({
+        setup: () => () =>
+          h(NyxAccordion, {
+            items,
+            multiple,
+            modelValue: state.value,
+            'onUpdate:modelValue': (value: string | string[] | undefined) => {
+              state.value = value
+            },
+          }),
+      }),
+      { global },
+    )
     const accordion = wrapper.findComponent(NyxAccordion)
     await wrapper.findAll('button')[1].trigger('click')
     expect(state.value).toEqual(multiple ? ['a', 'b'] : 'b')
@@ -110,7 +121,10 @@ describe('NyxAccordion', () => {
 
   it('validates item identities and renders empty content without fake controls', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
-    const wrapper = mount(NyxAccordion, { props: { items: [items[0], items[0], { id: ' ', label: 'Invalid' }] }, global })
+    const wrapper = mount(NyxAccordion, {
+      props: { items: [items[0], items[0], { id: ' ', label: 'Invalid' }] },
+      global,
+    })
     expect(wrapper.findAll('button')).toHaveLength(1)
     expect(warn).toHaveBeenCalled()
     const empty = mount(NyxAccordion, { props: { items: [] }, slots: { empty: 'No sections' }, global })
@@ -119,7 +133,10 @@ describe('NyxAccordion', () => {
   })
 
   it('prevents disabled toggles but permits auto-closing disabled open siblings', async () => {
-    const wrapper = mount(NyxAccordion, { props: { items: [{ ...items[0], disabled: true }, items[1]], modelValue: 'a' }, global })
+    const wrapper = mount(NyxAccordion, {
+      props: { items: [{ ...items[0], disabled: true }, items[1]], modelValue: 'a' },
+      global,
+    })
     await wrapper.findAll('button')[0].trigger('click')
     expect(wrapper.emitted('update:modelValue')).toBeUndefined()
     await wrapper.findAll('button')[1].trigger('click')
@@ -135,7 +152,11 @@ describe('NyxAccordion', () => {
       'header-a': () => 'Custom header', 'item-b': () => 'Custom body',
       'header-c': () => [], 'item-c': () => [],
     } })
-    expect(wrapper.findAll('button').map(button => button.text())).toEqual(['Custom header', 'Billing/1/true/false', ''])
+    expect(wrapper.findAll('button').map((button) => button.text())).toEqual([
+      'Custom header',
+      'Billing/1/true/false',
+      '',
+    ])
     expect(wrapper.findAll('.nyx-accordion__body').map(body => body.text())).toEqual(['Shared a', 'Custom body', ''])
   })
 
@@ -163,8 +184,12 @@ describe('NyxAccordion', () => {
   })
 
   it('moves header focus without activation and ignores body keys', async () => {
-    const wrapper = mount(NyxAccordion, { attachTo: document.body, props: { items: [items[0], { ...items[1], disabled: true }, items[2]] }, global,
-      slots: { 'item-a': '<input>' } })
+    const wrapper = mount(NyxAccordion, {
+      attachTo: document.body,
+      props: { items: [items[0], { ...items[1], disabled: true }, items[2]] },
+      global,
+      slots: { 'item-a': '<input>' },
+    })
     mounted.push(wrapper)
     const buttons = wrapper.findAll('button')
     buttons[0].element.focus()
@@ -206,7 +231,10 @@ describe('NyxAccordion', () => {
   })
 
   it('renders unique safe IDs on the server for multiple instances and unusual keys', async () => {
-    const app = createSSRApp({ render: () => h('main', [h(NyxAccordion, { items: [{ id: 'a / 🔑', label: 'A' }] }), h(NyxAccordion, { items })]) })
+    const app = createSSRApp({
+      render: () =>
+        h('main', [h(NyxAccordion, { items: [{ id: 'a / 🔑', label: 'A' }] }), h(NyxAccordion, { items })]),
+    })
     app.provide('libEnv', {})
     const html = await renderToString(app)
     const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map(match => match[1])

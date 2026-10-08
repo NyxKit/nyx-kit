@@ -62,23 +62,28 @@ const mockEditor = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let editorOptions: Record<string, any> = {}
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const createTestNode = (typeName: string, options: { text?: string, attrs?: Record<string, unknown>, children?: any[] } = {}) => {
- 
+const createTestNode = (
+  typeName: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  options: { text?: string; attrs?: Record<string, unknown>; children?: any[] } = {},
+) => {
   const children = options.children ?? []
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const textContent = options.text ?? children.map((child: any) => child.textContent).join(' ')
 
   return {
     type: { name: typeName },
     attrs: options.attrs ?? {},
     textContent,
- 
+
     childCount: children.length,
- 
+
     child: (index: number) => children[index],
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-    nodeSize: Math.max(textContent.length + 2, 2 + children.reduce((sum: number, child: any) => sum + child.nodeSize, 0)),
+    nodeSize: Math.max(
+      textContent.length + 2,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      2 + children.reduce((sum: number, child: any) => sum + child.nodeSize, 0),
+    ),
     children,
   }
 }
@@ -543,7 +548,9 @@ describe('NyxEditor', () => {
 
   it('exposes annotation focus handling through the annotation plugin', () => {
     const wrapper = mount(NyxEditor)
-    const annotationExtension = editorOptions.extensions.find((extension: { name?: string }) => extension.name === 'nyxAnnotations')
+    const annotationExtension = editorOptions.extensions.find(
+      (extension: { name?: string }) => extension.name === 'nyxAnnotations',
+    )
     const [plugin] = annotationExtension.config.addProseMirrorPlugins()
     const target = document.createElement('span')
 
@@ -556,7 +563,9 @@ describe('NyxEditor', () => {
 
   it('exposes annotation blur handling through the annotation plugin', () => {
     const wrapper = mount(NyxEditor)
-    const annotationExtension = editorOptions.extensions.find((extension: { name?: string }) => extension.name === 'nyxAnnotations')
+    const annotationExtension = editorOptions.extensions.find(
+      (extension: { name?: string }) => extension.name === 'nyxAnnotations',
+    )
     const [plugin] = annotationExtension.config.addProseMirrorPlugins()
     const target = document.createElement('span')
     const outsideTarget = document.createElement('div')

@@ -55,7 +55,12 @@ const useEditorAnnotations = (options: UseEditorAnnotationsOptions) => {
     ].join(' ')
   }
 
-  const buildAnchorFromRange = (doc: { textBetween: (from: number, to: number) => string }, from: number, to: number, text: string) => {
+  const buildAnchorFromRange = (
+    doc: { textBetween: (from: number, to: number) => string },
+    from: number,
+    to: number,
+    text: string,
+  ) => {
     const prefixStart = Math.max(1, from - ANNOTATION_CONTEXT_WINDOW)
     const suffixEnd = to + ANNOTATION_CONTEXT_WINDOW
 
@@ -82,7 +87,11 @@ const useEditorAnnotations = (options: UseEditorAnnotationsOptions) => {
       const nextAttachment = isAttached ? NyxAnnotationAttachment.Attached : NyxAnnotationAttachment.Detached
 
       if (!isAttached) {
-        if (annotation.attachment !== 'detached' || annotation.anchor.range.from !== mappedFrom || annotation.anchor.range.to !== mappedTo) {
+        if (
+          annotation.attachment !== 'detached' ||
+          annotation.anchor.range.from !== mappedFrom ||
+          annotation.anchor.range.to !== mappedTo
+        ) {
           changed = true
         }
 
@@ -183,8 +192,14 @@ const useEditorAnnotations = (options: UseEditorAnnotationsOptions) => {
         new Plugin({
           key: annotationPluginKey,
           state: {
-            init: (_: unknown, state: EditorState) => createAnnotationDecorations(state.doc, options.annotations.value),
-            apply: (transaction: Transaction, oldDecorationState: DecorationSet, _oldEditorState: EditorState, newState: EditorState) => {
+            init: (_: unknown, state: EditorState) =>
+              createAnnotationDecorations(state.doc, options.annotations.value),
+            apply: (
+              transaction: Transaction,
+              oldDecorationState: DecorationSet,
+              _oldEditorState: EditorState,
+              newState: EditorState,
+            ) => {
               if (transaction.getMeta(annotationPluginKey)) {
                 return createAnnotationDecorations(newState.doc, options.annotations.value)
               }

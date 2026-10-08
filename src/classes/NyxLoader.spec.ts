@@ -148,15 +148,31 @@ describe('NyxLoader.loadEnum', () => {
   }
 
   it('loads a valid enum value', () => {
-    expect(NyxLoader.loadEnum<TestStatus>({ status: TestStatus.Active }, 'status', TestStatus.Inactive, Object.values(TestStatus))).toBe(TestStatus.Active)
+    expect(
+      NyxLoader.loadEnum<TestStatus>(
+        { status: TestStatus.Active },
+        'status',
+        TestStatus.Inactive,
+        Object.values(TestStatus),
+      ),
+    ).toBe(TestStatus.Active)
   })
 
   it('returns the default for an unrecognised value', () => {
-    expect(NyxLoader.loadEnum<TestStatus>({ status: 'unknown' }, 'status', TestStatus.Inactive, Object.values(TestStatus))).toBe(TestStatus.Inactive)
+    expect(
+      NyxLoader.loadEnum<TestStatus>(
+        { status: 'unknown' },
+        'status',
+        TestStatus.Inactive,
+        Object.values(TestStatus),
+      ),
+    ).toBe(TestStatus.Inactive)
   })
 
   it('returns the default when the key is missing', () => {
-    expect(NyxLoader.loadEnum<TestStatus>({}, 'status', TestStatus.Pending, Object.values(TestStatus))).toBe(TestStatus.Pending)
+    expect(NyxLoader.loadEnum<TestStatus>({}, 'status', TestStatus.Pending, Object.values(TestStatus))).toBe(
+      TestStatus.Pending,
+    )
   })
 })
 

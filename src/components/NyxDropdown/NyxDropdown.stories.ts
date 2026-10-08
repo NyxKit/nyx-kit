@@ -15,7 +15,7 @@ const sampleOptions = [
 const meta = {
   title: 'Components/Navigation/NyxDropdown',
   // Generic SFC is not assignable to Storybook's ConcreteComponent; cast for docs/controls only.
-  component: NyxDropdown as any,
+  component: NyxDropdown as Meta<NyxDropdownProps>['component'],
   argTypes: {
     theme: {
       control: { type: 'select' },
@@ -38,7 +38,7 @@ const meta = {
       options: Object.values(NyxTrigger),
     },
   },
-} satisfies Meta<typeof NyxDropdown>
+} satisfies Meta<NyxDropdownProps>
 
 export default meta
 
@@ -158,23 +158,35 @@ export const EnumValues: Story = {
 }
 
 export const CustomDropdown: Story = {
-  render: () => defineComponent({
-  components: { NyxDropdown, NyxIcon },
-  template: `
+  render: () =>
+    defineComponent({
+      components: { NyxDropdown, NyxIcon },
+      template: `
     <nyx-dropdown>
       <button type="button" style="display:inline-flex;align-items:center;gap:0.5rem;">
         <nyx-icon name="settings" />
         <span>Open menu</span>
       </button>
       <template #dropdown>
-        <div style="padding: 1rem; min-width: 14rem; display:flex;align-items:center;gap:0.5rem; background: var(--nyx-c-bg-soft); border: 1px solid var(--nyx-c-divider); border-radius: var(--nyx-radius-md);">
+        <div
+          style="
+            padding: 1rem;
+            min-width: 14rem;
+            display:flex;
+            align-items:center;
+            gap:0.5rem;
+            background: var(--nyx-c-bg-soft);
+            border: 1px solid var(--nyx-c-divider);
+            border-radius: var(--nyx-radius-md);
+          "
+        >
           <nyx-icon name="settings" />
           Custom dropdown content
         </div>
       </template>
     </nyx-dropdown>
   `,
-  }),
+    }),
 }
 
 const TemplateAll = (prop: string, dict: KeyDict<string>) => () => defineComponent({

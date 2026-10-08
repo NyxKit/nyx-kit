@@ -79,15 +79,21 @@ const useTeleportPositionBase = (
       case NyxPosition.BottomRight:
         computedTop  = bottom + gap.value + offsetY; computedLeft = right - computedWidth + offsetX; break
       case NyxPosition.Bottom:
-        computedTop  = bottom + gap.value + offsetY; computedLeft = left + (relWidth - computedWidth) / 2 + offsetX; break
+        computedTop  = bottom + gap.value + offsetY
+        computedLeft = left + (relWidth - computedWidth) / 2 + offsetX
+        break
       case NyxPosition.TopLeft:
         computedTop  = top - absHeight - gap.value + offsetY; computedLeft = left + offsetX; break
       case NyxPosition.TopRight:
         computedTop  = top - absHeight - gap.value + offsetY; computedLeft = right - computedWidth + offsetX; break
       case NyxPosition.Top:
-        computedTop  = top - absHeight - gap.value + offsetY; computedLeft = left + (relWidth - computedWidth) / 2 + offsetX; break
+        computedTop  = top - absHeight - gap.value + offsetY
+        computedLeft = left + (relWidth - computedWidth) / 2 + offsetX
+        break
       case NyxPosition.Left:
-        computedTop  = top + (relHeight - absHeight) / 2 + offsetY; computedLeft = left - absWidth - gap.value + offsetX; break
+        computedTop  = top + (relHeight - absHeight) / 2 + offsetY
+        computedLeft = left - absWidth - gap.value + offsetX
+        break
       case NyxPosition.Right:
         computedTop  = top + (relHeight - absHeight) / 2 + offsetY; computedLeft = right + gap.value + offsetX; break
     }

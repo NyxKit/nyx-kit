@@ -11,6 +11,7 @@ It is intentionally decorative and does not manage status state or labels.
 
 `NyxStatusDot` renders a circular indicator plus an optional label.
 It resolves shared visual props through `useNyxProps` and maps theme classes to colour tokens in `NyxStatusDot.scss`.
+The default size is `NyxSize.XSmall`, including when no props are passed (covered by the default-class unit test).
 The component uses an optional backlight glow, and `NyxAnimationState.Playing` pulses that glow.
 
 ## Props

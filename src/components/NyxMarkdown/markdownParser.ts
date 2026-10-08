@@ -27,8 +27,19 @@ export function parseMarkdown<T>(source: string, rules: readonly NyxMarkdownInli
     if ('`\\'.includes(state.src[offset])) return null
     for (const rule of rules) {
       const match = rule.match(state.src, offset)
-      if (!match || !Number.isInteger(match.length) || match.length <= 0 || offset + match.length > state.posMax) continue
-      return { name: rule.name, value: match.value, raw: state.src.slice(offset, offset + match.length), length: match.length }
+      if (
+        !match ||
+        !Number.isInteger(match.length) ||
+        match.length <= 0 ||
+        offset + match.length > state.posMax
+      )
+        continue
+      return {
+        name: rule.name,
+        value: match.value,
+        raw: state.src.slice(offset, offset + match.length),
+        length: match.length,
+      }
     }
     return null
   }

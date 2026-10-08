@@ -19,14 +19,14 @@ function mountBreadcrumbs (options: Parameters<typeof mount<typeof NyxBreadcrumb
   return mount(NyxBreadcrumbs, {
     ...options,
     global: {
-      ...(options.global ?? {}),
+      ...options.global,
       stubs: {
         NyxIcon: {
           props: ['name'],
           template: '<i class="nyx-icon-stub" :data-name="name" />',
         },
         RouterLink: RouterLinkStub,
-        ...(options.global?.stubs ?? {}),
+        ...options.global?.stubs,
       },
     },
   })

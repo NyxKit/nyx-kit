@@ -38,6 +38,7 @@ Use semantic HTML for prose. Do not force native headings, paragraphs, lists, or
 - Private parsing and Vue-rendering helpers live alongside the component. Parsing runs in a computed value, so Vue batches synchronous updates and tracks reactive reads inside recognizers. There are no timers, persistence, or document caches.
 - Structural token paths key Vue nodes; appending unrelated blocks preserves existing controls and overflow containers. Arbitrary edits before a block can replace its nodes.
 - Code blocks and table wrappers are named, focusable scroll regions. Code language hints are escaped text.
+- The renderer checks link characters before URL parsing, rejecting U+0000–U+0020, U+007F, and backslashes. Direct renderer tests cover these boundaries without parser normalization masking unsafe input.
 
 ## Internal architecture
 

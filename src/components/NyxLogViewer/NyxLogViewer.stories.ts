@@ -17,11 +17,36 @@ export default {
 const sampleLogs: NyxLogEntry[] = [
   { timestamp: new Date('2024-01-15T10:23:44'), value: 'Initializing services...', origin: 'core' },
   { timestamp: new Date('2024-01-15T10:23:45'), value: 'Server started on port 3000', origin: 'server' },
-  { timestamp: new Date('2024-01-15T10:23:46'), value: 'Database connected', origin: 'db', theme: NyxTheme.Success },
-  { timestamp: new Date('2024-01-15T10:23:47'), value: 'Cache miss for key "user:123"', origin: 'cache', theme: NyxTheme.Warning },
-  { timestamp: new Date('2024-01-15T10:23:48'), value: 'Request failed: connection timeout', origin: 'api', theme: NyxTheme.Danger },
-  { timestamp: new Date('2024-01-15T10:23:49'), value: 'Retrying in 5s...', origin: 'api', theme: NyxTheme.Info },
-  { timestamp: new Date('2024-01-15T10:23:54'), value: 'Reconnected successfully', origin: 'api', theme: NyxTheme.Success },
+  {
+    timestamp: new Date('2024-01-15T10:23:46'),
+    value: 'Database connected',
+    origin: 'db',
+    theme: NyxTheme.Success,
+  },
+  {
+    timestamp: new Date('2024-01-15T10:23:47'),
+    value: 'Cache miss for key "user:123"',
+    origin: 'cache',
+    theme: NyxTheme.Warning,
+  },
+  {
+    timestamp: new Date('2024-01-15T10:23:48'),
+    value: 'Request failed: connection timeout',
+    origin: 'api',
+    theme: NyxTheme.Danger,
+  },
+  {
+    timestamp: new Date('2024-01-15T10:23:49'),
+    value: 'Retrying in 5s...',
+    origin: 'api',
+    theme: NyxTheme.Info,
+  },
+  {
+    timestamp: new Date('2024-01-15T10:23:54'),
+    value: 'Reconnected successfully',
+    origin: 'api',
+    theme: NyxTheme.Success,
+  },
 ]
 
 const logsNoOrigin: NyxLogEntry[] = [

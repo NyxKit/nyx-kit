@@ -1,11 +1,10 @@
 import { ref, h, render, type VNode, type App, type AppContext } from 'vue'
 import type { ConfirmOptions } from '../types/confirm'
 import { NyxResult, type NyxResultVoid } from '../classes/NyxResult'
-import { NyxTheme, NyxVariant } from '../types'
+import { NyxTheme } from '../types'
 import NyxModal from '../components/NyxModal/NyxModal.vue'
 
 const container = ref<HTMLElement | null>(null)
-let currentResolve: ((result: NyxResultVoid<'cancelled'>) => void) | null = null
 let isDialogOpen = false
 let storedAppContext: AppContext | null = null
 
@@ -40,7 +39,6 @@ function useNyxConfirm(app?: App) {
     isDialogOpen = true
 
     return new Promise((resolve) => {
-      currentResolve = resolve
 
       const el = createContainer()
 
@@ -72,7 +70,6 @@ function useNyxConfirm(app?: App) {
 
   const cleanup = () => {
     isDialogOpen = false
-    currentResolve = null
     destroyContainer()
   }
 

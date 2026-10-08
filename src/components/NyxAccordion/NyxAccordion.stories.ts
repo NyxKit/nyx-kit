@@ -44,9 +44,15 @@ export const Default: Story = {}
 export const UnboundMultiple: Story = { args: { multiple: true } }
 
 export const BoundSingle: Story = {
-  render: args => ({
+  render: (args) => ({
     components: { NyxAccordion, NyxButton, NyxInput, NyxForm, NyxFormField, NyxActionItem },
-    setup: () => ({ args, content, open: ref<NyxAccordionModel>('account'), name: ref(''), isProfilePrivate: ref(true) }),
+    setup: () => ({
+      args,
+      content,
+      open: ref<NyxAccordionModel>('account'),
+      name: ref(''),
+      isProfilePrivate: ref(true),
+    }),
     template: `
       <div style="display: grid; gap: var(--nyx-gap-lg);">
         <NyxAccordion v-bind="args" v-model="open">
@@ -65,7 +71,9 @@ export const BoundSingle: Story = {
               :action="isProfilePrivate ? 'Make public' : 'Make private'"
               @click="isProfilePrivate = !isProfilePrivate"
             >
-              {{ isProfilePrivate ? 'Your profile is only visible to you.' : 'Your profile is visible to other members.' }}
+              {{ isProfilePrivate
+                ? 'Your profile is only visible to you.'
+                : 'Your profile is visible to other members.' }}
             </NyxActionItem>
           </template>
         </NyxAccordion>
@@ -80,10 +88,15 @@ export const BoundSingle: Story = {
 
 export const Multiple: Story = {
   args: { multiple: true },
-  render: args => ({
+  render: (args) => ({
     components: { NyxAccordion, NyxButton, NyxInput },
     setup: () => ({ args, content, open: ref<NyxAccordionModel>(['account', 'privacy']) }),
-    template: `<div><NyxAccordion v-bind="args" v-model="open">${body}</NyxAccordion><p>Open sections: {{ open }}</p></div>`,
+    template: `
+      <div>
+        <NyxAccordion v-bind="args" v-model="open">${body}</NyxAccordion>
+        <p>Open sections: {{ open }}</p>
+      </div>
+    `,
   }),
 }
 
@@ -109,9 +122,11 @@ export const Disabled: Story = {
 }
 export const Empty: Story = {
   args: { items: [] },
-  render: args => ({
-    components: { NyxAccordion, NyxButton, NyxInput }, setup: () => ({ args }),
-    template: '<NyxAccordion v-bind="args"><template #empty>No settings sections are available.</template></NyxAccordion>',
+  render: (args) => ({
+    components: { NyxAccordion, NyxButton, NyxInput },
+    setup: () => ({ args }),
+    template:
+      '<NyxAccordion v-bind="args"><template #empty>No settings sections are available.</template></NyxAccordion>',
   }),
 }
 

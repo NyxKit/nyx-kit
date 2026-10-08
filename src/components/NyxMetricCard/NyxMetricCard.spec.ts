@@ -108,7 +108,14 @@ describe('NyxMetricCard', () => {
 
   it('renders suffix and icon correctly in filled variant', () => {
     const wrapper = mount(NyxMetricCard, {
-      props: { title: 'NODES', value: '12', suffix: 'OK', icon: 'check', theme: NyxTheme.Success, variant: NyxVariant.Filled }
+      props: {
+        title: 'NODES',
+        value: '12',
+        suffix: 'OK',
+        icon: 'check',
+        theme: NyxTheme.Success,
+        variant: NyxVariant.Filled,
+      },
     })
     expect(wrapper.find('.nyx-metric-card__suffix').exists()).toBe(true)
     expect(wrapper.find('.nyx-metric-card__icon').exists()).toBe(true)

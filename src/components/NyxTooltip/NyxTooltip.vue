@@ -18,10 +18,14 @@ const elAbsolute = useTemplateRef<HTMLDivElement>('elTooltipContent')
 
 const { classList } = useNyxProps(props, { origin: 'NyxTooltip' })
 
-const { cssVariables, computedPosition, teleportTarget, updateCssVariables } = useTeleportPosition(elRelative, elAbsolute, {
-  position: ref(props.position),
-  gap: ref(NyxSize.Medium), // ref(props.size)
-})
+const { cssVariables, computedPosition, teleportTarget, updateCssVariables } = useTeleportPosition(
+  elRelative,
+  elAbsolute,
+  {
+    position: ref(props.position),
+    gap: ref(NyxSize.Medium), // ref(props.size)
+  },
+)
 
 const open = () => model.value = true
 const close = () => model.value = false

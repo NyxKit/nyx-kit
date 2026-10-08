@@ -33,9 +33,22 @@ const gapOptions = {
 
 const baseCards: StoryCard[] = [
   { id: 'alpha', title: 'Alpha', lines: ['Short summary block.', 'Useful for compact cards.'] },
-  { id: 'beta', title: 'Beta', lines: ['A slightly longer card.', 'This one gives the layout more height.', 'Good for masonry demos.'] },
+  {
+    id: 'beta',
+    title: 'Beta',
+    lines: ['A slightly longer card.', 'This one gives the layout more height.', 'Good for masonry demos.'],
+  },
   { id: 'gamma', title: 'Gamma', lines: ['Medium sized content.', 'Balanced placeholder copy.'] },
-  { id: 'delta', title: 'Delta', lines: ['Tall card example.', 'Adds visible stagger to the column flow.', 'Useful for checking reflow.', 'Keeps the demo lively.'] },
+  {
+    id: 'delta',
+    title: 'Delta',
+    lines: [
+      'Tall card example.',
+      'Adds visible stagger to the column flow.',
+      'Useful for checking reflow.',
+      'Keeps the demo lively.',
+    ],
+  },
   { id: 'epsilon', title: 'Epsilon', lines: ['Another compact block.', 'Works well in tighter rows.'] },
 ]
 
@@ -197,45 +210,74 @@ export const DynamicReflow = {
         cards.value = cards.value.filter(card => card.id !== id)
       }
 
-      return () => h(NyxGrid, {
-        title: 'Dynamic Reflow',
-        mode: NyxGridMode.Masonry,
-        columns: columns.value,
-        gap: NyxSize.Medium,
-      }, {
-        header: () => h(
-          'div',
-          { style: 'display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;' },
-          [
-            h('div', [
-              h('h2', { style: 'margin:0;' }, 'Dynamic Reflow'),
-              h('p', { style: 'margin:0;color:var(--nyx-c-text-2);' }, 'Add and remove NyxCard placeholders to observe animated realignment.'),
-            ]),
-            h('div', { style: 'display:flex;gap:0.5rem;flex-wrap:wrap;' }, [
-              h(NyxButton, { theme: NyxTheme.Success, onClick: addCard }, { default: () => 'Add card' }),
-              h(NyxButton, {
-                theme: NyxTheme.Info,
-                variant: NyxVariant.Outline,
-                onClick: () => { columns.value = columns.value === 3 ? 2 : 3 },
-              }, { default: () => 'Toggle columns' }),
-            ]),
-          ]
-        ),
-        default: () => cards.value.map(card => renderCard(card, () => h(
-          'div',
-          { style: 'display:flex;justify-content:flex-end;' },
-          [
-            h(NyxButton, {
-              theme: NyxTheme.Danger,
-              variant: NyxVariant.Ghost,
-              onClick: () => removeCard(card.id),
-            }, {
-              default: () => h(LucideX, { size: 16 }),
-            }),
-          ]
-        ))),
-        footer: () => h('small', { style: 'color:var(--nyx-c-text-2);' }, `${cards.value.length} cards in the grid`),
-      })
+      return () =>
+        h(
+          NyxGrid,
+          {
+            title: 'Dynamic Reflow',
+            mode: NyxGridMode.Masonry,
+            columns: columns.value,
+            gap: NyxSize.Medium,
+          },
+          {
+            header: () =>
+              h(
+                'div',
+                {
+                  style:
+                    'display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;',
+                },
+                [
+                  h('div', [
+                    h('h2', { style: 'margin:0;' }, 'Dynamic Reflow'),
+                    h(
+                      'p',
+                      { style: 'margin:0;color:var(--nyx-c-text-2);' },
+                      'Add and remove NyxCard placeholders to observe animated realignment.',
+                    ),
+                  ]),
+                  h('div', { style: 'display:flex;gap:0.5rem;flex-wrap:wrap;' }, [
+                    h(
+                      NyxButton,
+                      { theme: NyxTheme.Success, onClick: addCard },
+                      { default: () => 'Add card' },
+                    ),
+                    h(
+                      NyxButton,
+                      {
+                        theme: NyxTheme.Info,
+                        variant: NyxVariant.Outline,
+                        onClick: () => {
+                          columns.value = columns.value === 3 ? 2 : 3
+                        },
+                      },
+                      { default: () => 'Toggle columns' },
+                    ),
+                  ]),
+                ],
+              ),
+            default: () =>
+              cards.value.map((card) =>
+                renderCard(card, () =>
+                  h('div', { style: 'display:flex;justify-content:flex-end;' }, [
+                    h(
+                      NyxButton,
+                      {
+                        theme: NyxTheme.Danger,
+                        variant: NyxVariant.Ghost,
+                        onClick: () => removeCard(card.id),
+                      },
+                      {
+                        default: () => h(LucideX, { size: 16 }),
+                      },
+                    ),
+                  ]),
+                ),
+              ),
+            footer: () =>
+              h('small', { style: 'color:var(--nyx-c-text-2);' }, `${cards.value.length} cards in the grid`),
+          },
+        )
     },
   }),
 }

@@ -43,23 +43,29 @@ const Template = (args: NyxStatusDotProps) => defineComponent({
   `,
 })
 
-const TemplateAllProp = (prop: string, dict: KeyDict<string>) => () => defineComponent({
-  components: { NyxStatusDot },
-  setup () {
-    const values = Object.values(dict)
-    const getLabel = (value: string) => getKeyDictKeyByValue(dict, value)
-    return { prop, values, getLabel }
-  },
-  template: `
+const TemplateAllProp = (prop: string, dict: KeyDict<string>) => () =>
+  defineComponent({
+    components: { NyxStatusDot },
+    setup() {
+      const values = Object.values(dict)
+      const getLabel = (value: string) => getKeyDictKeyByValue(dict, value)
+      return { prop, values, getLabel }
+    },
+    template: `
     <div class="flex-col">
       <div class="flex" style="align-items: center; gap: 1rem; flex-wrap: wrap;">
-        <div v-for="value of values" :key="value" class="flex" style="align-items: center; gap: 0.5rem; min-width: 8rem;">
+        <div
+          v-for="value of values"
+          :key="value"
+          class="flex"
+          style="align-items: center; gap: 0.5rem; min-width: 8rem;"
+        >
           <nyx-status-dot v-bind="{ [prop]: value, label: getLabel(value) }" />
         </div>
       </div>
     </div>
   `,
-})
+  })
 
 const LabelsTemplate = () => () => defineComponent({
   components: { NyxStatusDot },

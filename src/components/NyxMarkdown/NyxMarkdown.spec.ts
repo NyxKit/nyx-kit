@@ -31,7 +31,11 @@ describe('NyxMarkdown', () => {
   it('renders real inline slots only in eligible prose', async () => {
     const click = vi.fn()
     const content = '**[[p1:m2]]**\n\n- *[[p1:m2]]*\n\n> [[p1:m2]]\n\n# [[p1:m2]]\n\n| Ref |\n| --- |\n| [[p1:m2]] |\n\n`[[p1:m2]]`\n\n```txt\n[[p1:m2]]\n```\n\n    [[p1:m2]]\n\n[ [[p1:m2]] ](https://example.com) ![ [[p1:m2]] ](https://example.com/image)\n\n\\[[p1:m2]] [[unknown]] [[p1:'
-    const wrapper = mount(NyxMarkdown, { ...options, props: { content, inlineRules: rules }, slots: { inline: ({ value }) => h('button', { onClick: click }, String(value)) } })
+    const wrapper = mount(NyxMarkdown, {
+      ...options,
+      props: { content, inlineRules: rules },
+      slots: { inline: ({ value }) => h('button', { onClick: click }, String(value)) },
+    })
     expect(wrapper.findAll('button')).toHaveLength(5)
     expect(wrapper.find('a button').exists()).toBe(false)
     expect(wrapper.find('img').exists()).toBe(false)
@@ -42,8 +46,26 @@ describe('NyxMarkdown', () => {
   })
 
   it('handles ordinary-letter markers, rule order and invalid lengths', () => {
-    const invalid = [0, -1, 1.5, Infinity, 999].map(length => ({ name: 'bad', match: () => ({ length, value: 'bad' }) }))
-    const wrapper = mount(NyxMarkdown, { ...options, props: { content: 'before CITE after', inlineRules: [...invalid, { name: 'word', match: (source: string, offset: number) => source.startsWith('CITE', offset) ? { length: 4, value: 'good' } : null }, { name: 'later', match: () => ({ length: 1, value: 'later' }) }] }, slots: { inline: ({ value }) => h('mark', String(value)) } })
+    const invalid = [0, -1, 1.5, Infinity, 999].map((length) => ({
+      name: 'bad',
+      match: () => ({ length, value: 'bad' }),
+    }))
+    const wrapper = mount(NyxMarkdown, {
+      ...options,
+      props: {
+        content: 'before CITE after',
+        inlineRules: [
+          ...invalid,
+          {
+            name: 'word',
+            match: (source: string, offset: number) =>
+              source.startsWith('CITE', offset) ? { length: 4, value: 'good' } : null,
+          },
+          { name: 'later', match: () => ({ length: 1, value: 'later' }) },
+        ],
+      },
+      slots: { inline: ({ value }) => h('mark', String(value)) },
+    })
     expect(wrapper.findAll('mark').some(mark => mark.text() === 'good')).toBe(true)
     expect(wrapper.text()).not.toContain('bad')
     const literal = mount(NyxMarkdown, { ...options, props: { content: '[[p1:m2]]', inlineRules: rules } })
@@ -76,8 +98,14 @@ describe('NyxMarkdown', () => {
 
   it('updates reactive lookups, rules and content independently across instances', async () => {
     const lookup = reactive({ valid: false })
-    const dynamic: NyxMarkdownInlineRule<string>[] = [{ name: 'citation', match: (source, offset) => lookup.valid ? rules[0].match(source, offset) : null }]
-    const wrapper = mount(NyxMarkdown, { ...options, props: { content: '[[p1:m2]]', inlineRules: dynamic }, slots: { inline: () => h('button', 'Jump') } })
+    const dynamic: NyxMarkdownInlineRule<string>[] = [
+      { name: 'citation', match: (source, offset) => (lookup.valid ? rules[0].match(source, offset) : null) },
+    ]
+    const wrapper = mount(NyxMarkdown, {
+      ...options,
+      props: { content: '[[p1:m2]]', inlineRules: dynamic },
+      slots: { inline: () => h('button', 'Jump') },
+    })
     const other = render('[[p1:m2]]')
     expect(wrapper.find('button').exists()).toBe(false)
     lookup.valid = true
@@ -109,7 +137,20 @@ describe('NyxMarkdown', () => {
   })
 
   it('fails locally to escaped text when a trusted recognizer throws', () => {
-    const wrapper = mount(NyxMarkdown, { ...options, props: { content: '<b>raw</b>', inlineRules: [{ name: 'broken', match: () => { throw new Error('failed') } }] } })
+    const wrapper = mount(NyxMarkdown, {
+      ...options,
+      props: {
+        content: '<b>raw</b>',
+        inlineRules: [
+          {
+            name: 'broken',
+            match: () => {
+              throw new Error('failed')
+            },
+          },
+        ],
+      },
+    })
     expect(wrapper.text()).toBe('<b>raw</b>')
     expect(wrapper.find('b').exists()).toBe(false)
   })

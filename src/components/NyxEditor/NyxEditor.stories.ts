@@ -20,11 +20,13 @@ import type {
 
 const showcaseContent = `# NyxEditor annotation showcase
 
-Intro paragraph with **bold emphasis**, *italic nuance*, and \`inline code\` so the default Storybook example demonstrates the most common inline formatting patterns in one place.
+Intro paragraph with **bold emphasis**, *italic nuance*, and \`inline code\` so the default Storybook example
+demonstrates the most common inline formatting patterns in one place.
 
 ## Editorial overview
 
-This section introduces the document structure and explains how annotations should feel while reading and editing longer rich-text content.
+This section introduces the document structure and explains how annotations should feel while reading and
+editing longer rich-text content.
 
 - Bullet point one introduces the topic
 - Bullet point two reinforces the visual hierarchy
@@ -32,7 +34,8 @@ This section introduces the document structure and explains how annotations shou
 
 ## Review workflow
 
-This section demonstrates a nested structure with two h3 subsections so the editor showcases deeper document outlines as well.
+This section demonstrates a nested structure with two h3 subsections so the editor showcases deeper document
+outlines as well.
 
 ### Open questions
 
@@ -52,7 +55,8 @@ The task list below highlights the last mile before publication.
 
 ## Implementation notes
 
-This closing section keeps a final paragraph near a separate section heading so the story looks realistic for day-to-day editorial work inside NyxEditor.
+This closing section keeps a final paragraph near a separate section heading so the story looks realistic for
+day-to-day editorial work inside NyxEditor.
 `
 
 const showcaseAnnotations: NyxAnnotation[] = [
@@ -124,7 +128,11 @@ export default {
   parameters: {
     docs: {
       description: {
-        component: 'NyxEditor exposes three models: `v-model` for content, `v-model:source` for source-mode state, and `v-model:annotations` for the live annotation model.',
+        component:
+          (
+            'NyxEditor exposes three models: `v-model` for content, `v-model:source` for ' +
+            'source-mode state, and `v-model:annotations` for the live annotation model.'
+          ),
       },
     },
   },
@@ -186,32 +194,41 @@ export default {
   },
 }
 
-export const Showcase = (args: NyxEditorProps & { modelValue?: string, annotations?: NyxAnnotation[] }) => defineComponent({
-  components: { NyxEditor },
-  setup() {
-    const cloneAnnotations = (value: NyxAnnotation[] = showcaseAnnotations) => value.map((annotation) => ({
-      ...annotation,
-      anchor: {
-        ...annotation.anchor,
-        context: { ...annotation.anchor.context },
-        range: { ...annotation.anchor.range },
-      },
-    }))
+export const Showcase = (args: NyxEditorProps & { modelValue?: string; annotations?: NyxAnnotation[] }) =>
+  defineComponent({
+    components: { NyxEditor },
+    setup() {
+      const cloneAnnotations = (value: NyxAnnotation[] = showcaseAnnotations) =>
+        value.map((annotation) => ({
+          ...annotation,
+          anchor: {
+            ...annotation.anchor,
+            context: { ...annotation.anchor.context },
+            range: { ...annotation.anchor.range },
+          },
+        }))
 
-    const content = ref(args.modelValue ?? showcaseContent)
-    const annotations = ref(cloneAnnotations(args.annotations))
+      const content = ref(args.modelValue ?? showcaseContent)
+      const annotations = ref(cloneAnnotations(args.annotations))
 
-    watch(() => args.modelValue, (value) => {
-      content.value = value ?? showcaseContent
-    })
+      watch(
+        () => args.modelValue,
+        (value) => {
+          content.value = value ?? showcaseContent
+        },
+      )
 
-    watch(() => args.annotations, (value) => {
-      annotations.value = cloneAnnotations(value)
-    }, { deep: true })
+      watch(
+        () => args.annotations,
+        (value) => {
+          annotations.value = cloneAnnotations(value)
+        },
+        { deep: true },
+      )
 
-    return { args, content, annotations }
-  },
-  template: `
+      return { args, content, annotations }
+    },
+    template: `
     <nyx-editor
       v-bind="args"
       v-model="content"
@@ -219,7 +236,7 @@ export const Showcase = (args: NyxEditorProps & { modelValue?: string, annotatio
       style="max-height: 42dvh;"
     />
   `,
-})
+  })
 
 Showcase.args = {
   modelValue: showcaseContent,
@@ -237,7 +254,9 @@ Showcase.args = {
 export const SelectionAndAnnotationEvents = () => defineComponent({
   components: { NyxEditor, NyxTextarea },
   setup() {
-    const content = ref('# Select some text\n\nHighlight any part of this content to see the `selection` payload update live.')
+    const content = ref(
+      '# Select some text\n\nHighlight any part of this content to see the `selection` payload update live.',
+    )
     const selectionOutput = ref('')
     const annotationCreateOutput = ref('')
     const annotationFocusOutput = ref('')
@@ -354,22 +373,25 @@ export const SelectionAndAnnotationEvents = () => defineComponent({
   `,
 })
 
-export const FooterSlot = () => defineComponent({
-  components: { NyxEditor },
-  setup() {
-    const content = ref(showcaseContent)
-    const annotations = ref(showcaseAnnotations.map((annotation) => ({
-      ...annotation,
-      anchor: {
-        ...annotation.anchor,
-        context: { ...annotation.anchor.context },
-        range: { ...annotation.anchor.range },
-      },
-    })))
+export const FooterSlot = () =>
+  defineComponent({
+    components: { NyxEditor },
+    setup() {
+      const content = ref(showcaseContent)
+      const annotations = ref(
+        showcaseAnnotations.map((annotation) => ({
+          ...annotation,
+          anchor: {
+            ...annotation.anchor,
+            context: { ...annotation.anchor.context },
+            range: { ...annotation.anchor.range },
+          },
+        })),
+      )
 
-    return { content, annotations, showcaseStatusTheme }
-  },
-  template: `
+      return { content, annotations, showcaseStatusTheme }
+    },
+    template: `
     <nyx-editor
       v-model="content"
       v-model:annotations="annotations"
@@ -378,14 +400,23 @@ export const FooterSlot = () => defineComponent({
       :annotation-status-theme="showcaseStatusTheme"
     >
       <template #footer="{ meta }">
-        <div style="display: flex; width: 100%; justify-content: space-between; gap: 1rem; font-size: 0.875rem; opacity: 0.9;">
+        <div
+          style="
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            gap: 1rem;
+            font-size: 0.875rem;
+            opacity: 0.9;
+          "
+        >
           <span>{{ meta.pathText }}</span>
           <strong>{{ meta.wordCount }} words</strong>
         </div>
       </template>
     </nyx-editor>
   `,
-})
+  })
 
 export const AnnotationStates = () => defineComponent({
   components: { NyxEditor },
