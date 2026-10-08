@@ -7,6 +7,7 @@
 | Component folder | PascalCase | `NyxButton/` |
 | Component file | PascalCase | `NyxButton.vue` |
 | Story file | PascalCase + `.stories.ts` | `NyxButton.stories.ts` |
+| Storybook helper folder | Component-local `storybook/` | `NyxCommandPalette/storybook/` |
 | Unit test file | PascalCase + `.spec.ts` | `NyxButton.spec.ts` |
 | Composable file | camelCase, `use` prefix | `useNyxProps.ts` |
 | Directive file | camelCase, `v` prefix | `vClickOutside.ts` |
@@ -86,6 +87,21 @@ Never use the `{}` syntax or funnel through an index.ts file unless in a subdoma
 - When a Spec Kit command changes, run `.specify/scripts/bash/sync-opencode-commands.sh` and commit the regenerated OpenCode command files in the same change.
 
 ## Storybook Stories
+
+Keep each `Nyx<Name>.stories.ts` entry beside its component. Put extracted demo components, story fixtures, and other Storybook-only helpers in a `storybook/` subfolder inside that component folder:
+
+```text
+src/components/NyxCommandPalette/
+  NyxCommandPalette.vue
+  NyxCommandPalette.stories.ts
+  NyxCommandPalette.spec.ts
+  storybook/
+    NyxCommandPaletteDemo.vue
+    NyxCommandPaletteRemoteDemo.vue
+    NyxCommandPaletteConversationsDemo.vue
+```
+
+Stories import helpers from `./storybook/`; helpers import the component and its types from `../`. Do not export helpers through library barrels or import them into production components/composables. Browser test fixtures may reuse them with an explicit path. Simple stories can remain self-contained; create this folder when extracting helpers. When moving a helper, update all story/test imports and the component's living spec. See [Storybook guidance](../architecture/storybook.md).
 
 - Every component must have a story file.
 - The default export defines component metadata (`title`, `component`, `argTypes`).

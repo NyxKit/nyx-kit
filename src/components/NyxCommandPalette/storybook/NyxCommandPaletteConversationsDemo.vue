@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { NyxCommandPaletteViewportMode } from './NyxCommandPalette.types'
+import { NyxCommandPaletteViewportMode } from '../NyxCommandPalette.types'
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { action } from 'storybook/actions'
-import NyxCommandPalette from './NyxCommandPalette.vue'
-import type { NyxCommandPaletteGroup, NyxCommandPaletteItem, NyxCommandPaletteSelectEvent } from './NyxCommandPalette.types'
+import NyxCommandPalette from '../NyxCommandPalette.vue'
+import type { NyxCommandPaletteGroup, NyxCommandPaletteItem, NyxCommandPaletteSelectEvent } from '../NyxCommandPalette.types'
 interface Conversation extends NyxCommandPaletteItem { to: string; updated: string }
 const conversations: Conversation[] = [
   { id: 'release', label: 'Release planning', description: 'Maya: Shall we ship the search improvements on Friday?', icon: 'messages-square', to: '/conversations/release', updated: 'Today' },

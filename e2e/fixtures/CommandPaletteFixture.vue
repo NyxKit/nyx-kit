@@ -2,7 +2,7 @@
 import { NyxCommandPaletteViewportMode } from '../../src/components/NyxCommandPalette/NyxCommandPalette.types'
 import { ref } from 'vue'
 import NyxCommandPalette from '../../src/components/NyxCommandPalette/NyxCommandPalette.vue'
-import NyxCommandPaletteRemoteDemo from '../../src/components/NyxCommandPalette/NyxCommandPaletteRemoteDemo.vue'
+import NyxCommandPaletteRemoteDemo from '../../src/components/NyxCommandPalette/storybook/NyxCommandPaletteRemoteDemo.vue'
 const open = ref(false)
 const secondOpen = ref(false)
 const inline = ref(false)

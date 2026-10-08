@@ -18,6 +18,7 @@ First-version scope is single-command activation and a standalone overlay. The p
 
 Location: `src/components/NyxCommandPalette/`, with `NyxCommandPalette.vue`, `NyxCommandPalette.types.ts`, `NyxCommandPalette.scss`, `NyxCommandPalette.stories.ts`, and `NyxCommandPalette.spec.ts`.
 
+- Storybook demos live under `storybook/`: `NyxCommandPaletteDemo.vue`, `NyxCommandPaletteRemoteDemo.vue`, and `NyxCommandPaletteConversationsDemo.vue`. The `.stories.ts` entry stays at the component root and imports these helpers; the E2E fixture also reuses the remote demo. Helpers are not public library exports.
 - Use `<script setup lang="ts" generic="T extends NyxCommandPaletteItem">`, a standalone props interface, and typed emits/slots. Preserve consumers' additional item fields in selection events and slot scopes without `any`.
 - Private `commandPalette.ts` handles descriptor validation and ranking; `useCommandPaletteOverlay.ts` owns dialog, focus, backdrop gestures, and shared scroll-lock accounting, and cancellable surface motion. A private motion helper animates the surface from its current rendered state so rapid reversals do not jump.
 - Keep the `.vue` file within 300 lines. Extract filtering/navigation into private helpers or a component-local composable as needed; no new public composable is required.

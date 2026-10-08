@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { action } from 'storybook/actions'
-import NyxCommandPalette from './NyxCommandPalette.vue'
-import type { NyxCommandPaletteProps, NyxCommandPaletteSelectEvent } from './NyxCommandPalette.types'
+import NyxCommandPalette from '../NyxCommandPalette.vue'
+import type { NyxCommandPaletteProps, NyxCommandPaletteSelectEvent } from '../NyxCommandPalette.types'
 const props = defineProps<{ args: NyxCommandPaletteProps & { open?: boolean }, controlled?: boolean, custom?: boolean, fullItem?: boolean }>()
 const open = ref(false)
 const query = ref('')

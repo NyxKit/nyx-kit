@@ -6,9 +6,9 @@ import type { Meta, StoryObj } from '@storybook/vue3'
 import { expect, userEvent, within, waitFor } from 'storybook/test'
 import { NyxSize, NyxTheme } from '@/types/common'
 import NyxCommandPalette from './NyxCommandPalette.vue'
-import NyxCommandPaletteDemo from './NyxCommandPaletteDemo.vue'
-import NyxCommandPaletteRemoteDemo from './NyxCommandPaletteRemoteDemo.vue'
-import NyxCommandPaletteConversationsDemo from './NyxCommandPaletteConversationsDemo.vue'
+import NyxCommandPaletteDemo from './storybook/NyxCommandPaletteDemo.vue'
+import NyxCommandPaletteRemoteDemo from './storybook/NyxCommandPaletteRemoteDemo.vue'
+import NyxCommandPaletteConversationsDemo from './storybook/NyxCommandPaletteConversationsDemo.vue'
 
 const groups = [
   { id: 'actions', label: 'Actions', items: [

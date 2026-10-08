@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onBeforeUnmount, ref, watch } from 'vue'
 import { action } from 'storybook/actions'
-import NyxCommandPalette from './NyxCommandPalette.vue'
-import type { NyxCommandPaletteGroup, NyxCommandPaletteSelectEvent } from './NyxCommandPalette.types'
+import NyxCommandPalette from '../NyxCommandPalette.vue'
+import type { NyxCommandPaletteGroup, NyxCommandPaletteSelectEvent } from '../NyxCommandPalette.types'
 const query = ref('')
 const loading = ref(false)
 const groups = ref<NyxCommandPaletteGroup[]>([])

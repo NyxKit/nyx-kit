@@ -6,6 +6,10 @@ For more detailed information, usage examples, and live demos of components, vis
 
 Brand identity: [final logo and downloads](docs/design/logo/README.md). Archived explorations: [SVG logo proposals](docs/design/logo-proposals/README.md) and [proposal 2 moodboard](docs/design/proposal-2-studies/README.md).
 
+### Storybook demo organization
+
+Keep story entries beside their components. Place extracted demo components and story fixtures in that component’s `storybook/` subfolder (for example, `src/components/NyxCommandPalette/storybook/`). These helpers are internal and must not be exported by the library. See [the contributor convention](docs/conventions/README.md#storybook-stories).
+
 ## Installation
 
 ```sh
