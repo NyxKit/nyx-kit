@@ -37,8 +37,8 @@ src/components/NyxButton/NyxButton.spec.ts
 ### Running
 
 ```bash
-yarn test:unit          # run once
-yarn test:unit --watch  # watch mode
+pnpm test:unit --run   # run once (also used in CI)
+pnpm test:unit         # watch mode
 ```
 
 ## E2E Tests (Playwright)
@@ -64,6 +64,8 @@ yarn test:e2e
 
 Playwright starts Vite explicitly on `127.0.0.1:5197` in both local runs and CI. Tests are headless and load isolated component fixtures from `e2e/fixtures/`; the regular library dev server remains on port 9000. Accordion browser tests cover native activation, focus navigation/recovery, nested instances, and collapsed-content tab exclusion. Markdown browser tests cover resource suppression, citation activation, retained focus and horizontal scroll, narrow containers, both color modes, and a synthetic long-answer update benchmark.
 
+Command palette tests cover grouped search, native dialog focus/scroll ownership, backdrop gestures, IME, multiple instances, remote responses, and SSR hydration.
+
 ## Storybook
 
 Storybook is the visual test surface. Every component variant must be reachable from a story.
@@ -88,12 +90,23 @@ yarn type-check   # vue-tsc --build
 
 This must pass before any merge. It is run as part of `yarn build`.
 
+## GitHub Actions
+
+`.github/workflows/ci.yml` runs on pull requests, pushes to `main`, and manual dispatch. Independent `Lint` and `Unit tests` jobs use Node 22, the pnpm version declared in `package.json`, pnpm-store caching, and `pnpm install --frozen-lockfile`.
+
+- Lint runs `pnpm exec oxlint ./src -D correctness --ignore-path .gitignore` and `pnpm exec eslint ./src eslint.config.ts eslint --no-fix`. Neither command modifies files. ESLint still runs if Oxlint fails, provided dependency installation succeeded.
+- Unit tests run `pnpm test:unit --run`, without watch mode.
+- Check failures fail their job. Existing lint or unit-test failures are not suppressed. Jobs run independently so lint failures do not prevent unit-test results.
+- Workflow permissions are read-only, each job has a 10-minute timeout, and a newer run cancels an older run for the same PR/ref. Actions are pinned to commit SHAs.
+
+The local `pnpm lint` scripts retain their existing auto-fix behavior; CI invokes the non-mutating commands above directly. Browser tests, builds, publishing, and deployment are outside this workflow.
+
 ## CI Checklist
 
 Before considering a change complete:
 
 - [ ] `yarn type-check` passes
-- [ ] `yarn test:unit` passes
+- [ ] `pnpm test:unit --run` passes
 - [ ] `yarn test:e2e` passes (if interactive behaviour changed)
 - [ ] Storybook story renders correctly for all affected variants
 - [ ] `yarn build` succeeds (no broken exports or type errors in rollup)

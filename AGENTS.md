@@ -36,6 +36,10 @@ The stack:
 
 | Layer | Technology | Location | Status |
 |---|---|---|---|
+| 2026-10-08 | Results component declaration generation | Generic SFC default export referenced a script-local props interface, producing TS4082 despite a successful bundler exit. | Exported the interface from an internal type module; validate build diagnostics as well as exit status |
+| 2026-10-08 | Testing docs vs unit-test script | Docs described `test:unit` as a one-off run, but the Vitest script defaults to watch mode locally. | Corrected to `pnpm test:unit --run`, including CI |
+| 2026-10-08 | Command palette overlay specification | One overlay paragraph still described vertical centering after the top-anchor change. | Corrected to horizontal centering with a stable top anchor |
+| 2026-10-08 | Command palette overlay placement | Vertical auto margins re-centered the search when result height changed, contrary to the requested stationary search. | Corrected to a top-anchored overlay that grows downward |
 | Components | Vue 3 + TypeScript | `src/components/` | ✅ in progress |
 | Composables | TypeScript | `src/composables/` | ✅ in progress |
 | Directives | TypeScript | `src/directives/` | ✅ in progress |
@@ -126,7 +130,7 @@ docs/
 
 1. Check `README.md` and `docs/architecture/component-model.md` for the intended API and conventions.
 2. Create `docs/specs/components/Nyx<Name>.spec.md` — see **Component Spec Files** below. (This is also the output of `/speckit.specify` — keep both in sync.)
-3. Create a folder under `src/components/Nyx<Name>/` with the component file (e.g. `Nyx<Name>.vue`) and a `.stories.ts` file.
+3. Create a folder under `src/components/Nyx<Name>/` with the component file (e.g. `Nyx<Name>.vue`) and a `.stories.ts` file. Put extracted Storybook demo components, story fixtures, and supporting helpers in `src/components/Nyx<Name>/storybook/`; keep the story entry beside the component. Never export these helpers through library barrels or import them into production code. E2E fixtures may reuse them explicitly. Follow [the Storybook folder convention](docs/conventions/README.md#storybook-stories).
 4. Register the export in `src/components/index.ts` and `src/index.ts` using direct imports: `import Nyx<Name> from './Nyx<Name>/Nyx<Name>.vue'` — never use the `{}` syntax or funnel through an index.ts file.
 5. Add unit tests (`.spec.ts`) for non-trivial logic.
 
@@ -387,6 +391,12 @@ When you notice that something in the codebase or stories is out of sync, record
 
 | Noticed | Location | Description | Status |
 |---|---|---|---|
+| 2026-10-08 | Command palette CustomShortcut story | Ctrl+Shift+P conflicts with Firefox’s private-window shortcut; automated page keyboard tests do not establish browser-chrome override support. | Corrected example to Ctrl+Enter and documented iframe focus and reserved-shortcut limitations |
+| 2026-10-08 | `useKeyboardShortcuts` SUPER expansion vs browser keys | SUPER expands to CTRL while native Control is normalized as CONTROL; existing tests rely on CONTROL descriptors. Initial examples registered both SUPER+K and CONTROL+K. The palette now owns an opt-in shortcut using event modifier flags and no longer depends on this helper. | Open: shared shortcut normalization requires a separate compatibility decision |
+| 2026-10-08 | `docs/architecture/build.md` vs `package.json` | Build guide lists Vite 6 while the installed package uses Vite 8. Palette validation uses installed tooling. | Open: unrelated tooling documentation drift |
+| 2026-10-08 | Initial NyxCommandPalette draft vs user intent | Draft proposed NyxModal composition; user requires a separately styled, centered command overlay. | Corrected: palette owns overlay/open state, backdrop, focus and dismissal; Storybook validates it directly |
+| 2026-10-08 | Stack summary and colour-mode conventions vs current setup | AGENTS.md lists Storybook 8 while package.json installs Storybook 10; conventions describe `data-theme="dark"` while DESIGN.md and variables.css use `data-nyx-mode="light"` over dark defaults. Command palette stories are specified against the installed setup and actual Nyx mode attribute. | Open: existing documentation drift; recorded during command palette specification |
+| 2026-10-08 | `docs/specs/components/NyxModal.spec.md` vs modal source and story | Spec lists `default` theme/size defaults although current enums use omitted props; the default story opens `<nyx-modal>` but closes `</nyx-button>`. Recorded during the initial command palette investigation; the revised palette owns its overlay and does not depend on NyxModal. | Open: existing modal discrepancies; recorded during command palette specification |
 | 2026-10-01 | Shared build chunks vs NyxMarkdown resource contract | Markdown-only consumer bundles retained editor initialization from the existing composables chunk. | Isolate editor modules in a dedicated build chunk |
 | 2026-10-01 | `package.json` optional `vue-router` peer vs `dist/components.mjs` | An installed consumer importing `nyx-kit/components` fails Vite resolution without Vue Router because the existing barrel imports `RouterLink`. | Open: package-level limitation; consumer smoke test installs the peer |
 | 2026-10-01 | `docs/architecture/README.md` vs `package.json` | Architecture claimed no bundled runtime dependencies despite existing editor/icon dependencies. | Clarified while adding the Markdown parser |

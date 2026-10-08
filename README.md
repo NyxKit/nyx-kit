@@ -6,7 +6,15 @@ For more detailed information, usage examples, and live demos of components, vis
 
 Brand identity: [final logo and downloads](docs/design/logo/README.md). Archived explorations: [SVG logo proposals](docs/design/logo-proposals/README.md) and [proposal 2 moodboard](docs/design/proposal-2-studies/README.md).
 
+### Storybook demo organization
+
+Keep story entries beside their components. Place extracted demo components and story fixtures in that component’s `storybook/` subfolder (for example, `src/components/NyxCommandPalette/storybook/`). These helpers are internal and must not be exported by the library. See [the contributor convention](docs/conventions/README.md#storybook-stories).
+
+GitHub Actions runs lint checks and unit tests on pull requests and pushes to `main`. See [CI commands and behavior](docs/testing/README.md#github-actions).
+
 ## Installation
+
+Available on npm: [nyx-kit](https://www.npmjs.com/package/nyx-kit).
 
 ```sh
 pnpm add nyx-kit
@@ -113,6 +121,35 @@ const items = [
 
 Use shared scoped `header` and `default` slots for repeated content, with `header-${id}` and `item-${id}` overrides. See the [component specification](docs/specs/components/NyxAccordion.spec.md) for model rules and accessibility.
 
+## Command palette
+
+`NyxCommandPalette` provides a standalone horizontally centered overlay with a stable search position, grouped fuzzy search, keyboard navigation, and typed result slots. Set `inline` to embed it. The consumer owns command actions and remote requests. Pass `shortcut="SUPER+K"` to enable Ctrl/⌘K toggling, or a custom chord; no shortcut is registered by default. Browser/OS-reserved shortcuts may take precedence. In Storybook, focus the preview canvas or open the story in a new tab before using a shortcut.
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { NyxCommandPalette } from 'nyx-kit'
+const open = ref(false)
+const groups = [{ id: 'actions', label: 'Actions', items: [{ id: 'settings', label: 'Open settings', icon: 'settings' }] }]
+const lastCommand = ref('')
+</script>
+
+<template>
+  <button @click="open = true">Search commands</button>
+  <NyxCommandPalette v-model:open="open" :groups="groups" shortcut="SUPER+K"
+    @select="({ item }) => { lastCommand = item.id; open = false }" />
+  <output>{{ lastCommand }}</output>
+</template>
+```
+
+`viewportMode` accepts `NyxCommandPaletteViewportMode.Always`, `.WhileSearching`, or `.AfterInteraction` (default). The default reveals results on the first nonblank query and keeps them visible after clearing until the overlay closes. Reopening with an empty query starts hidden. When hidden, use the footer reveal button or press Enter or Arrow Down in search to show results without selecting. Import the enum from `nyx-kit` or `nyx-kit/types`. Overlay, viewport, and result transitions respect reduced motion.
+
+Customize footer content through the `footer` slot; result counts and reset-search actions are opt-in consumer content.
+
+Conversation search works with the same API: include a `to` field on each item, use `ignoreFilter: true` for server results, and call `router.push(item.to)` in the `select` handler. The ConversationSearch story demonstrates this flow.
+
+Selection does not close the palette automatically. Bind `v-model` for the last activated ID and `v-model:search-term` for query control. Import `nyx-kit/style.css` once. See the [component specification](docs/specs/components/NyxCommandPalette.spec.md) and `Components/Navigation/NyxCommandPalette` in Storybook for slots, remote search, and accessibility.
+
 ## Markdown
 
 `NyxMarkdown` renders read-only Markdown with semantic HTML, Nyx typography, tables, and typed Vue inline slots for consumer-owned citations. Pass the complete accumulated string through `content` while streaming. Raw HTML stays text, images are omitted, and links allow only HTTP(S) or document fragments.
@@ -154,6 +191,8 @@ export default [
 ```
 
 The config includes:
+
+- 120-character maximum for code, comments, and Vue template lines (URL-containing lines are exempt)
 - `eslint-plugin-vue` — Vue 3 essential rules
 - `@vue/eslint-config-typescript` — TypeScript recommended rules
 - `eslint-plugin-oxlint` — disables ESLint rules that oxlint handles (use alongside `oxlint` for faster linting)
@@ -206,7 +245,6 @@ Test-framework rules (`@vitest/eslint-plugin`, `eslint-plugin-playwright`) are *
 - `NyxWhiteboard`: A collaborative, free-drawing canvas.
 
 #### `NyxWarp` - Productivity / Launcher / PowerUser
-- `NyxCommandPalette`: A quick-search interface for command execution. Similar to VS Code’s Ctrl+P or macOS' CMD+SPACE.
 - `NyxLaunchpad`: A grid or list of shortcuts to different sections of your app. Similar to macOS Launchpad or the Windows Start menu.
 
 #### `NyxNexus` - Collaboration / Social

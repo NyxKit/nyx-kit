@@ -1,3 +1,4 @@
+import lineLength from './eslint/line-length.mjs'
 import pluginVue from 'eslint-plugin-vue'
 import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript'
 import pluginVitest from '@vitest/eslint-plugin'
@@ -12,25 +13,35 @@ import oxlint from 'eslint-plugin-oxlint'
 export default defineConfigWithVueTs(
   {
     name: 'app/files-to-lint',
-    files: ['**/*.{ts,mts,tsx,vue}'],
+    files: ['**/*.{ts,mts,tsx,vue}']
   },
 
   {
     name: 'app/files-to-ignore',
-    ignores: ['**/node_modules/**', '**/build/**', '**/dist/**', '**/dist-ssr/**', '**/coverage/**', '**/storybook-static/**', '**/playwright-report/**', '**/test-results/**'],
+    ignores: [
+      '**/node_modules/**',
+      '**/build/**',
+      '**/dist/**',
+      '**/dist-ssr/**',
+      '**/coverage/**',
+      '**/storybook-static/**',
+      '**/playwright-report/**',
+      '**/test-results/**'
+    ]
   },
 
   pluginVue.configs['flat/essential'],
   vueTsConfigs.recommended,
-  
+
   {
     ...pluginVitest.configs.recommended,
-    files: ['src/**/__tests__/*'],
+    files: ['src/**/__tests__/*']
   },
-  
+
   {
     ...pluginPlaywright.configs['flat/recommended'],
-    files: ['e2e/**/*.{test,spec}.{js,ts,jsx,tsx}'],
+    files: ['e2e/**/*.{test,spec}.{js,ts,jsx,tsx}']
   },
   oxlint.configs['flat/recommended'],
+  ...lineLength
 )

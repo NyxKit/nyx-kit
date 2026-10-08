@@ -1,3 +1,4 @@
+import lineLength from './line-length.mjs'
 import pluginVue from 'eslint-plugin-vue'
 import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript'
 import oxlint from 'eslint-plugin-oxlint'
@@ -20,13 +21,14 @@ import oxlint from 'eslint-plugin-oxlint'
 export default defineConfigWithVueTs(
   {
     name: 'nyx-kit/files-to-lint',
-    files: ['**/*.{ts,mts,tsx,vue}'],
+    files: ['**/*.{ts,mts,tsx,vue}']
   },
   {
     name: 'nyx-kit/files-to-ignore',
-    ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**'],
+    ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**']
   },
   pluginVue.configs['flat/essential'],
   vueTsConfigs.recommended,
   oxlint.configs['flat/recommended'],
+  ...lineLength
 )

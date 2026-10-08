@@ -8,6 +8,8 @@ Patch `2.1.1` fixes declaration generation by including Vite's environment types
 
 NyxMarkdown increments the minor version from `2.1.1` to `2.2.0`; publishing remains a separate maintainer action.
 
+NyxCommandPalette increments the minor version from `2.2.0` to `2.3.0`; publishing remains a separate maintainer action.
+
 ## Tool Chain
 
 | Tool | Purpose |

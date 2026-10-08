@@ -7,6 +7,7 @@
 | Component folder | PascalCase | `NyxButton/` |
 | Component file | PascalCase | `NyxButton.vue` |
 | Story file | PascalCase + `.stories.ts` | `NyxButton.stories.ts` |
+| Storybook helper folder | Component-local `storybook/` | `NyxCommandPalette/storybook/` |
 | Unit test file | PascalCase + `.spec.ts` | `NyxButton.spec.ts` |
 | Composable file | camelCase, `use` prefix | `useNyxProps.ts` |
 | Directive file | camelCase, `v` prefix | `vClickOutside.ts` |
@@ -47,6 +48,7 @@ Never use the `{}` syntax or funnel through an index.ts file unless in a subdoma
 
 ## TypeScript
 
+- Limit source lines to 120 characters, including comments and Vue templates. ESLint reports longer lines as errors; lines containing URLs are exempt. Wrap expressions, imports, object properties, and template attributes instead of suppressing the rule. Both the repository config and `nyx-kit/eslint` preset enforce this.
 - Strict mode is on. No `any` unless wrapping a third-party boundary.
 - Prefer `enum` for fixed sets of values that appear in props (enables `useNyxProps` class generation).
 - Use template literal types for constrained strings: `HexCode`, `DurationSpeed`, `CssVariableKey`.
@@ -61,6 +63,8 @@ Never use the `{}` syntax or funnel through an index.ts file unless in a subdoma
 - Prop defaults via `withDefaults(defineProps<...>(), { ... })`.
 - Do not use `defineComponent` wrapper.
 - Computed properties over methods for derived reactive values.
+- Separate setup declarations into readable blocks with blank lines: props/models, related refs, computed values, watchers, handlers, and lifecycle hooks. Keep closely related refs together, and give each watcher or handler its own block. Apply the same spacing to composables and Storybook helpers.
+- Follow `NyxSelect.vue` for readable layout: related setup declarations together, blank lines between logical blocks, multiline callbacks, and one attribute per line on multiline tags. Keep component SFCs within 300 lines by extracting private logic into composables.
 - Keep template logic minimal — move expressions into `computed`.
 
 ## Styles
@@ -86,6 +90,21 @@ Never use the `{}` syntax or funnel through an index.ts file unless in a subdoma
 - When a Spec Kit command changes, run `.specify/scripts/bash/sync-opencode-commands.sh` and commit the regenerated OpenCode command files in the same change.
 
 ## Storybook Stories
+
+Keep each `Nyx<Name>.stories.ts` entry beside its component. Put extracted demo components, story fixtures, and other Storybook-only helpers in a `storybook/` subfolder inside that component folder:
+
+```text
+src/components/NyxCommandPalette/
+  NyxCommandPalette.vue
+  NyxCommandPalette.stories.ts
+  NyxCommandPalette.spec.ts
+  storybook/
+    NyxCommandPaletteDemo.vue
+    NyxCommandPaletteRemoteDemo.vue
+    NyxCommandPaletteConversationsDemo.vue
+```
+
+Stories import helpers from `./storybook/`; helpers import the component and its types from `../`. Do not export helpers through library barrels or import them into production components/composables. Browser test fixtures may reuse them with an explicit path. Simple stories can remain self-contained; create this folder when extracting helpers. When moving a helper, update all story/test imports and the component's living spec. See [Storybook guidance](../architecture/storybook.md).
 
 - Every component must have a story file.
 - The default export defines component metadata (`title`, `component`, `argTypes`).

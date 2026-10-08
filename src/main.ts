@@ -1,3 +1,7 @@
+export { NyxCommandPaletteViewportMode } from './components/NyxCommandPalette/NyxCommandPalette.types'
+export type { NyxCommandPaletteItem, NyxCommandPaletteGroup, NyxCommandPaletteProps, NyxCommandPaletteSelectEvent, NyxCommandPaletteItemSlotProps } from './types'
+import NyxCommandPalette from './components/NyxCommandPalette/NyxCommandPalette.vue'
+export { NyxCommandPalette }
 export type { NyxMarkdownProps, NyxMarkdownInlineRule, NyxMarkdownInlineMatch, NyxMarkdownInlineSlotProps } from './types'
 import NyxMarkdown from './components/NyxMarkdown/NyxMarkdown.vue'
 export { NyxMarkdown }

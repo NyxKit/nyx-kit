@@ -28,3 +28,9 @@ Examples:
 
 - Prefer the most obvious domain for a component rather than forcing a perfect taxonomy.
 - Keep related subcomponents in the same domain as their parent component.
+
+## Files and demo helpers
+
+The story entry remains at `src/components/Nyx<Name>/Nyx<Name>.stories.ts`. Extracted demos and supporting story fixtures belong under `src/components/Nyx<Name>/storybook/`, keeping the component root focused on library source and its test/story entry points. This convention applies to new helpers and touched existing demos.
+
+Storybook's existing recursive story glob discovers the entries without configuration changes. Helpers are internal development files: never export them from the library or import them into production code. E2E fixtures may reuse a demo explicitly. See [the folder example and import rules](../conventions/README.md#storybook-stories).
