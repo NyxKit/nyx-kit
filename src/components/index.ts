@@ -1,3 +1,5 @@
+import NyxCommandPalette from './NyxCommandPalette/NyxCommandPalette.vue'
+export { NyxCommandPalette }
 import NyxMarkdown from './NyxMarkdown/NyxMarkdown.vue'
 export { NyxMarkdown }
 import NyxAccordion from './NyxAccordion/NyxAccordion.vue'

@@ -66,6 +66,7 @@ Storybook stories are grouped by domain (`Basic`, `Form`, `Data`, `Navigation`, 
 | NyxCard | Content container card |
 | NyxCarousel | Slideshow / image carousel |
 | NyxCheckbox | Checkbox input |
+| NyxCommandPalette | Standalone command overlay or inline grouped search with keyboard navigation |
 | NyxForm / NyxFormField | Form wrapper and field layout |
 | NyxInput | Text, password, email, number, date, and other input types |
 | NyxMedia | Image/video/audio display |

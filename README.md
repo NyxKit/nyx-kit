@@ -113,6 +113,29 @@ const items = [
 
 Use shared scoped `header` and `default` slots for repeated content, with `header-${id}` and `item-${id}` overrides. See the [component specification](docs/specs/components/NyxAccordion.spec.md) for model rules and accessibility.
 
+## Command palette
+
+`NyxCommandPalette` provides a standalone centered overlay with grouped fuzzy search, keyboard navigation, and typed result slots. Set `inline` to embed it. The consumer owns command actions, opening shortcuts, and remote requests.
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { NyxCommandPalette } from 'nyx-kit'
+const open = ref(false)
+const groups = [{ id: 'actions', label: 'Actions', items: [{ id: 'settings', label: 'Open settings', icon: 'settings' }] }]
+const lastCommand = ref('')
+</script>
+
+<template>
+  <button @click="open = true">Search commands</button>
+  <NyxCommandPalette v-model:open="open" :groups="groups"
+    @select="({ item }) => { lastCommand = item.id; open = false }" />
+  <output>{{ lastCommand }}</output>
+</template>
+```
+
+Selection does not close the palette automatically. Bind `v-model` for the last activated ID and `v-model:search-term` for query control. Import `nyx-kit/style.css` once. See the [component specification](docs/specs/components/NyxCommandPalette.spec.md) and `Components/Navigation/NyxCommandPalette` in Storybook for slots, remote search, and accessibility.
+
 ## Markdown
 
 `NyxMarkdown` renders read-only Markdown with semantic HTML, Nyx typography, tables, and typed Vue inline slots for consumer-owned citations. Pass the complete accumulated string through `content` while streaming. Raw HTML stays text, images are omitted, and links allow only HTTP(S) or document fragments.
@@ -206,7 +229,6 @@ Test-framework rules (`@vitest/eslint-plugin`, `eslint-plugin-playwright`) are *
 - `NyxWhiteboard`: A collaborative, free-drawing canvas.
 
 #### `NyxWarp` - Productivity / Launcher / PowerUser
-- `NyxCommandPalette`: A quick-search interface for command execution. Similar to VS Code’s Ctrl+P or macOS' CMD+SPACE.
 - `NyxLaunchpad`: A grid or list of shortcuts to different sections of your app. Similar to macOS Launchpad or the Windows Start menu.
 
 #### `NyxNexus` - Collaboration / Social

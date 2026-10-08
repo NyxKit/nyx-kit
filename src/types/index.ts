@@ -1,3 +1,4 @@
+export type { NyxCommandPaletteItem, NyxCommandPaletteGroup, NyxCommandPaletteProps, NyxCommandPaletteSelectEvent, NyxCommandPaletteItemSlotProps } from '../components/NyxCommandPalette/NyxCommandPalette.types'
 export type { NyxMarkdownProps, NyxMarkdownInlineRule, NyxMarkdownInlineMatch, NyxMarkdownInlineSlotProps } from '../components/NyxMarkdown/NyxMarkdown.types'
 export type { NyxAccordionItem, NyxAccordionModel, NyxAccordionProps, NyxAccordionSlotProps } from '../components/NyxAccordion/NyxAccordion.types'
 export * from './colour-mode'
