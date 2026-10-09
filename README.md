@@ -97,6 +97,10 @@ if (result.isSuccess) {
 
 The method returns a `NyxResult` — use `.isSuccess` to check the outcome.
 
+## Tooltips
+
+`NyxTooltip` accepts a numeric `delay` in milliseconds, defaulting to `150` for hover and click opening. Use `:delay="0"` for immediate opening. Closing and manual `v-model` updates are immediate. See the [tooltip spec](docs/specs/components/NyxTooltip.spec.md).
+
 ## Accordion
 
 `NyxAccordion` closes sibling sections by default. Set `multiple` to allow independent expansion. A v-model is optional: use a string ID in single mode or a string array in multiple mode. Panels animate open and closed with reduced-motion support.

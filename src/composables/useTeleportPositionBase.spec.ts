@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { ref, defineComponent, h, nextTick } from 'vue'
 import { mount } from '@vue/test-utils'
 import useTeleportPositionBase from './useTeleportPositionBase'
-import { NyxPosition } from '@/types'
+import { NyxPosition, NyxSize } from '@/types'
 
 type CssVarMap = Record<string, string | number>
 
@@ -162,4 +162,33 @@ describe('useTeleportPositionBase', () => {
     )
     expect(result.computedPosition).toBeDefined()
   })
+})
+
+
+it('recovers from unavailable gap tokens and reads updated values on each measurement', () => {
+  const element = document.createElement('div')
+  vi.spyOn(element, 'getBoundingClientRect').mockReturnValue(new DOMRect(0, 0, 100, 40))
+  const getStyle = vi.spyOn(window, 'getComputedStyle')
+  const style = document.createElement('div').style
+  getStyle.mockReturnValue(style)
+  const { result, wrapper } = useSetup(() => useTeleportPositionBase(
+    () => new DOMRect(100, 200, 80, 20),
+    ref(element),
+    { position: ref(NyxPosition.Top), gap: ref(NyxSize.Medium) },
+  ))
+  try {
+    expect(result.cssVariables.value['--top']).toBe('160px')
+    style.setProperty('--nyx-gap-md', '0.5rem')
+    result.updateCssVariables()
+    expect(result.cssVariables.value['--top']).toBe('152px')
+    style.setProperty('--nyx-gap-md', '12px')
+    result.updateCssVariables()
+    expect(result.cssVariables.value['--top']).toBe('148px')
+    style.setProperty('--nyx-gap-md', 'invalid')
+    result.updateCssVariables()
+    expect(result.cssVariables.value['--top']).toBe('160px')
+  } finally {
+    wrapper.unmount()
+    getStyle.mockRestore()
+  }
 })

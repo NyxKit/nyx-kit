@@ -9,6 +9,10 @@ export default {
   title: 'Components/Feedback/NyxTooltip',
   component: NyxTooltip,
   argTypes: {
+    delay: {
+      control: { type: 'number', min: 0, step: 50 },
+      description: 'Opening delay in milliseconds (default: 150). Zero opens immediately.',
+    },
     theme: {
       control: { type: 'select' },
       options: Object.values(NyxTheme),
@@ -31,7 +35,7 @@ const Template = (args: NyxTooltipProps) => defineComponent({
   },
   template: `
     <nyx-tooltip v-bind="args" :text="'Tooltip content'">
-      <nyx-button>{{ Hover me }}</nyx-button>
+      <nyx-button>Hover me</nyx-button>
     </nyx-tooltip>
   `,
 })
@@ -55,7 +59,9 @@ const TemplateAll = (prop: string, dict: KeyDict<string>) => () => defineCompone
   `,
 })
 
-export const Default = Template({})
+export const Default = { render: Template, args: {} }
+export const CustomDelay = { render: Template, args: { delay: 500 } }
+export const NoDelay = { render: Template, args: { delay: 0 } }
 export const Themes = TemplateAll('theme', NyxTheme)
 export const Positions = TemplateAll('position', NyxPosition)
 export const Variants = TemplateAll('variant', NyxVariant)

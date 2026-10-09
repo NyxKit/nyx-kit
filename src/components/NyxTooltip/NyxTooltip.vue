@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import './NyxTooltip.scss'
-import { ref, useId, useTemplateRef } from 'vue'
+import { onBeforeUnmount, ref, useId, useTemplateRef, watch } from 'vue'
 import { NyxPosition, NyxSize } from '@/types'
 import type { NyxTooltipProps } from './NyxTooltip.types'
 import { useTeleportPosition, useNyxProps } from '@/composables'
@@ -8,7 +8,8 @@ import { useTeleportPosition, useNyxProps } from '@/composables'
 const props = withDefaults(defineProps<NyxTooltipProps>(), {
   position: NyxPosition.Top,
   disabled: false,
-  trigger: 'hover'
+  trigger: 'hover',
+  delay: 150
 })
 
 const model = defineModel<boolean>({ default: false })
@@ -27,8 +28,41 @@ const { cssVariables, computedPosition, teleportTarget, updateCssVariables } = u
   },
 )
 
-const open = () => model.value = true
-const close = () => model.value = false
+let openTimer: ReturnType<typeof setTimeout> | undefined
+
+const cancelPendingOpen = () => {
+  if (openTimer !== undefined) {
+    clearTimeout(openTimer)
+    openTimer = undefined
+  }
+}
+
+const open = () => {
+  if (model.value || openTimer !== undefined) return
+
+  if (!Number.isFinite(props.delay) || props.delay <= 0) {
+    model.value = true
+    return
+  }
+
+  openTimer = setTimeout(() => {
+    openTimer = undefined
+    model.value = true
+  }, props.delay)
+}
+
+const close = () => {
+  cancelPendingOpen()
+  model.value = false
+}
+
+watch([() => props.trigger, () => props.delay, model], cancelPendingOpen, { flush: 'sync' })
+
+watch(model, (isOpen) => {
+  if (isOpen) updateCssVariables()
+}, { flush: 'post' })
+
+onBeforeUnmount(cancelPendingOpen)
 
 const onMouseOver = () => props.trigger === 'hover' && open()
 const onMouseLeave = () => props.trigger !== 'manual' && close()

@@ -36,6 +36,8 @@ Provides viewport-aware positioning, width matching, and the teleport target for
 ## Behaviour
 
 - Uses `useTeleportPositionBase` for clamping and mirroring logic
+- Each update reads current anchor/content dimensions and the current CSS gap token. Missing or non-numeric gap values fall back to zero rather than producing invalid coordinates; later updates pick up loaded or changed tokens.
+- Components must request an update after their opening DOM patch when layout may have changed without scroll, resize, or anchor replacement. NyxTooltip does this automatically.
 - Recomputes positioning when the anchor ref changes
 - Keeps dropdowns/tooltips above native dialog chrome by teleporting into the dialog when possible
 

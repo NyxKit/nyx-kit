@@ -7,5 +7,7 @@ export interface NyxTooltipProps {
   size?: NyxSize
   position?: NyxPosition
   disabled?: boolean,
+  /** Automatic opening delay in milliseconds. Defaults to 150. */
+  delay?: number
   trigger?: 'click'|'hover'|'manual'
 }
