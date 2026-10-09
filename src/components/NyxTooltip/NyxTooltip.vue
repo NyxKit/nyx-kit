@@ -58,6 +58,10 @@ const close = () => {
 
 watch([() => props.trigger, () => props.delay, model], cancelPendingOpen, { flush: 'sync' })
 
+watch(model, (isOpen) => {
+  if (isOpen) updateCssVariables()
+}, { flush: 'post' })
+
 onBeforeUnmount(cancelPendingOpen)
 
 const onMouseOver = () => props.trigger === 'hover' && open()

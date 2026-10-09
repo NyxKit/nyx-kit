@@ -10,6 +10,8 @@ Displays short supporting text or slot content next to a trigger. Supports hover
 
 `NyxTooltip.vue` uses `useNyxProps` for visual classes and `useTeleportPosition` for positioning and teleporting into the nearest native dialog or the document body. Content remains mounted; the model controls the open class. `updatePosition()` is exposed for explicit position recalculation.
 
+Every transition to open recalculates positioning after Vue has patched the DOM, using current trigger and content dimensions. This applies to hover, click, and manual model updates, including delayed opening. Coordinates and `data-position` are refreshed together through the positioning composable, so viewport mirroring and the CSS caret direction agree. Layout changes while closed require no consumer resize event or `updatePosition()` call.
+
 One pending timer delays automatic opening. Repeated trigger events do not restart it. Mouse leave, outside click, trigger/delay changes, external model changes, and unmount cancel pending opening. Closing updates the model immediately (existing CSS transitions still apply). A changed delay applies to the next trigger event.
 
 ## Props

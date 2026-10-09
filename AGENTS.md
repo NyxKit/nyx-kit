@@ -391,6 +391,8 @@ When you notice that something in the codebase or stories is out of sync, record
 
 | Noticed | Location | Description | Status |
 |---|---|---|---|
+| 2026-10-09 | useTeleportPositionBase CSS gap | An unavailable CSS gap token could be cached as NaN, yielding invalid coordinates even after styles load. | Recorded during Firefox regression; read and validate the token on every positioning update |
+| 2026-10-09 | NyxTooltip opening vs positioning lifecycle | Reopening after a layout-only trigger move reused coordinates from mount/scroll/resize, leaving placement inconsistent with the top caret. | Recorded before fix; refresh positioning after the opening DOM update |
 | 2026-10-09 | NyxTooltip source and stories | Living component spec is missing and the default story contains invalid `{{ Hover me }}` syntax and exports a component object instead of a Storybook render definition. | Recorded before tooltip delay implementation; addressed in this change |
 | 2026-10-08 | useNyxConfirm spec vs source | Spec promises cancellation on unmount, but the composable registers no unmount hook; the module-level resolver is assigned but never read. | Open: lifecycle contract requires separate work; lint cleanup removes only unused state |
 | 2026-10-08 | Command palette CustomShortcut story | Ctrl+Shift+P conflicts with Firefox’s private-window shortcut; automated page keyboard tests do not establish browser-chrome override support. | Corrected example to Ctrl+Enter and documented iframe focus and reserved-shortcut limitations |

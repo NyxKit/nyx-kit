@@ -22,14 +22,16 @@ const useTeleportPositionBase = (
   const offsetX = options?.offsetX ?? 0
   const offsetY = options?.offsetY ?? 0
 
-  const gap = computed(() => {
+  const getGap = () => {
     if (!options?.gap?.value) return 0
     if (typeof window === 'undefined') return 0
     const gapValue = window
       .getComputedStyle(document.body)
-      .getPropertyValue(`--nyx-gap-${options.gap.value}`) ?? '0'
-    return gapValue.endsWith('rem') ? parseFloat(gapValue) * 16 : parseFloat(gapValue)
-  })
+      .getPropertyValue(`--nyx-gap-${options.gap.value}`).trim()
+    const parsedGap = parseFloat(gapValue)
+    if (!Number.isFinite(parsedGap)) return 0
+    return gapValue.endsWith('rem') ? parsedGap * 16 : parsedGap
+  }
 
   const cssVariables = ref<CssVariablesDict>({ '--top': '0px', '--left': '0px', '--width': 'auto' })
   const computedPosition = ref<NyxPosition>(position.value)
@@ -48,6 +50,7 @@ const useTeleportPositionBase = (
     const { top, bottom, left, right, width: relWidth, height: relHeight } = anchorRect
     const { width: absWidth, height: absHeight } = elAbsoluteRect
 
+    const gap = getGap()
     const computedWidth = isEqualWidth ? relWidth : absWidth
     let computedTop = bottom
     let computedLeft = left
@@ -75,27 +78,27 @@ const useTeleportPositionBase = (
 
     switch (computedPosition.value) {
       case NyxPosition.BottomLeft:
-        computedTop  = bottom + gap.value + offsetY; computedLeft = left + offsetX; break
+        computedTop  = bottom + gap + offsetY; computedLeft = left + offsetX; break
       case NyxPosition.BottomRight:
-        computedTop  = bottom + gap.value + offsetY; computedLeft = right - computedWidth + offsetX; break
+        computedTop  = bottom + gap + offsetY; computedLeft = right - computedWidth + offsetX; break
       case NyxPosition.Bottom:
-        computedTop  = bottom + gap.value + offsetY
+        computedTop  = bottom + gap + offsetY
         computedLeft = left + (relWidth - computedWidth) / 2 + offsetX
         break
       case NyxPosition.TopLeft:
-        computedTop  = top - absHeight - gap.value + offsetY; computedLeft = left + offsetX; break
+        computedTop  = top - absHeight - gap + offsetY; computedLeft = left + offsetX; break
       case NyxPosition.TopRight:
-        computedTop  = top - absHeight - gap.value + offsetY; computedLeft = right - computedWidth + offsetX; break
+        computedTop  = top - absHeight - gap + offsetY; computedLeft = right - computedWidth + offsetX; break
       case NyxPosition.Top:
-        computedTop  = top - absHeight - gap.value + offsetY
+        computedTop  = top - absHeight - gap + offsetY
         computedLeft = left + (relWidth - computedWidth) / 2 + offsetX
         break
       case NyxPosition.Left:
         computedTop  = top + (relHeight - absHeight) / 2 + offsetY
-        computedLeft = left - absWidth - gap.value + offsetX
+        computedLeft = left - absWidth - gap + offsetX
         break
       case NyxPosition.Right:
-        computedTop  = top + (relHeight - absHeight) / 2 + offsetY; computedLeft = right + gap.value + offsetX; break
+        computedTop  = top + (relHeight - absHeight) / 2 + offsetY; computedLeft = right + gap + offsetX; break
     }
 
     computedTop  = clamp(computedTop,  0, window.innerHeight - absHeight)

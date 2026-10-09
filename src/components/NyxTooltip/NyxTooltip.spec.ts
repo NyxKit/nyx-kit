@@ -249,3 +249,90 @@ describe('NyxTooltip delay lifecycle', () => {
     expect(wrapper.emitted('update:modelValue')).toBeUndefined()
   })
 })
+
+describe('NyxTooltip positioning on opening', () => {
+  let anchorTop: number
+  let content: HTMLElement
+
+  beforeEach(() => {
+    anchorTop = 300
+    document.body.style.setProperty('--nyx-gap-md', '8px')
+    vi.stubGlobal('innerHeight', 800)
+    vi.stubGlobal('innerWidth', 1200)
+  })
+
+  afterEach(() => {
+    document.body.style.removeProperty('--nyx-gap-md')
+    vi.unstubAllGlobals()
+  })
+
+  const mountPositionedTooltip = (props = {}) => {
+    wrapper = mount(NyxTooltip, {
+      attachTo: document.body,
+      props: { text: 'Short', ...props },
+      global: globalConfig,
+    })
+    const trigger = wrapper.find('.nyx-tooltip')
+    content = document.body.querySelector<HTMLElement>('[role="tooltip"]')!
+    vi.spyOn(trigger.element, 'getBoundingClientRect').mockImplementation(
+      () => new DOMRect(200, anchorTop, 80, 20),
+    )
+    vi.spyOn(content, 'getBoundingClientRect').mockImplementation(
+      () => new DOMRect(0, 0, 120, content.textContent?.trim() === 'Expanded' ? 80 : 40),
+    )
+    return trigger
+  }
+
+  it.each([
+    { trigger: 'hover' as const, delay: 0 },
+    { trigger: 'hover' as const, delay: 150 },
+    { trigger: 'click' as const, delay: 150 },
+  ])('remeasures a moved trigger on reopening: %o', async (props) => {
+    const trigger = mountPositionedTooltip(props)
+    const event = props.trigger === 'hover' ? 'mouseover' : 'click'
+    await trigger.trigger(event)
+    await vi.advanceTimersByTimeAsync(props.delay)
+    expect(content.style.getPropertyValue('--top')).toBe('252px')
+    expect(content.dataset.position).toBe('top')
+
+    await trigger.trigger('mouseleave')
+    anchorTop = 180
+    await trigger.trigger(event)
+    // Layout can change during the delay too: measure when opening, not when scheduling it.
+    if (props.delay) anchorTop = 160
+    await vi.advanceTimersByTimeAsync(props.delay)
+    expect(content.style.getPropertyValue('--top')).toBe(`${anchorTop - 48}px`)
+    expect(content.style.getPropertyValue('--left')).toBe('180px')
+    expect(content.dataset.position).toBe('top')
+  })
+
+  it('measures updated content after the DOM patch on manual reopening', async () => {
+    mountPositionedTooltip({ trigger: 'manual', delay: 500 })
+    await wrapper.setProps({ modelValue: true })
+    expect(content.style.getPropertyValue('--top')).toBe('252px')
+    await wrapper.setProps({ modelValue: false })
+    anchorTop = 180
+    await wrapper.setProps({ modelValue: true, text: 'Expanded' })
+    expect(content.style.getPropertyValue('--top')).toBe('92px')
+    expect(content.dataset.position).toBe('top')
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+  })
+
+  it('flips at the viewport edge and restores the preferred side on the next opening', async () => {
+    const trigger = mountPositionedTooltip({ delay: 0 })
+    await trigger.trigger('mouseover')
+    expect(content.dataset.position).toBe('top')
+    await trigger.trigger('mouseleave')
+
+    anchorTop = 10
+    await trigger.trigger('mouseover')
+    expect(content.style.getPropertyValue('--top')).toBe('38px')
+    expect(content.dataset.position).toBe('bottom')
+    await trigger.trigger('mouseleave')
+
+    anchorTop = 300
+    await trigger.trigger('mouseover')
+    expect(content.style.getPropertyValue('--top')).toBe('252px')
+    expect(content.dataset.position).toBe('top')
+  })
+})
