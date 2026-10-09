@@ -391,6 +391,7 @@ When you notice that something in the codebase or stories is out of sync, record
 
 | Noticed | Location | Description | Status |
 |---|---|---|---|
+| 2026-10-09 | NyxTooltip source and stories | Living component spec is missing and the default story contains invalid `{{ Hover me }}` syntax and exports a component object instead of a Storybook render definition. | Recorded before tooltip delay implementation; addressed in this change |
 | 2026-10-08 | useNyxConfirm spec vs source | Spec promises cancellation on unmount, but the composable registers no unmount hook; the module-level resolver is assigned but never read. | Open: lifecycle contract requires separate work; lint cleanup removes only unused state |
 | 2026-10-08 | Command palette CustomShortcut story | Ctrl+Shift+P conflicts with Firefox’s private-window shortcut; automated page keyboard tests do not establish browser-chrome override support. | Corrected example to Ctrl+Enter and documented iframe focus and reserved-shortcut limitations |
 | 2026-10-08 | `useKeyboardShortcuts` SUPER expansion vs browser keys | SUPER expands to CTRL while native Control is normalized as CONTROL; existing tests rely on CONTROL descriptors. Initial examples registered both SUPER+K and CONTROL+K. The palette now owns an opt-in shortcut using event modifier flags and no longer depends on this helper. | Open: shared shortcut normalization requires a separate compatibility decision |

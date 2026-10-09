@@ -9,6 +9,7 @@ const globalConfig = {
 }
 
 beforeEach(() => {
+  vi.useFakeTimers()
   vi.spyOn(console, 'warn').mockImplementation(() => {})
 })
 
@@ -16,6 +17,8 @@ let wrapper: ReturnType<typeof mount>
 
 afterEach(() => {
   wrapper?.unmount()
+  vi.useRealTimers()
+  vi.restoreAllMocks()
 })
 
 describe('NyxTooltip', () => {
@@ -55,7 +58,10 @@ describe('NyxTooltip', () => {
       global: globalConfig
     })
     await wrapper.find('.nyx-tooltip').trigger('mouseover')
-    await nextTick()
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    await vi.advanceTimersByTimeAsync(149)
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    await vi.advanceTimersByTimeAsync(1)
     const content = document.body.querySelector('.nyx-tooltip__content')
     expect(content?.classList.contains('nyx-tooltip__content--open')).toBe(true)
   })
@@ -79,7 +85,8 @@ describe('NyxTooltip', () => {
       global: globalConfig
     })
     await wrapper.find('.nyx-tooltip').trigger('click')
-    await nextTick()
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    await vi.advanceTimersByTimeAsync(150)
     const content = document.body.querySelector('.nyx-tooltip__content')
     expect(content?.classList.contains('nyx-tooltip__content--open')).toBe(true)
   })
@@ -148,5 +155,97 @@ describe('NyxTooltip', () => {
     const describedById = wrapper.find('.nyx-tooltip').attributes('aria-describedby')
     const tooltipEl = document.body.querySelector('[role="tooltip"]')
     expect(tooltipEl?.getAttribute('id')).toBe(describedById)
+  })
+})
+
+describe('NyxTooltip delay lifecycle', () => {
+  const mountTooltip = (props = {}) => {
+    wrapper = mount(NyxTooltip, {
+      attachTo: document.body,
+      props: { text: 'Info', ...props },
+      global: globalConfig,
+    })
+    return wrapper.find('.nyx-tooltip')
+  }
+
+  it('uses a custom delay without restarting for repeated mouseover events', async () => {
+    const trigger = mountTooltip({ delay: 500 })
+    await trigger.trigger('mouseover')
+    await vi.advanceTimersByTimeAsync(300)
+    await trigger.trigger('mouseover')
+    await vi.advanceTimersByTimeAsync(199)
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    await vi.advanceTimersByTimeAsync(1)
+    expect(wrapper.emitted('update:modelValue')).toEqual([[true]])
+    await trigger.trigger('mouseleave')
+    expect(wrapper.emitted('update:modelValue')).toEqual([[true], [false]])
+  })
+
+  it.each([0, -10, NaN, Infinity])('opens immediately with delay %s', async (delay) => {
+    const trigger = mountTooltip({ delay })
+    await trigger.trigger('mouseover')
+    expect(wrapper.emitted('update:modelValue')).toEqual([[true]])
+  })
+
+  it('cancels on leave and starts a fresh delay on re-entry', async () => {
+    const trigger = mountTooltip()
+    await trigger.trigger('mouseover')
+    await vi.advanceTimersByTimeAsync(100)
+    await trigger.trigger('mouseleave')
+    await vi.advanceTimersByTimeAsync(150)
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    await trigger.trigger('mouseover')
+    await vi.advanceTimersByTimeAsync(149)
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    await vi.advanceTimersByTimeAsync(1)
+    expect(wrapper.emitted('update:modelValue')).toEqual([[true]])
+  })
+
+  it('cancels a pending click opening on outside click', async () => {
+    const trigger = mountTooltip({ trigger: 'click' })
+    await trigger.trigger('click')
+    document.body.click()
+    await vi.advanceTimersByTimeAsync(150)
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+  })
+
+  it.each([{ trigger: 'manual' }, { delay: 500 }])('cancels when configuration changes: %o', async (props) => {
+    const trigger = mountTooltip()
+    await trigger.trigger('mouseover')
+    await wrapper.setProps(props)
+    await vi.advanceTimersByTimeAsync(1000)
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+  })
+
+  it('keeps external model changes immediate and cancels pending opening', async () => {
+    const trigger = mountTooltip()
+    await trigger.trigger('mouseover')
+    await wrapper.setProps({ modelValue: true })
+    expect(document.body.querySelector('.nyx-tooltip__content--open')).not.toBeNull()
+    await wrapper.setProps({ modelValue: false })
+    await vi.advanceTimersByTimeAsync(150)
+    expect(document.body.querySelector('.nyx-tooltip__content--open')).toBeNull()
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+  })
+
+  it('ignores automatic events in manual mode', async () => {
+    const trigger = mountTooltip({ trigger: 'manual' })
+    await trigger.trigger('mouseover')
+    await trigger.trigger('click')
+    await vi.advanceTimersByTimeAsync(150)
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    await wrapper.setProps({ modelValue: true })
+    await trigger.trigger('mouseleave')
+    document.body.click()
+    expect(document.body.querySelector('.nyx-tooltip__content--open')).not.toBeNull()
+  })
+
+  it('clears pending opening on unmount', async () => {
+    const trigger = mountTooltip()
+    await trigger.trigger('mouseover')
+    wrapper.unmount()
+    expect(vi.getTimerCount()).toBe(0)
+    await vi.advanceTimersByTimeAsync(150)
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
   })
 })
