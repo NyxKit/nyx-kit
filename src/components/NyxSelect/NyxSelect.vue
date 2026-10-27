@@ -2,14 +2,17 @@
 import './NyxSelect.scss'
 import { ref, computed, useId, useTemplateRef, watch, nextTick, shallowRef } from 'vue'
 import { NyxSelectType, type NyxSelectOption, type NyxSelectOptionGroup } from '@/types'
-import type { NyxSelectEmits, NyxSelectProps } from './NyxSelect.types'
+import type { NyxSelectEmits, NyxSelectProps, NyxSelectSlots } from './NyxSelect.types'
 import { useTeleportPosition, useNyxProps, useSelectKeyboardControls } from '@/composables'
+import { useSelectOptions } from './useSelectOptions'
 
 const props = withDefaults(defineProps<NyxSelectProps<T>>(), {
   type: NyxSelectType.Single
 })
 
 const emit = defineEmits<NyxSelectEmits<T>>()
+
+defineSlots<NyxSelectSlots<T>>()
 
 const isMultiple = computed(() => props.type === NyxSelectType.Multiple)
 
@@ -39,12 +42,9 @@ const { cssVariables, computedPosition, teleportTarget } = useTeleportPosition(e
   isUpdateAllowed: isOpen
 })
 
-const isGrouped = computed(() => props.options.length > 0 && 'options' in props.options[0])
-
-const flatOptions = computed((): NyxSelectOption<T>[] => {
-  if (!isGrouped.value) return props.options as NyxSelectOption<T>[]
-  return (props.options as NyxSelectOptionGroup<T>[]).flatMap((group) => group.options)
-})
+const { isGrouped, flatOptions, filteredOptions, flatFilteredOptions } = useSelectOptions(
+  () => props.options, searchQuery
+)
 
 const selectedLabels = computed(() => {
   if (!isMultiple.value) {
@@ -56,29 +56,6 @@ const selectedLabels = computed(() => {
     .join(', ')
 })
 
-const filteredOptions = computed(() => {
-  const query = searchQuery.value.toLowerCase()
-  if (!query) return props.options
-  if (isGrouped.value) {
-    return (props.options as NyxSelectOptionGroup<T>[])
-      .map((group) => ({
-        ...group,
-        options: group.options.filter((opt) => opt.label.toLowerCase().includes(query))
-      }))
-      .filter((group) => group.options.length > 0)
-  }
-  return (props.options as NyxSelectOption<T>[]).filter((opt) =>
-    opt.label.toLowerCase().includes(query)
-  )
-})
-
-const flatFilteredOptions = computed((): NyxSelectOption<T>[] => {
-  if (isGrouped.value) {
-    return (filteredOptions.value as NyxSelectOptionGroup<T>[]).flatMap((group) => group.options)
-  }
-  return filteredOptions.value as NyxSelectOption<T>[]
-})
-
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value
 }
@@ -88,6 +65,7 @@ const closeDropdown = () => {
 }
 
 const onSelectOption = (option: NyxSelectOption<T>) => {
+  if (option.disabled) return
   const { value } = option
   if (isMultiple.value) {
     const values = normalisedModel.value as T[]
@@ -170,7 +148,7 @@ watch(isOpen, (newVal) => {
   }
 })
 
-watch([normalisedModel, flatOptions], () => {
+watch([normalisedModel, selectedLabels], () => {
   if (!isOpen.value) {
     setSearchQuery()
   }
@@ -242,7 +220,9 @@ watch([normalisedModel, flatOptions], () => {
                 :aria-selected="isSelected(option.value)"
                 :aria-disabled="!!option.disabled || undefined"
                 @click="onSelectOption(option)"
-              ><span>{{ option.label }}</span></li>
+              >
+                <slot name="option" :option="option"><span>{{ option.label }}</span></slot>
+              </li>
             </template>
             <li
               v-if="(filteredOptions as NyxSelectOptionGroup<T>[]).length === 0"
@@ -266,7 +246,9 @@ watch([normalisedModel, flatOptions], () => {
               :aria-selected="isSelected(option.value)"
               :aria-disabled="!!option.disabled || undefined"
               @click="onSelectOption(option)"
-            ><span>{{ option.label }}</span></li>
+            >
+              <slot name="option" :option="option"><span>{{ option.label }}</span></slot>
+            </li>
             <li
               v-if="(filteredOptions as NyxSelectOption<T>[]).length === 0"
               class="nyx-select__option nyx-select__option--empty"

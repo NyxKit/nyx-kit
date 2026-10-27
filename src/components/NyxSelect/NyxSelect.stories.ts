@@ -5,6 +5,7 @@ import type { NyxSelectProps } from './NyxSelect.types'
 import { getKeyDictKeyByValue } from '@/utils'
 import NyxForm from '../NyxForm/NyxForm.vue'
 import NyxFormField from '../NyxForm/NyxFormField.vue'
+import NyxSelectOptionContentDemo from './storybook/NyxSelectOptionContentDemo.vue'
 
 const options = Object.values(NyxTheme).map((theme) => ({ label: theme, value: theme }))
 
@@ -88,6 +89,19 @@ const TemplateAll = (prop: string, dict: KeyDict<string>) => () => defineCompone
 })
 
 export const Default = Template({ options })
+export const CustomOptionContent = {
+  render: () => ({
+    components: { NyxSelectOptionContentDemo },
+    template: '<NyxSelectOptionContentDemo />'
+  })
+}
+export const CustomGroupedOptionContent = {
+  render: () => ({
+    components: { NyxSelectOptionContentDemo },
+    template: '<NyxSelectOptionContentDemo grouped />'
+  })
+}
+
 export const WithGroups = () => defineComponent({
   components: { NyxSelect },
   setup () {

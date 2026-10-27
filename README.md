@@ -97,6 +97,23 @@ if (result.isSuccess) {
 
 The method returns a `NyxResult` — use `.isSuccess` to check the outcome.
 
+## Select option content
+
+`NyxSelect` supports an optional typed `#option="{ option }"` slot for flat and grouped options. `option` is `NyxSelectOption<T>`, using the same value type as `options` and `v-model`.
+
+```vue
+<NyxSelect v-model="selectedDiscussion" :options="options">
+  <template #option="{ option }">
+    <span class="discussion-option">
+      <span class="discussion-option__title">{{ option.label }}</span>
+      <span class="discussion-option__date">{{ dateFor(option.value) }}</span>
+    </span>
+  </template>
+</NyxSelect>
+```
+
+Use a full-width flex row with `min-width: 0` and ellipsis on the title, and `flex-shrink: 0` on the date. Consumers own formatting and layout. Without a slot, the label renders as before. The closed control, native select, and search still use `option.label`; NyxSelect owns selection, keyboard navigation, and accessibility. See the [select spec](docs/specs/components/NyxSelect.spec.md) and the custom option content stories.
+
 ## Tooltips
 
 `NyxTooltip` accepts a numeric `delay` in milliseconds, defaulting to `150` for hover and click opening. Use `:delay="0"` for immediate opening. Closing and manual `v-model` updates are immediate. See the [tooltip spec](docs/specs/components/NyxTooltip.spec.md).

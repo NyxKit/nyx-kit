@@ -1,9 +1,10 @@
-import { describe, it, expect, afterEach, beforeEach, vi } from 'vitest'
+import { describe, it, expect, expectTypeOf, afterEach, beforeEach, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
-import { nextTick } from 'vue'
+import { h, nextTick, reactive } from 'vue'
 import vClickOutside from '@/directives/vClickOutside'
 import NyxSelect from './NyxSelect.vue'
-import { NyxSelectType } from '@/types'
+import { NyxSelectType, type NyxSelectOption, type NyxSelectOptionGroup } from '@/types'
+import type { NyxSelectSlots } from './NyxSelect.types'
 
 const globalConfig = {
   directives: { clickOutside: vClickOutside }
@@ -322,6 +323,131 @@ describe('NyxSelect', () => {
     await nextTick()
     const options = document.body.querySelectorAll('.nyx-select__option')
     expect(options[2].classList.contains('nyx-select__option--selected')).toBe(true)
+  })
+
+  describe.each([false, true])('option content (grouped: %s)', (grouped) => {
+    const shape = (options: NyxSelectOption<number>[]): NyxSelectOption<number>[] | NyxSelectOptionGroup<number>[] =>
+      grouped ? [{ label: 'Discussions', options }] : options
+
+    const numericOptions = () => [
+      { label: 'Release planning', value: 1 },
+      { label: 'Archived discussion', value: 2, disabled: true },
+      { label: 'Team feedback', value: 3 }
+    ]
+    const optionSlot = ({ option }: { option: NyxSelectOption<number> }) => h('span', { class: 'custom-option' }, [
+      h('span', option.label),
+      h('span', { class: 'metadata' }, `Date for ${option.value.toFixed(0)}`)
+    ])
+
+    it('preserves the plain label span fallback', () => {
+      wrapper = mount(NyxSelect<number>, {
+        attachTo: document.body,
+        props: { options: shape(numericOptions()), modelValue: 1 },
+        global: globalConfig
+      })
+
+      const option = document.body.querySelector('[role="option"]')!
+      expect(option.innerHTML).toBe('<span>Release planning</span>')
+      expect(wrapper.get('input').element.value).toBe('Release planning')
+    })
+
+    it('exposes the complete typed option and keeps label-based native options and search', async () => {
+      expectTypeOf<Parameters<NonNullable<NyxSelectSlots<number>['option']>>[0]>()
+        .toEqualTypeOf<{ option: NyxSelectOption<number> }>()
+      const options = numericOptions()
+      const slot = vi.fn(optionSlot)
+      wrapper = mount(NyxSelect<number>, {
+        attachTo: document.body,
+        props: { options: shape(options), modelValue: 1 },
+        slots: { option: slot },
+        global: globalConfig
+      })
+
+      expect(document.body.querySelector('.custom-option')?.textContent).toBe('Release planningDate for 1')
+      expect(wrapper.get('input').element.value).toBe('Release planning')
+      expect(wrapper.findAll('select option').map(option => option.text()))
+        .toEqual(options.map(option => option.label))
+      await wrapper.get('.nyx-select__control').trigger('click')
+      expect(slot.mock.calls.slice(-3).map(([scope]) => scope.option)).toEqual(options)
+      await wrapper.get('input').setValue('date for')
+      expect(document.body.querySelectorAll('[role="option"]')).toHaveLength(0)
+      expect(document.body.textContent).toContain('No results found')
+      await wrapper.get('input').setValue('TEAM')
+      expect(document.body.querySelectorAll('[role="option"]')).toHaveLength(1)
+      expect(document.body.querySelector('[role="option"]')?.getAttribute('data-option-value')).toBe('3')
+    })
+
+    it('owns pointer and keyboard selection, disabled rows, ARIA, and input focus', async () => {
+      const options = numericOptions()
+      wrapper = mount(NyxSelect<number>, {
+        attachTo: document.body,
+        props: { options: shape(options), modelValue: 1 },
+        slots: { option: optionSlot },
+        global: globalConfig
+      })
+
+      await wrapper.get('.nyx-select__control').trigger('click')
+      const input = wrapper.get('input')
+      expect(document.activeElement).toBe(input.element)
+      const disabled = document.body.querySelector<HTMLElement>('[data-option-value="2"]')!
+      expect(disabled.getAttribute('aria-disabled')).toBe('true')
+      disabled.querySelector<HTMLElement>('.metadata')!.click()
+      await nextTick()
+      expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+      expect(wrapper.emitted('select')).toBeUndefined()
+
+      await wrapper.get('.nyx-select__control').trigger('click')
+      await input.trigger('keydown', { key: 'ArrowDown' })
+      const last = document.body.querySelector<HTMLElement>('[data-option-value="3"]')!
+      expect(input.attributes('aria-activedescendant')).toBe(last.id)
+      await input.trigger('keydown', { key: 'Enter' })
+      expect(wrapper.emitted('update:modelValue')).toEqual([[3]])
+      expect(wrapper.emitted('select')).toEqual([[options[2]]])
+      expect(input.attributes('aria-expanded')).toBe('false')
+      expect(document.activeElement).toBe(input.element)
+
+      await wrapper.get('.nyx-select__control').trigger('click')
+      document.body.querySelector<HTMLElement>('[data-option-value="3"] .metadata')!.click()
+      await nextTick()
+      expect(wrapper.emitted('select')).toHaveLength(2)
+      expect(wrapper.emitted('select')![1]).toEqual([options[2]])
+    })
+
+    it.each([NyxSelectType.Single, NyxSelectType.Multiple])(
+      'preserves %s selection through option replacement, reorder and reactive label edits',
+      async (type) => {
+        const modelValue = type === NyxSelectType.Multiple ? [1, 3] : 1
+        wrapper = mount(NyxSelect<number>, {
+          attachTo: document.body,
+          props: { options: shape(numericOptions()), modelValue, type },
+          slots: { option: optionSlot },
+          global: globalConfig
+        })
+        const replacements = reactive(numericOptions().reverse())
+        await wrapper.setProps({ options: shape(replacements) })
+        replacements.find(option => option.value === 1)!.label = 'Updated release'
+        await nextTick()
+        const label = type === NyxSelectType.Multiple ? 'Updated release, Team feedback' : 'Updated release'
+        expect(wrapper.get('input').element.value).toBe(label)
+        const native = wrapper.get('select').element as HTMLSelectElement
+        expect([...native.selectedOptions].map(option => option.value).sort())
+          .toEqual(type === NyxSelectType.Multiple ? ['1', '3'] : ['1'])
+
+        await wrapper.get('.nyx-select__control').trigger('click')
+        expect(document.body.querySelector('[data-option-value="1"]')?.getAttribute('aria-selected')).toBe('true')
+        expect(document.body.querySelector('[data-option-value="1"] .custom-option')?.textContent)
+          .toBe('Updated releaseDate for 1')
+        await wrapper.get('input').setValue('Team')
+        replacements.find(option => option.value === 1)!.label = 'Latest release'
+        await nextTick()
+        expect(wrapper.get('input').element.value).toBe('Team')
+        await wrapper.get('input').trigger('keyup', { key: 'Escape' })
+        expect(wrapper.get('input').element.value)
+          .toBe(type === NyxSelectType.Multiple ? 'Latest release, Team feedback' : 'Latest release')
+        expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+        expect(wrapper.emitted('select')).toBeUndefined()
+      }
+    )
   })
 
   describe('keyboard navigation', () => {

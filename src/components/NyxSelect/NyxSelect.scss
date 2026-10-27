@@ -128,11 +128,15 @@
     }
   }
 
-  &__selected {
-    flex-grow: 1;
+  &__input {
+    flex: 1 1 0;
+    min-width: 0;
+    width: 0;
+    text-overflow: ellipsis;
   }
 
   &__arrow {
+    flex-shrink: 0;
     font-size: 12px;
     margin-left: auto;
   }
@@ -212,8 +216,15 @@
   }
 
   &__option {
+    display: flex;
+    min-width: 0;
     padding: var(--nyx-pad-select);
     cursor: pointer;
+
+    > * {
+      flex: 1 1 0;
+      min-width: 0;
+    }
 
     &--group {
       padding-left: calc(var(--nyx-pad-select) * 2);
@@ -233,7 +244,7 @@
     cursor: not-allowed;
     background-color: var(--nyx-c-select);
 
-    span {
+    > * {
       opacity: 0.5;
     }
   }
