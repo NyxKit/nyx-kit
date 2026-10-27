@@ -10,6 +10,8 @@ NyxMarkdown increments the minor version from `2.1.1` to `2.2.0`; publishing rem
 
 NyxCommandPalette increments the minor version from `2.2.0` to `2.3.0`; publishing remains a separate maintainer action.
 
+Patch `2.3.2` adds NyxSelect's typed `option` slot and fixes selected-text width and reactive label synchronization. This is a patch release by maintainer request; publishing remains a separate action.
+
 ## Tool Chain
 
 | Tool | Purpose |
