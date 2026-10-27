@@ -23,6 +23,8 @@ NyxSelect is a custom select control that replaces the native `<select>` element
 - `isGrouped` detects at runtime whether `options` is `NyxSelectOption<T>[]` or `NyxSelectOptionGroup<T>[]` by checking for an `options` key on the first element
 - `flatOptions` flattens grouped options for value-to-label lookups (used in `selectedLabels` and `isSelected`)
 - `filteredOptions` returns the same shape as the input (`NyxSelectOption<T>[]` or `NyxSelectOptionGroup<T>[]`), filtering by `searchQuery` and pruning empty groups
+- Private `useSelectOptions` owns grouping, flattening, and label-based filtering to keep the SFC within 300 lines
+- Both option loops render the optional typed `option` slot inside the component-owned option element; absent content falls back to `<span>{{ option.label }}</span>`
 - Generic value type `T` defaults to `string`; keyboard focus uses `shallowRef<T | null>` so option values that are objects are not deep-unwrapped by Vue
 - The externally bound `v-model` value remains the source of truth for both the closed-control text and the selected option state shown in the dropdown
 - Group labels are rendered as non-interactive `<li class="nyx-select__group-label">` — they cannot be selected and have `pointer-events: none`
@@ -35,21 +37,31 @@ NyxSelect is a custom select control that replaces the native `<select>` element
 |---|---|---|---|
 | `options` | `NyxSelectOption<T>[] \| NyxSelectOptionGroup<T>[]` | — | Flat or grouped option list (same `T` as `v-model`) |
 | `type` | `NyxSelectType` | `'single'` | Single vs multiple selection |
-| `theme` | `NyxTheme` | `'default'` | Colour theme |
-| `variant` | `NyxVariant` | `'outline'` | Visual variant (outline, ghost, text) |
-| `size` | `NyxSize` | `'md'` | Size token |
+| `theme` | `NyxTheme` | Omitted | Inherits select/global defaults through `useNyxProps` |
+| `variant` | `NyxVariant` | Omitted | Inherits select/global defaults through `useNyxProps` |
+| `size` | `NyxSize` | Omitted | Inherits select/global defaults through `useNyxProps` |
 | `disabled` | `boolean` | `false` | Disables the entire control |
 | `placeholder` | `string` | — | Placeholder shown in the input when nothing is selected |
 | `id` | `string` | — | Forwarded to the hidden `<select>` for label association |
 ## Emits
 
-None — selection is communicated exclusively through `v-model`.
+| Event | Payload | When |
+|---|---|---|
+| `update:modelValue` | `T \| T[]` | Selection changes (via `defineModel`) |
+| `select` | `NyxSelectOption<T>` | An enabled option is activated by pointer or keyboard |
 
 ## Slots
 
 | Slot | Scope | Purpose |
 |---|---|---|
+| `option` | `{ option: NyxSelectOption<T> }` | Optional option content, used for both flat and grouped lists; defaults to `<span>{{ option.label }}</span>` |
 | `empty` | — | Content shown in the dropdown when no options match the search query |
+
+The slot receives the complete option with the same generic value type `T` as `options` and `v-model`. It customizes content only: NyxSelect owns the surrounding option, IDs, selection, disabled state, ARIA attributes, keyboard navigation, and focus. Use non-interactive slot content; nested buttons, links, or inputs are outside this contract.
+
+Slot content can fill the option's available width. For a title/trailing-metadata row, the consumer can use a full-width flex wrapper, `min-width: 0` and ellipsis on the title, and `flex-shrink: 0` on the trailing content. NyxSelect contains no date formatting or layout logic specific to dates.
+
+The closed control, hidden native options, and search always use `option.label`, regardless of slot content. The closed input grows to use all space between the control padding and the nonshrinking arrow, and shrinks within narrow containers; it truncates only when that available space is exhausted.
 
 ## v-model
 
@@ -59,6 +71,12 @@ When the bound value changes externally after mount, `NyxSelect` must immediatel
 - the text shown in the closed control
 - the selected option state shown in the dropdown
 - the unselected display state when the bound value is cleared
+
+Selection is keyed by `option.value`, independent of order and label. Replacing or reordering options, moving options between groups, or editing a selected label must preserve the bound value without emitting a selection change. The closed control reflects the current label, including in-place reactive label edits. Updates while searching must preserve the query; closing restores the latest selected label.
+
+## Storybook
+
+`CustomOptionContent` and `CustomGroupedOptionContent` reuse the private `storybook/NyxSelectOptionContentDemo.vue` demo. It shows numeric values, a truncated title with a nonshrinking trailing date, a wide closed control, and consumer actions to reorder options or rename the selected option. Browser fixtures may explicitly reuse this demo.
 
 ## Types
 
@@ -93,6 +111,7 @@ List keys, `data-option-value`, and scroll syncing use `String(option.value)` so
 | Type in input | Filters visible options in real time |
 
 Disabled options are skipped during arrow key navigation.
+Pointer activation of a disabled option is ignored by the shared selection handler, including clicks on slot descendants.
 
 ## Accessibility
 
